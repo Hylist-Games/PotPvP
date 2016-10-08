@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>potpvp-si</artifactId>
+    <name>PotPvP SI</name>
+    <version>1.0</version>
+
+    <parent>
+        <groupId>net.frozenorb</groupId>
+        <artifactId>minehq-parent</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <properties>
+        <minehq.mavenLevel>minehq-high</minehq.mavenLevel>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>minehq-repo</id>
+            <url>http://maven.minehq.com:8081/artifactory/minehq-all/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <!-- Spigot Jars -->
+        <dependency>
+            <groupId>net.frozenorb</groupId>
+            <artifactId>mspigot-api</artifactId>
+            <version>LATEST</version>
+        </dependency>
+
+        <!-- MineHQ Jars -->
+        <dependency>
+            <groupId>net.frozenorb</groupId>
+            <artifactId>qLib</artifactId>
+            <version>LATEST</version>
+        </dependency>
+
+        <!-- Misc. Jars -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>LATEST</version>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,5 @@
+name: ${name}
+version: ${version}
+author: MineHQ Development Team
+main: net.frozenorb.potpvp.PotPvP
+depend: [ qLib ]
