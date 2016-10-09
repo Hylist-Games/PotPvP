@@ -1,7 +1,5 @@
 package net.frozenorb.potpvp.setting;
 
-import com.mongodb.client.MongoDatabase;
-
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.setting.repository.MongoSettingRepository;
 import net.frozenorb.potpvp.setting.repository.SettingRepository;
@@ -25,8 +23,7 @@ public final class SettingHandler {
     public SettingHandler() {
         Bukkit.getPluginManager().registerEvents(new SettingListener(this), PotPvPSI.getInstance());
 
-        MongoDatabase mongoDatabase = PotPvPSI.getInstance().getMongoDatabase();
-        settingRepository = new MongoSettingRepository(mongoDatabase);
+        settingRepository = new MongoSettingRepository();
     }
 
     /**

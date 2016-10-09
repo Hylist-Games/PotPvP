@@ -4,11 +4,10 @@ import com.google.common.collect.ImmutableMap;
 
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.UpdateOptions;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.setting.Setting;
+import net.frozenorb.potpvp.util.MongoUtils;
 
 import org.bson.Document;
 
@@ -20,16 +19,10 @@ import java.util.UUID;
 public final class MongoSettingRepository implements SettingRepository {
 
     private static final String MONGO_COLLECTION_NAME = "PlayerSettings";
-    private static final UpdateOptions UPSERT_OPTIONS = new UpdateOptions().upsert(true);
-
-    private final MongoCollection<Document> settingsCollection;
-
-    public MongoSettingRepository(MongoDatabase mongoDatabase) {
-        this.settingsCollection = mongoDatabase.getCollection(MONGO_COLLECTION_NAME);
-    }
 
     @Override
     public Map<Setting, Boolean> loadSettings(UUID playerUuid) throws IOException {
+        MongoCollection<Document> settingsCollection = MongoUtils.getCollection(MONGO_COLLECTION_NAME);
         Document settingsDocument;
 
         try {
@@ -59,6 +52,7 @@ public final class MongoSettingRepository implements SettingRepository {
 
     @Override
     public void saveSettings(UUID playerUuid, Map<Setting, Boolean> settings) throws IOException {
+        MongoCollection<Document> settingsCollection = MongoUtils.getCollection(MONGO_COLLECTION_NAME);
         Document settingsDocument = new Document();
 
         settings.forEach((setting, value) -> {
@@ -68,7 +62,7 @@ public final class MongoSettingRepository implements SettingRepository {
         Document update = new Document("$set", new Document("settings", settingsDocument));
 
         try {
-            settingsCollection.updateOne(buildQuery(playerUuid), update, UPSERT_OPTIONS);
+            settingsCollection.updateOne(buildQuery(playerUuid), update, MongoUtils.UPSERT_OPTIONS);
         } catch (MongoException ex) {
             throw new IOException(ex);
         }
