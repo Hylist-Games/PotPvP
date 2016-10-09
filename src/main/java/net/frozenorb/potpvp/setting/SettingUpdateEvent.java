@@ -25,7 +25,8 @@ public final class SettingUpdateEvent extends PlayerEvent {
      */
     @Getter private final boolean enabled;
 
-    public SettingUpdateEvent(Player player, Setting setting, boolean enabled) {
+    // not public so we can only call this event from SettingHandler
+    SettingUpdateEvent(Player player, Setting setting, boolean enabled) {
         super(player);
 
         this.setting = Preconditions.checkNotNull(setting, "setting");
