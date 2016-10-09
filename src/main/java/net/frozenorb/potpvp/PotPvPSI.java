@@ -3,6 +3,8 @@ package net.frozenorb.potpvp;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
+import net.frozenorb.potpvp.setting.SettingHandler;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
@@ -18,6 +20,8 @@ public final class PotPvPSI extends JavaPlugin {
 
     @Getter private JedisPool redisConnection;
 
+    @Getter private SettingHandler settingHandler;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -25,6 +29,8 @@ public final class PotPvPSI extends JavaPlugin {
 
         setupMongo();
         setupRedis();
+
+        settingHandler = new SettingHandler();
     }
 
     @Override
