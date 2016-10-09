@@ -2,8 +2,6 @@ package net.frozenorb.potpvp.setting;
 
 import com.google.common.collect.ImmutableList;
 
-import net.frozenorb.potpvp.setting.menu.SettingButton;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -104,19 +102,19 @@ public enum Setting {
 
     /**
      * Material to be used when rendering an icon for this setting
-     * @see SettingButton
+     * @see net.frozenorb.potpvp.setting.menu.SettingButton
      */
     @Getter private final Material icon;
 
     /**
      * Text to be shown when rendering an icon for this setting, while enabled
-     * @see SettingButton
+     * @see net.frozenorb.potpvp.setting.menu.SettingButton
      */
     @Getter private final String enabledText;
 
     /**
      * Text to be shown when rendering an icon for this setting, while enabled
-     * @see SettingButton
+     * @see net.frozenorb.potpvp.setting.menu.SettingButton
      */
     @Getter private final String disabledText;
 
