@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.setting;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.setting.event.SettingUpdateEvent;
 import net.frozenorb.potpvp.setting.repository.MongoSettingRepository;
 import net.frozenorb.potpvp.setting.repository.SettingRepository;
 

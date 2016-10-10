@@ -1,6 +1,8 @@
-package net.frozenorb.potpvp.setting;
+package net.frozenorb.potpvp.setting.event;
 
 import com.google.common.base.Preconditions;
+
+import net.frozenorb.potpvp.setting.Setting;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -25,8 +27,7 @@ public final class SettingUpdateEvent extends PlayerEvent {
      */
     @Getter private final boolean enabled;
 
-    // not public so we can only call this event from SettingHandler
-    SettingUpdateEvent(Player player, Setting setting, boolean enabled) {
+    public SettingUpdateEvent(Player player, Setting setting, boolean enabled) {
         super(player);
 
         this.setting = Preconditions.checkNotNull(setting, "setting");
