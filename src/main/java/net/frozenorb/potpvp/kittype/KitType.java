@@ -17,71 +17,60 @@ import org.bukkit.material.MaterialData;
 import lombok.Getter;
 
 /**
- * A KitType is the highest level type of kit possible, not including
- * data about if debuffs are allowed. See {@link net.frozenorb.potpvp.kittype} for
- * an explanation of KitType and DetailedKitType.
+ * Denotes a high level category of
  */
 public enum KitType {
 
     HCTEAMS(
         "HCTeams",
         ChatColor.GREEN,
-        Material.DIAMOND_SWORD,
-        true
+        Material.DIAMOND_SWORD
     ),
     ARCHER(
         "Archer",
         ChatColor.GRAY,
-        Material.BOW,
-        false
+        Material.BOW
     ),
     AXE(
         "Axe",
         ChatColor.RED,
-        Material.IRON_AXE,
-        false
+        Material.IRON_AXE
     ),
     NO_ENCHANTS(
         "No Enchants",
         ChatColor.AQUA,
-        Material.ENCHANTMENT_TABLE,
-        true
+        Material.ENCHANTMENT_TABLE
     ),
     GAPPLE(
         "Gapple",
         ChatColor.GOLD,
-        Material.GOLDEN_APPLE,
-        false
+        Material.GOLDEN_APPLE
     ),
     SOUP(
         "Soup",
         ChatColor.DARK_AQUA,
-        Material.MUSHROOM_SOUP,
-        false
+        Material.MUSHROOM_SOUP
     ),
     VANILLA(
         "Vanilla",
         ChatColor.WHITE,
-        new MaterialData(Material.POTION, (byte) 8225), // 8225 = regen 2 potion
-        true
+        new MaterialData(Material.POTION, (byte) 8225) // 8225 = regen 2 potion
     ),
     CLASSIC(
         "Classic",
         ChatColor.AQUA,
-        Material.DIAMOND_CHESTPLATE,
-        false
+        Material.DIAMOND_CHESTPLATE
     ),
     WIZARD(
         "Wizard",
         ChatColor.DARK_PURPLE,
-        Material.BLAZE_POWDER,
-        false
+        Material.BLAZE_POWDER
     );
 
     private static final String META_MONGO_COLLECTION_NAME = "KitTypeMeta";
 
     /**
-     * Name of this KitType, only used to display to the player (internal uses use enum's .name() method)
+     * Name of this KitType, only used to display to the player
      */
     @Getter private final String name;
 
@@ -93,17 +82,9 @@ public enum KitType {
 
     /**
      * Icon to be used when rendering buttons for this KitType.
-     * @see net.frozenorb.potpvp.kit.menu.button.selectdetailedkittype.DetailedKitTypeButton
      * @see net.frozenorb.potpvp.kit.menu.button.selectkittype.KitTypeButton
      */
     @Getter private final MaterialData icon;
-
-    /**
-     * If this KitType allows debuffs to be used
-     * @see DetailedKitType#debuffSetting
-     * @see DebuffSetting
-     */
-    @Getter private final boolean supportsDebuffs;
 
     /**
      * Metadata pertaining to this KitType. See javadocs for {@link KitTypeMeta}
@@ -112,15 +93,14 @@ public enum KitType {
     @Getter private final KitTypeMeta meta;
 
     // convenience constructor to avoid execessive MaterialData constructors
-    KitType(String name, ChatColor displayColor, Material iconType, boolean supportsDebuffs) {
-        this(name, displayColor, new MaterialData(iconType), supportsDebuffs);
+    KitType(String name, ChatColor displayColor, Material iconType) {
+        this(name, displayColor, new MaterialData(iconType));
     }
 
-    KitType(String name, ChatColor displayColor, MaterialData icon, boolean supportsDebuffs) {
+    KitType(String name, ChatColor displayColor, MaterialData icon) {
         this.name = Preconditions.checkNotNull(name, "name");
         this.displayColor = Preconditions.checkNotNull(displayColor, "color");
         this.icon = Preconditions.checkNotNull(icon, "representation");
-        this.supportsDebuffs = supportsDebuffs;
 
         MongoCollection<Document> metaCollection = MongoUtils.getCollection(META_MONGO_COLLECTION_NAME);
         Document metaJson = metaCollection.find(buildQuery()).first();
@@ -138,26 +118,6 @@ public enum KitType {
      */
     public String getDisplayName() {
         return displayColor + name;
-    }
-
-    /**
-     * Convenience method to constructor a DetailedKitType, from this KitType, with debuffs.
-     * If this KitType does not support debuffs this method and {@link KitType#withoutDebuffs}
-     * with behave identically.
-     * @return DetailedKitType representing this KitType with debuffs allowed
-     */
-    public DetailedKitType withDebuffs() {
-        return DetailedKitType.of(this, DebuffSetting.ALLOWED);
-    }
-
-    /**
-     * Convenience method to constructor a DetailedKitType, from this KitType, without debuffs.
-     * If this KitType does not support debuffs this method and {@link KitType#withDebuffs}
-     * with behave identically.
-     * @return DetailedKitType representing this KitType without debuffs allowed
-     */
-    public DetailedKitType withoutDebuffs() {
-        return DetailedKitType.of(this, DebuffSetting.DISALLOWED);
     }
 
     /**
