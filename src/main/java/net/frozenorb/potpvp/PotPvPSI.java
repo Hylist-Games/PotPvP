@@ -4,8 +4,12 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
 import net.frozenorb.potpvp.arena.ArenaHandler;
+import net.frozenorb.potpvp.match.MatchHandler;
+import net.frozenorb.potpvp.matchlog.MatchLogHandler;
 import net.frozenorb.potpvp.setting.SettingHandler;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
@@ -23,6 +27,8 @@ public final class PotPvPSI extends JavaPlugin {
 
     @Getter private SettingHandler settingHandler;
     @Getter private ArenaHandler arenaHandler;
+    @Getter private MatchHandler matchHandler;
+    @Getter private MatchLogHandler matchLogHandler;
 
     @Override
     public void onEnable() {
@@ -32,8 +38,16 @@ public final class PotPvPSI extends JavaPlugin {
         setupMongo();
         setupRedis();
 
+        for (World world : Bukkit.getWorlds()) {
+            world.setGameRuleValue("doDaylightCycle", "false");
+            world.setGameRuleValue("doMobSpawning", "false");
+            world.setTime(12_000L);
+        }
+
         settingHandler = new SettingHandler();
         arenaHandler = new ArenaHandler();
+        matchHandler = new MatchHandler();
+        matchLogHandler = new MatchLogHandler();
     }
 
     @Override
