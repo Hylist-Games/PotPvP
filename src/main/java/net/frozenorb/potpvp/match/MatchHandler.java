@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.match;
 import com.google.common.collect.ImmutableSet;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.kittype.KitType;
 
 import org.bukkit.entity.Player;
 
@@ -19,18 +20,15 @@ public final class MatchHandler {
     private final Set<Match> hostedMatches = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     @Getter @Setter private boolean rankedMatchesDisabled;
-    @Getter @Setter private boolean quickMatchesDisabled;
+    @Getter @Setter private boolean unrankedMatchesDisabled;
 
-    /*
-    public enum MatchStartResult {
+    public MatchStartResult startMatch(Set<Set<UUID>> teams, KitType kitType) {
+        return startMatch(teams, ImmutableSet.of(), kitType);
+    }
 
-    SUCCESSFUL,
-    NO_MAPS_AVAILABLE;
-
-}
-
-    public MatchStartResult startMatch(Set<MatchTeam> teams, Set<UUID> initialSpectators, KitType kitType) {
-        Match match = new Match();
+    // Set<Set<UUID>> is more convenient for clients (?)
+    public MatchStartResult startMatch(Set<Set<UUID>> teams, Set<UUID> initialSpectators, KitType kitType) {
+        /*Match match = new Match();
 
         match.setState(MatchState.WAITING_FOR_PLAYERS);
         match.setId(request.getMatch().getId());
@@ -98,9 +96,11 @@ public final class MatchHandler {
             return new RequestFailedResponse(ex.getMessage());
         }
 
-        return new InitializeMatchResponse();
+        return new InitializeMatchResponse();*/
+        return MatchStartResult.SUCCESSFUL;
     }
 
+    /*
     public void requestSpectate(UUID target, Player spectator) {
         Match match = PotPvPSlave.getInstance().getMatchHandler().getMatchById(request.getMatchId());
 
@@ -119,7 +119,7 @@ public final class MatchHandler {
 
         return new SpectateMatchResponse();
     }
-    */
+     */
 
     void removeMatch(Match match) {
         hostedMatches.remove(match);
