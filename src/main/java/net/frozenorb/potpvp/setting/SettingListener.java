@@ -12,7 +12,7 @@ final class SettingListener implements Listener {
     private final SettingHandler settingHandler;
 
     SettingListener(SettingHandler settingHandler) {
-        this.settingHandler = Preconditions.checkNotNull(settingHandler, "settingHandler");
+        this.settingHandler = settingHandler;
     }
 
     @EventHandler
