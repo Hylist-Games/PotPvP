@@ -111,7 +111,7 @@ public final class Party {
      * Sends a basic chat message to all members
      * @param message the message to send
      */
-    public void messageAlive(String message) {
+    public void message(String message) {
         for (UUID member : members) {
             Player memberBukkit = Bukkit.getPlayer(member);
 
@@ -126,7 +126,7 @@ public final class Party {
      * @param sound the Sound to play
      * @param pitch the pitch to play the provided sound at
      */
-    public void playSoundAlive(Sound sound, float pitch) {
+    public void playSound(Sound sound, float pitch) {
         for (UUID member : members) {
             Player memberBukkit = Bukkit.getPlayer(member);
 
