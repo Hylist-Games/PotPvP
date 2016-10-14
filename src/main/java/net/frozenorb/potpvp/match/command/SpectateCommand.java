@@ -1,7 +1,7 @@
 package net.frozenorb.potpvp.match.command;
 
-import net.frozenorb.potpvp.WaitingForGcd;
 import net.frozenorb.potpvp.PotPvPLobby;
+import net.frozenorb.potpvp.WaitingForGcd;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
 

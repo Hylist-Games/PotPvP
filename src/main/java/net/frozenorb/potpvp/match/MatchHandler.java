@@ -2,7 +2,6 @@ package net.frozenorb.potpvp.match;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kittype.KitType;
 
 import org.bukkit.entity.Player;
@@ -132,6 +131,24 @@ public final class MatchHandler {
      */
     public Set<Match> getHostedMatches() {
         return ImmutableSet.copyOf(hostedMatches);
+    }
+
+    /**
+     * Returns a sum of all players who are playing in a match.
+     * This method can be thought of as a more efficent way to
+     * count how many online players would pass {@link #isPlayingMatch(Player)}}.
+     * @return number of players playing in matches
+     */
+    public int countPlayersPlayingMatches() {
+        int result = 0;
+
+        for (Match match : hostedMatches) {
+            for (MatchTeam team : match.getTeams()) {
+                result += team.getAliveMembers().size();
+            }
+        }
+
+        return result;
     }
 
     /**

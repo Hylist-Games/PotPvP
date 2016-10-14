@@ -17,7 +17,6 @@ public final class KitTypeMeta {
     /**
      * Items which will be available for players to grab in the kit
      * editor, when making kits for this kit type.
-     * @see net.frozenorb.potpvp.kit.menu.EditKitMenu
      */
     @Getter @Setter private ItemStack[] editorItems = new ItemStack[0];
 

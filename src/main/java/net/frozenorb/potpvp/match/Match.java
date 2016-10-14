@@ -2,6 +2,7 @@ package net.frozenorb.potpvp.match;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import com.mongodb.client.MongoCollection;
 
@@ -15,6 +16,7 @@ import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
 import net.frozenorb.qlib.qLib;
 import net.frozenorb.qlib.util.PlayerUtils;
+
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,7 +29,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -158,6 +159,10 @@ public final class Match {
 
     public List<MatchTeam> getTeams() {
         return ImmutableList.copyOf(teams.values());
+    }
+
+    public Set<UUID> getSpectators() {
+        return ImmutableSet.copyOf(spectators);
     }
 
     public boolean checkEnded() {

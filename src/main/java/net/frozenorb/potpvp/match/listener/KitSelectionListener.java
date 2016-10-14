@@ -1,10 +1,6 @@
 package net.frozenorb.potpvp.match.listener;
 
-import net.frozenorb.potpvp.kittype.DetailedKitType;
-import net.frozenorb.potpvp.kit.Kit;
-import net.frozenorb.potpvp.kit.KitHandler;
 import net.frozenorb.potpvp.kittype.KitType;
-import net.frozenorb.potpvp.PotPvPSlave;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.qlib.util.PlayerUtils;
 
@@ -19,8 +15,6 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
 
 public final class KitSelectionListener implements Listener {
 
