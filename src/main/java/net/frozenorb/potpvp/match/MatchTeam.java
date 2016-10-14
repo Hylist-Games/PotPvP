@@ -3,8 +3,6 @@ package net.frozenorb.potpvp.match;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 
-import net.md_5.bungee.api.chat.BaseComponent;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -13,6 +11,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import lombok.Getter;
 
@@ -85,13 +84,7 @@ public final class MatchTeam {
      * @param message the message to send
      */
     public void messageAlive(String message) {
-        for (UUID aliveMember : aliveMembers) {
-            Player aliveMemberBukkit = Bukkit.getPlayer(aliveMember);
-
-            if (aliveMemberBukkit != null) {
-                aliveMemberBukkit.sendMessage(message);
-            }
-        }
+        forEachAlive(p -> p.sendMessage(message));
     }
 
     /**
@@ -100,11 +93,15 @@ public final class MatchTeam {
      * @param pitch the pitch to play the provided sound at
      */
     public void playSoundAlive(Sound sound, float pitch) {
-        for (UUID aliveMember : aliveMembers) {
-            Player aliveMemberBukkit = Bukkit.getPlayer(aliveMember);
+        forEachAlive(p -> p.playSound(p.getLocation(), sound, 10F, pitch));
+    }
 
-            if (aliveMemberBukkit != null) {
-                aliveMemberBukkit.playSound(aliveMemberBukkit.getEyeLocation(), sound, 10F, pitch);
+    private void forEachAlive(Consumer<Player> consumer) {
+        for (UUID member : aliveMembers) {
+            Player memberBukkit = Bukkit.getPlayer(member);
+
+            if (memberBukkit != null) {
+                consumer.accept(memberBukkit);
             }
         }
     }
