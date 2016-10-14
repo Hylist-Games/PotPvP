@@ -1,7 +1,8 @@
 package net.frozenorb.potpvp.match;
 
-import net.frozenorb.potpvp.common.setting.Setting;
-import net.frozenorb.potpvp.PotPvPSlave;
+import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.setting.Setting;
+import net.frozenorb.potpvp.setting.SettingHandler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -34,7 +35,8 @@ public final class MatchUtility {
     }
 
     public static void resetInventory(Player player) {
-        Match match = PotPvPSlave.getInstance().getMatchHandler().getMatchSpectating(player.getUniqueId());
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        Match match = matchHandler.getMatchSpectating(player.getUniqueId());
 
         if (match == null) {
             return;
@@ -67,11 +69,14 @@ public final class MatchUtility {
 
         player.getInventory().setItem(8, MatchUtility.LOBBY_FIRE_ITEM);
 
-        Bukkit.getScheduler().runTaskLater(PotPvPSlave.getInstance(), player::updateInventory, 1L);
+        Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), player::updateInventory, 1L);
     }
 
-    public static void updateVisibility(Player updateFor) {
-        Match updateForMatch = PotPvPSlave.getInstance().getMatchHandler().getMatchPlayingOrSpectating(updateFor.getUniqueId());
+    static void updateVisibility(Player updateFor) {
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
+
+        Match updateForMatch = matchHandler.getMatchPlayingOrSpectating(updateFor);
 
         if (updateForMatch == null) {
             return;
@@ -80,13 +85,13 @@ public final class MatchUtility {
         // reads as "updateFor is spectator?"
         boolean updateForIsSpectator = updateForMatch.isSpectator(updateFor.getKiller().getUniqueId());
 
-        for (Player otherPlayer : PotPvPSlave.getInstance().getServer().getOnlinePlayers()) {
+        for (Player otherPlayer : Bukkit.getOnlinePlayers()) {
             // we don't care about if we can see ourself
             if (updateFor == otherPlayer) {
                 continue;
             }
 
-            MatchTeam otherPlayerTeam = updateForMatch.getCurrentTeam(otherPlayer);
+            MatchTeam otherPlayerTeam = updateForMatch.getTeam(otherPlayer.getUniqueId());
             boolean otherPlayerIsSpectator = updateForMatch.isSpectator(otherPlayer.getUniqueId());
 
             // we're not in a match together, don't show each other
@@ -101,14 +106,14 @@ public final class MatchUtility {
 
                 if (otherPlayerIsSpectator) {
                     // we're a spectator, show us them based on our settings
-                    if (PotPvPSlave.getInstance().getSettingHandler().isSettingEnabled(updateFor.getUniqueId(), Setting.VIEW_OTHER_SPECTATORS)) {
+                    if (settingHandler.getSetting(updateFor.getUniqueId(), Setting.VIEW_OTHER_SPECTATORS)) {
                         updateFor.showPlayer(otherPlayer);
                     } else {
                         updateFor.hidePlayer(otherPlayer);
                     }
 
                     // they're a spectator, show them us based on their settings
-                    if (PotPvPSlave.getInstance().getSettingHandler().isSettingEnabled(otherPlayer.getUniqueId(), Setting.VIEW_OTHER_SPECTATORS)) {
+                    if (settingHandler.getSetting(otherPlayer.getUniqueId(), Setting.VIEW_OTHER_SPECTATORS)) {
                         otherPlayer.showPlayer(updateFor);
                     } else {
                         otherPlayer.hidePlayer(updateFor);
