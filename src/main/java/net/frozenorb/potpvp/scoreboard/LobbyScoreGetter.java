@@ -47,8 +47,6 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
             scores.add("&cQueued: &f" + queueTypeFormatted);
             scores.add("&bQueued for: *&f" + waitTimeFormatted);
         }
-
-        scores.add("&e&7&m--------------------");
     }
 
 }
