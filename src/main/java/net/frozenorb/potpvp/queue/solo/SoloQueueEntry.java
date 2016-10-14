@@ -14,13 +14,13 @@ import lombok.Getter;
  * Represents a single player waiting
  * in a {@link SoloQueue}
  */
-public final class SoloQueueEntry extends QueueEntry {
+public final class SoloQueueEntry extends QueueEntry<SoloQueue> {
 
-    @Getter private final SoloQueue queue;
     @Getter private final UUID player;
 
     SoloQueueEntry(SoloQueue queue, UUID player) {
-        this.queue = Preconditions.checkNotNull(queue, "queue");
+        super(queue);
+
         this.player = Preconditions.checkNotNull(player, "player");
     }
 

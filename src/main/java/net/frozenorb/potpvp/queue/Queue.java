@@ -42,6 +42,8 @@ public abstract class Queue<T extends QueueEntry> {
         }
     }
 
+    public abstract int countPlayersQueued();
+
     private boolean createMatch(T entryA, T entryB) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Set<Set<UUID>> teams = ImmutableSet.of(

@@ -14,13 +14,13 @@ import lombok.Getter;
  * Represents a {@link net.frozenorb.potpvp.party.Party} waiting
  * in a {@link PartyQueue}
  */
-public final class PartyQueueEntry extends QueueEntry {
+public final class PartyQueueEntry extends QueueEntry<PartyQueue> {
 
-    @Getter private final PartyQueue queue;
     @Getter private final Party party;
 
     PartyQueueEntry(PartyQueue queue, Party party) {
-        this.queue = Preconditions.checkNotNull(queue, "queue");
+        super(queue);
+
         this.party = Preconditions.checkNotNull(party, "party");
     }
 

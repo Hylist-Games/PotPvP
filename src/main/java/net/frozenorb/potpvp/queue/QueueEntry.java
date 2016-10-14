@@ -9,14 +9,20 @@ import java.util.UUID;
 
 import lombok.Getter;
 
-public abstract class QueueEntry {
+public abstract class QueueEntry<T extends Queue> {
+
+    /**
+     * {@link Queue} this QueueEntry is entered in
+     */
+    @Getter private final T queue;
 
     /**
      * Time this QueueEntry joined its {@link SoloQueue}
      */
     @Getter private final Instant timeJoined;
 
-    protected QueueEntry() {
+    protected QueueEntry(T queue) {
+        this.queue = queue;
         this.timeJoined = Instant.now();
     }
 

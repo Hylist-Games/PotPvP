@@ -23,6 +23,12 @@ public final class SoloQueue extends Queue<SoloQueueEntry> {
         queueEntries.remove(getQueueEntry(player));
     }
 
+    @Override
+    public int countPlayersQueued() {
+        // easy, one queue entry = one player
+        return queueEntries.size();
+    }
+
     public SoloQueueEntry getQueueEntry(UUID player) {
         for (SoloQueueEntry queueEntry : queueEntries) {
             if (queueEntry.getPlayer().equals(player)) {
