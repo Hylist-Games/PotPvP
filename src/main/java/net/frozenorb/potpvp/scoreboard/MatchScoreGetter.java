@@ -118,7 +118,6 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         if (partnerUuid != null) {
             String namePrefix;
             String healthStr;
-            int potionCount;
 
             if (ourTeam.isAlive(partnerUuid)) {
                 Player partnerPlayer = Bukkit.getPlayer(partnerUuid); // will never be null (or isAlive would've returned false)
@@ -137,25 +136,15 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
                     healthColor = ChatColor.DARK_RED;
                 }
 
-                // merge their cursor + actual inv to prevent
-                // flicker when refilling potions
-                ItemStack[] extendedInventory = ObjectArrays.concat(
-                        partnerPlayer.getItemOnCursor(),
-                        partnerPlayer.getInventory().getContents()
-                );
-
                 namePrefix = "&a";
                 healthStr = healthColor.toString() + health + " ❤";
-                potionCount = ItemUtils.countAmountMatching(extendedInventory, ItemUtils.HEAL_POTION_PREDICATE);
             } else {
                 namePrefix = "&7&m";
                 healthStr = "&4RIP";
-                potionCount = match.getSpectatorPotions().getOrDefault(partnerUuid, 0);
             }
 
-            String potionCountStr = potionCount + " Pot" + (potionCount == 1 ? "" : "s");
             scores.add(namePrefix + FrozenUUIDCache.name(partnerUuid));
-            scores.add(healthStr + " *&7&l⏐* &f" + potionCountStr);
+            scores.add(healthStr);
             scores.add("&b");
         }
 

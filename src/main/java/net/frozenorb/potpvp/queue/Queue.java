@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableSet;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.match.MatchHandler;
-import net.frozenorb.potpvp.match.MatchStartResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +50,8 @@ public abstract class Queue<T extends QueueEntry> {
             entryB.getMembers()
         );
 
-        MatchStartResult result = matchHandler.startMatch(teams, kitType);
-        return result == MatchStartResult.SUCCESSFUL;
+        MatchHandler.MatchStartResult result = matchHandler.startMatch(teams, kitType);
+        return result == MatchHandler.MatchStartResult.SUCCESSFUL;
     }
 
 }

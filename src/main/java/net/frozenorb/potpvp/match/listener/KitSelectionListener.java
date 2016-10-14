@@ -18,9 +18,9 @@ import org.bukkit.inventory.ItemStack;
 
 public final class KitSelectionListener implements Listener {
 
-    /**
+/*    *//**
      * Don't let players drop their kit selection books via the Q key
-     */
+     *//*
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Match match = PotPvPSlave.getInstance().getMatchHandler().getMatchPlaying(event.getPlayer().getUniqueId());
@@ -47,9 +47,9 @@ public final class KitSelectionListener implements Listener {
         }
     }
 
-    /**
+    *//**
      * Give new players their kit selection items when logging in to a match
-     */
+     *//*
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Match match = PotPvPSlave.getInstance().getMatchHandler().getMatchPlaying(event.getPlayer().getUniqueId());
@@ -72,9 +72,9 @@ public final class KitSelectionListener implements Listener {
         event.getPlayer().getInventory().setItem(0, kitType.createDefaultKit().createSelectionItem());
     }
 
-    /**
+    *//**
      * Don't let players drop their kit selection items via death
-     */
+     *//*
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDeath(PlayerDeathEvent event) {
         Match match = PotPvPSlave.getInstance().getMatchHandler().getMatchPlaying(event.getEntity().getUniqueId());
@@ -93,9 +93,9 @@ public final class KitSelectionListener implements Listener {
         event.getDrops().remove(kitType.createDefaultKit().createSelectionItem());
     }
 
-    /**
+    *//**
      * Give players their kits upon right click
-     */
+     *//*
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!event.hasItem() || (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK)) {
@@ -124,6 +124,6 @@ public final class KitSelectionListener implements Listener {
             defaultKit.apply(event.getPlayer(), detailedKitType);
             event.getPlayer().sendMessage(ChatColor.YELLOW + "You equipped the default kit for " + defaultKit.getType().getName() + ".");
         }
-    }
+    }*/
 
 }

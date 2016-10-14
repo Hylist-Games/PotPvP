@@ -1,7 +1,5 @@
 package net.frozenorb.potpvp.match.command;
 
-import net.frozenorb.potpvp.PotPvPLobby;
-import net.frozenorb.potpvp.WaitingForGcd;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
 
@@ -19,12 +17,12 @@ public final class SpectateCommand {
             return;
         }
 
-        if (WaitingForGcd.partyFromCache(sender.getUniqueId()) != null) {
+        /*if (WaitingForGcd.partyFromCache(sender.getUniqueId()) != null) {
             sender.sendMessage(ChatColor.RED + "You cannot spectate while in your party. Leave to /spec");
             return;
         }
 
-        PotPvPLobby.getInstance().getMatchHandler().requestSpectate(target, sender);
+        PotPvPLobby.getInstance().getMatchHandler().requestSpectate(target, sender);*/
     }
 
 }

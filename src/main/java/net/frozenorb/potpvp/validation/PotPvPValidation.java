@@ -58,9 +58,10 @@ public final class PotPvPValidation {
         return true;
     }
 
-    public static boolean canJoinQueue(Player message, Party party) {
+    public static boolean canJoinQueue(Party party) {
         if (isInQueue(party)) {
-            message.sendMessage(CANNOT_DO_THIS_WHILE_QUEUED);
+            // TODO: Is it best to message the whole party here?
+            party.message(CANNOT_DO_THIS_WHILE_QUEUED);
             return false;
         }
 

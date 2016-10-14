@@ -13,6 +13,7 @@ import net.frozenorb.potpvp.match.event.MatchCountdownStartEvent;
 import net.frozenorb.potpvp.match.event.MatchEndEvent;
 import net.frozenorb.potpvp.match.event.MatchStartEvent;
 import net.frozenorb.potpvp.util.InventoryUtils;
+import net.frozenorb.potpvp.util.MongoUtils;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
 import net.frozenorb.qlib.qLib;
 import net.frozenorb.qlib.util.PlayerUtils;
@@ -28,7 +29,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,9 +52,6 @@ public final class Match {
     @Getter private MatchState state;
     @Getter private Instant startedAt;
     @Getter private Instant endedAt;
-
-    private final Map<UUID, Integer> potionCountAtDeath = new ConcurrentHashMap<>();
-    private final Map<UUID, EndedGcdMatchPlayer> endedMetaAtDeath = new ConcurrentHashMap<>();
 
     public Match(KitType kitType, Arena arena, List<MatchTeam> teams) {
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
@@ -143,14 +140,10 @@ public final class Match {
         document.put("_id", getId());
 
         document.put("winner", winner != null ? winner.getId() : null);
-        document.put("map", map == null ? "none" : map.getSchematic());
-        document.put("startedAt", new Date(startedAt));
-        document.put("endedAt", new Date(endedAt));
-        document.put("playerInfo", Document.parse(qLib.PLAIN_GSON.toJson(playerInfo)));
-        document.put("playerData", Document.parse(qLib.PLAIN_GSON.toJson(playerData)));
+        document.put("arena", arena.getSchematic());
 
-        Bukkit.getScheduler().runTaskAsynchronously(PotPvPSlave.getInstance(), () -> {
-            MongoCollection<Document> endedMatches = PotPvPSlave.getInstance().getMongoDatabase().getCollection("EndedMatches");
+        Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
+            MongoCollection<Document> endedMatches = MongoUtils.getCollection("EndedMatches");
             endedMatches.insertOne(document);
         });
 
@@ -168,7 +161,7 @@ public final class Match {
     public boolean checkEnded() {
         List<MatchTeam> teamsAlive = new ArrayList<>();
 
-        for (MatchTeam team : teams) {
+        for (MatchTeam team : teams.values()) {
             if (!team.getAliveMembers().isEmpty()) {
                 teamsAlive.add(team);
             }
@@ -198,7 +191,7 @@ public final class Match {
 
         player.getInventory().setHeldItemSlot(0);
 
-        MatchUtility.updateVisibility(player);
+        MatchUtils.updateVisibility(player);
         PlayerUtils.resetInventory(player, GameMode.CREATIVE);
         InventoryUtils.resetInventory(player);
     }
@@ -286,7 +279,7 @@ public final class Match {
      * @param message the message to send
      */
     public void messageAlive(String message) {
-        for (MatchTeam team : teams) {
+        for (MatchTeam team : teams.values()) {
             team.messageAlive(message);
         }
     }
@@ -297,7 +290,7 @@ public final class Match {
      * @param pitch the pitch to play the provided sound at
      */
     public void playSoundAlive(Sound sound, float pitch) {
-        for (MatchTeam team : teams) {
+        for (MatchTeam team : teams.values()) {
             team.playSoundAlive(sound, pitch);
         }
     }
