@@ -1,7 +1,5 @@
 package net.frozenorb.potpvp.scoreboard;
 
-import com.google.common.collect.ObjectArrays;
-
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
@@ -12,7 +10,6 @@ import net.frozenorb.qlib.uuid.FrozenUUIDCache;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

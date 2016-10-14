@@ -1,20 +1,6 @@
 package net.frozenorb.potpvp.match.listener;
 
-import net.frozenorb.potpvp.kittype.KitType;
-import net.frozenorb.potpvp.match.Match;
-import net.frozenorb.qlib.util.PlayerUtils;
-
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.ItemStack;
 
 public final class KitSelectionListener implements Listener {
 
