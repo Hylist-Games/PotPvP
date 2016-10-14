@@ -99,6 +99,13 @@ public final class MatchHandler {
         return MatchStartResult.SUCCESSFUL;
     }
 
+    public enum MatchStartResult {
+
+        SUCCESSFUL,
+        NO_MAPS_AVAILABLE;
+
+    }
+
     /*
     public void requestSpectate(UUID target, Player spectator) {
         Match match = PotPvPSlave.getInstance().getMatchHandler().getMatchById(request.getMatchId());
