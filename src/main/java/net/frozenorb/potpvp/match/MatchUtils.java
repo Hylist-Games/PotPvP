@@ -5,34 +5,9 @@ import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-public final class MatchUtility {
-
-    // spectator items
-    public static final ItemStack RED_CARPET_ITEM = new ItemStack(Material.CARPET, 1, DyeColor.RED.getWoolData());
-    public static final ItemStack LOBBY_FIRE_ITEM = new ItemStack(Material.FIRE);
-    public static final ItemStack TOGGLE_SPECTATORS_ITEM = new ItemStack(Material.EMERALD);
-    public static final ItemStack VIEW_INV_ITEM = new ItemStack(Material.BOOK);
-
-    static {
-        ItemMeta lobbyFireItemMeta = LOBBY_FIRE_ITEM.getItemMeta();
-        ItemMeta toggleSpectatorsItemMeta = TOGGLE_SPECTATORS_ITEM.getItemMeta();
-        ItemMeta viewInvItemMeta = VIEW_INV_ITEM.getItemMeta();
-
-        lobbyFireItemMeta.setDisplayName(ChatColor.YELLOW + "Return to lobby");
-        toggleSpectatorsItemMeta.setDisplayName(ChatColor.YELLOW + "Toggle spectator visibility");
-        viewInvItemMeta.setDisplayName(ChatColor.YELLOW + "View player inventory");
-
-        LOBBY_FIRE_ITEM.setItemMeta(lobbyFireItemMeta);
-        TOGGLE_SPECTATORS_ITEM.setItemMeta(toggleSpectatorsItemMeta);
-        VIEW_INV_ITEM.setItemMeta(viewInvItemMeta);
-    }
+public final class MatchUtils {
 
     public static void resetInventory(Player player) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
@@ -48,26 +23,26 @@ public final class MatchUtility {
         // if they've been on any team or are staff they'll be able to
         // use this item on at least 1 player. if they can't use it all
         // we just don't give it to them (UX purposes)
-        boolean giveViewInvItem = player.hasPermission("basic.staff");
+        boolean canViewInventories = player.hasPermission("basic.staff");
 
-        if (!giveViewInvItem) {
+        if (!canViewInventories) {
             for (MatchTeam team : match.getTeams()) {
                 if (team.getAllMembers().contains(player.getUniqueId())) {
-                    giveViewInvItem = true;
+                    canViewInventories = true;
                     break;
                 }
             }
         }
 
         // fill inventory with spectator items
-        player.getInventory().setItem(0, MatchUtility.RED_CARPET_ITEM);
-        player.getInventory().setItem(1, MatchUtility.TOGGLE_SPECTATORS_ITEM);
+        player.getInventory().setItem(0, SpectatorItems.CARPET_ITEM);
+        player.getInventory().setItem(1, SpectatorItems.TOGGLE_SPECTATORS_ITEM);
 
-        if (giveViewInvItem) {
-            player.getInventory().setItem(2, MatchUtility.VIEW_INV_ITEM);
+        if (canViewInventories) {
+            player.getInventory().setItem(2, SpectatorItems.VIEW_INVENTORY_ITEM);
         }
 
-        player.getInventory().setItem(8, MatchUtility.LOBBY_FIRE_ITEM);
+        player.getInventory().setItem(8, SpectatorItems.RETURN_TO_LOBBY_ITEM);
 
         Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), player::updateInventory, 1L);
     }

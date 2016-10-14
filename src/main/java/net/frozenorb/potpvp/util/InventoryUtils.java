@@ -2,7 +2,7 @@ package net.frozenorb.potpvp.util;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.MatchHandler;
-import net.frozenorb.potpvp.match.MatchUtility;
+import net.frozenorb.potpvp.match.MatchUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ public final class InventoryUtils {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
         if (matchHandler.isPlayingOrSpectatingMatch(player)) {
-            MatchUtility.resetInventory(player);
+            MatchUtils.resetInventory(player);
         } else {
             //LobbyHandler.resetInventory(player);
         }
