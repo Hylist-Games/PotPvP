@@ -5,7 +5,6 @@ import com.mongodb.client.MongoDatabase;
 
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
-import net.frozenorb.potpvp.matchstats.MatchStatsHandler;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.potpvp.scoreboard.PotPvPScoreboardConfiguration;
@@ -33,7 +32,6 @@ public final class PotPvPSI extends JavaPlugin {
     @Getter private SettingHandler settingHandler;
     @Getter private ArenaHandler arenaHandler;
     @Getter private MatchHandler matchHandler;
-    @Getter private MatchStatsHandler matchStatsHandler;
     @Getter private PartyHandler partyHandler;
     @Getter private QueueHandler queueHandler;
 
@@ -54,7 +52,6 @@ public final class PotPvPSI extends JavaPlugin {
         settingHandler = new SettingHandler();
         arenaHandler = new ArenaHandler();
         matchHandler = new MatchHandler();
-        matchStatsHandler = new MatchStatsHandler();
         partyHandler = new PartyHandler();
         queueHandler = new QueueHandler();
 
