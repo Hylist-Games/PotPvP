@@ -5,8 +5,13 @@ import com.mongodb.client.MongoDatabase;
 
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
-import net.frozenorb.potpvp.matchlog.MatchLogHandler;
+import net.frozenorb.potpvp.matchstats.MatchStatsHandler;
+import net.frozenorb.potpvp.party.PartyHandler;
+import net.frozenorb.potpvp.queue.QueueHandler;
+import net.frozenorb.potpvp.scoreboard.PotPvPScoreboardConfiguration;
 import net.frozenorb.potpvp.setting.SettingHandler;
+import net.frozenorb.qlib.command.FrozenCommandHandler;
+import net.frozenorb.qlib.scoreboard.FrozenScoreboardHandler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -28,7 +33,9 @@ public final class PotPvPSI extends JavaPlugin {
     @Getter private SettingHandler settingHandler;
     @Getter private ArenaHandler arenaHandler;
     @Getter private MatchHandler matchHandler;
-    @Getter private MatchLogHandler matchLogHandler;
+    @Getter private MatchStatsHandler matchStatsHandler;
+    @Getter private PartyHandler partyHandler;
+    @Getter private QueueHandler queueHandler;
 
     @Override
     public void onEnable() {
@@ -47,7 +54,12 @@ public final class PotPvPSI extends JavaPlugin {
         settingHandler = new SettingHandler();
         arenaHandler = new ArenaHandler();
         matchHandler = new MatchHandler();
-        matchLogHandler = new MatchLogHandler();
+        matchStatsHandler = new MatchStatsHandler();
+        partyHandler = new PartyHandler();
+        queueHandler = new QueueHandler();
+
+        FrozenCommandHandler.registerAll(this);
+        FrozenScoreboardHandler.setConfiguration(PotPvPScoreboardConfiguration.create());
     }
 
     @Override
