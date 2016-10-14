@@ -3,12 +3,12 @@ package net.frozenorb.potpvp.arena;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
-import com.google.gson.reflect.TypeToken;
 
 import net.frozenorb.qlib.qLib;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.libs.com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.IOException;
