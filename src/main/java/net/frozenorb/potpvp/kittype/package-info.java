@@ -1,4 +1,4 @@
 /**
- * Contains kit primitives used throughout the rest of the codebase
+ * Contains kit primitives such as KitType and a kit type selection menu
  */
 package net.frozenorb.potpvp.kittype;

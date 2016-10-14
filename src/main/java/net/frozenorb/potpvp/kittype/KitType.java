@@ -17,7 +17,8 @@ import org.bukkit.material.MaterialData;
 import lombok.Getter;
 
 /**
- * Denotes a high level category of
+ * Denotes a type of Kit, under which players can queue, edit kits,
+ * have elo, etc.
  */
 public enum KitType {
 
@@ -81,8 +82,8 @@ public enum KitType {
     @Getter private final ChatColor displayColor;
 
     /**
-     * Icon to be used when rendering buttons for this KitType.
-     * @see net.frozenorb.potpvp.kit.menu.button.selectkittype.KitTypeButton
+     * Icon to be used when rendering buttons for this KitType
+     * @see net.frozenorb.potpvp.kittype.menu.KitTypeButton
      */
     @Getter private final MaterialData icon;
 
