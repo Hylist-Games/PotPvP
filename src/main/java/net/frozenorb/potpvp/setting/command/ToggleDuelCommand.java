@@ -1,4 +1,4 @@
-package net.frozenorb.potpvp.command;
+package net.frozenorb.potpvp.setting.command;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.setting.Setting;
@@ -8,6 +8,9 @@ import net.frozenorb.qlib.command.Command;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+/**
+ * /toggleduels command, allows players to toggle {@link Setting#RECEIVE_DUELS} setting
+ */
 public final class ToggleDuelCommand {
 
     @Command(names = { "toggleduels", "td", "tduels" }, permission = "")
