@@ -6,6 +6,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+/**
+ * /setspawn command, updates spawn location
+ * (spawn location is used when teleporting players to the lobby)
+ *
+ * {@link org.bukkit.World#setSpawnLocation(int, int, int, float, float)}
+ * is a custom method provided by PowerSpigot which stores yaw/pitch along
+ * with x/y/z. See net.frozenorb:mspigot-api in pom.xml
+ */
 public final class SetSpawnCommand {
 
     @Command(names = {"setspawn"}, permission = "op")
