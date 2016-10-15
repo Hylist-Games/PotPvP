@@ -3,7 +3,6 @@ package net.frozenorb.potpvp.kit;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.util.ItemUtils;
-import net.frozenorb.potpvp.util.PotionUtils;
 import net.frozenorb.qlib.util.PlayerUtils;
 
 import org.bukkit.Bukkit;
@@ -13,8 +12,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.Potion;
-import org.bukkit.potion.PotionType;
 
 import lombok.Getter;
 import lombok.Setter;

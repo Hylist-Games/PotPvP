@@ -1,11 +1,7 @@
 package net.frozenorb.potpvp.lobby;
 
-import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.util.InventoryUtils;
-import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.util.PlayerUtils;
-import net.frozenorb.qlib.uuid.FrozenUUIDCache;
-import net.frozenorb.qlib.xpacket.FrozenXPacketHandler;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;

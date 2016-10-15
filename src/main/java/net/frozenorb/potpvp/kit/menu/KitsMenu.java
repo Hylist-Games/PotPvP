@@ -1,13 +1,12 @@
 package net.frozenorb.potpvp.kit.menu;
 
-import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kit.Kit;
 import net.frozenorb.potpvp.kit.KitHandler;
-import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.kit.menu.button.kits.KitDeleteButton;
 import net.frozenorb.potpvp.kit.menu.button.kits.KitEditButton;
 import net.frozenorb.potpvp.kit.menu.button.kits.KitIconButton;
 import net.frozenorb.potpvp.kit.menu.button.kits.KitRenameButton;
+import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;

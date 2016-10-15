@@ -3,7 +3,6 @@ package net.frozenorb.potpvp.kit.menu.button.editkit;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
-import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kit.Kit;
 import net.frozenorb.potpvp.kit.menu.KitsMenu;
 import net.frozenorb.potpvp.util.InventoryUtils;
