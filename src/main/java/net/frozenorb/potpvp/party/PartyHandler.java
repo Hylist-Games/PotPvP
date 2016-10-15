@@ -25,6 +25,17 @@ public final class PartyHandler {
     //private final Map<UUID, Party> playerParties = new ConcurrentHashMap<>();
     private final Set<Party> parties = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
+    // TODO: icon click listener
+    /*
+                    Party party = PotPvPLobby.getInstance().getPartyHandler().getLocalParty(event.getPlayer());
+
+                if (party != null) {
+                    if (event.getItem().isSimilar(PotPvPLobby.getInstance().getLobbyHandler().generatePartyItem(party))) {
+                        PartyInfoCommand.partyInfo(event.getPlayer(), event.getPlayer().getUniqueId()); // The same as making them type /party info.
+                    }
+                }
+     */
+
     /**
      * Finds all parties with at least one member
      * @return immutable set of all existing parties

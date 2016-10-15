@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.util;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchUtils;
 
@@ -22,7 +23,7 @@ public final class InventoryUtils {
         if (matchHandler.isPlayingOrSpectatingMatch(player)) {
             MatchUtils.resetInventory(player);
         } else {
-            //LobbyHandler.resetInventory(player);
+            LobbyHandler.resetInventory(player);
         }
     }
 
