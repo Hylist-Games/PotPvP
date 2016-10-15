@@ -17,18 +17,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Facilitiates easy access to {@link ArenaSchematic}s and to {@link Arena}s
+ * based on their schematic+copy pair
+ */
 public final class ArenaHandler {
 
     private static final String ARENA_INSTANCES_FILE_NAME = "arenaInstances.json";
     private static final String SCHEMATICS_FILE_NAME = "schematics.json";
 
-    // schematic name + copy combo -> Arena instance
+    // schematic -> (instance id -> Arena instance)
     private Map<ArenaSchematic, Map<Integer, Arena>> arenaInstances = new HashMap<>();
     // schematic name -> ArenaSchematic instance
     private Map<String, ArenaSchematic> schematics = new HashMap<>();
 
     public ArenaHandler() {
+        // even though the locations stored in Arenas contain a World object we
+        // store arenas in (and host matches in) the overworld
         World arenaWorld = Bukkit.getWorlds().get(0);
+
         File arenaInstancesFile = new File(arenaWorld.getWorldFolder(), ARENA_INSTANCES_FILE_NAME);
         File schematicsFile = new File(arenaWorld.getWorldFolder(), SCHEMATICS_FILE_NAME);
 
@@ -47,7 +54,7 @@ public final class ArenaHandler {
                 schematics = qLib.GSON.fromJson(schematicsJson, schematicsType);
             }
         } catch (IOException ex) {
-            // just rethrow, can't recover from maps failing to load
+            // just rethrow, can't recover from arenas failing to load
             throw new RuntimeException(ex);
         }
     }

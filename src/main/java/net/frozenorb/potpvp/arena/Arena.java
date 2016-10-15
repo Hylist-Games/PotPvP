@@ -9,8 +9,9 @@ import java.util.Objects;
 import lombok.Getter;
 
 /**
- * Represents an arena instance. See {@link net.frozenorb.potpvp.arena}
- * for a comparision of {@link Arena}s and {@link ArenaSchematic}s.
+ * Represents a pasted instance of an {@link ArenaSchematic}.
+ * See {@link net.frozenorb.potpvp.arena} for a comparision of
+ * {@link Arena}s and {@link ArenaSchematic}s.
  */
 public final class Arena {
 
@@ -33,17 +34,21 @@ public final class Arena {
     @Getter private Cuboid bounds;
 
     /**
-     * First spawn location for this arena (team 1)
+     * Team 1 spawn location for this arena
+     * For purposes of arena definition we ignore
+     * non-two-teamed matches.
      */
-    @Getter private Location spawn1;
+    @Getter private Location team1Spawn;
 
     /**
-     * Second spawn location for this arena (team 2)
+     * Team 2 spawn location for this arena
+     * For purposes of arena definition we ignore
+     * non-two-teamed matches.
      */
-    @Getter private Location spawn2;
+    @Getter private Location team2Spawn;
 
     /**
-     * Spectator spawn location for this arena.
+     * Spectator spawn location for this arena
      */
     @Getter private Location spectatorSpawn;
 
