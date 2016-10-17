@@ -2,6 +2,13 @@ package net.frozenorb.potpvp.party;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.party.listener.PartyChatListener;
+import net.frozenorb.potpvp.party.listener.PartyItemListener;
+import net.frozenorb.potpvp.party.listener.PartyLeaveListener;
+import net.frozenorb.potpvp.util.InventoryUtils;
+
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
@@ -36,11 +43,17 @@ public final class PartyHandler {
                 }
      */
 
+    public PartyHandler() {
+        Bukkit.getPluginManager().registerEvents(new PartyChatListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new PartyItemListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new PartyLeaveListener(), PotPvPSI.getInstance());
+    }
+
     /**
      * Finds all parties with at least one member
      * @return immutable set of all existing parties
      */
-    private Set<Party> getParties() {
+    public Set<Party> getParties() {
         return ImmutableSet.copyOf(parties);
     }
 
@@ -50,42 +63,46 @@ public final class PartyHandler {
      * @return if the player provided is in a party
      */
     public boolean hasParty(Player player) {
-        return getParty(player.getUniqueId()) != null;
-    }
-
-    /**
-     * Checks if the player provided is in a party ({@link Party#isMember(UUID) would return true}
-     * @param playerUuid the player to check
-     * @return if the player provided is in a party
-     */
-    public boolean hasParty(UUID playerUuid) {
-        return getParty(playerUuid) != null;
+        return getParty(player) != null;
     }
 
     /**
      * Looks up a player's party (a player's party is considered a party
      * for which {@link Party#isMember(UUID)} returns true)
-     * @param playerUuid the player to lookup
+     * @param player the player to lookup
      * @return the player's party, or null if the player is not in a party.
      */
     public Party getParty(Player player) {
-        return getParty(player.getUniqueId());
-    }
-
-    /**
-     * Looks up a player's party (a player's party is considered a party
-     * for which {@link Party#isMember(UUID)} returns true)
-     * @param playerUuid the player to lookup
-     * @return the player's party, or null if the player is not in a party.
-     */
-    public Party getParty(UUID playerUuid) {
         for (Party party : parties) {
-            if (party.isMember(playerUuid)) {
+            if (party.isMember(player.getUniqueId())) {
                 return party;
             }
         }
 
         return null;
+    }
+
+    /**
+     * Looks up a player's party, or creates a Party (with the player as the leader)
+     * if none exists.
+     * @param player the player to lookup
+     * @return the player's existing party, or a new Party
+     *          if the player was not in a party
+     */
+    public Party getOrCreateParty(Player player) {
+        Party party = getParty(player);
+
+        if (party == null) {
+            party = new Party(player.getUniqueId());
+            parties.add(party);
+            InventoryUtils.resetInventoryDelayed(player);
+        }
+
+        return party;
+    }
+
+    void unregisterParty(Party party) {
+        parties.remove(party);
     }
 
 }

@@ -5,6 +5,8 @@ import com.google.common.collect.ImmutableSet;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.util.InventoryUtils;
+import net.frozenorb.qlib.qLib;
+import net.md_5.bungee.api.ChatColor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -17,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Represents a collection of players which can perform
@@ -53,17 +56,18 @@ public final class Party {
      * Current access restriction in place for joining this party
      * @see PartyAccessRestriction
      */
-    @Getter private PartyAccessRestriction accessRestriction = PartyAccessRestriction.INVITE_ONLY;
+    @Getter @Setter private PartyAccessRestriction accessRestriction = PartyAccessRestriction.INVITE_ONLY;
 
     /**
      * Password requires to join this party, only active if
      * {@link #accessRestriction} is {@link PartyAccessRestriction#PASSWORD}.
      * @see PartyAccessRestriction#PASSWORD
      */
-    @Getter private String password = null;
+    @Getter @Setter private String password = null;
 
     Party(UUID leader) {
         this.leader = Preconditions.checkNotNull(leader, "leader");
+        this.members.add(leader);
     }
 
     /**
@@ -98,7 +102,6 @@ public final class Party {
 
     /**
      * Gets an immutable set of all active {@link PartyInvite}s
-     * @see PartyInvite#getSender())
      * @return immutable set of all active invites
      */
     public Set<PartyInvite> getInvites() {
@@ -121,6 +124,90 @@ public final class Party {
         return null;
     }
 
+    public void revokeInvite(PartyInvite invite) {
+        invites.remove(invite);
+    }
+
+    public void invite(Player target) {
+        invites.add(new PartyInvite(this, target.getUniqueId()));
+
+        target.spigot().sendMessage(PartyLang.inviteAcceptPrompt(this));
+        message(ChatColor.YELLOW + target.getName() + ChatColor.AQUA + " has been invited to join your party.");
+    }
+
+    public void join(Player player) {
+        if (members.contains(player.getUniqueId())) {
+            return;
+        }
+
+        Player leaderBukkit = Bukkit.getPlayer(leader);
+        player.sendMessage(ChatColor.YELLOW + "You have joined " + ChatColor.AQUA + leaderBukkit.getName() + ChatColor.YELLOW + "'s party.");
+
+        message(ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " has joined your party.");
+
+        members.add(player.getUniqueId());
+        resetInventoriesDelayed();
+    }
+
+    public void leave(Player player) {
+        if (!members.remove(player.getUniqueId())) {
+            return;
+        }
+
+        // disband parties of 1 member or less
+        if (members.size() <= 1) {
+            disband();
+            return;
+        }
+
+        // randomly elect new leader if needed
+        if (leader.equals(player.getUniqueId())) {
+            UUID[] membersArray = members.toArray(new UUID[members.size()]);
+            Player newLeader = Bukkit.getPlayer(membersArray[qLib.RANDOM.nextInt(membersArray.length)]);
+
+            this.leader = newLeader.getUniqueId();
+            message(ChatColor.AQUA + newLeader.getName() + ChatColor.YELLOW + " has been randomly promoted to leader of your party.");
+        }
+
+        player.sendMessage(ChatColor.YELLOW + "You have left your party.");
+        message(ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " has left your party.");
+
+        InventoryUtils.resetInventoryDelayed(player);
+        resetInventoriesDelayed();
+    }
+
+    public void setLeader(Player player) {
+        this.leader = player.getUniqueId();
+
+        message(ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " has been promoted to leader of your party.");
+        resetInventoriesDelayed();
+    }
+
+    public void disband() {
+        PotPvPSI.getInstance().getPartyHandler().unregisterParty(this);
+
+        message(ChatColor.YELLOW + "Your party has been disbanded.");
+        resetInventoriesDelayed();
+    }
+
+    public void kick(Player player) {
+        if (!members.remove(player.getUniqueId())) {
+            return;
+        }
+
+        // disband parties of 1 member or less
+        if (members.size() <= 1) {
+            disband();
+            return;
+        }
+
+        player.sendMessage(ChatColor.YELLOW + "You have been kicked from your party.");
+        message(ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " has been kicked from your party.");
+
+        InventoryUtils.resetInventoryDelayed(player);
+        resetInventoriesDelayed();
+    }
+
     /**
      * Sends a basic chat message to all members
      * @param message the message to send
@@ -140,22 +227,21 @@ public final class Party {
 
     /**
      * Resets all members' inventories
-     * @see InventoryUtils#resetInventory(Player)
+     * @see InventoryUtils#resetInventoryDelayed(Player)
      */
-    public void resetInventories() {
-        forEachOnline(InventoryUtils::resetInventory);
+    public void resetInventoriesDelayed() {
+        // we use one runnable and then call resetInventoriesNow instead of
+        // directly using to InventoryUtils#resetInventoryDelayed to reduce
+        // the number of tasks we submit to the scheduler
+        Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), this::resetInventoriesNow, InventoryUtils.RESET_DELAY_TICKS);
     }
 
     /**
-     * Resets all members' inventories after a delay
-     * @see InventoryUtils#resetInventoryLater(Player, int)
-     * @param delay the number of ticks to delay
+     * Resets all members' inventories
+     * @see InventoryUtils#resetInventoryNow(Player)
      */
-    public void resetInventoriesLater(int delay) {
-        // we use one runnable and then call resetInventories instead of
-        // directly using to InventoryUtils#resetInventoryLater to reduce
-        // the number of tasks we submit to the scheduler
-        Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), this::resetInventories, delay);
+    public void resetInventoriesNow() {
+        forEachOnline(InventoryUtils::resetInventoryNow);
     }
 
     private void forEachOnline(Consumer<Player> consumer) {

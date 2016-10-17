@@ -2,6 +2,16 @@ package net.frozenorb.potpvp.party;
 
 import com.google.common.base.Preconditions;
 
+import net.frozenorb.qlib.uuid.FrozenUUIDCache;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
@@ -15,24 +25,16 @@ import lombok.Getter;
 public final class PartyInvite {
 
     /**
+     * The party the target will be joining upon accepting
+     * this invitation.
+     */
+    @Getter private Party party;
+
+    /**
      * Player that will be joining the party,
      * if they accept this invitation.
      */
     @Getter private UUID target;
-
-    /**
-     * Player who sent this invite (via /party invite)
-     *
-     * Not guaranteed to be in the same party the target will be
-     * joining, as it's possible the sender left before the target
-     * accepts the invitation.
-     *
-     * The party the target will be joining must be known by
-     * context (ex the {@link Party} this PartyInvite was obtained
-     * from)
-     * @see Party#getInvites()
-     */
-    @Getter private UUID sender;
 
     /**
      * The time this invite was sent, used to determine if this
@@ -41,9 +43,9 @@ public final class PartyInvite {
      */
     @Getter private Instant timeSent;
 
-    PartyInvite(UUID target, UUID sender) {
+    PartyInvite(Party party, UUID target) {
+        this.party = Preconditions.checkNotNull(party, "party");
         this.target = Preconditions.checkNotNull(target, "target");
-        this.sender = Preconditions.checkNotNull(sender, "sender");
         this.timeSent = Instant.now();
     }
 
