@@ -4,6 +4,8 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
 
+import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.arena.listener.ArenaClearListener;
 import net.frozenorb.qlib.qLib;
 
 import org.bukkit.Bukkit;
@@ -32,6 +34,8 @@ public final class ArenaHandler {
     private Map<String, ArenaSchematic> schematics = new HashMap<>();
 
     public ArenaHandler() {
+        Bukkit.getPluginManager().registerEvents(new ArenaClearListener(), PotPvPSI.getInstance());
+
         // even though the locations stored in Arenas contain a World object we
         // store arenas in (and host matches in) the overworld
         World arenaWorld = Bukkit.getWorlds().get(0);
