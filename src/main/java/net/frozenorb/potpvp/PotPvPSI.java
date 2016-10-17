@@ -4,6 +4,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
 import net.frozenorb.potpvp.arena.ArenaHandler;
+import net.frozenorb.potpvp.kit.KitHandler;
 import net.frozenorb.potpvp.listener.BasicPreventionListener;
 import net.frozenorb.potpvp.listener.PearlCooldownListener;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
@@ -37,6 +38,7 @@ public final class PotPvPSI extends JavaPlugin {
     @Getter private JedisPool redisConnection;
 
     @Getter private SettingHandler settingHandler;
+    @Getter private KitHandler kitHandler;
     @Getter private LobbyHandler lobbyHandler;
     @Getter private ArenaHandler arenaHandler;
     @Getter private MatchHandler matchHandler;
@@ -58,6 +60,7 @@ public final class PotPvPSI extends JavaPlugin {
         }
 
         settingHandler = new SettingHandler();
+        kitHandler = new KitHandler();
         lobbyHandler = new LobbyHandler();
         arenaHandler = new ArenaHandler();
         matchHandler = new MatchHandler();
