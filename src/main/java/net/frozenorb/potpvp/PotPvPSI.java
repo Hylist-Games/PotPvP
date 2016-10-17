@@ -10,8 +10,10 @@ import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.potpvp.scoreboard.PotPvPScoreboardConfiguration;
 import net.frozenorb.potpvp.setting.SettingHandler;
+import net.frozenorb.potpvp.tab.PotPvPLayoutProvider;
 import net.frozenorb.qlib.command.FrozenCommandHandler;
 import net.frozenorb.qlib.scoreboard.FrozenScoreboardHandler;
+import net.frozenorb.qlib.tab.FrozenTabHandler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -59,6 +61,7 @@ public final class PotPvPSI extends JavaPlugin {
         queueHandler = new QueueHandler();
 
         FrozenCommandHandler.registerAll(this);
+        FrozenTabHandler.setLayoutProvider(new PotPvPLayoutProvider());
         FrozenScoreboardHandler.setConfiguration(PotPvPScoreboardConfiguration.create());
     }
 
