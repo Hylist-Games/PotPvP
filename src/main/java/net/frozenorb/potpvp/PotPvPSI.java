@@ -6,12 +6,14 @@ import com.mongodb.client.MongoDatabase;
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
+import net.frozenorb.potpvp.nametag.PotPvPNametagProvider;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.potpvp.scoreboard.PotPvPScoreboardConfiguration;
 import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.potpvp.tab.PotPvPLayoutProvider;
 import net.frozenorb.qlib.command.FrozenCommandHandler;
+import net.frozenorb.qlib.nametag.FrozenNametagHandler;
 import net.frozenorb.qlib.scoreboard.FrozenScoreboardHandler;
 import net.frozenorb.qlib.tab.FrozenTabHandler;
 
@@ -62,6 +64,7 @@ public final class PotPvPSI extends JavaPlugin {
 
         FrozenCommandHandler.registerAll(this);
         FrozenTabHandler.setLayoutProvider(new PotPvPLayoutProvider());
+        FrozenNametagHandler.registerProvider(new PotPvPNametagProvider());
         FrozenScoreboardHandler.setConfiguration(PotPvPScoreboardConfiguration.create());
     }
 
