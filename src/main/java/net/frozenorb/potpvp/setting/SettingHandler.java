@@ -2,6 +2,7 @@ package net.frozenorb.potpvp.setting;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.setting.event.SettingUpdateEvent;
+import net.frozenorb.potpvp.setting.listener.SettingLoadListener;
 import net.frozenorb.potpvp.setting.repository.MongoSettingRepository;
 import net.frozenorb.potpvp.setting.repository.SettingRepository;
 
@@ -22,7 +23,7 @@ public final class SettingHandler {
     private final SettingRepository settingRepository;
 
     public SettingHandler() {
-        Bukkit.getPluginManager().registerEvents(new SettingListener(this), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new SettingLoadListener(), PotPvPSI.getInstance());
 
         settingRepository = new MongoSettingRepository();
     }
@@ -73,7 +74,7 @@ public final class SettingHandler {
         }
     }
 
-    void loadSettings(UUID playerUuid) {
+    public void loadSettings(UUID playerUuid) {
         Map<Setting, Boolean> playerSettings;
 
         try {
@@ -88,7 +89,7 @@ public final class SettingHandler {
         settingsData.put(playerUuid, playerSettings);
     }
 
-    void unloadSettings(UUID playerUuid) {
+    public void unloadSettings(UUID playerUuid) {
         settingsData.remove(playerUuid);
     }
 

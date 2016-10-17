@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.queue;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.party.Party;
+import net.frozenorb.potpvp.queue.listener.QueueItemListener;
 import net.frozenorb.potpvp.queue.party.PartyQueue;
 import net.frozenorb.potpvp.queue.party.PartyQueueEntry;
 import net.frozenorb.potpvp.queue.solo.SoloQueue;
@@ -67,7 +68,7 @@ public final class QueueHandler {
             queue.addToQueue(player.getUniqueId());
 
             player.sendMessage(String.format(JOIN_SOLO_MESSAGE, kitType.getDisplayName()));
-            InventoryUtils.resetInventory(player);
+            InventoryUtils.resetInventoryDelayed(player);
         }
     }
 
@@ -81,7 +82,7 @@ public final class QueueHandler {
             queue.removeFromQueue(player.getUniqueId());
 
             player.sendMessage(String.format(LEAVE_SOLO_MESSAGE, queue.getKitType().getDisplayName()));
-            InventoryUtils.resetInventory(player);
+            InventoryUtils.resetInventoryDelayed(player);
         }
     }
 
@@ -95,7 +96,7 @@ public final class QueueHandler {
             queue.addToQueue(party);
 
             party.message(String.format(JOIN_PARTY_MESSAGE, kitType.getDisplayName()));
-            party.resetInventories();
+            party.resetInventoriesDelayed();
         }
     }
 
@@ -109,7 +110,7 @@ public final class QueueHandler {
             queue.removeFromQueue(party);
 
             party.message(String.format(LEAVE_PARTY_MESSAGE, queue.getKitType().getDisplayName()));
-            party.resetInventories();
+            party.resetInventoriesDelayed();
         }
     }
 

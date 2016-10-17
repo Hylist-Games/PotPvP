@@ -1,8 +1,10 @@
-package net.frozenorb.potpvp.queue;
+package net.frozenorb.potpvp.queue.listener;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kittype.menu.SelectKitTypeMenu;
 import net.frozenorb.potpvp.party.Party;
+import net.frozenorb.potpvp.queue.QueueHandler;
+import net.frozenorb.potpvp.queue.QueueItems;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
 
 import org.bukkit.entity.Player;
@@ -11,13 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-final class QueueItemListener implements Listener {
-
-    private final QueueHandler queueHandler;
-
-    QueueItemListener(QueueHandler queueHandler) {
-        this.queueHandler = queueHandler;
-    }
+public final class QueueItemListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -25,6 +21,7 @@ final class QueueItemListener implements Listener {
             return;
         }
 
+        QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
         ItemStack item = event.getItem();
         Player player = event.getPlayer();
 
