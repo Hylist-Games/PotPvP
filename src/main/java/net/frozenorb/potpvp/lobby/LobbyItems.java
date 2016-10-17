@@ -21,7 +21,6 @@ import static org.bukkit.ChatColor.YELLOW;
 @UtilityClass
 public final class LobbyItems {
 
-    public static final ItemStack LEAVE_PARTY_ITEM = new ItemStack(Material.FIRE);
     public static final ItemStack OTHER_PARTIES_ITEM = new ItemStack(Material.SKULL_ITEM);
     public static final ItemStack PENDING_INVITES_ITEM = new ItemStack(Material.WATCH);
 
@@ -34,7 +33,6 @@ public final class LobbyItems {
     public static final ItemStack EVENTS_ITEM = new ItemStack(Material.EMERALD);
 
     static {
-        ItemUtils.setDisplayName(LEAVE_PARTY_ITEM, LEFT_ARROW + RED.toString() + BOLD + "Leave Party" + RIGHT_ARROW);
         ItemUtils.setDisplayName(OTHER_PARTIES_ITEM, LEFT_ARROW + GREEN.toString() + BOLD + "Other Parties" + RIGHT_ARROW);
         ItemUtils.setDisplayName(PENDING_INVITES_ITEM, LEFT_ARROW + YELLOW.toString() + BOLD + "Pending Invites" + RIGHT_ARROW);
 

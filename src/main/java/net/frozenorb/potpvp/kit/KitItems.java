@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public final class KitEditorItems {
+public final class KitItems {
 
     public static final ItemStack OPEN_EDITOR_ITEM = new ItemStack(Material.BOOK);
 

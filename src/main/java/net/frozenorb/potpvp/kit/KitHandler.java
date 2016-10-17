@@ -3,6 +3,8 @@ package net.frozenorb.potpvp.kit;
 import com.mongodb.client.MongoCollection;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.kit.listener.KitItemListener;
+import net.frozenorb.potpvp.kit.listener.KitLoadListener;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.util.MongoUtils;
 import net.frozenorb.qlib.qLib;
@@ -23,7 +25,8 @@ public final class KitHandler {
     private final Map<UUID, PlayerKitStore> kitStores = new ConcurrentHashMap<>();
 
     public KitHandler() {
-        Bukkit.getPluginManager().registerEvents(new KitListener(this), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new KitItemListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new KitLoadListener(), PotPvPSI.getInstance());
     }
 
     public Optional<Kit> getFavoriteKit(UUID playerUuid, KitType kitType) {
@@ -63,7 +66,7 @@ public final class KitHandler {
         kitStores.get(playerUuid).saveKitsAsync();
     }
 
-    void loadKits(UUID playerUuid) {
+    public void loadKits(UUID playerUuid) {
         MongoCollection<Document> playerKitsCollection = MongoUtils.getCollection("PlayerKits");
         Document playerData = playerKitsCollection.find(new Document("player", playerUuid.toString())).first();
 
@@ -75,7 +78,7 @@ public final class KitHandler {
         }
     }
 
-    void unloadKits(UUID playerUuid) {
+    public void unloadKits(UUID playerUuid) {
         kitStores.remove(playerUuid);
     }
 
