@@ -1,16 +1,7 @@
-package net.frozenorb.potpvp.kit.menu;
+package net.frozenorb.potpvp.kit.menu.editkit;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kit.Kit;
-import net.frozenorb.potpvp.kit.menu.button.editkit.ArmorButton;
-import net.frozenorb.potpvp.kit.menu.button.editkit.CancelKitEditButton;
-import net.frozenorb.potpvp.kit.menu.button.editkit.ClearInventoryButton;
-import net.frozenorb.potpvp.kit.menu.button.editkit.FillHealPotionsButton;
-import net.frozenorb.potpvp.kit.menu.button.editkit.KitInfoButton;
-import net.frozenorb.potpvp.kit.menu.button.editkit.LoadDefaultKitButton;
-import net.frozenorb.potpvp.kit.menu.button.editkit.SaveButton;
-import net.frozenorb.potpvp.kit.menu.button.editkit.TakeItemButton;
-import net.frozenorb.potpvp.kit.menu.button.editkit.UnselectableItemButton;
 import net.frozenorb.potpvp.kittype.KitTypeMeta;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.qlib.menu.Button;
@@ -51,7 +42,7 @@ public final class EditKitMenu extends Menu {
 
     @Override
     public void onClose(Player player) {
-        InventoryUtils.resetInventoryLater(player, 5);
+        InventoryUtils.resetInventoryDelayed(player);
     }
 
     @Override

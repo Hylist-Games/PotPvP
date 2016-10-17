@@ -1,10 +1,10 @@
-package net.frozenorb.potpvp.kit.menu.button.kits;
+package net.frozenorb.potpvp.kit.menu.kits;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import net.frozenorb.potpvp.kit.Kit;
-import net.frozenorb.potpvp.kit.menu.EditKitMenu;
+import net.frozenorb.potpvp.kit.menu.editkit.EditKitMenu;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.qlib.menu.Button;
 
@@ -15,13 +15,13 @@ import org.bukkit.event.inventory.ClickType;
 
 import java.util.List;
 
-public final class KitEditButton extends Button {
+public final class KitIconButton extends Button {
 
     private final Kit kit;
     private final KitType kitType;
     private final int slot;
 
-    public KitEditButton(Kit kit, KitType kitType, int slot) {
+    public KitIconButton(Kit kit, KitType kitType, int slot) {
         this.kit = kit;
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
         this.slot = slot;
@@ -29,20 +29,25 @@ public final class KitEditButton extends Button {
 
     @Override
     public String getName(Player player) {
-        return ChatColor.GREEN.toString() + ChatColor.BOLD + "Load/Edit";
+        return ChatColor.GREEN.toString() + ChatColor.BOLD + (kit == null ? "Create Kit" : kit.getName());
     }
 
     @Override
     public List<String> getDescription(Player player) {
-        return ImmutableList.of(
-                "",
-                ChatColor.YELLOW + "Click to edit this kit."
-        );
+        if (kit != null) {
+            return ImmutableList.of(
+                    "",
+                    ChatColor.GREEN + "Heals: " + ChatColor.WHITE + kit.countHeals(),
+                    ChatColor.RED + "Debuffs: " + ChatColor.WHITE + kit.countDebuffs()
+            );
+        } else {
+            return ImmutableList.of();
+        }
     }
 
     @Override
     public Material getMaterial(Player player) {
-        return Material.BOOK;
+        return kit != null ? Material.DIAMOND_SWORD : Material.STONE_SWORD;
     }
 
     @Override

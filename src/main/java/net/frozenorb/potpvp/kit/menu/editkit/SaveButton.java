@@ -1,10 +1,10 @@
-package net.frozenorb.potpvp.kit.menu.button.editkit;
+package net.frozenorb.potpvp.kit.menu.editkit;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import net.frozenorb.potpvp.kit.Kit;
-import net.frozenorb.potpvp.kit.menu.KitsMenu;
+import net.frozenorb.potpvp.kit.menu.kits.KitsMenu;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.potpvp.util.ItemUtils;
 import net.frozenorb.qlib.menu.Button;
@@ -57,7 +57,7 @@ public final class SaveButton extends Button {
         player.setItemOnCursor(new ItemStack(Material.AIR));
 
         player.closeInventory();
-        InventoryUtils.resetInventory(player);
+        InventoryUtils.resetInventoryDelayed(player);
 
         (new KitsMenu(kit.getType())).openMenu(player);
 

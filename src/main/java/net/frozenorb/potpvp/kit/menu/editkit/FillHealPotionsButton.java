@@ -1,4 +1,4 @@
-package net.frozenorb.potpvp.kit.menu.button.editkit;
+package net.frozenorb.potpvp.kit.menu.editkit;
 
 import com.google.common.collect.ImmutableList;
 

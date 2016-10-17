@@ -1,59 +1,60 @@
-package net.frozenorb.potpvp.kit.menu.button.editkit;
+package net.frozenorb.potpvp.kit.menu.kits;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
-import net.frozenorb.potpvp.kit.menu.KitsMenu;
+import net.frozenorb.potpvp.kit.Kit;
+import net.frozenorb.potpvp.kit.menu.editkit.EditKitMenu;
 import net.frozenorb.potpvp.kittype.KitType;
-import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.qlib.menu.Button;
 
 import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 import java.util.List;
 
-public final class CancelKitEditButton extends Button {
+public final class KitEditButton extends Button {
 
+    private final Kit kit;
     private final KitType kitType;
+    private final int slot;
 
-    public CancelKitEditButton(KitType kitType) {
+    public KitEditButton(Kit kit, KitType kitType, int slot) {
+        this.kit = kit;
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
+        this.slot = slot;
     }
 
     @Override
     public String getName(Player player) {
-        return ChatColor.RED.toString() + ChatColor.BOLD + "Cancel";
+        return ChatColor.GREEN.toString() + ChatColor.BOLD + "Load/Edit";
     }
 
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-            "",
-            ChatColor.YELLOW + "Click this to abort editing your kit,",
-            ChatColor.YELLOW + "and return to the kit menu."
+                "",
+                ChatColor.YELLOW + "Click to edit this kit."
         );
     }
 
     @Override
     public Material getMaterial(Player player) {
-        return Material.WOOL;
-    }
-
-    @Override
-    public byte getDamageValue(Player player) {
-        return DyeColor.RED.getWoolData();
+        return Material.BOOK;
     }
 
     @Override
     public void clicked(Player player, int slot, ClickType clickType) {
-        player.closeInventory();
-        InventoryUtils.resetInventory(player);
+        Kit kit = this.kit;
 
-        new KitsMenu(kitType).openMenu(player);
+        if (kit == null) {
+            // TODO
+            //kit = PotPvPSI.getInstance().getKitHandler().setDefaultKit(player.getUniqueId(), kitType, this.slot);
+        }
+
+        (new EditKitMenu(kit)).openMenu(player);
     }
 
 }

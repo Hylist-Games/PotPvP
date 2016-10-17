@@ -1,9 +1,11 @@
-package net.frozenorb.potpvp.kit.menu.button.kits;
+package net.frozenorb.potpvp.kit.menu.editkit;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
+import net.frozenorb.potpvp.kit.menu.kits.KitsMenu;
 import net.frozenorb.potpvp.kittype.KitType;
+import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.qlib.menu.Button;
 
 import org.bukkit.ChatColor;
@@ -14,28 +16,25 @@ import org.bukkit.event.inventory.ClickType;
 
 import java.util.List;
 
-public final class KitDeleteButton extends Button {
+public final class CancelKitEditButton extends Button {
 
     private final KitType kitType;
-    private final int slot;
 
-    public KitDeleteButton(KitType kitType, int slot) {
+    public CancelKitEditButton(KitType kitType) {
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
-        this.slot = slot;
     }
 
     @Override
     public String getName(Player player) {
-        return ChatColor.RED.toString() + ChatColor.BOLD + "Delete";
+        return ChatColor.RED.toString() + ChatColor.BOLD + "Cancel";
     }
 
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-                "",
-                ChatColor.RED + "Click here to delete this kit",
-                ChatColor.RED + "You will " + ChatColor.BOLD + "NOT" + ChatColor.RED + " be able to",
-                ChatColor.RED + "recover this kit."
+            "",
+            ChatColor.YELLOW + "Click this to abort editing your kit,",
+            ChatColor.YELLOW + "and return to the kit menu."
         );
     }
 
@@ -51,8 +50,10 @@ public final class KitDeleteButton extends Button {
 
     @Override
     public void clicked(Player player, int slot, ClickType clickType) {
-        // TODO
-        //PotPvPSI.getInstance().getKitHandler().removeKit(player.getUniqueId(), kitType, this.slot);
+        player.closeInventory();
+        InventoryUtils.resetInventoryDelayed(player);
+
+        new KitsMenu(kitType).openMenu(player);
     }
 
 }

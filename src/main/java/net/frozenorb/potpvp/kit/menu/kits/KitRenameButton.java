@@ -1,11 +1,10 @@
-package net.frozenorb.potpvp.kit.menu.button.kits;
+package net.frozenorb.potpvp.kit.menu.kits;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kit.Kit;
-import net.frozenorb.potpvp.kit.menu.KitsMenu;
 import net.frozenorb.qlib.menu.Button;
 
 import org.bukkit.ChatColor;
