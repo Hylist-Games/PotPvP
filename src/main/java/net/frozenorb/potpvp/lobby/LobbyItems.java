@@ -13,7 +13,6 @@ import static org.bukkit.ChatColor.BOLD;
 import static org.bukkit.ChatColor.DARK_PURPLE;
 import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.LIGHT_PURPLE;
-import static org.bukkit.ChatColor.RED;
 import static org.bukkit.ChatColor.YELLOW;
 
 // Static imports generally harm readability but
