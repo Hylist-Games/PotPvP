@@ -125,15 +125,6 @@ public final class Match {
             endReason = reason;
         }
 
-        // TODO: Clean up items from arena.
-            /*
-            // force load all arena chunks so that we can clean arenas correctly (most should still be loaded)
-            map.getCachedArenaChunks().stream().filter(chunk -> !chunk.isLoaded()).forEach(Chunk::load);
-
-            // clear all items inside the map
-            BaseMap.getWorld().getEntitiesByClass(Item.class).stream().filter(item -> map.getBounds().contains(item.getLocation())).forEach(Entity::remove);
-            */
-
         Document document = Document.parse(qLib.PLAIN_GSON.toJson(this));
 
         document.remove("id");
@@ -193,7 +184,7 @@ public final class Match {
 
         MatchUtils.updateVisibility(player);
         PlayerUtils.resetInventory(player, GameMode.CREATIVE);
-        InventoryUtils.resetInventory(player);
+        InventoryUtils.resetInventoryDelayed(player);
     }
 
     public void removeSpectator(Player player) {

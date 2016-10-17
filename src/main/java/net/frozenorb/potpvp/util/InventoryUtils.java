@@ -13,11 +13,14 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class InventoryUtils {
 
-    public static void resetInventoryLater(Player player, int ticks) {
-        Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), () -> resetInventory(player), ticks);
+    public static final long RESET_DELAY_TICKS = 2L;
+
+    public static void resetInventoryDelayed(Player player) {
+        Runnable task = () -> resetInventoryNow(player);
+        Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), task, RESET_DELAY_TICKS);
     }
 
-    public static void resetInventory(Player player) {
+    public static void resetInventoryNow(Player player) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
         if (matchHandler.isPlayingOrSpectatingMatch(player)) {

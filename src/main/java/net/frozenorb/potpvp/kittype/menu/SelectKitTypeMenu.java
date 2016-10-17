@@ -25,7 +25,7 @@ public final class SelectKitTypeMenu extends Menu {
 
     @Override
     public void onClose(Player player) {
-        InventoryUtils.resetInventory(player);
+        InventoryUtils.resetInventoryDelayed(player);
     }
 
     @Override
