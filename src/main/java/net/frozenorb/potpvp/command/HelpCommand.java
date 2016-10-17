@@ -2,10 +2,12 @@ package net.frozenorb.potpvp.command;
 
 import com.google.common.collect.ImmutableList;
 
+import net.frozenorb.potpvp.PotPvPLang;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.qlib.command.Command;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -17,9 +19,9 @@ import java.util.List;
 public final class HelpCommand {
 
     private static final List<String> HELP_MESSAGE_HEADER = ImmutableList.of(
-        "§6§m-----------------------------------------------------",
+        ChatColor.GOLD + PotPvPLang.LONG_LINE,
         "§9§lPotPvP Help",
-        "§7§m-----------------------------------------------------",
+        ChatColor.GOLD + PotPvPLang.LONG_LINE,
         "§6§lRemember: §ePotPvP makes use of clickable buttons. Most things are clickable!",
         ""
     );
@@ -49,7 +51,7 @@ public final class HelpCommand {
         "§eOfficial Rules §7- §dwww.minehq.com/rules",
         "§eStore §7- §dwww.minehq.com/store",
      // "§ePotPvP Leaderboards §7- §dwww.minehq.com/stats/potpvp",
-        "§6§m-----------------------------------------------------"
+        ChatColor.GOLD + PotPvPLang.LONG_LINE
     );
 
     @Command(names = {"help", "?", "halp", "helpme"}, permission = "")
