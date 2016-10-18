@@ -31,7 +31,7 @@ public final class QueueHandler {
     private final Map<KitType, PartyQueue> partyQueues = new HashMap<>();
 
     public QueueHandler() {
-        Bukkit.getPluginManager().registerEvents(new QueueItemListener(this), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new QueueItemListener(), PotPvPSI.getInstance());
 
         for (KitType kitType : KitType.values()) {
             soloQueues.put(kitType, new SoloQueue(kitType));
