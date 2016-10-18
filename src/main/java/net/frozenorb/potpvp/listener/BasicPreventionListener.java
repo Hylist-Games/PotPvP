@@ -58,6 +58,7 @@ public final class BasicPreventionListener implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
+        event.setDeathMessage(null);
         event.setDroppedExp(0);
     }
 
