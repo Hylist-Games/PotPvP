@@ -1,5 +1,6 @@
 package net.frozenorb.potpvp.kit.menu.kits;
 
+import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kit.Kit;
 import net.frozenorb.potpvp.kit.KitHandler;
 import net.frozenorb.potpvp.kittype.KitType;
@@ -41,8 +42,7 @@ public final class KitsMenu extends Menu {
         for (int i = 1; i <= KitHandler.KITS_PER_TYPE; i++) {
             int column = (i * 2) - 1; // -1 to compensate for this being 0-indexed
 
-            // TODO
-            Optional<Kit> kitOpt = /*PotPvPSI.getInstance().getKitHandler().getKit(player.getUniqueId(), kitType, i);*/Optional.empty();
+            Optional<Kit> kitOpt = PotPvPSI.getInstance().getKitHandler().getKit(player.getUniqueId(), kitType, i);
 
             buttons.put(getSlot(column, 0), new KitIconButton(kitOpt.orElse(null), kitType, i));
             buttons.put(getSlot(column, 2), new KitEditButton(kitOpt.orElse(null), kitType, i));
@@ -51,8 +51,8 @@ public final class KitsMenu extends Menu {
                 buttons.put(getSlot(column, 3), new KitRenameButton(kitOpt.get()));
                 buttons.put(getSlot(column, 4), new KitDeleteButton(kitType, i));
             } else {
-                buttons.put(getSlot(column, 3), Button.placeholder(Material.STAINED_GLASS_PANE, DyeColor.SILVER.getWoolData(), ""));
-                buttons.put(getSlot(column, 4), Button.placeholder(Material.STAINED_GLASS_PANE, DyeColor.SILVER.getWoolData(), ""));
+                buttons.put(getSlot(column, 3), Button.placeholder(Material.STAINED_GLASS_PANE, DyeColor.GRAY.getWoolData(), ""));
+                buttons.put(getSlot(column, 4), Button.placeholder(Material.STAINED_GLASS_PANE, DyeColor.GRAY.getWoolData(), ""));
             }
         }
 

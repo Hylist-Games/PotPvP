@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public final class KitInfoButton extends Button {
+final class KitInfoButton extends Button {
 
     private final Kit kit;
 
-    public KitInfoButton(Kit kit) {
+    KitInfoButton(Kit kit) {
         this.kit = Preconditions.checkNotNull(kit, "kit");
     }
 

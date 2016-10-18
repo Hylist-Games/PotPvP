@@ -12,11 +12,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public final class FillHealPotionsButton extends Button {
+final class FillHealPotionsButton extends Button {
 
     private final short durability;
 
-    public FillHealPotionsButton(short durability) {
+    FillHealPotionsButton(short durability) {
         this.durability = durability;
     }
 

@@ -18,11 +18,11 @@ import org.bukkit.event.inventory.ClickType;
 
 import java.util.List;
 
-public final class KitRenameButton extends Button {
+final class KitRenameButton extends Button {
 
     private final Kit kit;
 
-    public KitRenameButton(Kit kit) {
+    KitRenameButton(Kit kit) {
         this.kit = Preconditions.checkNotNull(kit, "kit");
     }
 
@@ -61,8 +61,7 @@ public final class KitRenameButton extends Button {
 
                 kit.setName(s);
 
-                // TODO
-                //PotPvPSI.getInstance().getKitHandler().saveKitsAsync(player.getUniqueId());
+                PotPvPSI.getInstance().getKitHandler().saveKitsAsync(player.getUniqueId());
 
                 ctx.getForWhom().sendRawMessage(ChatColor.YELLOW + "Kit renamed.");
                 (new KitsMenu(kit.getType())).openMenu(player);

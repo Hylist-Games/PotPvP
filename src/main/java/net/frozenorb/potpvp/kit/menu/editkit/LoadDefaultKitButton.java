@@ -17,11 +17,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public final class LoadDefaultKitButton extends Button {
+final class LoadDefaultKitButton extends Button {
 
     private final KitType kitType;
 
-    public LoadDefaultKitButton(KitType kitType) {
+    LoadDefaultKitButton(KitType kitType) {
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
     }
 

@@ -14,7 +14,7 @@ import org.bukkit.event.inventory.ClickType;
 
 import java.util.List;
 
-public final class ClearInventoryButton extends Button {
+final class ClearInventoryButton extends Button {
 
     @Override
     public String getName(Player player) {

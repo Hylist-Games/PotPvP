@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public final class UnselectableItemButton extends Button {
+final class UnselectableItemButton extends Button {
 
     @Override
     public String getName(Player player) {

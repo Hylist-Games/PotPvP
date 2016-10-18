@@ -13,11 +13,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public final class TakeItemButton extends Button {
+final class TakeItemButton extends Button {
 
     private final ItemStack item;
 
-    public TakeItemButton(ItemStack item) {
+    TakeItemButton(ItemStack item) {
         this.item = Preconditions.checkNotNull(item, "item");
     }
 

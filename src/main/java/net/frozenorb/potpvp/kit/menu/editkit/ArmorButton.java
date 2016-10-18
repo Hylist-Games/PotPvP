@@ -13,11 +13,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-public final class ArmorButton extends Button {
+final class ArmorButton extends Button {
 
     private final ItemStack item;
 
-    public ArmorButton(ItemStack item) {
+    ArmorButton(ItemStack item) {
         this.item = Preconditions.checkNotNull(item, "item");
     }
 

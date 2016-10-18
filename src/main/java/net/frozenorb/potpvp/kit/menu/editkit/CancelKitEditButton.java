@@ -16,11 +16,11 @@ import org.bukkit.event.inventory.ClickType;
 
 import java.util.List;
 
-public final class CancelKitEditButton extends Button {
+final class CancelKitEditButton extends Button {
 
     private final KitType kitType;
 
-    public CancelKitEditButton(KitType kitType) {
+    CancelKitEditButton(KitType kitType) {
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
     }
 

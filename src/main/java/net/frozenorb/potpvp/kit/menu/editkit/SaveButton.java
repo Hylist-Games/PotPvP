@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.kit.menu.editkit;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
+import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kit.Kit;
 import net.frozenorb.potpvp.kit.menu.kits.KitsMenu;
 import net.frozenorb.potpvp.util.InventoryUtils;
@@ -18,11 +19,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public final class SaveButton extends Button {
+final class SaveButton extends Button {
 
     private final Kit kit;
 
-    public SaveButton(Kit kit) {
+    SaveButton(Kit kit) {
         this.kit = Preconditions.checkNotNull(kit, "kit");
     }
 
@@ -52,8 +53,8 @@ public final class SaveButton extends Button {
     @Override
     public void clicked(Player player, int slot, ClickType clickType) {
         kit.setInventoryContents(player.getInventory().getContents());
-        // TODO
-        //PotPvPSI.getInstance().getKitHandler().saveKitsAsync(player.getUniqueId());
+        PotPvPSI.getInstance().getKitHandler().saveKitsAsync(player.getUniqueId());
+
         player.setItemOnCursor(new ItemStack(Material.AIR));
 
         player.closeInventory();

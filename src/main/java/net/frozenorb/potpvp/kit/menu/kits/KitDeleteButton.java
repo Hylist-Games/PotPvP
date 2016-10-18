@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.kit.menu.kits;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
+import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.qlib.menu.Button;
 
@@ -14,12 +15,12 @@ import org.bukkit.event.inventory.ClickType;
 
 import java.util.List;
 
-public final class KitDeleteButton extends Button {
+final class KitDeleteButton extends Button {
 
     private final KitType kitType;
     private final int slot;
 
-    public KitDeleteButton(KitType kitType, int slot) {
+    KitDeleteButton(KitType kitType, int slot) {
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
         this.slot = slot;
     }
@@ -51,8 +52,7 @@ public final class KitDeleteButton extends Button {
 
     @Override
     public void clicked(Player player, int slot, ClickType clickType) {
-        // TODO
-        //PotPvPSI.getInstance().getKitHandler().removeKit(player.getUniqueId(), kitType, this.slot);
+        PotPvPSI.getInstance().getKitHandler().removeKit(player.getUniqueId(), kitType, this.slot);
     }
 
 }
