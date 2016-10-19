@@ -11,7 +11,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import java.util.UUID;
 
@@ -42,6 +44,24 @@ public final class LobbyGeneralListener implements Listener {
         UUID entityUuid = event.getEntity().getUniqueId();
 
         if (!matchHandler.isPlayingOrSpectatingMatch(entityUuid)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerPickupItem(PlayerPickupItemEvent event) {
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+
+        if (!matchHandler.isPlayingOrSpectatingMatch(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+
+        if (!matchHandler.isPlayingOrSpectatingMatch(event.getPlayer())) {
             event.setCancelled(true);
         }
     }

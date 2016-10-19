@@ -108,22 +108,50 @@ public final class MatchHandler {
 
     /*
     public void requestSpectate(UUID target, Player spectator) {
-        Match match = PotPvPSlave.getInstance().getMatchHandler().getMatchById(request.getMatchId());
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        Match match = PotPvPSlave.getInstance().getMatchHandler().getMatchSpectating(player.getUniqueId());
 
-        if (match != null) {
-            GcdSpectator spectator = request.getSpectator();
+        if (match == null) {
+            return;
+        }
 
-            SpectatorData spectatorData = SpectatorData.fromGcdSpectator(spectator);
-            match.waitForSpectator(spectator.getPlayerUuid(), spectatorData);
+        MatchSpectator specData = match.getSpectators().get(player.getUniqueId());
 
-            Player spectatorPlayer = PotPvPSlave.getInstance().getServer().getPlayer(spectator.getPlayerUuid());
+        if (!specData.isHidden() && match.getState() == MatchState.IN_PROGRESS) {
+            SettingHandler settingHandler = PotPvPSlave.getInstance().getSettingHandler();
 
-            if (spectatorPlayer != null) {
-                spectatorPlayer.teleport(match.getMap().getSpectatorSpawn());
+            for (Player onlinePlayer : PotPvPSlave.getInstance().getServer().getOnlinePlayers()) {
+                if (onlinePlayer == player) {
+                    continue;
+                }
+
+                boolean sameMatch = match.isSpectator(onlinePlayer.getUniqueId()) || match.getCurrentTeam(onlinePlayer) != null;
+                boolean spectatorMessagesEnabled = settingHandler.isSettingEnabled(onlinePlayer.getUniqueId(), Setting.SHOW_SPECTATOR_JOIN_MESSAGES);
+
+                if (sameMatch && spectatorMessagesEnabled) {
+                    onlinePlayer.sendMessage(ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " is now spectating.");
+                }
             }
         }
 
-        return new SpectateMatchResponse();
+        Location spectatorSpawn = match.getMap().getSpectatorSpawn();
+
+        if (specData.hasTarget()) {
+            Player targetPlayer = Bukkit.getPlayer(specData.getTarget());
+
+            if (targetPlayer != null) {
+                player.teleport(targetPlayer);
+            } else {
+                player.teleport(spectatorSpawn);
+            }
+        } else {
+            player.teleport(spectatorSpawn);
+        }
+
+        match.addSpectator(player, specData);
+    }
     }
      */
 

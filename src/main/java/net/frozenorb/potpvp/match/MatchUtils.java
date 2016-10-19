@@ -47,7 +47,7 @@ public final class MatchUtils {
         Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), player::updateInventory, 1L);
     }
 
-    static void updateVisibility(Player updateFor) {
+    public static void updateVisibility(Player updateFor) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
 
