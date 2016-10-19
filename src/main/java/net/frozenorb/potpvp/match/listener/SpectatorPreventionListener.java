@@ -3,12 +3,8 @@ package net.frozenorb.potpvp.match.listener;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
-import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.match.MatchUtils;
-import net.frozenorb.potpvp.match.SpectatorItems;
-import net.frozenorb.potpvp.match.command.LeaveCommand;
 import net.frozenorb.potpvp.setting.Setting;
-import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.potpvp.setting.event.SettingUpdateEvent;
 
 import org.bukkit.entity.LivingEntity;
