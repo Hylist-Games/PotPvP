@@ -2,17 +2,20 @@ package net.frozenorb.potpvp.match;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.arena.Arena;
+import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.kittype.KitType;
 
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.omg.PortableServer.POA;
 
 public final class MatchHandler {
 
@@ -21,139 +24,47 @@ public final class MatchHandler {
     @Getter @Setter private boolean rankedMatchesDisabled;
     @Getter @Setter private boolean unrankedMatchesDisabled;
 
-    public MatchStartResult startMatch(Set<Set<UUID>> teams, KitType kitType) {
-        return startMatch(teams, ImmutableSet.of(), kitType);
-    }
+    /**
+     *
+     * @param rawTeams
+     * @param kitType
+     * @return
+     */
+    public MatchStartResult startMatch(Set<Set<UUID>> rawTeams, KitType kitType) {
+        ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
+        long matchSize = rawTeams.stream().mapToInt(Set::size).count();
 
-    // Set<Set<UUID>> is more convenient for clients (?)
-    public MatchStartResult startMatch(Set<Set<UUID>> teams, Set<UUID> initialSpectators, KitType kitType) {
-        /*Match match = new Match();
+        Arena openArena = arenaHandler.allocateUnusedArena(schematic ->
+            matchSize <= schematic.getMaxPlayerCount() &&
+            matchSize >= schematic.getMinPlayerCount() &&
+            (kitType == KitType.ARCHER) == schematic.isArcherOnly()
+        );
 
-        match.setState(MatchState.WAITING_FOR_PLAYERS);
-        match.setId(request.getMatch().getId());
-        match.setRanked(request.getMatch().isRanked());
-        match.setHostedOn(PotPvPSlave.getInstance().getServerHandler().getBungeeId());
-        match.setDetailedKitType(DetailedKitType.fromEncodedName(request.getMatch().getKitType()));
-
-        // Map GCD Team models to StandardTeams
-        List<MatchTeam> teams = request.getMatch().getTeams().stream().map(MatchTeam::fromGcdMatchTeam).collect(Collectors.toList());
-        match.setTeams(teams);
-
-        // Process any spectators sent with the match (usually team splits)
-        for (GcdSpectator spectator : request.getMatch().getSpectators()) {
-            SpectatorData spectatorData = SpectatorData.fromGcdSpectator(spectator);
-            match.waitForSpectator(spectator.getPlayerUuid(), spectatorData);
+        if (openArena == null) {
+            return MatchStartResult.NO_MAPS_AVAILABLE;
         }
 
-        List<Arena> abstractMaps = new ArrayList<>(PotPvPSI.getInstance().getMapHandler().getUnusedMaps());
-        Iterator<Arena> mapIterator = abstractMaps.iterator();
-        int matchSize = 0;
+        List<MatchTeam> teams = new ArrayList<>();
 
-        for (MatchTeam team : match.getTeams()) {
-            matchSize += team.getAllMembers().size();
+        for (Set<UUID> rawTeam : rawTeams) {
+            String uuid = UUID.randomUUID().toString();
+            teams.add(new MatchTeam(uuid, rawTeam));
         }
 
-        // Calculate all potential maps
-        while (mapIterator.hasNext()) {
-            Arena map = mapIterator.next();
-            ArenaTag mapTag = PotPvPSI.getInstance().getMapHandler().getTag(map);
+        Match match = new Match(kitType, openArena, teams);
 
-            if (matchSize < mapTag.getMinPlayers() || matchSize > mapTag.getMaxPlayers()) {
-                mapIterator.remove(); // map player requirements not met
-            }
+        hostedMatches.add(match);
+        match.startCountdown();
 
-            if (mapTag.isArcher() && match.getKitType() != KitType.ARCHER) {
-                mapIterator.remove(); // map is archer only, but this kit isnt archer
-            }
-
-            // map is unranked only, match is ranked
-            if (!mapTag.isRanked() && match.isRanked()) {
-                mapIterator.remove();
-            }
-        }
-
-        Arena[] unusedMaps = abstractMaps.toArray(new Arena[abstractMaps.size()]);
-
-        if (unusedMaps.length != 0) {
-            return unusedMaps[qLib.RANDOM.nextInt(unusedMaps.length)];
-        } else {
-            return null;
-        }
-
-        if (map == null) {
-            PotPvPSlave.getInstance().getLogger().severe("Failed to setup match " + request.getMatch().getId() + " - No open maps.");
-            return new RequestFailedResponse("Found no open maps!");
-        }
-
-        try {
-            PotPvPSlave.getInstance().getMapHandler().useMap(map); // claims this map for this match
-            match.setMap(map);
-            match.setupMatch();
-            PotPvPSlave.getInstance().getMatchHandler().hostMatch(match);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return new RequestFailedResponse(ex.getMessage());
-        }
-
-        return new InitializeMatchResponse();*/
         return MatchStartResult.SUCCESSFUL;
     }
 
     public enum MatchStartResult {
 
         SUCCESSFUL,
-        NO_MAPS_AVAILABLE;
+        NO_MAPS_AVAILABLE
 
     }
-
-    /*
-    public void requestSpectate(UUID target, Player spectator) {
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        Match match = PotPvPSlave.getInstance().getMatchHandler().getMatchSpectating(player.getUniqueId());
-
-        if (match == null) {
-            return;
-        }
-
-        MatchSpectator specData = match.getSpectators().get(player.getUniqueId());
-
-        if (!specData.isHidden() && match.getState() == MatchState.IN_PROGRESS) {
-            SettingHandler settingHandler = PotPvPSlave.getInstance().getSettingHandler();
-
-            for (Player onlinePlayer : PotPvPSlave.getInstance().getServer().getOnlinePlayers()) {
-                if (onlinePlayer == player) {
-                    continue;
-                }
-
-                boolean sameMatch = match.isSpectator(onlinePlayer.getUniqueId()) || match.getCurrentTeam(onlinePlayer) != null;
-                boolean spectatorMessagesEnabled = settingHandler.isSettingEnabled(onlinePlayer.getUniqueId(), Setting.SHOW_SPECTATOR_JOIN_MESSAGES);
-
-                if (sameMatch && spectatorMessagesEnabled) {
-                    onlinePlayer.sendMessage(ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " is now spectating.");
-                }
-            }
-        }
-
-        Location spectatorSpawn = match.getMap().getSpectatorSpawn();
-
-        if (specData.hasTarget()) {
-            Player targetPlayer = Bukkit.getPlayer(specData.getTarget());
-
-            if (targetPlayer != null) {
-                player.teleport(targetPlayer);
-            } else {
-                player.teleport(spectatorSpawn);
-            }
-        } else {
-            player.teleport(spectatorSpawn);
-        }
-
-        match.addSpectator(player, specData);
-    }
-    }
-     */
 
     void removeMatch(Match match) {
         hostedMatches.remove(match);

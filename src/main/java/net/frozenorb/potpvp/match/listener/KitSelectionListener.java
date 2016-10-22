@@ -7,7 +7,14 @@ import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 
+import net.frozenorb.potpvp.match.MatchTeam;
+import net.frozenorb.potpvp.match.MatchUtils;
+import net.frozenorb.potpvp.match.event.MatchCountdownStartEvent;
+import net.frozenorb.qlib.util.PlayerUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,6 +27,31 @@ import org.bukkit.inventory.ItemStack;
 import java.util.UUID;
 
 public final class KitSelectionListener implements Listener {
+
+    /**
+     * Give players their kits when their match countdown starts
+     */
+    @EventHandler
+    public void onMatchCountdownStart(MatchCountdownStartEvent event) {
+        KitHandler kitHandler = PotPvPSI.getInstance().getKitHandler();
+        Match match = event.getMatch();
+        KitType kitType = match.getKitType();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            MatchTeam team = match.getTeam(player.getUniqueId());
+
+            if (team != null) {
+                int slot = 2; // start in 3rd slot
+
+                for (Kit kit : kitHandler.getKits(player.getUniqueId(), kitType)) {
+                    player.getInventory().setItem(slot, kit.createSelectionItem());
+                    slot += 2;
+                }
+
+                player.getInventory().setItem(0, Kit.ofDefaultKit(kitType).createSelectionItem());
+            }
+        }
+    }
 
     /**
      * Don't let players drop their kit selection books via the Q key

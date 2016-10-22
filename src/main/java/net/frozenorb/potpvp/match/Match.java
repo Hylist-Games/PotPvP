@@ -19,20 +19,12 @@ import net.frozenorb.qlib.qLib;
 import net.frozenorb.qlib.util.PlayerUtils;
 
 import org.bson.Document;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.Getter;
@@ -41,11 +33,11 @@ public final class Match {
 
     private static final int MATCH_END_DELAY_SECONDS = 5;
 
+    @Getter private final String id;
     @Getter private final KitType kitType;
     @Getter private final Arena arena;
-    @Getter private final String id = UUID.randomUUID().toString();
-    private final Map<String, MatchTeam> teams = new ConcurrentHashMap<>();
-    private final Set<UUID> spectators = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    @Getter private final List<MatchTeam> teams; // immutable so @Getter is ok
+    private final Set<UUID> spectators = new HashSet<>();
 
     @Getter private MatchTeam winner;
     @Getter private MatchEndReason endReason;
@@ -54,16 +46,30 @@ public final class Match {
     @Getter private Instant endedAt;
 
     public Match(KitType kitType, Arena arena, List<MatchTeam> teams) {
+        this.id = UUID.randomUUID().toString();
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
         this.arena = Preconditions.checkNotNull(arena, "arena");
-
-        for (MatchTeam team : teams) {
-            this.teams.put(team.getId(), team);
-        }
+        this.teams = ImmutableList.copyOf(teams);
     }
 
-    private void startCountdown() {
+    void startCountdown() {
         state = MatchState.COUNTDOWN;
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            MatchTeam team = getTeam(player.getUniqueId());
+
+            if (team == null) {
+                continue;
+            }
+
+            Location spawn = team == teams.get(0) ? arena.getTeam1Spawn() : arena.getTeam2Spawn();
+
+            player.teleport(spawn);
+            player.getInventory().setHeldItemSlot(0);
+
+            MatchUtils.updateVisibility(player);
+            PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
+        }
 
         Bukkit.getPluginManager().callEvent(new MatchCountdownStartEvent(this));
 
@@ -138,21 +144,20 @@ public final class Match {
             endedMatches.insertOne(document);
         });
 
+        PotPvPSI.getInstance().getArenaHandler().releaseArena(arena);
         PotPvPSI.getInstance().getMatchHandler().removeMatch(this);
-    }
-
-    public List<MatchTeam> getTeams() {
-        return ImmutableList.copyOf(teams.values());
     }
 
     public Set<UUID> getSpectators() {
         return ImmutableSet.copyOf(spectators);
     }
 
+    // TODO: Don't require clients to call .checkEnded() and automatically
+    // check when marking players as dead
     public boolean checkEnded() {
         List<MatchTeam> teamsAlive = new ArrayList<>();
 
-        for (MatchTeam team : teams.values()) {
+        for (MatchTeam team : teams) {
             if (!team.getAliveMembers().isEmpty()) {
                 teamsAlive.add(team);
             }
@@ -162,9 +167,7 @@ public final class Match {
             return false;
         }
 
-        MatchTeam winnerTeam = teamsAlive.get(0);
-
-        this.winner = winnerTeam;
+        this.winner = teamsAlive.get(0);
         endMatch(MatchEndReason.ENEMIES_ELIMINATED);
 
         return true;
@@ -174,13 +177,35 @@ public final class Match {
         return spectators.contains(uuid);
     }
 
-    public void addSpectator(Player player) {
+    public void addSpectator(Player player, Player target) {
         spectators.add(player.getUniqueId());
+
+        player.teleport(target != null ? target.getLocation() : arena.getSpectatorSpawn());
+        player.getInventory().setHeldItemSlot(0);
 
         FrozenNametagHandler.reloadPlayer(player);
         FrozenNametagHandler.reloadOthersFor(player);
 
-        player.getInventory().setHeldItemSlot(0);
+        /*
+        MatchSpectator specData = match.getSpectators().get(player.getUniqueId());
+
+        if (!specData.isHidden() && match.getState() == MatchState.IN_PROGRESS) {
+            SettingHandler settingHandler = PotPvPSlave.getInstance().getSettingHandler();
+
+            for (Player onlinePlayer : PotPvPSlave.getInstance().getServer().getOnlinePlayers()) {
+                if (onlinePlayer == player) {
+                    continue;
+                }
+
+                boolean sameMatch = match.isSpectator(onlinePlayer.getUniqueId()) || match.getCurrentTeam(onlinePlayer) != null;
+                boolean spectatorMessagesEnabled = settingHandler.isSettingEnabled(onlinePlayer.getUniqueId(), Setting.SHOW_SPECTATOR_JOIN_MESSAGES);
+
+                if (sameMatch && spectatorMessagesEnabled) {
+                    onlinePlayer.sendMessage(ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " is now spectating.");
+                }
+            }
+        }
+        */
 
         MatchUtils.updateVisibility(player);
         PlayerUtils.resetInventory(player, GameMode.CREATIVE);
@@ -193,11 +218,13 @@ public final class Match {
         FrozenNametagHandler.reloadPlayer(player);
         FrozenNametagHandler.reloadOthersFor(player);
 
-        PlayerUtils.resetInventory(player);
+        MatchUtils.updateVisibility(player);
+        PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
+        InventoryUtils.resetInventoryDelayed(player);
     }
 
     public MatchTeam getTeam(UUID playerUuid) {
-        for (MatchTeam team : teams.values()) {
+        for (MatchTeam team : teams) {
             if (team.isAlive(playerUuid)) {
                 return team;
             }
@@ -207,7 +234,7 @@ public final class Match {
     }
 
     public MatchTeam getPreviousTeam(UUID playerUuid) {
-        for (MatchTeam team : teams.values()) {
+        for (MatchTeam team : teams) {
             if (team.getAllMembers().contains(playerUuid)) {
                 return team;
             }
@@ -270,7 +297,7 @@ public final class Match {
      * @param message the message to send
      */
     public void messageAlive(String message) {
-        for (MatchTeam team : teams.values()) {
+        for (MatchTeam team : teams) {
             team.messageAlive(message);
         }
     }
@@ -281,7 +308,7 @@ public final class Match {
      * @param pitch the pitch to play the provided sound at
      */
     public void playSoundAlive(Sound sound, float pitch) {
-        for (MatchTeam team : teams.values()) {
+        for (MatchTeam team : teams) {
             team.playSoundAlive(sound, pitch);
         }
     }

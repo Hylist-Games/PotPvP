@@ -1,18 +1,29 @@
 package net.frozenorb.potpvp.match.listener;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketContainer;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
+import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.nametag.PotPvPNametagProvider;
 
+import net.frozenorb.potpvp.setting.Setting;
+import net.frozenorb.potpvp.setting.SettingHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public final class MatchDeathMessageListener implements Listener {
@@ -22,6 +33,7 @@ public final class MatchDeathMessageListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerDeath(PlayerDeathEvent event) {
+        SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Match match = matchHandler.getMatchPlaying(event.getEntity());
 
@@ -31,6 +43,7 @@ public final class MatchDeathMessageListener implements Listener {
 
         Player killed = event.getEntity();
         Player killer = killed.getKiller();
+        PacketContainer lightningPacket = createLightningPacket(killed.getLocation());
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             UUID onlinePlayerUuid = onlinePlayer.getUniqueId();
@@ -54,6 +67,33 @@ public final class MatchDeathMessageListener implements Listener {
 
                 onlinePlayer.sendMessage(String.format(KILLED_BY_OTHER_MESSAGE, killerFormattedName, killedFormattedName));
             }
+
+            if (settingHandler.getSetting(onlinePlayerUuid, Setting.VIEW_OTHERS_LIGHTNING)) {
+                onlinePlayer.playSound(killed.getLocation(), Sound.AMBIENCE_THUNDER, 10000F, 0.8F);
+                sendLightningPacket(onlinePlayer, lightningPacket);
+            }
+        }
+    }
+
+    private PacketContainer createLightningPacket(Location location) {
+        PacketContainer lightningPacket = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY_WEATHER);
+
+        lightningPacket.getModifier().writeDefaults();
+        lightningPacket.getIntegers().write(0, 128); // entity id of 128
+        lightningPacket.getIntegers().write(4, 1); // type of lightning (1)
+        lightningPacket.getIntegers().write(1, (int) (location.getX() * 32.0D)); // x
+        lightningPacket.getIntegers().write(2, (int) (location.getY() * 32.0D)); // y
+        lightningPacket.getIntegers().write(3, (int) (location.getZ() * 32.0D)); // z
+
+        return lightningPacket;
+    }
+
+    private void sendLightningPacket(Player target, PacketContainer packet) {
+        try {
+            ProtocolLibrary.getProtocolManager().sendServerPacket(target, packet);
+        } catch (InvocationTargetException ignored) {
+            // will never happen, ProtocolWrapper (the lib this code was from)
+            // ignores this exception as well
         }
     }
 
