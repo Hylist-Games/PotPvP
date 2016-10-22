@@ -10,7 +10,7 @@ public enum DuelLang {
     DUEL_PREFIX(LEFT_ARROW + " " + GRAY),
     CANT_DUEL_YOURSELF(DARK_RED + "You can't duel yourself!"),
     CANT_ACCEPT_DUEL_FROM_YOURSELF(DARK_RED + " You can't accept a duel from yourself!"),
-    NO_INVITE_HAS_BEEN_SENT(DUEL_PREFIX + "No invite has been sent to you fom %s!"),
+    NO_INVITE_HAS_BEEN_SENT(DUEL_PREFIX + "No invite has been sent to you from %s!"),
     PLAYER_LEAVE_WARNING(DUEL_PREFIX + string(RED) + "WARNING: You are in a party bute ar not the leader; accepting this invite " +
             "*will* force you to leave your party"),
     DUEL_PARTY_SUGGESTION_START(DUEL_PREFIX + string(GOLD) + "%s" + GRAY + " suggested to invite %s to a duel!"),

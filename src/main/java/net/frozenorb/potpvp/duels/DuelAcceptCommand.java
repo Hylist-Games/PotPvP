@@ -4,6 +4,7 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
+import net.frozenorb.qlib.uuid.FrozenUUIDCache;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -22,7 +23,7 @@ public class DuelAcceptCommand {
         DuelInvite invite = DuelHandler.instance().inviteBy(player);
 
         if (invite == null || !invite.sentTo().equals(sender.getUniqueId())) {
-            sender.sendMessage(DuelLang.NO_INVITE_HAS_BEEN_SENT.toString());
+            sender.sendMessage(DuelLang.NO_INVITE_HAS_BEEN_SENT.fill(FrozenUUIDCache.name(player)));
             return;
         }
 
