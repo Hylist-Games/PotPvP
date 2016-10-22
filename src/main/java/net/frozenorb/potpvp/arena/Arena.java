@@ -1,10 +1,13 @@
 package net.frozenorb.potpvp.arena;
 
+import lombok.AccessLevel;
+import lombok.Setter;
 import net.frozenorb.qlib.cuboid.Cuboid;
 
 import org.bukkit.Location;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import lombok.Getter;
 
@@ -51,6 +54,15 @@ public final class Arena {
      * Spectator spawn location for this arena
      */
     @Getter private Location spectatorSpawn;
+
+    /**
+     * If this arena is currently being used
+     * @see ArenaHandler#allocateUnusedArena(Predicate)
+     * @see ArenaHandler#releaseArena(Arena)
+     */
+    // AccessLevel.NONE so arenas can only marked as in use
+    // or not in use by the appropriate methods in ArenaHandler
+    @Getter @Setter(AccessLevel.PACKAGE) private boolean inUse;
 
     @Override
     public boolean equals(Object o) {

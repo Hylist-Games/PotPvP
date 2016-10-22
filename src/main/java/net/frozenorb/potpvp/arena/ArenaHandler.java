@@ -1,10 +1,13 @@
 package net.frozenorb.potpvp.arena;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.arena.event.ArenaAllocatedEvent;
+import net.frozenorb.potpvp.arena.event.ArenaReleasedEvent;
 import net.frozenorb.potpvp.arena.listener.ArenaClearListener;
 import net.frozenorb.qlib.qLib;
 
@@ -15,12 +18,11 @@ import org.bukkit.craftbukkit.libs.com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Predicate;
 
 /**
- * Facilitiates easy access to {@link ArenaSchematic}s and to {@link Arena}s
+ * Facilitates easy access to {@link ArenaSchematic}s and to {@link Arena}s
  * based on their schematic+copy pair
  */
 public final class ArenaHandler {
@@ -109,6 +111,47 @@ public final class ArenaHandler {
      */
     public ArenaSchematic getSchematic(String schematicName) {
         return schematics.get(schematicName);
+    }
+
+    /**
+     * Attempts to allocate an arena for use, using the Predicate provided to determine
+     * which arenas are eligible for use. Handles calling {@link net.frozenorb.potpvp.arena.event.ArenaAllocatedEvent}
+     * automatically.
+     * @param acceptableSchematicPredicate Predicate to use to determine if an {@link ArenaSchematic}
+     *                                     is eligible for use.
+     * @return The arena which has been allocated for use, or null, if one was not found.
+     */
+    public Arena allocateUnusedArena(Predicate<ArenaSchematic> acceptableSchematicPredicate) {
+        for (ArenaSchematic schematic : schematics.values()) {
+            if (!acceptableSchematicPredicate.test(schematic)) {
+                continue;
+            }
+
+            for (Arena arena : arenaInstances.get(schematic).values()) {
+                if (arena.isInUse()) {
+                    continue;
+                }
+
+                arena.setInUse(true);
+                Bukkit.getPluginManager().callEvent(new ArenaAllocatedEvent(arena));
+
+                return arena;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Releases (unallocates) an arena so that it may be used again. Handles calling
+     * {@link net.frozenorb.potpvp.arena.event.ArenaReleasedEvent} automatically.
+     * @param arena the arena to release
+     */
+    public void releaseArena(Arena arena) {
+        Preconditions.checkArgument(arena.isInUse(), "Cannot release arena not in use.");
+
+        arena.setInUse(false);
+        Bukkit.getPluginManager().callEvent(new ArenaReleasedEvent(arena));
     }
 
 }
