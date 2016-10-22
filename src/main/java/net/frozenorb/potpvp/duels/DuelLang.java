@@ -8,6 +8,7 @@ import static net.frozenorb.potpvp.PotPvPLang.LEFT_ARROW;
  */
 public enum DuelLang {
     DUEL_PREFIX(LEFT_ARROW + " " + GRAY),
+    ERROR_STARTING_MATCH(DARK_RED + "Sorry! There was an error starting the match, please contact an admin"),
     CANT_DUEL_YOURSELF(DARK_RED + "You can't duel yourself!"),
     CANT_ACCEPT_DUEL_FROM_YOURSELF(DARK_RED + " You can't accept a duel from yourself!"),
     NO_INVITE_HAS_BEEN_SENT(DUEL_PREFIX + "No invite has been sent to you from %s!"),
