@@ -33,21 +33,34 @@ public final class DuelHandler {
         return invites.remove(player.getUniqueId());
     }
 
-    public DuelInvite inviteBy(Player player) {
-        DuelInvite invite = invites.get(player.getUniqueId());
+    public DuelInvite inviteBy(Player sender) {
+        DuelInvite invite = invites.get(sender.getUniqueId());
 
         if (invite != null && invite.isExpired()) {
-            invites.remove(player.getUniqueId());
+            invites.remove(sender.getUniqueId());
             return null;
         }
 
         return invite;
     }
 
-    public List<DuelInvite> invitesTo(UUID player) {
+    public List<DuelInvite> invitesTo(Player target) {
         return invites.values().stream()
-                .filter((invite) -> invite.sentTo().equals(player))
+                .filter((invite) -> invite.sentTo().equals(target.getUniqueId()))
                 .collect(Collectors.toList());
+    }
+
+    public DuelInvite inviteTo(Player target, Player sender) {
+        for (DuelInvite invite : invites.values()) {
+            if (
+                invite.sender().equals(sender.getUniqueId()) &&
+                invite.sentTo().equals(target.getUniqueId())
+            ) {
+                return invite;
+            }
+        }
+
+        return null;
     }
 
     public boolean canInvite(Player player) {
