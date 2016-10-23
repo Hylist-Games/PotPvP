@@ -50,10 +50,20 @@ public final class MatchHandler {
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
         long matchSize = rawTeams.stream().mapToInt(Set::size).count();
 
+        // the archer only logic here was often a source of confusion while
+        // this code was being written. below is a table of the desired
+        // results / if a match can run in a given arena
+        //
+        //              Arena is archer only    Arena is not archer only
+        //  Is Archer           Yes                         Yes
+        // Not Archer           No                          Yes
+        //
+        // the left side of the or statement covers the top row, and the
+        // right side covers the right side
         Arena openArena = arenaHandler.allocateUnusedArena(schematic ->
             matchSize <= schematic.getMaxPlayerCount() &&
             matchSize >= schematic.getMinPlayerCount() &&
-            (kitType == KitType.ARCHER) == schematic.isArcherOnly()
+            (kitType == KitType.ARCHER || !schematic.isArcherOnly())
         );
 
         if (openArena == null) {
