@@ -3,6 +3,8 @@ package net.frozenorb.potpvp.duels;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.setting.Setting;
 
+import org.bukkit.entity.Player;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,11 +33,11 @@ public final class DuelHandler {
         return invites.remove(sender);
     }
 
-    public DuelInvite inviteBy(UUID player) {
-        DuelInvite invite = invites.get(player);
+    public DuelInvite inviteBy(Player player) {
+        DuelInvite invite = invites.get(player.getUniqueId());
 
         if (invite != null && invite.isExpired()) {
-            invites.remove(player);
+            invites.remove(player.getUniqueId());
             return null;
         }
 
@@ -48,8 +50,8 @@ public final class DuelHandler {
                 .collect(Collectors.toList());
     }
 
-    public boolean canInvite(UUID player) {
-        return PotPvPSI.getInstance().getSettingHandler().getSetting(player, Setting.RECEIVE_DUELS) &&
+    public boolean canInvite(Player player) {
+        return PotPvPSI.getInstance().getSettingHandler().getSetting(player.getUniqueId(), Setting.RECEIVE_DUELS) &&
                 !PotPvPSI.getInstance().getMatchHandler().isPlayingOrSpectatingMatch(player);
     }
 }

@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.duels;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.kittype.menu.SelectKitTypeMenu;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.qlib.command.Command;
@@ -13,24 +14,24 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
-
-import static net.frozenorb.qlib.uuid.FrozenUUIDCache.name;
-
 public class DuelInviteCommand {
 
     @Command(names = {"duel", "1v1"}, permission = "")
-    public static void duel(Player sender, @Param(name = "player") UUID target) {
+    public static void duel(Player sender, @Param(name = "player") Player target) {
+        new SelectKitTypeMenu(kitType -> duel(sender, target, kitType)).openMenu(sender);
+    }
+
+    public static void duel(Player sender, Player target, KitType kitType) {
         DuelHandler duelHandler = DuelHandler.instance();
         Party party = PotPvPSI.getInstance().getPartyHandler().getParty(sender);
 
-        if (target.equals(sender.getUniqueId())) {
+        if (target == sender) {
             sender.sendMessage(DuelLang.CANT_DUEL_YOURSELF.toString());
             return;
         }
 
         if (party != null && !party.isLeader(sender.getUniqueId())) {
-            String targetName = name(target);
+            String targetName = target.getName();
             Player partyLeader = Bukkit.getPlayer(party.getLeader());
 
             partyLeader.sendMessage(DuelLang.DUEL_PARTY_SUGGESTION_START.fill(sender.getName(), targetName));
@@ -41,47 +42,44 @@ public class DuelInviteCommand {
         }
 
         if (!duelHandler.canInvite(target)) {
-            sender.sendMessage(DuelLang.CANNOT_INVITE_PLAYER.fill(name(target)));
+            sender.sendMessage(DuelLang.CANNOT_INVITE_PLAYER.fill(target.getName()));
             return;
         }
 
-        new SelectKitTypeMenu((kitType) -> {
-            DuelInvite sentInvite = duelHandler.inviteBy(sender.getUniqueId());
-            DuelInvite targetInvite = duelHandler.inviteBy(target);
+        DuelInvite sentInvite = duelHandler.inviteBy(sender);
+        DuelInvite targetInvite = duelHandler.inviteBy(target);
 
-            if (targetInvite != null && targetInvite.matches(sender.getUniqueId(), kitType)) {
-                DuelAcceptCommand.accept(sender, target); // accept the invite
-                return;
-            }
+        if (targetInvite != null && targetInvite.matches(sender.getUniqueId(), kitType)) {
+            DuelAcceptCommand.accept(sender, target.getUniqueId()); // accept the invite
+            return;
+        }
 
-            if (sentInvite != null && sentInvite.matches(target, kitType)) {
-                sender.sendMessage(DuelLang.ALREADY_INVITED_PLAYER.fill(name(target)));
-                return;
-            } else if (sentInvite != null) {
-                sender.sendMessage(DuelLang.PREVIOUS_INVITE_DELETED.toString());
-                duelHandler.purgeInvite(sender.getUniqueId());
-            }
+        if (sentInvite != null && sentInvite.matches(target.getUniqueId(), kitType)) {
+            sender.sendMessage(DuelLang.ALREADY_INVITED_PLAYER.fill(target.getName()));
+            return;
+        } else if (sentInvite != null) {
+            sender.sendMessage(DuelLang.PREVIOUS_INVITE_DELETED.toString());
+            duelHandler.purgeInvite(sender.getUniqueId());
+        }
 
-            Player targetPlayer = Bukkit.getPlayer(target);
-            Party targetParty = PotPvPSI.getInstance().getPartyHandler().getParty(targetPlayer);
-            boolean notLeader = targetParty != null && !targetParty.isLeader(target);
-            String senderName = sender.getName();
+        Party targetParty = PotPvPSI.getInstance().getPartyHandler().getParty(target);
+        boolean notLeader = targetParty != null && !targetParty.isLeader(target.getUniqueId());
+        String senderName = sender.getName();
 
-            targetPlayer.sendMessage(DuelLang.INVITED_MESSAGE_START.fill(senderName, kitType.getName()));
+        target.sendMessage(DuelLang.INVITED_MESSAGE_START.fill(senderName, kitType.getName()));
 
-            if (notLeader) {
-                targetPlayer.sendMessage(DuelLang.PLAYER_LEAVE_WARNING.toString());
-            }
+        if (notLeader) {
+            target.sendMessage(DuelLang.PLAYER_LEAVE_WARNING.toString());
+        }
 
-            targetPlayer.spigot().sendMessage(createInviteNotifButton(senderName));
-            targetPlayer.sendMessage(DuelLang.INVITED_MESSAGE_OR_COMMAND.fill(senderName));
+        target.spigot().sendMessage(createInviteNotifButton(senderName));
+        target.sendMessage(DuelLang.INVITED_MESSAGE_OR_COMMAND.fill(senderName));
 
-            sender.sendMessage(DuelLang.SUCCESSFULLY_SENT_INVITE.fill(targetPlayer.getName()));
+        sender.sendMessage(DuelLang.SUCCESSFULLY_SENT_INVITE.fill(target.getName()));
 
-            DuelInvite invite = new DuelInvite(sender.getUniqueId(), target, party != null,
-                    kitType, System.currentTimeMillis());
-            duelHandler.insertInvite(invite);
-        }).openMenu(sender);
+        DuelInvite invite = new DuelInvite(sender.getUniqueId(), target.getUniqueId(), party != null,
+                kitType, System.currentTimeMillis());
+        duelHandler.insertInvite(invite);
     }
 
     private static TextComponent createInviteNotifButton(String sender) {
