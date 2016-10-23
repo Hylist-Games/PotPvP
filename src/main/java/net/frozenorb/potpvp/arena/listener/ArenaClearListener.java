@@ -7,6 +7,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -32,7 +33,7 @@ public final class ArenaClearListener implements Listener {
         coveredChunks.forEach(Chunk::load);
         coveredChunks.forEach(chunk -> {
             for (Entity entity : chunk.getEntities()) {
-                if (bounds.contains(entity)) {
+                if (entity instanceof Item && bounds.contains(entity)) {
                     entity.remove();
                 }
             }
