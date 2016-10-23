@@ -1,7 +1,10 @@
 package net.frozenorb.potpvp.duels;
 
-import static org.bukkit.ChatColor.*;
 import static net.frozenorb.potpvp.PotPvPLang.LEFT_ARROW;
+import static org.bukkit.ChatColor.DARK_RED;
+import static org.bukkit.ChatColor.GOLD;
+import static org.bukkit.ChatColor.GRAY;
+import static org.bukkit.ChatColor.RED;
 
 /**
  * @author Mazen Kotb

@@ -2,11 +2,7 @@ package net.frozenorb.potpvp.lobby.listener;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.MatchHandler;
-import net.frozenorb.potpvp.util.InventoryUtils;
-import net.frozenorb.qlib.util.PlayerUtils;
 
-import org.bukkit.GameMode;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;

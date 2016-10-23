@@ -9,12 +9,13 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-import static net.frozenorb.qlib.uuid.FrozenUUIDCache.*;
+import static net.frozenorb.qlib.uuid.FrozenUUIDCache.name;
 
 public class DuelInviteCommand {
 

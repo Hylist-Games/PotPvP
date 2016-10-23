@@ -3,7 +3,6 @@ package net.frozenorb.potpvp.match.listener;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
-import net.frozenorb.potpvp.match.MatchUtils;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.event.SettingUpdateEvent;
 import net.frozenorb.potpvp.util.VisibilityUtils;

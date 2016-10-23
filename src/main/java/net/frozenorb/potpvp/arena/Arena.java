@@ -1,7 +1,5 @@
 package net.frozenorb.potpvp.arena;
 
-import lombok.AccessLevel;
-import lombok.Setter;
 import net.frozenorb.qlib.cuboid.Cuboid;
 
 import org.bukkit.Location;
@@ -9,7 +7,9 @@ import org.bukkit.Location;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Represents a pasted instance of an {@link ArenaSchematic}.

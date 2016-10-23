@@ -1,12 +1,14 @@
 package net.frozenorb.potpvp.duels;
 
 import com.google.common.collect.ImmutableSet;
+
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
 import net.frozenorb.qlib.uuid.FrozenUUIDCache;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
