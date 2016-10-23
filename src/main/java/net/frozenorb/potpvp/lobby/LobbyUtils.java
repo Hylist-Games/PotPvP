@@ -1,11 +1,15 @@
 package net.frozenorb.potpvp.lobby;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.duels.DuelHandler;
 import net.frozenorb.potpvp.kit.KitItems;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyItems;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.potpvp.queue.QueueItems;
+import net.frozenorb.potpvp.rematch.RematchData;
+import net.frozenorb.potpvp.rematch.RematchHandler;
+import net.frozenorb.potpvp.rematch.RematchItems;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -24,7 +28,10 @@ public final class LobbyUtils {
             return;
         }*/
 
+        RematchHandler rematchHandler = PotPvPSI.getInstance().getRematchHandler();
         QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
+        DuelHandler duelHandler = DuelHandler.instance();
+
         Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
         PlayerInventory inventory = player.getInventory();
 
@@ -52,6 +59,23 @@ public final class LobbyUtils {
             inventory.setItem(6, LobbyItems.PENDING_INVITES_ITEM);
             inventory.setItem(8, PartyItems.LEAVE_PARTY_ITEM);
         } else {
+            RematchData rematchData = rematchHandler.getRematchData(player);
+
+            if (rematchData != null) {
+                Player target = Bukkit.getPlayer(rematchData.getTarget());
+
+                if (duelHandler.inviteTo(target, player) != null) {
+                    // if we've sent an invite to them
+                    inventory.setItem(0, RematchItems.SENT_REMATCH_ITEM);
+                } else if (duelHandler.inviteTo(player, target) != null) {
+                    // if they've sent us an invite
+                    inventory.setItem(0, RematchItems.ACCEPT_REMATCH_ITEM);
+                } else {
+                    // if no one has sent an invite
+                    inventory.setItem(0, RematchItems.REQUEST_REMATCH_ITEM);
+                }
+            }
+
             if (!queueHandler.isQueued(player.getUniqueId())) {
                 inventory.setItem(1, QueueItems.JOIN_SOLO_QUEUE_ITEM);
             } else {
