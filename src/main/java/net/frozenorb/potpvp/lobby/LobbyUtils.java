@@ -2,6 +2,7 @@ package net.frozenorb.potpvp.lobby;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.duels.DuelHandler;
+import net.frozenorb.potpvp.duels.DuelItems;
 import net.frozenorb.potpvp.kit.KitItems;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyItems;
@@ -51,12 +52,12 @@ public final class LobbyUtils {
                         inventory.setItem(1, QueueItems.LEAVE_PARTY_QUEUE_ITEM);
                     }
                 } else if (partySize > 2) {
-                    inventory.setItem(1, LobbyItems.START_TEAM_SPLIT_ITEM);
+                    inventory.setItem(1, PartyItems.START_TEAM_SPLIT_ITEM);
                 }
             }
 
-            inventory.setItem(5, LobbyItems.OTHER_PARTIES_ITEM);
-            inventory.setItem(6, LobbyItems.PENDING_INVITES_ITEM);
+            inventory.setItem(5, DuelItems.OTHER_PARTIES_ITEM);
+            inventory.setItem(6, DuelItems.PENDING_INVITES_ITEM);
             inventory.setItem(8, PartyItems.LEAVE_PARTY_ITEM);
         } else {
             RematchData rematchData = rematchHandler.getRematchData(player);

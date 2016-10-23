@@ -13,14 +13,17 @@ import static net.frozenorb.potpvp.PotPvPLang.RIGHT_ARROW;
 import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.BOLD;
 import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.YELLOW;
 
 @UtilityClass
 public final class PartyItems {
 
     public static final ItemStack LEAVE_PARTY_ITEM = new ItemStack(Material.FIRE);
+    public static final ItemStack START_TEAM_SPLIT_ITEM = new ItemStack(Material.DIAMOND_SWORD);
 
     static {
         ItemUtils.setDisplayName(LEAVE_PARTY_ITEM, LEFT_ARROW + RED.toString() + BOLD + "Leave Party" + RIGHT_ARROW);
+        ItemUtils.setDisplayName(START_TEAM_SPLIT_ITEM, LEFT_ARROW + YELLOW.toString() + BOLD + "Start Team Split" + RIGHT_ARROW);
     }
 
     public static ItemStack icon(Party party) {

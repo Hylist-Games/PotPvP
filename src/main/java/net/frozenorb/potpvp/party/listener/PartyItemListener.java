@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.party.listener;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.lobby.LobbyItems;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.party.PartyItems;
@@ -28,6 +29,20 @@ public final class PartyItemListener implements Listener {
         if (item.isSimilar(PartyItems.LEAVE_PARTY_ITEM)) {
             event.setCancelled(true);
             PartyLeaveCommand.partyLeave(player);
+        } else if (item.isSimilar(PartyItems.START_TEAM_SPLIT_ITEM)) {
+            event.setCancelled(true);
+            /*Party party = PotPvPLobby.getInstance().getPartyHandler().getLocalParty(event.getPlayer());
+
+            if (party != null) {
+                if (!party.getLeader().equals(event.getPlayer().getUniqueId())) {
+                    event.getPlayer().sendMessage(ChatColor.RED + "You aren't the leader of your party.");
+                    return;
+                }
+
+                if (PotPvPValidation.canStartTeamSplit(party)) {
+                    party.startTeamSplit(event.getPlayer());
+                }
+            }*/
         } else {
             Party party = partyHandler.getParty(player);
 

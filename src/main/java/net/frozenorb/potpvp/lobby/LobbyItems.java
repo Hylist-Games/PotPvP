@@ -10,20 +10,14 @@ import lombok.experimental.UtilityClass;
 import static net.frozenorb.potpvp.PotPvPLang.LEFT_ARROW;
 import static net.frozenorb.potpvp.PotPvPLang.RIGHT_ARROW;
 import static org.bukkit.ChatColor.BOLD;
-import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.LIGHT_PURPLE;
-import static org.bukkit.ChatColor.YELLOW;
 
 @UtilityClass
 public final class LobbyItems {
 
-    public static final ItemStack START_TEAM_SPLIT_ITEM = new ItemStack(Material.DIAMOND_SWORD);
-
     public static final ItemStack EVENTS_ITEM = new ItemStack(Material.EMERALD);
 
     static {
-        ItemUtils.setDisplayName(START_TEAM_SPLIT_ITEM, LEFT_ARROW + YELLOW.toString() + BOLD + "Start Team Split" + RIGHT_ARROW);
-
         ItemUtils.setDisplayName(EVENTS_ITEM, LEFT_ARROW + LIGHT_PURPLE.toString() + BOLD + "Events" + RIGHT_ARROW);
     }
 
