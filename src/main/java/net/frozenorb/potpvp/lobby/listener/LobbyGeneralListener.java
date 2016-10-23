@@ -21,11 +21,7 @@ public final class LobbyGeneralListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-
-        player.teleport(player.getWorld().getSpawnLocation());
-        PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
-        InventoryUtils.resetInventoryDelayed(player);
+        PotPvPSI.getInstance().getLobbyHandler().returnToLobby(event.getPlayer());
     }
 
     @EventHandler
