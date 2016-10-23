@@ -39,7 +39,7 @@ public class DuelInviteCommand {
             return;
         }
 
-        if (duelHandler.canInvite(target)) {
+        if (!duelHandler.canInvite(target)) {
             sender.sendMessage(DuelLang.CANNOT_INVITE_PLAYER.fill(name(target)));
             return;
         }
