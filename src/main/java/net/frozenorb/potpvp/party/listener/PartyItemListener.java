@@ -5,9 +5,11 @@ import net.frozenorb.potpvp.lobby.LobbyItems;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.party.PartyItems;
+import net.frozenorb.potpvp.party.PartyUtils;
 import net.frozenorb.potpvp.party.command.PartyInfoCommand;
 import net.frozenorb.potpvp.party.command.PartyLeaveCommand;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,18 +33,18 @@ public final class PartyItemListener implements Listener {
             PartyLeaveCommand.partyLeave(player);
         } else if (item.isSimilar(PartyItems.START_TEAM_SPLIT_ITEM)) {
             event.setCancelled(true);
-            /*Party party = PotPvPLobby.getInstance().getPartyHandler().getLocalParty(event.getPlayer());
 
-            if (party != null) {
-                if (!party.getLeader().equals(event.getPlayer().getUniqueId())) {
-                    event.getPlayer().sendMessage(ChatColor.RED + "You aren't the leader of your party.");
-                    return;
-                }
+            Party party = partyHandler.getParty(player);
 
-                if (PotPvPValidation.canStartTeamSplit(party)) {
-                    party.startTeamSplit(event.getPlayer());
-                }
-            }*/
+            if (party == null) {
+                return;
+            }
+
+            if (party.isLeader(player.getUniqueId())) {
+                PartyUtils.startTeamSplit(party, player);
+            } else {
+                player.sendMessage(ChatColor.RED + "You aren't the leader of your party.");
+            }
         } else if (item.getType() == PartyItems.ICON_TYPE) {
             // we just check for the same type (not isSimilar because
             // of a different title) to avoid running this code

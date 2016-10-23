@@ -68,7 +68,12 @@ public final class PotPvPValidation {
         return true;
     }
 
-    public static boolean canStartTeamSplit(Party party) {
+    public static boolean canStartTeamSplit(Party party, Player initiator) {
+        if (isInQueue(party)) {
+            initiator.sendMessage(CANNOT_DO_THIS_WHILE_QUEUED);
+            return false;
+        }
+
         return true;
     }
 
