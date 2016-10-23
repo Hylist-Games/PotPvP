@@ -62,7 +62,7 @@ public final class Arena {
      */
     // AccessLevel.NONE so arenas can only marked as in use
     // or not in use by the appropriate methods in ArenaHandler
-    @Getter @Setter(AccessLevel.PACKAGE) private boolean inUse;
+    @Getter @Setter(AccessLevel.PACKAGE) private transient boolean inUse;
 
     @Override
     public boolean equals(Object o) {

@@ -17,6 +17,7 @@ import org.bukkit.craftbukkit.libs.com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Predicate;
@@ -31,7 +32,7 @@ public final class ArenaHandler {
     private static final String SCHEMATICS_FILE_NAME = "schematics.json";
 
     // schematic -> (instance id -> Arena instance)
-    private Map<ArenaSchematic, Map<Integer, Arena>> arenaInstances = new HashMap<>();
+    private Map<String, Map<Integer, Arena>> arenaInstances = new HashMap<>();
     // schematic name -> ArenaSchematic instance
     private Map<String, ArenaSchematic> schematics = new HashMap<>();
 
@@ -46,18 +47,32 @@ public final class ArenaHandler {
         File schematicsFile = new File(arenaWorld.getWorldFolder(), SCHEMATICS_FILE_NAME);
 
         try {
+            // parsed as a List<Arena> and then inserted into Map<String, Map<Integer. Arena>>
             if (arenaInstancesFile.exists()) {
-                String arenaInstancesJson = Files.readFirstLine(arenaInstancesFile, Charsets.UTF_8);
-                Type arenaInstancesType = new TypeToken<Map<ArenaSchematic, Map<Integer, Arena>>>(){}.getType();
+                try (Reader arenaInstancesReader = Files.newReader(arenaInstancesFile, Charsets.UTF_8)) {
+                    Type arenaListType = new TypeToken<List<Arena>>(){}.getType();
+                    List<Arena> arenaList = qLib.GSON.fromJson(arenaInstancesReader, arenaListType);
 
-                arenaInstances = qLib.GSON.fromJson(arenaInstancesJson, arenaInstancesType);
+                    for (Arena arena : arenaList) {
+                        // create inner Map for schematic if not present
+                        arenaInstances.computeIfAbsent(arena.getSchematic(), i -> new HashMap<>());
+
+                        // register this copy with the inner Map
+                        arenaInstances.get(arena.getSchematic()).put(arena.getCopy(), arena);
+                    }
+                }
             }
 
+            // parsed as a List<ArenaSchematic> and then inserted into Map<String, ArenaSchematic>
             if (schematicsFile.exists()) {
-                String schematicsJson = Files.readFirstLine(schematicsFile, Charsets.UTF_8);
-                Type schematicsType = new TypeToken<Map<String, ArenaSchematic>>(){}.getType();
+                try (Reader schematicsFileReader = Files.newReader(schematicsFile, Charsets.UTF_8)) {
+                    Type schematicListType = new TypeToken<List<ArenaSchematic>>() {}.getType();
+                    List<ArenaSchematic> schematicList = qLib.GSON.fromJson(schematicsFileReader, schematicListType);
 
-                schematics = qLib.GSON.fromJson(schematicsJson, schematicsType);
+                    for (ArenaSchematic schematic : schematicList) {
+                        this.schematics.put(schematic.getName(), schematic);
+                    }
+                }
             }
         } catch (IOException ex) {
             // just rethrow, can't recover from arenas failing to load
@@ -72,7 +87,7 @@ public final class ArenaHandler {
      * @return Arena object existing for specified schematic and copy pair, if one exists
      */
     public Arena getArena(ArenaSchematic schematic, int copy) {
-        Map<Integer, Arena> arenaCopies = arenaInstances.get(schematic);
+        Map<Integer, Arena> arenaCopies = arenaInstances.get(schematic.getName());
 
         if (arenaCopies != null) {
             return arenaCopies.get(copy);
@@ -87,7 +102,7 @@ public final class ArenaHandler {
      * @return immutable set of all arenas for given schematic
      */
     public Set<Arena> getArenas(ArenaSchematic schematic) {
-        Map<Integer, Arena> arenaCopies = arenaInstances.get(schematic);
+        Map<Integer, Arena> arenaCopies = arenaInstances.get(schematic.getName());
 
         if (arenaCopies != null) {
             return ImmutableSet.copyOf(arenaCopies.values());
@@ -127,7 +142,7 @@ public final class ArenaHandler {
                 continue;
             }
 
-            for (Arena arena : arenaInstances.get(schematic).values()) {
+            for (Arena arena : arenaInstances.get(schematic.getName()).values()) {
                 if (arena.isInUse()) {
                     continue;
                 }
