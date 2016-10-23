@@ -29,8 +29,8 @@ public final class DuelHandler {
         invites.put(invite.sender(), invite);
     }
 
-    public DuelInvite purgeInvite(UUID sender) {
-        return invites.remove(sender);
+    public DuelInvite purgeInvite(Player player) {
+        return invites.remove(player.getUniqueId());
     }
 
     public DuelInvite inviteBy(Player player) {

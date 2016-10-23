@@ -21,8 +21,8 @@ import java.util.UUID;
  */
 public class DuelAcceptCommand {
     @Command(names = {"accept"}, permission = "")
-    public static void accept(Player sender, @Param(name = "player") UUID target) {
-        if (sender.getUniqueId().equals(target)) {
+    public static void accept(Player sender, @Param(name = "player") Player target) {
+        if (sender == target) {
             sender.sendMessage(DuelLang.CANT_ACCEPT_DUEL_FROM_YOURSELF.toString());
             return;
         }
@@ -30,7 +30,7 @@ public class DuelAcceptCommand {
         DuelInvite invite = DuelHandler.instance().inviteBy(target);
 
         if (invite == null || !invite.sentTo().equals(sender.getUniqueId())) {
-            sender.sendMessage(DuelLang.NO_INVITE_HAS_BEEN_SENT.fill(FrozenUUIDCache.name(target)));
+            sender.sendMessage(DuelLang.NO_INVITE_HAS_BEEN_SENT.fill(target.getName()));
             return;
         }
 
@@ -42,7 +42,7 @@ public class DuelAcceptCommand {
 
         DuelHandler.instance().purgeInvite(target);
         Set<UUID> senderTeam = teamFor(sender.getUniqueId());
-        Set<UUID> targetTeam = teamFor(target);
+        Set<UUID> targetTeam = teamFor(target.getUniqueId());
 
         MatchHandler.MatchStartResult match = PotPvPSI.getInstance().getMatchHandler().startMatch(
                 ImmutableSet.of(senderTeam, targetTeam),
@@ -51,7 +51,7 @@ public class DuelAcceptCommand {
 
         if (match != MatchHandler.MatchStartResult.SUCCESSFUL) {
             sender.sendMessage(DuelLang.ERROR_STARTING_MATCH.toString());
-            Bukkit.getPlayer(target).sendMessage(DuelLang.ERROR_STARTING_MATCH.toString());
+            target.sendMessage(DuelLang.ERROR_STARTING_MATCH.toString());
         }
     }
 
