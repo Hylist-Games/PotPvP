@@ -24,7 +24,7 @@ public abstract class Queue<T extends QueueEntry> {
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
     }
 
-    public void tick() {
+    void tick() {
         // we clone queueEntries + always remove from the copy
         // to prevent infinite loops (when matches fail to create),
         // but only remove from the queueEntries on success
