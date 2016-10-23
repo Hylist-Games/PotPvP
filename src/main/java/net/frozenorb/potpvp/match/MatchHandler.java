@@ -46,7 +46,7 @@ public final class MatchHandler {
         Bukkit.getPluginManager().registerEvents(new SpectatorPreventionListener(), PotPvPSI.getInstance());
     }
 
-    public MatchStartResult startMatch(List<MatchTeam> teams, KitType kitType) {
+    public Match startMatch(List<MatchTeam> teams, KitType kitType) {
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
         long matchSize = teams.stream()
             .mapToInt(t -> t.getAllMembers().size())
@@ -68,23 +68,16 @@ public final class MatchHandler {
             (kitType == KitType.ARCHER || !schematic.isArcherOnly())
         );
 
-        if (openArena != null) {
-            Match match = new Match(kitType, openArena, teams);
-
-            hostedMatches.add(match);
-            match.startCountdown();
-
-            return MatchStartResult.SUCCESSFUL;
-        } else {
-            return MatchStartResult.NO_MAPS_AVAILABLE;
+        if (openArena == null) {
+            return null;
         }
-    }
 
-    public enum MatchStartResult {
+        Match match = new Match(kitType, openArena, teams);
 
-        SUCCESSFUL,
-        NO_MAPS_AVAILABLE
+        hostedMatches.add(match);
+        match.startCountdown();
 
+        return match;
     }
 
     void removeMatch(Match match) {

@@ -3,7 +3,7 @@ package net.frozenorb.potpvp.duels;
 import com.google.common.collect.ImmutableList;
 
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.match.MatchHandler;
+import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.qlib.command.Command;
@@ -44,7 +44,7 @@ public class DuelAcceptCommand {
         Set<UUID> senderTeam = teamFor(sender.getUniqueId());
         Set<UUID> targetTeam = teamFor(target.getUniqueId());
 
-        MatchHandler.MatchStartResult match = PotPvPSI.getInstance().getMatchHandler().startMatch(
+        Match match = PotPvPSI.getInstance().getMatchHandler().startMatch(
                 ImmutableList.of(
                     new MatchTeam(UUID.randomUUID().toString(), senderTeam),
                     new MatchTeam(UUID.randomUUID().toString(), targetTeam)
@@ -52,7 +52,7 @@ public class DuelAcceptCommand {
                 invite.kitType()
         );
 
-        if (match != MatchHandler.MatchStartResult.SUCCESSFUL) {
+        if (match == null) {
             sender.sendMessage(DuelLang.ERROR_STARTING_MATCH.toString());
             target.sendMessage(DuelLang.ERROR_STARTING_MATCH.toString());
         }
