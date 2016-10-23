@@ -6,16 +6,23 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.Arena;
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.kittype.KitType;
+import net.frozenorb.potpvp.match.listener.KitSelectionListener;
+import net.frozenorb.potpvp.match.listener.MatchCountdownListener;
+import net.frozenorb.potpvp.match.listener.MatchDeathMessageListener;
+import net.frozenorb.potpvp.match.listener.MatchDurationLimitListener;
+import net.frozenorb.potpvp.match.listener.MatchGeneralListener;
+import net.frozenorb.potpvp.match.listener.MatchSoupListener;
+import net.frozenorb.potpvp.match.listener.SpectatorItemListener;
+import net.frozenorb.potpvp.match.listener.SpectatorPreventionListener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.omg.PortableServer.POA;
 
 public final class MatchHandler {
 
@@ -24,12 +31,17 @@ public final class MatchHandler {
     @Getter @Setter private boolean rankedMatchesDisabled;
     @Getter @Setter private boolean unrankedMatchesDisabled;
 
-    /**
-     *
-     * @param rawTeams
-     * @param kitType
-     * @return
-     */
+    public MatchHandler() {
+        Bukkit.getPluginManager().registerEvents(new KitSelectionListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MatchCountdownListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MatchDeathMessageListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MatchDurationLimitListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MatchGeneralListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MatchSoupListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new SpectatorItemListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new SpectatorPreventionListener(), PotPvPSI.getInstance());
+    }
+
     public MatchStartResult startMatch(Set<Set<UUID>> rawTeams, KitType kitType) {
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
         long matchSize = rawTeams.stream().mapToInt(Set::size).count();

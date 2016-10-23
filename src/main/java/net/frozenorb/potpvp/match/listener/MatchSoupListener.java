@@ -13,7 +13,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public final class MatchSoupListener implements Listener {
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR)
+    // no ignoreCancelled = true because right click on air
+    // events are by default cancelled (wtf Bukkit)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!event.hasItem() || !event.getAction().name().contains("RIGHT_")) {
             return;

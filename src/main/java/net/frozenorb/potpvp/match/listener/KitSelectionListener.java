@@ -8,13 +8,9 @@ import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 
 import net.frozenorb.potpvp.match.MatchTeam;
-import net.frozenorb.potpvp.match.MatchUtils;
 import net.frozenorb.potpvp.match.event.MatchCountdownStartEvent;
-import net.frozenorb.qlib.util.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -110,7 +106,9 @@ public final class KitSelectionListener implements Listener {
     /**
      * Give players their kits upon right click
      */
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    // no ignoreCancelled = true because right click on air
+    // events are by default cancelled (wtf Bukkit)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!event.hasItem() || !event.getAction().name().contains("RIGHT_")) {
             return;

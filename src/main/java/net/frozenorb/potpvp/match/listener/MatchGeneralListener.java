@@ -8,6 +8,7 @@ import net.frozenorb.potpvp.match.MatchState;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.qlib.util.PlayerUtils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,6 +23,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 
 public final class MatchGeneralListener implements Listener {
@@ -40,7 +42,7 @@ public final class MatchGeneralListener implements Listener {
 
         team.markDead(player.getUniqueId());
         match.checkEnded();
-        match.addSpectator(player);
+        match.addSpectator(player, null);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -64,6 +66,13 @@ public final class MatchGeneralListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+        // PlayerTeleportEvent extends PlayerMoveEvent, so we can just
+        // 'forward' this event down to our move handler.
+        onPlayerMove(event);
+    }
+
+    @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         Location from = event.getFrom();
@@ -78,7 +87,7 @@ public final class MatchGeneralListener implements Listener {
         }
 
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Match match = matchHandler.getMatchSpectating(player);
+        Match match = matchHandler.getMatchPlayingOrSpectating(player);
 
         if (match == null) {
             return;
@@ -87,8 +96,14 @@ public final class MatchGeneralListener implements Listener {
         Arena arena = match.getArena();
 
         if (!arena.getBounds().contains(to)) {
-            player.teleport(arena.getSpectatorSpawn());
-            player.sendMessage(ChatColor.RED + "You aren't allowed to leave the arena.");
+            // spectators get a nice message, players
+            // just get cancelled
+            if (match.isSpectator(player.getUniqueId())) {
+                player.teleport(arena.getSpectatorSpawn());
+                player.sendMessage(ChatColor.RED + "You aren't allowed to leave the arena.");
+            } else {
+                event.setCancelled(true);
+            }
         }
     }
 
@@ -117,7 +132,7 @@ public final class MatchGeneralListener implements Listener {
 
         MatchTeam damagerTeam = match.getTeam(damager.getUniqueId());
 
-        boolean pearlDamage = event.getCause() != EntityDamageEvent.DamageCause.FALL;
+        boolean pearlDamage = event.getCause() == EntityDamageEvent.DamageCause.FALL;
         boolean sameTeam = damagerTeam != null && damagerTeam.isAlive(victim.getUniqueId());
 
         if (!pearlDamage && sameTeam) {

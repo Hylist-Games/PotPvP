@@ -4,8 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-import com.mongodb.client.MongoCollection;
-
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.Arena;
 import net.frozenorb.potpvp.kittype.KitType;
@@ -14,6 +12,7 @@ import net.frozenorb.potpvp.match.event.MatchEndEvent;
 import net.frozenorb.potpvp.match.event.MatchStartEvent;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.potpvp.util.MongoUtils;
+import net.frozenorb.potpvp.util.VisibilityUtils;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
 import net.frozenorb.qlib.qLib;
 import net.frozenorb.qlib.util.PlayerUtils;
@@ -25,7 +24,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.Getter;
 
@@ -67,7 +65,10 @@ public final class Match {
             player.teleport(spawn);
             player.getInventory().setHeldItemSlot(0);
 
-            MatchUtils.updateVisibility(player);
+            FrozenNametagHandler.reloadPlayer(player);
+            FrozenNametagHandler.reloadOthersFor(player);
+
+            VisibilityUtils.updateVisibility(player);
             PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
         }
 
@@ -86,6 +87,7 @@ public final class Match {
                 if (countdownTimeRemaining == 0) {
                     playSoundAll(Sound.NOTE_PLING, 2F);
                     startMatch();
+                    return; // so we don't send '0...' message
                 } else if (countdownTimeRemaining <= 3) {
                     playSoundAll(Sound.NOTE_PLING, 1F);
                 }
@@ -133,19 +135,29 @@ public final class Match {
 
         Document document = Document.parse(qLib.PLAIN_GSON.toJson(this));
 
-        document.remove("id");
-        document.put("_id", getId());
+        // rename 'id' to '_id' (for mongo)
+        document.put("_id", document.remove("id"));
 
+        // overwrite fields which would normally serialize too much
         document.put("winner", winner != null ? winner.getId() : null);
         document.put("arena", arena.getSchematic());
 
         Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
-            MongoCollection<Document> endedMatches = MongoUtils.getCollection("EndedMatches");
-            endedMatches.insertOne(document);
+            MongoUtils.getCollection("EndedMatches").insertOne(document);
         });
 
         PotPvPSI.getInstance().getArenaHandler().releaseArena(arena);
         PotPvPSI.getInstance().getMatchHandler().removeMatch(this);
+
+        // purposely placed after .removeMatch so any code after here
+        // doesn't see that this match exists
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            UUID playerUuid = player.getUniqueId();
+
+            if (getTeam(playerUuid) != null || spectators.contains(playerUuid)) {
+                PotPvPSI.getInstance().getLobbyHandler().returnToLobby(player);
+            }
+        }
     }
 
     public Set<UUID> getSpectators() {
@@ -183,9 +195,6 @@ public final class Match {
         player.teleport(target != null ? target.getLocation() : arena.getSpectatorSpawn());
         player.getInventory().setHeldItemSlot(0);
 
-        FrozenNametagHandler.reloadPlayer(player);
-        FrozenNametagHandler.reloadOthersFor(player);
-
         /*
         MatchSpectator specData = match.getSpectators().get(player.getUniqueId());
 
@@ -207,20 +216,17 @@ public final class Match {
         }
         */
 
-        MatchUtils.updateVisibility(player);
+        FrozenNametagHandler.reloadPlayer(player);
+        FrozenNametagHandler.reloadOthersFor(player);
+
+        VisibilityUtils.updateVisibility(player);
         PlayerUtils.resetInventory(player, GameMode.CREATIVE);
         InventoryUtils.resetInventoryDelayed(player);
     }
 
     public void removeSpectator(Player player) {
         spectators.remove(player.getUniqueId());
-
-        FrozenNametagHandler.reloadPlayer(player);
-        FrozenNametagHandler.reloadOthersFor(player);
-
-        MatchUtils.updateVisibility(player);
-        PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
-        InventoryUtils.resetInventoryDelayed(player);
+        PotPvPSI.getInstance().getLobbyHandler().returnToLobby(player);
     }
 
     public MatchTeam getTeam(UUID playerUuid) {
