@@ -6,6 +6,7 @@ import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchUtils;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.event.SettingUpdateEvent;
+import net.frozenorb.potpvp.util.VisibilityUtils;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -126,7 +127,7 @@ public final class SpectatorPreventionListener implements Listener {
     @EventHandler
     public void onSettingUpdate(SettingUpdateEvent event) {
         if (event.getSetting() == Setting.VIEW_OTHER_SPECTATORS) {
-            MatchUtils.updateVisibility(event.getPlayer());
+            VisibilityUtils.updateVisibility(event.getPlayer());
         }
     }
 
