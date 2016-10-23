@@ -1,5 +1,6 @@
 package net.frozenorb.potpvp.duels;
 
+import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.setting.Setting;
 
 import java.util.HashMap;
@@ -7,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static net.frozenorb.potpvp.PotPvPSI.getInstance;
 
 /**
  * @author Mazen Kotb
@@ -50,7 +49,7 @@ public final class DuelHandler {
     }
 
     public boolean canInvite(UUID player) {
-        return getInstance().getSettingHandler().getSetting(player, Setting.RECEIVE_DUELS) &&
-                !getInstance().getMatchHandler().isPlayingOrSpectatingMatch(player);
+        return PotPvPSI.getInstance().getSettingHandler().getSetting(player, Setting.RECEIVE_DUELS) &&
+                !PotPvPSI.getInstance().getMatchHandler().isPlayingOrSpectatingMatch(player);
     }
 }
