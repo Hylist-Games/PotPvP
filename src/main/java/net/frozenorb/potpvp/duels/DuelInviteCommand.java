@@ -18,7 +18,10 @@ public class DuelInviteCommand {
 
     @Command(names = {"duel", "1v1"}, permission = "")
     public static void duel(Player sender, @Param(name = "player") Player target) {
-        new SelectKitTypeMenu(kitType -> duel(sender, target, kitType)).openMenu(sender);
+        new SelectKitTypeMenu(kitType -> {
+            sender.closeInventory();
+            duel(sender, target, kitType);
+        }).openMenu(sender);
     }
 
     public static void duel(Player sender, Player target, KitType kitType) {
@@ -50,7 +53,7 @@ public class DuelInviteCommand {
         DuelInvite targetInvite = duelHandler.inviteBy(target);
 
         if (targetInvite != null && targetInvite.matches(sender.getUniqueId(), kitType)) {
-            DuelAcceptCommand.accept(sender, target.getUniqueId()); // accept the invite
+            DuelAcceptCommand.accept(sender, target); // accept the invite
             return;
         }
 
@@ -59,7 +62,7 @@ public class DuelInviteCommand {
             return;
         } else if (sentInvite != null) {
             sender.sendMessage(DuelLang.PREVIOUS_INVITE_DELETED.toString());
-            duelHandler.purgeInvite(sender.getUniqueId());
+            duelHandler.purgeInvite(sender);
         }
 
         Party targetParty = PotPvPSI.getInstance().getPartyHandler().getParty(target);
