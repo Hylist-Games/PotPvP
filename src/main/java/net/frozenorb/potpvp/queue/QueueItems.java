@@ -14,8 +14,6 @@ import static org.bukkit.ChatColor.BOLD;
 import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.RED;
 
-// Static imports generally harm readability but
-// in this case it's too unreadable without them
 @UtilityClass
 public final class QueueItems {
 
