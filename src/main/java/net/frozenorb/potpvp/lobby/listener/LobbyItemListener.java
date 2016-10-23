@@ -26,45 +26,6 @@ public final class LobbyItemListener implements Listener {
         } else if (item.isSimilar(LobbyItems.PENDING_INVITES_ITEM)) {
             event.setCancelled(true);
             //new PendingPartyMatchInvitesMenu().openMenu(event.getPlayer());
-        } else if (item.isSimilar(LobbyItems.REQUEST_REMATCH_ITEM)) {
-            event.setCancelled(true);
-            /*RematchData rematchData = PotPvPLobby.getInstance().getRematchHandler().getRematchData(event.getPlayer().getUniqueId());
-
-            if (rematchData != null && PotPvPValidation.canRematch(event.getPlayer())) {
-                if (PotPvPLobby.getInstance().getMatchHandler().isInMatch(rematchData.getTarget())) {
-                    event.getPlayer().sendMessage(ChatColor.RED + "That player is currently in a match!");
-                    return;
-                } else if (!PotPvPLobby.getInstance().getPlayerLocator().getAllPlayers().contains(rematchData.getTarget())) {
-                    event.getPlayer().sendMessage(ChatColor.RED + FrozenUUIDCache.name(rematchData.getTarget()) + " is not online!");
-                    return;
-                }
-
-                if (PotPvPLobby.getInstance().getInviteHandler().hasPlayerInvite(rematchData.getSender(), rematchData.getTarget())) {
-                    event.getPlayer().sendMessage(ChatColor.RED + "You have already sent " + FrozenUUIDCache.name(rematchData.getTarget()) + " a rematch request!");
-                    return;
-                }
-
-                rematchData.setSent(true);
-
-                DetailedKitType kitType = rematchData.getKitType();
-
-                PlayerMatchInvite invite = PlayerMatchInvite.createMatchInvite(rematchData.getSender(), rematchData.getTarget(), kitType, true);
-                PotPvPLobby.getInstance().getInviteHandler().registerInvitation(invite);
-
-                if (invite.getTarget() == null) {
-                    FrozenXPacketHandler.sendToAll(MatchInvitePacket.from(invite));
-                }
-            }*/
-        } else if (item.isSimilar(LobbyItems.SENT_REMATCH_ITEM)) {
-            event.setCancelled(true);
-            /*???*/
-        } else if (item.isSimilar(LobbyItems.ACCEPT_REMATCH_ITEM)) {
-            event.setCancelled(true);
-            /*RematchData rematchData = PotPvPLobby.getInstance().getRematchHandler().getRematchData(event.getPlayer().getUniqueId());
-
-            if (rematchData != null) {
-                AcceptCommand.accept(event.getPlayer(), rematchData.getTarget());
-            }*/
         } else if (item.isSimilar(LobbyItems.EVENTS_ITEM)) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "Events are not yet completed! They will be done soon!");
