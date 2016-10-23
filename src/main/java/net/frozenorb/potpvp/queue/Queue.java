@@ -1,15 +1,15 @@
 package net.frozenorb.potpvp.queue;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.match.MatchHandler;
+import net.frozenorb.potpvp.match.MatchTeam;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -46,9 +46,9 @@ public abstract class Queue<T extends QueueEntry> {
 
     private boolean createMatch(T entryA, T entryB) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Set<Set<UUID>> teams = ImmutableSet.of(
-            entryA.getMembers(),
-            entryB.getMembers()
+        List<MatchTeam> teams = ImmutableList.of(
+            new MatchTeam(UUID.randomUUID().toString(), entryA.getMembers()),
+            new MatchTeam(UUID.randomUUID().toString(), entryB.getMembers())
         );
 
         MatchHandler.MatchStartResult result = matchHandler.startMatch(teams, kitType);

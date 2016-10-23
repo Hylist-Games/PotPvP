@@ -46,9 +46,11 @@ public final class MatchHandler {
         Bukkit.getPluginManager().registerEvents(new SpectatorPreventionListener(), PotPvPSI.getInstance());
     }
 
-    public MatchStartResult startMatch(Set<Set<UUID>> rawTeams, KitType kitType) {
+    public MatchStartResult startMatch(List<MatchTeam> teams, KitType kitType) {
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
-        long matchSize = rawTeams.stream().mapToInt(Set::size).count();
+        long matchSize = teams.stream()
+            .mapToInt(t -> t.getAllMembers().size())
+            .count();
 
         // the archer only logic here was often a source of confusion while
         // this code was being written. below is a table of the desired
@@ -66,23 +68,16 @@ public final class MatchHandler {
             (kitType == KitType.ARCHER || !schematic.isArcherOnly())
         );
 
-        if (openArena == null) {
+        if (openArena != null) {
+            Match match = new Match(kitType, openArena, teams);
+
+            hostedMatches.add(match);
+            match.startCountdown();
+
+            return MatchStartResult.SUCCESSFUL;
+        } else {
             return MatchStartResult.NO_MAPS_AVAILABLE;
         }
-
-        List<MatchTeam> teams = new ArrayList<>();
-
-        for (Set<UUID> rawTeam : rawTeams) {
-            String uuid = UUID.randomUUID().toString();
-            teams.add(new MatchTeam(uuid, rawTeam));
-        }
-
-        Match match = new Match(kitType, openArena, teams);
-
-        hostedMatches.add(match);
-        match.startCountdown();
-
-        return MatchStartResult.SUCCESSFUL;
     }
 
     public enum MatchStartResult {

@@ -1,13 +1,13 @@
 package net.frozenorb.potpvp.duels;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.MatchHandler;
+import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
-import net.frozenorb.qlib.uuid.FrozenUUIDCache;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -45,7 +45,10 @@ public class DuelAcceptCommand {
         Set<UUID> targetTeam = teamFor(target.getUniqueId());
 
         MatchHandler.MatchStartResult match = PotPvPSI.getInstance().getMatchHandler().startMatch(
-                ImmutableSet.of(senderTeam, targetTeam),
+                ImmutableList.of(
+                    new MatchTeam(UUID.randomUUID().toString(), senderTeam),
+                    new MatchTeam(UUID.randomUUID().toString(), targetTeam)
+                ),
                 invite.kitType()
         );
 

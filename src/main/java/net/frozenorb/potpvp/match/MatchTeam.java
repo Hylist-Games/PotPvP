@@ -37,7 +37,7 @@ public final class MatchTeam {
      */
     private final Set<UUID> aliveMembers = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-    MatchTeam(String id, Set<UUID> initialMembers) {
+    public MatchTeam(String id, Set<UUID> initialMembers) {
         this.id = Preconditions.checkNotNull(id, "id");
         this.allMembers.addAll(initialMembers);
         this.aliveMembers.addAll(initialMembers);
