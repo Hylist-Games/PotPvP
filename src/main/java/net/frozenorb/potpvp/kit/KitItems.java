@@ -10,7 +10,7 @@ import lombok.experimental.UtilityClass;
 import static net.frozenorb.potpvp.PotPvPLang.LEFT_ARROW;
 import static net.frozenorb.potpvp.PotPvPLang.RIGHT_ARROW;
 import static org.bukkit.ChatColor.BOLD;
-import static org.bukkit.DyeColor.YELLOW;
+import static org.bukkit.ChatColor.YELLOW;
 
 @UtilityClass
 public final class KitItems {
