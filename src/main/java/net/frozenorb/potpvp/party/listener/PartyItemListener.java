@@ -43,7 +43,10 @@ public final class PartyItemListener implements Listener {
                     party.startTeamSplit(event.getPlayer());
                 }
             }*/
-        } else {
+        } else if (item.getType() == PartyItems.ICON_TYPE) {
+            // we just check for the same type (not isSimilar because
+            // of a different title) to avoid running this code
+            // whenever any item is right clicked
             Party party = partyHandler.getParty(player);
 
             if (party == null) {

@@ -18,6 +18,7 @@ import static org.bukkit.ChatColor.YELLOW;
 @UtilityClass
 public final class PartyItems {
 
+    public static final Material ICON_TYPE = Material.NETHER_STAR;
     public static final ItemStack LEAVE_PARTY_ITEM = new ItemStack(Material.FIRE);
     public static final ItemStack START_TEAM_SPLIT_ITEM = new ItemStack(Material.DIAMOND_SWORD);
 
@@ -27,7 +28,7 @@ public final class PartyItems {
     }
 
     public static ItemStack icon(Party party) {
-        ItemStack item = new ItemStack(Material.NETHER_STAR);
+        ItemStack item = new ItemStack(ICON_TYPE);
 
         String leaderName = UUIDUtils.name(party.getLeader());
         String displayName = LEFT_ARROW + AQUA.toString() + BOLD + leaderName + AQUA + "'s Party" + RIGHT_ARROW;
