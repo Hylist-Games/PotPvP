@@ -31,8 +31,9 @@ public abstract class Queue<T extends QueueEntry> {
         List<T> queueCopy = new ArrayList<>(queueEntries);
 
         while (queueCopy.size() >= 2) {
+            // remove from 0 both times because index shifts down
             T entryA = queueCopy.remove(0);
-            T entryB = queueCopy.remove(1);
+            T entryB = queueCopy.remove(0);
 
             if (createMatch(entryA, entryB)) {
                 queueEntries.remove(entryA);
