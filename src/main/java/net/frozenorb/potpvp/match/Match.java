@@ -24,6 +24,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.Instant;
@@ -78,6 +80,10 @@ public final class Match {
 
             VisibilityUtils.updateVisibility(player);
             PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
+
+            // ran after .resetInventory call
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 99999, 9999));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 99999, 9999)); // prevents jumping
         }
 
         Bukkit.getPluginManager().callEvent(new MatchCountdownStartEvent(this));
@@ -111,8 +117,17 @@ public final class Match {
         state = MatchState.IN_PROGRESS;
         startedAt = Instant.now();
 
-        Bukkit.getPluginManager().callEvent(new MatchStartEvent(this));
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            MatchTeam team = getTeam(player.getUniqueId());
+
+            if (team != null) {
+                player.removePotionEffect(PotionEffectType.SLOW);
+                player.removePotionEffect(PotionEffectType.JUMP);
+            }
+        }
+
         messageAll(ChatColor.GREEN + "Match started.");
+        Bukkit.getPluginManager().callEvent(new MatchStartEvent(this));
     }
 
     public void endMatch(MatchEndReason reason) {
@@ -122,11 +137,12 @@ public final class Match {
 
         int delayTicks = MATCH_END_DELAY_SECONDS * 20;
 
+        messageAll(ChatColor.RED + "Match ended.");
         Bukkit.getPluginManager().callEvent(new MatchEndEvent(this));
         Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), () -> terminateMatch(reason), delayTicks);
     }
 
-    public void terminateMatch(MatchEndReason reason) {
+    private void terminateMatch(MatchEndReason reason) {
         state = MatchState.TERMINATED;
 
         // if endedAt wasn't set before (if terminateMatch was called directly)
