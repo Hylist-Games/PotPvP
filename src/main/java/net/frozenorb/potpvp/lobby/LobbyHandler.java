@@ -10,6 +10,7 @@ import net.frozenorb.qlib.util.PlayerUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public final class LobbyHandler {
@@ -26,7 +27,9 @@ public final class LobbyHandler {
      * @param player the player who is to be returned
      */
     public void returnToLobby(Player player) {
-        player.teleport(player.getWorld().getSpawnLocation());
+        Location spawn = player.getWorld().getSpawnLocation();
+        player.teleport(spawn.add(0.5, 0.5, 0.5));
+        
         player.getInventory().setHeldItemSlot(0);
 
         FrozenNametagHandler.reloadPlayer(player);
