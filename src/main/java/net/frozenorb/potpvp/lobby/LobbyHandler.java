@@ -33,7 +33,7 @@ public final class LobbyHandler {
         FrozenNametagHandler.reloadOthersFor(player);
 
         VisibilityUtils.updateVisibility(player);
-        PlayerUtils.resetInventory(player, GameMode.CREATIVE);
+        PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
         InventoryUtils.resetInventoryDelayed(player);
     }
 
