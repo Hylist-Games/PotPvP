@@ -55,15 +55,15 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
             return;
         }
 
-        boolean participant = match.getTeam(player.getUniqueId()) != null;
+        boolean isParticipant = match.getTeam(player.getUniqueId()) != null;
 
-        if (participant) {
+        if (isParticipant) {
             renderParticipantLines(scores, match, player);
         } else {
             renderSpectatorLines(scores, match);
         }
 
-        renderMetaLines(scores, match, participant);
+        renderMetaLines(scores, match, isParticipant);
     }
 
     private void renderParticipantLines(List<String> scores, Match match, Player player) {
@@ -86,7 +86,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         if (ourTeamSize == 1 && otherTeamSize == 1) {
             render1v1MatchLines(scores, otherTeam);
         } else if (ourTeamSize <= 2 && otherTeamSize <= 2) {
-            render2v2MatchLines(scores, match, ourTeam, otherTeam, player);
+            render2v2MatchLines(scores, ourTeam, otherTeam, player);
         } else if (ourTeamSize <= 4 && otherTeamSize <= 4) {
             render4v4MatchLines(scores, ourTeam, otherTeam);
         } else if (ourTeam.getAllMembers().size() <= 9) {
@@ -101,7 +101,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         scores.add("&c&lOpponent: &f" + FrozenUUIDCache.name(opponent));
     }
 
-    private void render2v2MatchLines(List<String> scores, Match match, MatchTeam ourTeam, MatchTeam otherTeam, Player player) {
+    private void render2v2MatchLines(List<String> scores, MatchTeam ourTeam, MatchTeam otherTeam, Player player) {
         // 2v2, but potentially 1v2 / 1v1 if players have died
         UUID partnerUuid = null;
 
