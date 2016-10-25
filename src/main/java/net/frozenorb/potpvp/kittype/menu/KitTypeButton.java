@@ -12,16 +12,25 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 final class KitTypeButton extends Button {
 
     private final KitType kitType;
     private final Callback<KitType> callback;
+    private final List<String> descriptionLines;
+    private final int amount;
 
     KitTypeButton(KitType kitType, Callback<KitType> callback) {
+        this(kitType, callback, ImmutableList.of(), 1);
+    }
+
+    KitTypeButton(KitType kitType, Callback<KitType> callback, List<String> descriptionLines, int amount) {
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
         this.callback = Preconditions.checkNotNull(callback, "callback");
+        this.descriptionLines = ImmutableList.copyOf(descriptionLines);
+        this.amount = amount;
     }
 
     @Override
@@ -31,15 +40,27 @@ final class KitTypeButton extends Button {
 
     @Override
     public List<String> getDescription(Player player) {
-        return ImmutableList.of(
-            "",
-            ChatColor.YELLOW + "Click here to select " + ChatColor.BOLD + kitType.getName() + ChatColor.YELLOW + "."
-        );
+        List<String> description = new ArrayList<>();
+
+        if (!descriptionLines.isEmpty()) {
+            description.add("");
+            description.addAll(descriptionLines);
+        }
+
+        description.add("");
+        description.add(ChatColor.YELLOW + "Click here to select " + ChatColor.BOLD + kitType.getName() + ChatColor.YELLOW + ".");
+
+        return description;
     }
 
     @Override
     public Material getMaterial(Player player) {
         return kitType.getIcon().getItemType();
+    }
+
+    @Override
+    public int getAmount(Player player) {
+        return amount;
     }
 
     @Override
