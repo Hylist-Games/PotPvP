@@ -10,6 +10,7 @@ import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.match.event.MatchCountdownStartEvent;
 import net.frozenorb.potpvp.match.event.MatchEndEvent;
 import net.frozenorb.potpvp.match.event.MatchStartEvent;
+import net.frozenorb.potpvp.match.event.MatchTerminateEvent;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.potpvp.util.MongoUtils;
 import net.frozenorb.potpvp.util.VisibilityUtils;
@@ -166,6 +167,7 @@ public final class Match {
         document.put("winner", winner != null ? winner.getId() : null);
         document.put("arena", arena.getSchematic());
 
+        Bukkit.getPluginManager().callEvent(new MatchTerminateEvent(this, document));
         Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
             MongoUtils.getCollection("EndedMatches").insertOne(document);
         });
