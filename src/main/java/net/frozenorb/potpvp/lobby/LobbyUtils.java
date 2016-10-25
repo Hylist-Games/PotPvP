@@ -4,6 +4,7 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.duels.DuelHandler;
 import net.frozenorb.potpvp.duels.DuelItems;
 import net.frozenorb.potpvp.kit.KitItems;
+import net.frozenorb.potpvp.kit.menu.editkit.EditKitMenu;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyItems;
 import net.frozenorb.potpvp.queue.QueueHandler;
@@ -11,6 +12,7 @@ import net.frozenorb.potpvp.queue.QueueItems;
 import net.frozenorb.potpvp.rematch.RematchData;
 import net.frozenorb.potpvp.rematch.RematchHandler;
 import net.frozenorb.potpvp.rematch.RematchItems;
+import net.frozenorb.qlib.menu.Menu;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -22,12 +24,11 @@ import lombok.experimental.UtilityClass;
 public final class LobbyUtils {
 
     public static void resetInventory(Player player) {
-        // previously this prevented players with an open inventory from having
-        // their inventories updated (InventoryType.CRAFTING = player inv, apparently)
-        // currently kept for historical purposes + a reminder it was here (if need arises)
-        /*if (player.getOpenInventory().getType() != InventoryType.CRAFTING) {
+        // prevents players with the kit editor from having their
+        // inventory updated (kit items go into their inventory)
+        if (Menu.currentlyOpenedMenus.get(player.getName()) instanceof EditKitMenu) {
             return;
-        }*/
+        }
 
         RematchHandler rematchHandler = PotPvPSI.getInstance().getRematchHandler();
         QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
