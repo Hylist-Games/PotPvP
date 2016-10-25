@@ -28,7 +28,7 @@ less will cause arenas to be deleting (starting with the highest numbered copy)
 
 # Creating Arenas
 
-When an `Arena` is created (as part of a `scaleCopies` call), we must detect its spawn points, bounds, etc. and register
+When an `Arena` is created (as part of a `scaleCopies` call), we paste it in its proper location (see Scaling section) with the WorldEdit API. After the arena is pasted, we must detect its spawn points, bounds, etc. and register
 the `Arena` with the `ArenaHandler`. After pasting a schematic (see line 8), we 'scan' the schematic to look for certain blocks marking
 these points. Team 1 / team 2 spawn locations are marked by a fence with a player skull on top of it. The location's pitch/yaw should be
 derived from the rotation of the skull (See [here](https://github.com/FrozenOrb/PotPvP-Lobby/blob/master/src/main/java/net/frozenorb/potpvp/api/map/BaseGrid.java#L233).)
