@@ -7,6 +7,7 @@ import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.event.SettingUpdateEvent;
 import net.frozenorb.potpvp.util.VisibilityUtils;
 
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -16,9 +17,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -92,6 +96,24 @@ public final class SpectatorPreventionListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerBucketFill(PlayerBucketFillEvent event) {
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+
+        if (matchHandler.isSpectatingMatch(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+
+        if (matchHandler.isSpectatingMatch(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
@@ -130,33 +152,29 @@ public final class SpectatorPreventionListener implements Listener {
         }
     }
 
-    // two things are happening in the same event here
-    // we're both disallow spectators throwing potions and
+    @EventHandler
+    public void onProjectileLaunch(ProjectileLaunchEvent event) {
+        Entity shooter = (Entity) event.getEntity().getShooter();
+
+        if (shooter instanceof Player) {
+            MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+
+            if (matchHandler.isSpectatingMatch(shooter.getUniqueId())) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    /**
+     * Don't let spectators be affected by potions dropped near them
+     */
     @EventHandler
     public void onPotionSplash(PotionSplashEvent event) {
-        Projectile entity = event.getEntity();
-        ProjectileSource shooter = entity.getShooter();
-
-        if (!(shooter instanceof Player)) {
-            return;
-        }
-
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Player player = (Player) shooter;
-        Match match = matchHandler.getMatchSpectating(player);
 
-        if (match != null) {
-            event.setCancelled(true);
-        }
-
-        // don't give spectators effects from potions splashed near them
-        for (LivingEntity affectedEntity : event.getAffectedEntities()) {
-            if (affectedEntity instanceof Player) {
-                Match affectedEntityMatch = matchHandler.getMatchSpectating(affectedEntity.getUniqueId());
-
-                if (affectedEntityMatch != null) {
-                    event.setIntensity(affectedEntity, 0F);
-                }
+        for (LivingEntity entity : event.getAffectedEntities()) {
+            if (entity instanceof Player && matchHandler.isSpectatingMatch(entity.getUniqueId())) {
+                event.setIntensity(entity, 0F);
             }
         }
     }

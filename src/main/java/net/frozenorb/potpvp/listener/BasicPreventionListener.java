@@ -1,5 +1,8 @@
 package net.frozenorb.potpvp.listener;
 
+import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.match.MatchHandler;
+
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -89,20 +92,28 @@ public final class BasicPreventionListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Player player = event.getPlayer();
-        boolean isCreative = player.getGameMode() == GameMode.CREATIVE;
 
-        if (!(player.isOp() && isCreative)) {
+        boolean isCreative = player.getGameMode() == GameMode.CREATIVE;
+        boolean isOp = player.isOp();
+        boolean isSpectator = matchHandler.isSpectatingMatch(player);
+
+        if (isSpectator || !isOp || !isCreative) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Player player = event.getPlayer();
-        boolean isCreative = player.getGameMode() == GameMode.CREATIVE;
 
-        if (!(player.isOp() && isCreative)) {
+        boolean isCreative = player.getGameMode() == GameMode.CREATIVE;
+        boolean isOp = player.isOp();
+        boolean isSpectator = matchHandler.isSpectatingMatch(player);
+
+        if (isSpectator || !isOp || !isCreative) {
             event.setCancelled(true);
         }
     }
