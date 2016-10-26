@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.arena;
 import com.sk89q.worldedit.Vector;
 import net.frozenorb.potpvp.arena.schematic.WorldSchematic;
 import net.frozenorb.qlib.cuboid.Cuboid;
+import net.frozenorb.qlib.util.BlockUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -14,8 +15,8 @@ import java.util.Map;
 /**
  * Represents the grid on the world
  *
- *   X ------------->
- *  Z  (1,1) (1,2)
+ *   Z ------------->
+ *  X  (1,1) (1,2)
  *  |  (2,1) (2,2)
  *  |  (3,1) (3,2)
  *  |  (4,1) (4,2)
@@ -31,29 +32,33 @@ public class ArenaGrid {
     private static final Vector STARTING_POINT = new Vector(1000, 50, 1000);
     /* The maximum static width (of an arena) */
     private static final int MAX_ARENA_WIDTH = 400;
-    /* Distance between two arenas on the X axis */
-    private static final int X_DISTANCE = 250;
     /* Distance between two arenas on the Z axis */
-    private static final int Z_DISTANCE = 500;
-    /* Saves the spawn locations relative to the schematic in cache */
-    private final Map<PotPvPSchematic, Vector[]> cachedSpawns = new HashMap<>();
-    private final Map<PotPvPSchematic, Integer> schematicIndices = new HashMap<>();
-    private final Map<PotPvPSchematic, Arena[]> grid = new HashMap<>();
+    private static final int Z_DISTANCE = 250;
+    /* Distance between two arenas on the X axis */
+    private static final int X_DISTANCE = 500;
+    private final Map<PotPvPSchematic, SchematicGridData> grid = new HashMap<>();
+
+    public PotPvPSchematic schematicBy(int index) {
+        return grid.entrySet().stream()
+                .filter((entry) -> entry.getValue().x == index)
+                .map(Map.Entry::getKey)
+                .findFirst().orElse(null);
+    }
 
     public int getCopies(PotPvPSchematic schematic) {
         if (schematic == null || !grid.containsKey(schematic)) {
             return -1;
         }
 
-        return grid.get(schematic).length;
+        return grid.get(schematic).arenas.length;
     }
 
     public int getIndex(PotPvPSchematic schematic) {
-        if (schematic == null || !schematicIndices.containsKey(schematic)) {
+        if (schematic == null || !grid.containsKey(schematic)) {
             return -1;
         }
 
-        return schematicIndices.get(schematic);
+        return grid.get(schematic).x;
     }
 
     public void scaleCopies(Player initiator, PotPvPSchematic schematic, int copies) {
@@ -62,20 +67,28 @@ public class ArenaGrid {
             return;
         }
 
-        if (grid.containsKey(schematic)) {
-            int index = schematicIndices.get(schematic);
+        SchematicGridData data = grid.computeIfAbsent(schematic, (ign) -> new SchematicGridData(grid.size() + 1));;
 
-            if (getCopies(schematic) > copies) {
-                // TODO remove
+        try {
+            if (data.arenas.length > copies) {
+                deleteArenas(schematic, data.arenas.length - copies);
+                initiator.sendMessage("Deleted arenas successfully. New count " + copies);
             } else {
-                // TODO create
+                for (int z = data.arenas.length; z <= copies; z++) {
+                    createArena(data.x, z, schematic, data);
+                }
+
+                initiator.sendMessage("Added arenas successfully. New count " + copies);
             }
+        } catch (Exception ex) {
+            initiator.sendMessage("There was an error performing that operation: "
+                    + ex.getClass().getSimpleName() + ": " + ex.getMessage());
         }
     }
 
-    private Arena createArena(int x, int z, PotPvPSchematic schematic) throws Exception {
+    private Arena createArena(int x, int z, PotPvPSchematic schematic, SchematicGridData data) throws Exception {
         World world = Bukkit.getWorlds().get(0);
-        WorldSchematic worldSchematic = schematic.asWorldSchematic();
+        WorldSchematic worldSchematic = data.getWorldSchematic(schematic);
 
         // calculate the starting position of the area
         int schematicLength = (int) worldSchematic.getSize().getZ();
@@ -95,12 +108,49 @@ public class ArenaGrid {
                 false);
     }
 
+    private void deleteArenas(PotPvPSchematic schematic, int amount) throws Exception { // 3, and removing 2
+        SchematicGridData data = grid.get(schematic);
+        Arena[] arenas = data.arenas;
+        Location start = arenas[arenas.length - amount].getBounds().getLowerNE();
+        Location end = arenas[arenas.length - 1].getBounds().getUpperSW();
+
+        for (int x = start.getBlockX(); x < end.getBlockX(); x++) {
+            for (int y = start.getBlockY(); y < end.getBlockY(); y++) {
+                for (int z = start.getBlockZ(); z < end.getBlockZ(); z++) {
+                    BlockUtils.setBlockFast(start.getWorld(), x, y, z, 0, (byte) 0);
+                }
+            }
+        }
+
+        Arena[] newArenas = new Arena[arenas.length - amount];
+        System.arraycopy(arenas, 0, newArenas, 0, newArenas.length);
+        data.arenas = newArenas;
+    }
+
     private Location objectiveVector(World world, Vector start, Vector point) {
         Vector general = start.add(point);
         return new Location(world, general.getX(), general.getY(), general.getZ());
     }
 
     private Vector[] getSpawns(PotPvPSchematic schematic, Vector start, Cuboid cube) {
-        return cachedSpawns.computeIfAbsent(schematic, (ignored) -> GridUtils.getSpawns(start, cube));
+        SchematicGridData data = grid.get(schematic);
+        return data.spawns == null ? data.spawns = GridUtils.getSpawns(start, cube) : data.spawns;
+    }
+
+    private static class SchematicGridData {
+        private Vector[] spawns;
+        private int x;
+        private Arena[] arenas;
+        private WorldSchematic worldSchematic;
+
+        SchematicGridData(int x) {
+            this.x = x;
+        }
+
+        WorldSchematic getWorldSchematic(PotPvPSchematic schematic) throws Exception {
+            return worldSchematic == null ?
+                    worldSchematic = schematic.asWorldSchematic() :
+                    worldSchematic;
+        }
     }
 }
