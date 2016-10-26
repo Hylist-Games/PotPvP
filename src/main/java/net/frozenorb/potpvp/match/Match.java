@@ -81,10 +81,6 @@ public final class Match {
 
             VisibilityUtils.updateVisibility(player);
             PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
-
-            // ran after .resetInventory call
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 99999, 9999));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 99999, 9999)); // prevents jumping
         }
 
         Bukkit.getPluginManager().callEvent(new MatchCountdownStartEvent(this));
@@ -117,15 +113,6 @@ public final class Match {
     private void startMatch() {
         state = MatchState.IN_PROGRESS;
         startedAt = Instant.now();
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            MatchTeam team = getTeam(player.getUniqueId());
-
-            if (team != null) {
-                player.removePotionEffect(PotionEffectType.SLOW);
-                player.removePotionEffect(PotionEffectType.JUMP);
-            }
-        }
 
         messageAll(ChatColor.GREEN + "Match started.");
         Bukkit.getPluginManager().callEvent(new MatchStartEvent(this));
