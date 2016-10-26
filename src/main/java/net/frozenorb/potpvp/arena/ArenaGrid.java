@@ -2,6 +2,7 @@ package net.frozenorb.potpvp.arena;
 
 import com.sk89q.worldedit.Vector;
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.arena.schematic.SchematicUtil;
 import net.frozenorb.potpvp.arena.schematic.WorldSchematic;
 import net.frozenorb.qlib.cuboid.Cuboid;
 import net.frozenorb.qlib.util.BlockUtils;
@@ -38,14 +39,17 @@ public class ArenaGrid {
     private static final int Z_DISTANCE = 250;
     /* Distance between two arenas on the X axis */
     private static final int X_DISTANCE = 500;
-    private final Map<PotPvPSchematic, SchematicGridData> grid = new HashMap<>();
+    private final Map<ArenaSchematic, SchematicGridData> grid = new HashMap<>();
 
     public void loadSchematics() {
-        PotPvPSI.getInstance().getArenaHandler().getSchematics().forEach((schematic) -> {
-            SchematicGridData data = new SchematicGridData(schematic.getIndex());
-            Arena[] arenas = new Arena[schematic.getCopies()];
+        ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
 
-            for (int z = 1; z <= schematic.getCopies(); z++) {
+        arenaHandler.getSchematics().forEach((schematic) -> {
+            SchematicGridData data = new SchematicGridData(schematic.getGridIndex());
+            int copies = arenaHandler.countArenas(schematic);
+            Arena[] arenas = new Arena[copies];
+
+            for (int z = 1; z <= copies; z++) {
                 try {
                     arenas[z - 1] = createArena(data.x, z, schematic, data, false);
                 } catch (Exception ex) {
@@ -60,14 +64,14 @@ public class ArenaGrid {
         });
     }
 
-    public PotPvPSchematic schematicBy(int index) {
+    public ArenaSchematic schematicBy(int index) {
         return grid.entrySet().stream()
                 .filter((entry) -> entry.getValue().x == index)
                 .map(Map.Entry::getKey)
                 .findFirst().orElse(null);
     }
 
-    public int getCopies(PotPvPSchematic schematic) {
+    public int getCopies(ArenaSchematic schematic) {
         if (schematic == null || !grid.containsKey(schematic)) {
             return -1;
         }
@@ -75,7 +79,7 @@ public class ArenaGrid {
         return grid.get(schematic).arenas.length;
     }
 
-    public int getIndex(PotPvPSchematic schematic) {
+    public int getIndex(ArenaSchematic schematic) {
         if (schematic == null || !grid.containsKey(schematic)) {
             return -1;
         }
@@ -89,8 +93,8 @@ public class ArenaGrid {
                 .max().orElse(0) + 1;
     }
 
-    public void scaleCopies(Player initiator, PotPvPSchematic schematic, int copies) {
-        if (schematic == null || !schematic.getFile().exists()) {
+    public void scaleCopies(Player initiator, ArenaSchematic schematic, int copies) {
+        if (schematic == null || !schematic.getSchematicFile().exists()) {
             initiator.sendMessage("Not a valid schematic!");
             return;
         }
@@ -98,7 +102,7 @@ public class ArenaGrid {
         SchematicGridData data = grid.computeIfAbsent(schematic, (ign) -> {
             int dataIndex = nextIndex();
             System.out.println("[ArenaGrid] Assigning index " + dataIndex + " to schematic " + schematic.getName());
-            schematic.setIndex(dataIndex);
+            schematic.setGridIndex(dataIndex);
 
             return new SchematicGridData(dataIndex);
         });
@@ -115,15 +119,15 @@ public class ArenaGrid {
                 initiator.sendMessage("Added arenas successfully. New count " + copies);
             }
 
-            schematic.setCopies(data.arenas.length);
+            ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
 
             try {
-                PotPvPSI.getInstance().getArenaHandler().saveSchematicData();
+                arenaHandler.saveSchematics();
             } catch (IOException ex) {
                 ex.printStackTrace();
                 System.out.println("[ArenaGrid] Could not save the schematic data for " + schematic.getName() +
                         ". It's set index in runtime is " + data.x +
-                        " and the amount of copies is " + schematic.getCopies());
+                        " and the amount of copies is " + arenaHandler.countArenas(schematic));
             }
         } catch (Exception ex) {
             initiator.sendMessage("There was an error performing that operation: "
@@ -131,7 +135,7 @@ public class ArenaGrid {
         }
     }
 
-    private Arena createArena(int x, int z, PotPvPSchematic schematic, SchematicGridData data, boolean place) throws Exception {
+    private Arena createArena(int x, int z, ArenaSchematic schematic, SchematicGridData data, boolean place) throws Exception {
         World world = Bukkit.getWorlds().get(0);
         WorldSchematic worldSchematic = data.getWorldSchematic(schematic);
 
@@ -153,7 +157,7 @@ public class ArenaGrid {
                 false);
     }
 
-    private void deleteArenas(PotPvPSchematic schematic, int amount) throws Exception { // 3, and removing 2
+    private void deleteArenas(ArenaSchematic schematic, int amount) throws Exception { // 3, and removing 2
         SchematicGridData data = grid.get(schematic);
         Arena[] arenas = data.arenas;
         Location start = arenas[arenas.length - amount].getBounds().getLowerNE();
@@ -177,12 +181,13 @@ public class ArenaGrid {
         return new Location(world, general.getX(), general.getY(), general.getZ());
     }
 
-    private Vector[] getSpawns(PotPvPSchematic schematic, Vector start, Cuboid cube) {
+    private Vector[] getSpawns(ArenaSchematic schematic, Vector start, Cuboid cube) {
         SchematicGridData data = grid.get(schematic);
         return data.spawns == null ? data.spawns = GridUtils.getSpawns(start, cube) : data.spawns;
     }
 
     private static class SchematicGridData {
+
         private Vector[] spawns;
         private int x;
         private Arena[] arenas;
@@ -192,10 +197,14 @@ public class ArenaGrid {
             this.x = x;
         }
 
-        WorldSchematic getWorldSchematic(PotPvPSchematic schematic) throws Exception {
-            return worldSchematic == null ?
-                    worldSchematic = schematic.asWorldSchematic() :
-                    worldSchematic;
+        WorldSchematic getWorldSchematic(ArenaSchematic schematic) throws Exception {
+            if (worldSchematic == null) {
+                worldSchematic = SchematicUtil.instance().load(schematic);
+            }
+
+            return worldSchematic;
         }
+
     }
+
 }

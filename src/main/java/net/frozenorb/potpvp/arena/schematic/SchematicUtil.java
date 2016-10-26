@@ -2,15 +2,15 @@ package net.frozenorb.potpvp.arena.schematic;
 
 import com.sk89q.jnbt.*;
 import com.sk89q.worldedit.*;
-import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 import com.sk89q.worldedit.world.DataException;
-import javafx.util.Pair;
+
+import net.frozenorb.potpvp.arena.ArenaSchematic;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,6 +46,10 @@ public class SchematicUtil {
         clipboard.copy(editSession);
         SchematicFormat.MCEDIT.save(clipboard, saveFile);
         editSession.flushQueue();
+    }
+
+    public WorldSchematic load(ArenaSchematic schematic) throws Exception {
+        return load(schematic.getSchematicFile());
     }
 
     public WorldSchematic load(File file) throws Exception {

@@ -9,16 +9,16 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
- * Represents a pasted instance of an {@link PotPvPSchematic}.
+ * Represents a pasted instance of an {@link ArenaSchematic}.
  * See {@link net.frozenorb.potpvp.arena} for a comparision of
- * {@link Arena}s and {@link PotPvPSchematic}s.
+ * {@link Arena}s and {@link ArenaSchematic}s.
  */
 @AllArgsConstructor
 @NoArgsConstructor
 public final class Arena {
 
     /**
-     * The name of the {@link PotPvPSchematic} this Arena is
+     * The name of the {@link ArenaSchematic} this Arena is
      * copied from.
      * @see net.frozenorb.potpvp.arena
      */

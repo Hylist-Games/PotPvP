@@ -10,10 +10,9 @@ import java.io.File;
 
 /**
  * Represents an arena schematic. See {@link net.frozenorb.potpvp.arena}
- * for a comparision of {@link Arena}s and {@link PotPvPSchematic}s.
+ * for a comparision of {@link Arena}s and {@link ArenaSchematic}s.
  */
-public final class PotPvPSchematic {
-    private static final File SCHEMATICS_DIRECTORY = new File(new File(new File("plugins"), "WorldEdit"), "schematics");
+public final class ArenaSchematic {
 
     /**
      * Name of this schematic (ex "Candyland")
@@ -45,30 +44,18 @@ public final class PotPvPSchematic {
     @Getter private boolean archerOnly;
 
     /**
-     * It's index on the X axis on the grid. Set to 0 if not set yet
-     *
+     * Index on the X axis on the grid. 0 if not set yet
      * @see ArenaGrid
      */
-    @Getter @Setter(AccessLevel.PACKAGE) private int index = 0;
+    @Getter @Setter(AccessLevel.PACKAGE) private int gridIndex = 0;
 
-    /**
-     * The amount of arenas to be used on the Z axis on the grid
-     *
-     * @see ArenaGrid
-     */
-    @Getter @Setter(AccessLevel.PACKAGE) private int copies = 0;
-
-    public File getFile() {
-        return new File(SCHEMATICS_DIRECTORY, name + ".schematic");
-    }
-
-    public WorldSchematic asWorldSchematic() throws Exception {
-        return SchematicUtil.instance().load(getFile());
+    public File getSchematicFile() {
+        return new File(ArenaHandler.WORLD_EDIT_SCHEMATICS_FOLDER, name + ".schematic");
     }
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof PotPvPSchematic && ((PotPvPSchematic) o).name.equals(name);
+        return o instanceof ArenaSchematic && ((ArenaSchematic) o).name.equals(name);
     }
 
     @Override

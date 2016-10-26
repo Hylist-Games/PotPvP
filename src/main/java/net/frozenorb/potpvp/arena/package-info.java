@@ -1,6 +1,6 @@
 /**
  * Handles reading and accessing {@link net.frozenorb.potpvp.arena.Arena}s
- * and {@link net.frozenorb.potpvp.arena.PotPvPSchematic}s.
+ * and {@link net.frozenorb.potpvp.arena.ArenaSchematic}s.
  *
  * An ArenaSchematic is a template for creating Arenas. ArenaSchematics correlate
  * with a .schematic file which can be pasted, and Arenas correlate with a specific

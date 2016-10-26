@@ -3,7 +3,7 @@ package net.frozenorb.potpvp.arena.command;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.Arena;
 import net.frozenorb.potpvp.arena.ArenaHandler;
-import net.frozenorb.potpvp.arena.PotPvPSchematic;
+import net.frozenorb.potpvp.arena.ArenaSchematic;
 import net.frozenorb.potpvp.util.LocationUtils;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
@@ -16,7 +16,7 @@ public final class ArenaListArenasCommand {
     @Command(names = { "arena listArenas" }, permission = "op")
     public static void arenaListArenas(Player sender, @Param(name="schematic") String schematicName) {
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
-        PotPvPSchematic schematic = arenaHandler.getSchematic(schematicName);
+        ArenaSchematic schematic = arenaHandler.getSchematic(schematicName);
 
         if (schematic == null) {
             sender.sendMessage(ChatColor.RED + "Schematic " + schematicName + " not found.");
