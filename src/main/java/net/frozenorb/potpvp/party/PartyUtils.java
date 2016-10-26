@@ -40,7 +40,7 @@ public final class PartyUtils {
             } else {
                 new OddManOutMenu(oddManOut -> {
                     initiator.closeInventory();
-                    startTeamSplit(party, initiator, kitType, false);
+                    startTeamSplit(party, initiator, kitType, oddManOut);
                 }).openMenu(initiator);
             }
         }).openMenu(initiator);
