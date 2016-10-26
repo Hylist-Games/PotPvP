@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public final class KitsMenu extends Menu {
 
@@ -36,20 +35,20 @@ public final class KitsMenu extends Menu {
 
     @Override
     public Map<Integer, Button> getButtons(Player player) {
+        KitHandler kitHandler = PotPvPSI.getInstance().getKitHandler();
         Map<Integer, Button> buttons = new HashMap<>();
 
         // kit slots are 1-indexed
-        for (int i = 1; i <= KitHandler.KITS_PER_TYPE; i++) {
-            int column = (i * 2) - 1; // -1 to compensate for this being 0-indexed
+        for (int kitSlot = 1; kitSlot <= KitHandler.KITS_PER_TYPE; kitSlot++) {
+            Kit kit = kitHandler.getKit(player.getUniqueId(), kitType, kitSlot);
+            int column = (kitSlot * 2) - 1; // - 1 to compensate for this being 0-indexed
 
-            Optional<Kit> kitOpt = PotPvPSI.getInstance().getKitHandler().getKit(player.getUniqueId(), kitType, i);
+            buttons.put(getSlot(column, 0), new KitIconButton(kit, kitType, kitSlot));
+            buttons.put(getSlot(column, 2), new KitEditButton(kit, kitType, kitSlot));
 
-            buttons.put(getSlot(column, 0), new KitIconButton(kitOpt.orElse(null), kitType, i));
-            buttons.put(getSlot(column, 2), new KitEditButton(kitOpt.orElse(null), kitType, i));
-
-            if (kitOpt.isPresent()) {
-                buttons.put(getSlot(column, 3), new KitRenameButton(kitOpt.get()));
-                buttons.put(getSlot(column, 4), new KitDeleteButton(kitType, i));
+            if (kit != null) {
+                buttons.put(getSlot(column, 3), new KitRenameButton(kit));
+                buttons.put(getSlot(column, 4), new KitDeleteButton(kitType, kitSlot));
             } else {
                 buttons.put(getSlot(column, 3), Button.placeholder(Material.STAINED_GLASS_PANE, DyeColor.GRAY.getWoolData(), ""));
                 buttons.put(getSlot(column, 4), Button.placeholder(Material.STAINED_GLASS_PANE, DyeColor.GRAY.getWoolData(), ""));

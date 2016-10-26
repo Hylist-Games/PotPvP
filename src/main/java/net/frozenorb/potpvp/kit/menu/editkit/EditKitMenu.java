@@ -1,5 +1,7 @@
 package net.frozenorb.potpvp.kit.menu.editkit;
 
+import com.google.common.base.Preconditions;
+
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kit.Kit;
 import net.frozenorb.potpvp.kittype.KitTypeMeta;
@@ -30,7 +32,7 @@ public final class EditKitMenu extends Menu {
         setNoncancellingInventory(true);
         setUpdateAfterClick(false);
 
-        this.kit = kit;
+        this.kit = Preconditions.checkNotNull(kit, "kit");
     }
 
     @Override

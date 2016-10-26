@@ -15,22 +15,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 public final class CustomSelectKitTypeMenu extends Menu {
 
     private final Callback<KitType> callback;
-    private final Function<KitType, List<String>> descriptionFunc;
-    private final Function<KitType, Integer> quantityFunc;
+    private final Function<KitType, CustomKitTypeMeta> metaFunc;
 
-    public CustomSelectKitTypeMenu(Callback<KitType> callback,
-                                   Function<KitType, List<String>> descriptionFunc,
-                                   Function<KitType, Integer> quantityFunc) {
+    public CustomSelectKitTypeMenu(Callback<KitType> callback, Function<KitType, CustomKitTypeMeta> metaFunc) {
         super("Select a kit type...");
 
         setAutoUpdate(true);
 
         this.callback = Preconditions.checkNotNull(callback, "callback");
-        this.descriptionFunc = Preconditions.checkNotNull(descriptionFunc, "descriptionFunc");
-        this.quantityFunc = Preconditions.checkNotNull(quantityFunc, "quantityFunc");
+        this.metaFunc = Preconditions.checkNotNull(metaFunc, "metaFunc");
     }
 
     @Override
@@ -44,13 +43,19 @@ public final class CustomSelectKitTypeMenu extends Menu {
         int index = 0;
 
         for (KitType kitType : KitType.values()) {
-            List<String> description = descriptionFunc.apply(kitType);
-            int quantity = quantityFunc.apply(kitType);
-
-            buttons.put(index++, new KitTypeButton(kitType, callback, description, quantity));
+            CustomKitTypeMeta meta = metaFunc.apply(kitType);
+            buttons.put(index++, new KitTypeButton(kitType, callback, meta.getDescription(), meta.getQuantity()));
         }
 
         return buttons;
+    }
+
+    @AllArgsConstructor
+    public static final class CustomKitTypeMeta {
+
+        @Getter private int quantity;
+        @Getter private List<String> description;
+
     }
 
 }

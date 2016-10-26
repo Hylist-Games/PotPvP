@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -93,17 +94,27 @@ public final class MatchHandler {
     }
 
     /**
-     * Returns a sum of all players who are playing in a match.
-     * This method can be thought of as a more efficent way to
-     * count how many online players would pass {@link #isPlayingMatch(Player)}}.
+     * Returns a sum of all players who are playing in a match
      * @return number of players playing in matches
      */
     public int countPlayersPlayingMatches() {
+        return countPlayersPlayingMatches(i -> true);
+    }
+
+    /**
+     * Returns a sum of all players who are playing in a {@link Match}
+     * that passes the {@link Predicate} provided.
+     * @return number of players playing in matches that
+     *          pass the {@link Predicate} provided\
+     */
+    public int countPlayersPlayingMatches(Predicate<Match> inclusionPredicate) {
         int result = 0;
 
         for (Match match : hostedMatches) {
-            for (MatchTeam team : match.getTeams()) {
-                result += team.getAliveMembers().size();
+            if (inclusionPredicate.test(match)) {
+                for (MatchTeam team : match.getTeams()) {
+                    result += team.getAliveMembers().size();
+                }
             }
         }
 

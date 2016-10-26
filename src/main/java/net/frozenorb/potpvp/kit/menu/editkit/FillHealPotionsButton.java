@@ -28,9 +28,9 @@ final class FillHealPotionsButton extends Button {
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-                "",
-                ChatColor.LIGHT_PURPLE + "Fill your empty inventory space",
-                ChatColor.LIGHT_PURPLE + "wih Splash Health Potions."
+            "",
+            ChatColor.LIGHT_PURPLE + "Fill your empty inventory space",
+            ChatColor.LIGHT_PURPLE + "wih Splash Health Potions."
         );
     }
 

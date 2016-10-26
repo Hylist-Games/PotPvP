@@ -19,19 +19,17 @@ import lombok.Setter;
 public final class Kit {
 
     @Getter @Setter private String name;
-    @Getter @Setter private boolean favorite;
     @Getter @Setter private KitType type;
     @Getter @Setter private ItemStack[] inventoryContents;
 
     public static Kit ofDefaultKit(KitType kitType) {
-        return ofDefaultKit(kitType, "Default Kit", false);
+        return ofDefaultKit(kitType, "Default Kit");
     }
 
-    public static Kit ofDefaultKit(KitType kitType, String name, boolean favorite) {
+    public static Kit ofDefaultKit(KitType kitType, String name) {
         Kit kit = new Kit();
 
         kit.setName(name);
-        kit.setFavorite(favorite);
         kit.setType(kitType);
         kit.setInventoryContents(kitType.getMeta().getDefaultInventory());
 
@@ -39,7 +37,7 @@ public final class Kit {
     }
 
     public void apply(Player player) {
-        PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
+        PlayerUtils.resetInventory(player);
 
         // we don't let players actually customize their armor, we just apply default
         player.getInventory().setArmorContents(type.getMeta().getDefaultArmor());

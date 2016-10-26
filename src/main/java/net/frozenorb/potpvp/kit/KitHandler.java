@@ -14,7 +14,6 @@ import org.bukkit.Bukkit;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,28 +28,20 @@ public final class KitHandler {
         Bukkit.getPluginManager().registerEvents(new KitLoadListener(), PotPvPSI.getInstance());
     }
 
-    public Optional<Kit> getFavoriteKit(UUID playerUuid, KitType kitType) {
-        return kitStores.get(playerUuid).getFavoriteKit(kitType);
-    }
-
     public List<Kit> getKits(UUID playerUuid, KitType kitType) {
         return kitStores.get(playerUuid).getKits(kitType);
     }
 
-    public Optional<Kit> getKit(UUID playerUuid, KitType kitType, int slot) {
+    public Kit getKit(UUID playerUuid, KitType kitType, int slot) {
         return kitStores.get(playerUuid).getKit(kitType, slot);
     }
 
-    public Kit setKit(UUID playerUuid, KitType kitType, int slot, Kit kit) {
-        return kitStores.get(playerUuid).setKit(kitType, slot, kit);
+    public Kit saveDefaultKit(UUID playerUuid, KitType kitType, int slot) {
+        return kitStores.get(playerUuid).saveDefaultKit(kitType, slot);
     }
 
-    public Kit setDefaultKit(UUID playerUuid, KitType kitType, int slot) {
-        return kitStores.get(playerUuid).setDefaultKit(kitType, slot);
-    }
-
-    public Optional<Kit> removeKit(UUID playerUuid, KitType kitType, int slot) {
-        return kitStores.get(playerUuid).removeKit(kitType, slot);
+    public void removeKit(UUID playerUuid, KitType kitType, int slot) {
+        kitStores.get(playerUuid).removeKit(kitType, slot);
     }
 
     /* Deprecated because kit handling / saving should be entirely contained in `PlayerKitStore`s,
@@ -63,15 +54,20 @@ public final class KitHandler {
      */
     @Deprecated
     public void saveKitsAsync(UUID playerUuid) {
-        kitStores.get(playerUuid).saveKitsAsync();
+        Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
+            MongoCollection<Document> collection = MongoUtils.getCollection("PlayerKits");
+            Document playerKits = Document.parse(qLib.PLAIN_GSON.toJson(kitStores.get(playerUuid)));
+
+            collection.updateOne(new Document("player", playerUuid.toString()), playerKits, MongoUtils.UPSERT_OPTIONS);
+        });
     }
 
     public void loadKits(UUID playerUuid) {
-        MongoCollection<Document> playerKitsCollection = MongoUtils.getCollection("PlayerKits");
-        Document playerData = playerKitsCollection.find(new Document("player", playerUuid.toString())).first();
+        MongoCollection<Document> collection = MongoUtils.getCollection("PlayerKits");
+        Document playerKits = collection.find(new Document("player", playerUuid.toString())).first();
 
-        if (playerData != null) {
-            PlayerKitStore playerKitStore = qLib.PLAIN_GSON.fromJson(playerData.toString(), PlayerKitStore.class);
+        if (playerKits != null) {
+            PlayerKitStore playerKitStore = qLib.PLAIN_GSON.fromJson(playerKits.toJson(), PlayerKitStore.class);
             kitStores.put(playerUuid, playerKitStore);
         } else {
             kitStores.put(playerUuid, new PlayerKitStore(playerUuid));

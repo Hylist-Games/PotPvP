@@ -21,7 +21,7 @@ final class UnselectableItemButton extends Button {
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-                ChatColor.RED + "No items can be changed in this kit."
+            ChatColor.RED + "No items can be changed in this kit."
         );
     }
 
