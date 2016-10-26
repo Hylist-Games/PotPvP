@@ -150,13 +150,12 @@ public final class Party {
     }
 
     public void leave(Player player) {
-        if (!members.remove(player.getUniqueId())) {
+        if (isLeader(player.getUniqueId()) && members.size() == 1) {
+            disband();
             return;
         }
 
-        // disband parties of 1 member or less
-        if (members.size() <= 1) {
-            disband();
+        if (!members.remove(player.getUniqueId())) {
             return;
         }
 
@@ -192,12 +191,6 @@ public final class Party {
 
     public void kick(Player player) {
         if (!members.remove(player.getUniqueId())) {
-            return;
-        }
-
-        // disband parties of 1 member or less
-        if (members.size() <= 1) {
-            disband();
             return;
         }
 
