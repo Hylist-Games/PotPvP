@@ -1,12 +1,17 @@
 package net.frozenorb.potpvp.arena;
 
 import lombok.Getter;
+import net.frozenorb.potpvp.arena.schematic.SchematicUtil;
+import net.frozenorb.potpvp.arena.schematic.WorldSchematic;
+
+import java.io.File;
 
 /**
  * Represents an arena schematic. See {@link net.frozenorb.potpvp.arena}
- * for a comparision of {@link Arena}s and {@link ArenaSchematic}s.
+ * for a comparision of {@link Arena}s and {@link PotPvPSchematic}s.
  */
-public final class ArenaSchematic {
+public final class PotPvPSchematic {
+    private static final File SCHEMATICS_DIRECTORY = new File(new File(new File("plugins"), "WorldEdit"), "schematics");
 
     /**
      * Name of this schematic (ex "Candyland")
@@ -37,9 +42,17 @@ public final class ArenaSchematic {
      */
     @Getter private boolean archerOnly;
 
+    public File getFile() {
+        return new File(SCHEMATICS_DIRECTORY, name + ".schematic");
+    }
+
+    public WorldSchematic asWorldSchematic() throws Exception {
+        return SchematicUtil.instance().load(getFile());
+    }
+
     @Override
     public boolean equals(Object o) {
-        return o instanceof ArenaSchematic && ((ArenaSchematic) o).name.equals(name);
+        return o instanceof PotPvPSchematic && ((PotPvPSchematic) o).name.equals(name);
     }
 
     @Override

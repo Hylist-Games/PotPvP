@@ -1,5 +1,6 @@
 package net.frozenorb.potpvp.arena;
 
+import lombok.*;
 import net.frozenorb.qlib.cuboid.Cuboid;
 
 import org.bukkit.Location;
@@ -7,19 +8,17 @@ import org.bukkit.Location;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * Represents a pasted instance of an {@link ArenaSchematic}.
+ * Represents a pasted instance of an {@link PotPvPSchematic}.
  * See {@link net.frozenorb.potpvp.arena} for a comparision of
- * {@link Arena}s and {@link ArenaSchematic}s.
+ * {@link Arena}s and {@link PotPvPSchematic}s.
  */
+@AllArgsConstructor
+@NoArgsConstructor
 public final class Arena {
 
     /**
-     * The name of the {@link ArenaSchematic} this Arena is
+     * The name of the {@link PotPvPSchematic} this Arena is
      * copied from.
      * @see net.frozenorb.potpvp.arena
      */

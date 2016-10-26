@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 /**
- * Facilitates easy access to {@link ArenaSchematic}s and to {@link Arena}s
+ * Facilitates easy access to {@link PotPvPSchematic}s and to {@link Arena}s
  * based on their schematic+copy pair
  */
 public final class ArenaHandler {
@@ -37,7 +37,7 @@ public final class ArenaHandler {
     // schematic -> (instance id -> Arena instance)
     private Map<String, Map<Integer, Arena>> arenaInstances = new HashMap<>();
     // schematic name -> ArenaSchematic instance
-    private Map<String, ArenaSchematic> schematics = new HashMap<>();
+    private Map<String, PotPvPSchematic> schematics = new HashMap<>();
 
     public ArenaHandler() {
         Bukkit.getPluginManager().registerEvents(new ArenaClearListener(), PotPvPSI.getInstance());
@@ -69,10 +69,10 @@ public final class ArenaHandler {
             // parsed as a List<ArenaSchematic> and then inserted into Map<String, ArenaSchematic>
             if (schematicsFile.exists()) {
                 try (Reader schematicsFileReader = Files.newReader(schematicsFile, Charsets.UTF_8)) {
-                    Type schematicListType = new TypeToken<List<ArenaSchematic>>() {}.getType();
-                    List<ArenaSchematic> schematicList = qLib.GSON.fromJson(schematicsFileReader, schematicListType);
+                    Type schematicListType = new TypeToken<List<PotPvPSchematic>>() {}.getType();
+                    List<PotPvPSchematic> schematicList = qLib.GSON.fromJson(schematicsFileReader, schematicListType);
 
-                    for (ArenaSchematic schematic : schematicList) {
+                    for (PotPvPSchematic schematic : schematicList) {
                         this.schematics.put(schematic.getName(), schematic);
                     }
                 }
@@ -89,7 +89,7 @@ public final class ArenaHandler {
      * @param copy copy of arena to look up
      * @return Arena object existing for specified schematic and copy pair, if one exists
      */
-    public Arena getArena(ArenaSchematic schematic, int copy) {
+    public Arena getArena(PotPvPSchematic schematic, int copy) {
         Map<Integer, Arena> arenaCopies = arenaInstances.get(schematic.getName());
 
         if (arenaCopies != null) {
@@ -104,7 +104,7 @@ public final class ArenaHandler {
      * @param schematic schematic to look up arenas for
      * @return immutable set of all arenas for given schematic
      */
-    public Set<Arena> getArenas(ArenaSchematic schematic) {
+    public Set<Arena> getArenas(PotPvPSchematic schematic) {
         Map<Integer, Arena> arenaCopies = arenaInstances.get(schematic.getName());
 
         if (arenaCopies != null) {
@@ -118,7 +118,7 @@ public final class ArenaHandler {
      * Finds all schematic instances registered
      * @return immutable set of all schematics registered
      */
-    public Set<ArenaSchematic> getSchematics() {
+    public Set<PotPvPSchematic> getSchematics() {
         return ImmutableSet.copyOf(schematics.values());
     }
 
@@ -127,7 +127,7 @@ public final class ArenaHandler {
      * @param schematicName schematic id to search with
      * @return ArenaSchematic present for the given id, if one exists
      */
-    public ArenaSchematic getSchematic(String schematicName) {
+    public PotPvPSchematic getSchematic(String schematicName) {
         return schematics.get(schematicName);
     }
 
@@ -135,12 +135,12 @@ public final class ArenaHandler {
      * Attempts to allocate an arena for use, using the Predicate provided to determine
      * which arenas are eligible for use. Handles calling {@link net.frozenorb.potpvp.arena.event.ArenaAllocatedEvent}
      * automatically.
-     * @param acceptableSchematicPredicate Predicate to use to determine if an {@link ArenaSchematic}
+     * @param acceptableSchematicPredicate Predicate to use to determine if an {@link PotPvPSchematic}
      *                                     is eligible for use.
      * @return The arena which has been allocated for use, or null, if one was not found.
      */
-    public Arena allocateUnusedArena(Predicate<ArenaSchematic> acceptableSchematicPredicate) {
-        for (ArenaSchematic schematic : schematics.values()) {
+    public Arena allocateUnusedArena(Predicate<PotPvPSchematic> acceptableSchematicPredicate) {
+        for (PotPvPSchematic schematic : schematics.values()) {
             if (!acceptableSchematicPredicate.test(schematic)) {
                 continue;
             }
