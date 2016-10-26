@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.party.command;
 import net.frozenorb.potpvp.PotPvPLang;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.party.Party;
+import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
 import net.md_5.bungee.api.ChatColor;
@@ -20,10 +21,16 @@ public final class PartyInviteCommand {
 
     @Command(names = {"party invite", "p invite", "t invite", "team invite", "invite", "inv", "party inv", "p inv", "t inv", "team invite", "f invite", "f inv"}, permission = "")
     public static void partyInvite(Player sender, @Param(name = "player") Player target) {
-        Party party = PotPvPSI.getInstance().getPartyHandler().getOrCreateParty(sender);
+        PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
+        Party party = partyHandler.getOrCreateParty(sender);
 
         if (sender == target) {
             sender.sendMessage(ChatColor.RED + "You cannot invite yourself to your own party.");
+            return;
+        }
+
+        if (party.isMember(target.getUniqueId())) {
+            sender.sendMessage(ChatColor.RED + target.getName() + " is already in your party.");
             return;
         }
 
@@ -32,8 +39,8 @@ public final class PartyInviteCommand {
             return;
         }
 
-        if (party.isMember(target.getUniqueId())) {
-            sender.sendMessage(ChatColor.RED + target.getName() + " is already in your party.");
+        if (partyHandler.hasParty(target)) {
+            sender.sendMessage(ChatColor.RED + target.getName() + " is already in another party.");
             return;
         }
 
