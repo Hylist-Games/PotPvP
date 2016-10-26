@@ -52,7 +52,7 @@ public final class Arena {
     /**
      * Spectator spawn location for this arena
      */
-    @Getter private Location spectatorSpawn;
+    private Location spectatorSpawn;
 
     /**
      * If this arena is currently being used
@@ -62,6 +62,29 @@ public final class Arena {
     // AccessLevel.NONE so arenas can only marked as in use
     // or not in use by the appropriate methods in ArenaHandler
     @Getter @Setter(AccessLevel.PACKAGE) private transient boolean inUse;
+
+    public Location getSpectatorSpawn() {
+        // if it's been defined in the actual map file or calculated before
+        if (spectatorSpawn != null) {
+            return spectatorSpawn;
+        }
+
+        int xDiff = Math.abs(team1Spawn.getBlockX() - team2Spawn.getBlockX());
+        int yDiff = Math.abs(team1Spawn.getBlockY() - team2Spawn.getBlockY());
+        int zDiff = Math.abs(team1Spawn.getBlockZ() - team2Spawn.getBlockZ());
+
+        int newX = Math.min(team1Spawn.getBlockX(), team2Spawn.getBlockX()) + (xDiff / 2);
+        int newY = Math.min(team1Spawn.getBlockY(), team2Spawn.getBlockY()) + (yDiff / 2);
+        int newZ = Math.min(team1Spawn.getBlockZ(), team2Spawn.getBlockZ()) + (zDiff / 2);
+
+        spectatorSpawn = new Location(team1Spawn.getWorld(), newX, newY, newZ);
+
+        while (spectatorSpawn.getBlock().getType().isSolid()) {
+            spectatorSpawn = spectatorSpawn.add(0, 1, 0);
+        }
+
+        return spectatorSpawn;
+    }
 
     @Override
     public boolean equals(Object o) {
