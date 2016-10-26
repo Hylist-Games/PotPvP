@@ -36,16 +36,19 @@ public final class KitSelectionListener implements Listener {
         for (Player player : Bukkit.getOnlinePlayers()) {
             MatchTeam team = match.getTeam(player.getUniqueId());
 
-            if (team != null) {
-                int slot = 2; // start in 3rd slot
-
-                for (Kit kit : kitHandler.getKits(player.getUniqueId(), kitType)) {
-                    player.getInventory().setItem(slot, kit.createSelectionItem());
-                    slot += 2;
-                }
-
-                player.getInventory().setItem(0, Kit.ofDefaultKit(kitType).createSelectionItem());
+            if (team == null) {
+                continue;
             }
+
+            int slot = 2; // start in 3rd slot
+
+            for (Kit kit : kitHandler.getKits(player.getUniqueId(), kitType)) {
+                player.getInventory().setItem(slot, kit.createSelectionItem());
+                slot += 2;
+            }
+
+            player.getInventory().setItem(0, Kit.ofDefaultKit(kitType).createSelectionItem());
+            player.updateInventory();
         }
     }
 
