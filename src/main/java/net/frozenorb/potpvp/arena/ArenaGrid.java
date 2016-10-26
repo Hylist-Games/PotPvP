@@ -1,11 +1,13 @@
 package net.frozenorb.potpvp.arena;
 
 import com.sk89q.worldedit.Vector;
+
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.schematic.SchematicUtil;
 import net.frozenorb.potpvp.arena.schematic.WorldSchematic;
 import net.frozenorb.qlib.cuboid.Cuboid;
 import net.frozenorb.qlib.util.BlockUtils;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;

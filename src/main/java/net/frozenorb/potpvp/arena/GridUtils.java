@@ -1,7 +1,9 @@
 package net.frozenorb.potpvp.arena;
 
 import com.sk89q.worldedit.Vector;
+
 import net.frozenorb.qlib.cuboid.Cuboid;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;

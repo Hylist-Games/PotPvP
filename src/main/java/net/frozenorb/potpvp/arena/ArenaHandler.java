@@ -5,10 +5,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
 
-import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 
-import lombok.Getter;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.event.ArenaAllocatedEvent;
 import net.frozenorb.potpvp.arena.event.ArenaReleasedEvent;
@@ -29,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+
+import lombok.Getter;
 
 /**
  * Facilitates easy access to {@link ArenaSchematic}s and to {@link Arena}s

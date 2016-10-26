@@ -1,12 +1,17 @@
 package net.frozenorb.potpvp.arena;
 
-import lombok.*;
 import net.frozenorb.qlib.cuboid.Cuboid;
 
 import org.bukkit.Location;
 
 import java.util.Objects;
 import java.util.function.Predicate;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Represents a pasted instance of an {@link ArenaSchematic}.

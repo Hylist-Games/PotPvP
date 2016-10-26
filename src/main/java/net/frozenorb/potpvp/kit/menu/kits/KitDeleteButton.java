@@ -4,9 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.kit.Kit;
 import net.frozenorb.potpvp.kit.KitHandler;
-import net.frozenorb.potpvp.kit.menu.editkit.EditKitMenu;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.qlib.menu.Button;
 

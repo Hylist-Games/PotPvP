@@ -1,7 +1,18 @@
 package net.frozenorb.potpvp.arena.schematic;
 
-import com.sk89q.jnbt.*;
-import com.sk89q.worldedit.*;
+import com.sk89q.jnbt.ByteArrayTag;
+import com.sk89q.jnbt.CompoundTag;
+import com.sk89q.jnbt.IntTag;
+import com.sk89q.jnbt.ListTag;
+import com.sk89q.jnbt.NBTInputStream;
+import com.sk89q.jnbt.ShortTag;
+import com.sk89q.jnbt.StringTag;
+import com.sk89q.jnbt.Tag;
+import com.sk89q.worldedit.BlockVector;
+import com.sk89q.worldedit.CuboidClipboard;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.schematic.SchematicFormat;

@@ -1,12 +1,10 @@
 package net.frozenorb.potpvp.arena;
 
+import java.io.File;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import net.frozenorb.potpvp.arena.schematic.SchematicUtil;
-import net.frozenorb.potpvp.arena.schematic.WorldSchematic;
-
-import java.io.File;
 
 /**
  * Represents an arena schematic. See {@link net.frozenorb.potpvp.arena}

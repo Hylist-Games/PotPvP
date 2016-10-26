@@ -7,14 +7,15 @@ import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
-import javafx.util.Pair;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.experimental.Accessors;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import java.util.Map;
+
+import javafx.util.Pair;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
 public class WorldSchematic {

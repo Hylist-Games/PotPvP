@@ -3,7 +3,6 @@ package net.frozenorb.potpvp.party;
 import com.google.common.base.Preconditions;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import lombok.Getter;
