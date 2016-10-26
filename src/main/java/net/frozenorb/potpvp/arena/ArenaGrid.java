@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.arena;
 
 import com.sk89q.worldedit.Vector;
+import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.schematic.WorldSchematic;
 import net.frozenorb.qlib.cuboid.Cuboid;
 import net.frozenorb.qlib.util.BlockUtils;
@@ -9,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +40,26 @@ public class ArenaGrid {
     private static final int X_DISTANCE = 500;
     private final Map<PotPvPSchematic, SchematicGridData> grid = new HashMap<>();
 
+    public void loadSchematics() {
+        PotPvPSI.getInstance().getArenaHandler().getSchematics().forEach((schematic) -> {
+            SchematicGridData data = new SchematicGridData(schematic.getIndex());
+            Arena[] arenas = new Arena[schematic.getCopies()];
+
+            for (int z = 1; z <= schematic.getCopies(); z++) {
+                try {
+                    arenas[z - 1] = createArena(data.x, z, schematic, data, false);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    System.out.println("[ArenaGrid] Couldn't load schematic " + schematic.getName() +
+                            "'s arena at index " + z + " due to an exception!");
+                }
+            }
+
+            data.arenas = arenas;
+            grid.put(schematic, data);
+        });
+    }
+
     public PotPvPSchematic schematicBy(int index) {
         return grid.entrySet().stream()
                 .filter((entry) -> entry.getValue().x == index)
@@ -61,13 +83,25 @@ public class ArenaGrid {
         return grid.get(schematic).x;
     }
 
+    private int nextIndex() {
+        return grid.entrySet().stream().map(Map.Entry::getValue)
+                .mapToInt((data) -> data.x)
+                .max().orElse(0) + 1;
+    }
+
     public void scaleCopies(Player initiator, PotPvPSchematic schematic, int copies) {
         if (schematic == null || !schematic.getFile().exists()) {
             initiator.sendMessage("Not a valid schematic!");
             return;
         }
 
-        SchematicGridData data = grid.computeIfAbsent(schematic, (ign) -> new SchematicGridData(grid.size() + 1));;
+        SchematicGridData data = grid.computeIfAbsent(schematic, (ign) -> {
+            int dataIndex = nextIndex();
+            System.out.println("[ArenaGrid] Assigning index " + dataIndex + " to schematic " + schematic.getName());
+            schematic.setIndex(dataIndex);
+
+            return new SchematicGridData(dataIndex);
+        });
 
         try {
             if (data.arenas.length > copies) {
@@ -75,10 +109,21 @@ public class ArenaGrid {
                 initiator.sendMessage("Deleted arenas successfully. New count " + copies);
             } else {
                 for (int z = data.arenas.length; z <= copies; z++) {
-                    createArena(data.x, z, schematic, data);
+                    createArena(data.x, z, schematic, data, true);
                 }
 
                 initiator.sendMessage("Added arenas successfully. New count " + copies);
+            }
+
+            schematic.setCopies(data.arenas.length);
+
+            try {
+                PotPvPSI.getInstance().getArenaHandler().saveSchematicData();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                System.out.println("[ArenaGrid] Could not save the schematic data for " + schematic.getName() +
+                        ". It's set index in runtime is " + data.x +
+                        " and the amount of copies is " + schematic.getCopies());
             }
         } catch (Exception ex) {
             initiator.sendMessage("There was an error performing that operation: "
@@ -86,7 +131,7 @@ public class ArenaGrid {
         }
     }
 
-    private Arena createArena(int x, int z, PotPvPSchematic schematic, SchematicGridData data) throws Exception {
+    private Arena createArena(int x, int z, PotPvPSchematic schematic, SchematicGridData data, boolean place) throws Exception {
         World world = Bukkit.getWorlds().get(0);
         WorldSchematic worldSchematic = data.getWorldSchematic(schematic);
 
@@ -97,7 +142,7 @@ public class ArenaGrid {
         Vector arenaStart = STARTING_POINT.add(new Vector(realX, 0, realZ));
 
         /* place the schematic and get the end point, find the spawns */
-        Vector endPoint = worldSchematic.place(arenaStart).getValue();
+        Vector endPoint = (place) ? worldSchematic.place(arenaStart).getValue() : arenaStart.add(worldSchematic.getSize());
         Cuboid cuboid = new Cuboid(GridUtils.locationFrom(arenaStart, world), GridUtils.locationFrom(endPoint, world));
         Vector[] spawns = getSpawns(schematic, arenaStart, cuboid);
 

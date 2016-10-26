@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
 
+import lombok.Getter;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.event.ArenaAllocatedEvent;
 import net.frozenorb.potpvp.arena.event.ArenaReleasedEvent;
@@ -35,9 +36,11 @@ public final class ArenaHandler {
     private static final String SCHEMATICS_FILE_NAME = "schematics.json";
 
     // schematic -> (instance id -> Arena instance)
-    private Map<String, Map<Integer, Arena>> arenaInstances = new HashMap<>();
+    private final Map<String, Map<Integer, Arena>> arenaInstances = new HashMap<>();
     // schematic name -> ArenaSchematic instance
-    private Map<String, PotPvPSchematic> schematics = new HashMap<>();
+    private final Map<String, PotPvPSchematic> schematics = new HashMap<>();
+    @Getter
+    private final ArenaGrid grid = new ArenaGrid();
 
     public ArenaHandler() {
         Bukkit.getPluginManager().registerEvents(new ArenaClearListener(), PotPvPSI.getInstance());
@@ -81,6 +84,17 @@ public final class ArenaHandler {
             // just rethrow, can't recover from arenas failing to load
             throw new RuntimeException(ex);
         }
+
+        Bukkit.getScheduler().runTask(PotPvPSI.getInstance(), grid::loadSchematics);
+    }
+
+    void saveSchematicData() throws IOException {
+        World arenaWorld = Bukkit.getWorlds().get(0);
+        Files.write(
+                qLib.GSON.toJson(schematics.values()),
+                new File(arenaWorld.getWorldFolder(), SCHEMATICS_FILE_NAME),
+                Charsets.UTF_8
+        );
     }
 
     /**

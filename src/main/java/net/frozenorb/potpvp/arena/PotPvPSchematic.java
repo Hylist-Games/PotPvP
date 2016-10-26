@@ -1,6 +1,8 @@
 package net.frozenorb.potpvp.arena;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import net.frozenorb.potpvp.arena.schematic.SchematicUtil;
 import net.frozenorb.potpvp.arena.schematic.WorldSchematic;
 
@@ -41,6 +43,20 @@ public final class PotPvPSchematic {
      * Some schematics are built for specifically archer fights
      */
     @Getter private boolean archerOnly;
+
+    /**
+     * It's index on the X axis on the grid. Set to 0 if not set yet
+     *
+     * @see ArenaGrid
+     */
+    @Getter @Setter(AccessLevel.PACKAGE) private int index = 0;
+
+    /**
+     * The amount of arenas to be used on the Z axis on the grid
+     *
+     * @see ArenaGrid
+     */
+    @Getter @Setter(AccessLevel.PACKAGE) private int copies = 0;
 
     public File getFile() {
         return new File(SCHEMATICS_DIRECTORY, name + ".schematic");
