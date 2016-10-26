@@ -24,7 +24,6 @@ public final class PartyHandler {
     /**
      * Number of seconds it takes for a {@link PartyInvite}
      * to expire after being sent.
-     * @see PartyInvite#isActive()
      */
     static final int INVITE_EXPIRATION_SECONDS = 30;
 
