@@ -22,7 +22,7 @@ public final class PartyInviteCommand {
     @Command(names = {"party invite", "p invite", "t invite", "team invite", "invite", "inv", "party inv", "p inv", "t inv", "team invite", "f invite", "f inv"}, permission = "")
     public static void partyInvite(Player sender, @Param(name = "player") Player target) {
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
-        Party party = partyHandler.getOrCreateParty(sender);
+        Party party = partyHandler.getParty(sender);
 
         if (sender == target) {
             sender.sendMessage(ChatColor.RED + "You cannot invite yourself to your own party.");
@@ -44,6 +44,9 @@ public final class PartyInviteCommand {
             return;
         }
 
+        // only create party if validations succeed
+        party = partyHandler.getOrCreateParty(sender);
+
         if (party.isLeader(sender.getUniqueId())) {
             party.invite(target);
         } else {
@@ -53,7 +56,8 @@ public final class PartyInviteCommand {
 
     @Command(names = {"party invite **", "p invite **", "t invite **", "team invite **", "invite **", "inv **", "party inv **"}, permission = "op")
     public static void partyInviteAll(Player sender) {
-        Party party = PotPvPSI.getInstance().getPartyHandler().getOrCreateParty(sender);
+        PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
+        Party party = partyHandler.getOrCreateParty(sender);
 
         if (!party.isLeader(sender.getUniqueId())) {
             sender.sendMessage(PotPvPLang.NOT_LEADER_OF_PARTY);
