@@ -5,6 +5,8 @@ import com.mongodb.client.MongoDatabase;
 
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.kit.KitHandler;
+import net.frozenorb.potpvp.kittype.KitType;
+import net.frozenorb.potpvp.kittype.KitTypeParameterType;
 import net.frozenorb.potpvp.listener.BasicPreventionListener;
 import net.frozenorb.potpvp.listener.ChatListener;
 import net.frozenorb.potpvp.listener.PearlCooldownListener;
@@ -76,6 +78,7 @@ public final class PotPvPSI extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PearlCooldownListener(), this);
 
         FrozenCommandHandler.registerAll(this);
+        FrozenCommandHandler.registerParameterType(KitType.class, new KitTypeParameterType());
         FrozenTabHandler.setLayoutProvider(new PotPvPLayoutProvider());
         FrozenNametagHandler.registerProvider(new PotPvPNametagProvider());
         FrozenScoreboardHandler.setConfiguration(PotPvPScoreboardConfiguration.create());
