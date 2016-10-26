@@ -6,6 +6,7 @@ import net.frozenorb.potpvp.duels.DuelInviteCommand;
 import net.frozenorb.potpvp.rematch.RematchData;
 import net.frozenorb.potpvp.rematch.RematchHandler;
 import net.frozenorb.potpvp.rematch.RematchItems;
+import net.frozenorb.potpvp.util.InventoryUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,6 +36,9 @@ public final class RematchItemListener implements Listener {
             if (rematchData != null) {
                 Player target = Bukkit.getPlayer(rematchData.getTarget());
                 DuelInviteCommand.duel(player, target, rematchData.getKitType());
+                
+                InventoryUtils.resetInventoryDelayed(player);
+                InventoryUtils.resetInventoryDelayed(target);
             }
         } else if (item.isSimilar(RematchItems.SENT_REMATCH_ITEM)) {
             event.setCancelled(true);
