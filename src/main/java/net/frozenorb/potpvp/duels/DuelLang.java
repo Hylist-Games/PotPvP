@@ -23,7 +23,7 @@ public enum DuelLang {
     PREVIOUS_INVITE_DELETED(DUEL_PREFIX + "Previous invite deleted..."),
     ALREADY_INVITED_PLAYER(DUEL_PREFIX + string(RED) + "You already invited %s to a duel with this kit!"),
     CANNOT_INVITE_PLAYER(DUEL_PREFIX + string(RED) + "Sorry! You can't invite %s due to their settings"),
-    INVITED_MESSAGE_START(DUEL_PREFIX + string(GOLD) + "%s" + GRAY + "has invited you to a duel with kit type %s!"),
+    INVITED_MESSAGE_START(DUEL_PREFIX + string(GOLD) + "%s" + GRAY + " has invited you to a duel with kit type %s!"),
     INVITED_MESSAGE_BUTTON(DUEL_PREFIX + string(GOLD) + "Click here to accept their invite!"),
     INVITED_MESSAGE_OR_COMMAND(DUEL_PREFIX + "Or type " + GOLD + "/accept %s" + GRAY + "!"),
     SUCCESSFULLY_SENT_INVITE(DUEL_PREFIX + "Successfully sent a duel invite to " + GOLD + "%s" + GRAY + "!")
