@@ -27,7 +27,7 @@ public final class RematchData {
     }
 
     public boolean isExpired() {
-        return expiresAt.isAfter(Instant.now());
+        return Instant.now().isAfter(expiresAt);
     }
 
     public int getSecondsUntilExpiration() {
