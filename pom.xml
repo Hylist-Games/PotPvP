@@ -20,6 +20,10 @@
             <id>minehq-repo</id>
             <url>http://maven.minehq.com:8081/artifactory/minehq-all/</url>
         </repository>
+        <repository>
+            <id>sk89q-repo</id>
+            <url>https://maven.sk89q.com/repo</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -27,21 +31,27 @@
         <dependency>
             <groupId>net.frozenorb</groupId>
             <artifactId>mspigot-api</artifactId>
-            <version>LATEST</version>
+            <version>1.7.10-R0.1-SNAPSHOT</version>
         </dependency>
 
         <!-- MineHQ Jars -->
         <dependency>
             <groupId>net.frozenorb</groupId>
             <artifactId>qLib</artifactId>
-            <version>LATEST</version>
+            <version>1.0</version>
         </dependency>
 
         <!-- Misc. Jars -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>LATEST</version>
+            <version>1.16.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldedit</artifactId>
+            <version>6.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
