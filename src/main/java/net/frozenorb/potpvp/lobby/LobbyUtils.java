@@ -48,10 +48,12 @@ public final class LobbyUtils {
 
                 if (partySize == 2) {
                     if (!queueHandler.isQueued(party)) {
-                        inventory.setItem(1, QueueItems.JOIN_PARTY_QUEUE_ITEM);
+                        inventory.setItem(1, QueueItems.JOIN_PARTY_UNRANKED_QUEUE_ITEM);
                     } else {
-                        inventory.setItem(1, QueueItems.LEAVE_PARTY_QUEUE_ITEM);
+                        inventory.setItem(1, QueueItems.LEAVE_PARTY_UNRANKED_QUEUE_ITEM);
                     }
+
+                    inventory.setItem(2, QueueItems.JOIN_PARTY_RANKED_QUEUE_ITEM);
                 } else if (partySize > 2) {
                     inventory.setItem(1, PartyItems.START_TEAM_SPLIT_ITEM);
                 }
@@ -79,11 +81,12 @@ public final class LobbyUtils {
             }
 
             if (!queueHandler.isQueued(player.getUniqueId())) {
-                inventory.setItem(1, QueueItems.JOIN_SOLO_QUEUE_ITEM);
+                inventory.setItem(1, QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM);
             } else {
-                inventory.setItem(1, QueueItems.LEAVE_SOLO_QUEUE_ITEM);
+                inventory.setItem(1, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
             }
 
+            inventory.setItem(3, QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM);
             inventory.setItem(5, LobbyItems.EVENTS_ITEM);
         }
 

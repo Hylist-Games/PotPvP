@@ -50,7 +50,7 @@ public final class QueueItemListener implements Listener {
         ItemStack item = event.getItem();
         Player player = event.getPlayer();
 
-        if (item.isSimilar(QueueItems.JOIN_SOLO_QUEUE_ITEM)) {
+        if (item.isSimilar(QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM)) {
             event.setCancelled(true);
 
             // try to check validation issues in advance
@@ -61,10 +61,10 @@ public final class QueueItemListener implements Listener {
                     event.getPlayer().closeInventory();
                 }, selectionMenuAddition).openMenu(player);
             }
-        } else if (item.isSimilar(QueueItems.LEAVE_SOLO_QUEUE_ITEM)) {
+        } else if (item.isSimilar(QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM)) {
             event.setCancelled(true);
             queueHandler.leaveQueue(player);
-        } else if (item.isSimilar(QueueItems.JOIN_PARTY_QUEUE_ITEM)) {
+        } else if (item.isSimilar(QueueItems.JOIN_PARTY_UNRANKED_QUEUE_ITEM)) {
             event.setCancelled(true);
 
             Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
@@ -83,7 +83,7 @@ public final class QueueItemListener implements Listener {
                     event.getPlayer().closeInventory();
                 }, selectionMenuAddition).openMenu(player);
             }
-        } else if (item.isSimilar(QueueItems.LEAVE_PARTY_QUEUE_ITEM)) {
+        } else if (item.isSimilar(QueueItems.LEAVE_PARTY_UNRANKED_QUEUE_ITEM)) {
             event.setCancelled(true);
 
             Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
@@ -93,6 +93,13 @@ public final class QueueItemListener implements Listener {
             if (party != null && party.isLeader(player.getUniqueId())) {
                 queueHandler.leaveQueue(party);
             }
+        } else if (
+            item.isSimilar(QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM) ||
+            item.isSimilar(QueueItems.JOIN_PARTY_RANKED_QUEUE_ITEM) ||
+            item.isSimilar(QueueItems.LEAVE_SOLO_RANKED_QUEUE_ITEM) ||
+            item.isSimilar(QueueItems.LEAVE_PARTY_RANKED_QUEUE_ITEM)
+        ) {
+            player.sendMessage(ChatColor.RED + "Ranked is currently disabled.");
         }
     }
 
