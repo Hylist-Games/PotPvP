@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kit.Kit;
+import net.frozenorb.potpvp.kit.KitHandler;
 import net.frozenorb.potpvp.kit.menu.editkit.EditKitMenu;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.qlib.menu.Button;
@@ -37,9 +38,9 @@ final class KitIconButton extends Button {
     public List<String> getDescription(Player player) {
         if (kit != null) {
             return ImmutableList.of(
-                    "",
-                    ChatColor.GREEN + "Heals: " + ChatColor.WHITE + kit.countHeals(),
-                    ChatColor.RED + "Debuffs: " + ChatColor.WHITE + kit.countDebuffs()
+                "",
+                ChatColor.GREEN + "Heals: " + ChatColor.WHITE + kit.countHeals(),
+                ChatColor.RED + "Debuffs: " + ChatColor.WHITE + kit.countDebuffs()
             );
         } else {
             return ImmutableList.of();
@@ -56,10 +57,11 @@ final class KitIconButton extends Button {
         Kit kit = this.kit;
 
         if (kit == null) {
-            kit = PotPvPSI.getInstance().getKitHandler().setDefaultKit(player.getUniqueId(), kitType, this.slot);
+            KitHandler kitHandler = PotPvPSI.getInstance().getKitHandler();
+            kit = kitHandler.saveDefaultKit(player.getUniqueId(), kitType, this.slot);
         }
 
-        (new EditKitMenu(kit)).openMenu(player);
+        new EditKitMenu(kit).openMenu(player);
     }
 
 }

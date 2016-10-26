@@ -34,8 +34,8 @@ final class KitRenameButton extends Button {
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-                "",
-                ChatColor.YELLOW + "Click to rename this kit."
+            "",
+            ChatColor.YELLOW + "Click to rename this kit."
         );
     }
 
@@ -48,6 +48,7 @@ final class KitRenameButton extends Button {
     public void clicked(Player player, int slot, ClickType clickType) {
         ConversationFactory factory = new ConversationFactory(PotPvPSI.getInstance()).withFirstPrompt(new StringPrompt() {
 
+            @Override
             public String getPromptText(ConversationContext context) {
                 return ChatColor.YELLOW + "Renaming " + ChatColor.BOLD + kit.getName() + ChatColor.YELLOW +"... " + ChatColor.GREEN + "Enter the new name now.";
             }
@@ -64,7 +65,7 @@ final class KitRenameButton extends Button {
                 PotPvPSI.getInstance().getKitHandler().saveKitsAsync(player.getUniqueId());
 
                 ctx.getForWhom().sendRawMessage(ChatColor.YELLOW + "Kit renamed.");
-                (new KitsMenu(kit.getType())).openMenu(player);
+                new KitsMenu(kit.getType()).openMenu(player);
                 return Prompt.END_OF_CONVERSATION;
             }
 

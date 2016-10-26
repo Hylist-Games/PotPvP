@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kit.Kit;
+import net.frozenorb.potpvp.kit.KitHandler;
 import net.frozenorb.potpvp.kit.menu.editkit.EditKitMenu;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.qlib.menu.Button;
@@ -36,8 +37,8 @@ final class KitEditButton extends Button {
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-                "",
-                ChatColor.YELLOW + "Click to edit this kit."
+            "",
+            ChatColor.YELLOW + "Click to edit this kit."
         );
     }
 
@@ -51,10 +52,11 @@ final class KitEditButton extends Button {
         Kit kit = this.kit;
 
         if (kit == null) {
-            kit = PotPvPSI.getInstance().getKitHandler().setDefaultKit(player.getUniqueId(), kitType, this.slot);
+            KitHandler kitHandler = PotPvPSI.getInstance().getKitHandler();
+            kit = kitHandler.saveDefaultKit(player.getUniqueId(), kitType, this.slot);
         }
 
-        (new EditKitMenu(kit)).openMenu(player);
+        new EditKitMenu(kit).openMenu(player);
     }
 
 }

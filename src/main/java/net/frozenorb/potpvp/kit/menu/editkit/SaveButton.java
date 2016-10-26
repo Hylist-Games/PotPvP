@@ -35,8 +35,8 @@ final class SaveButton extends Button {
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-                "",
-                ChatColor.YELLOW + "Click this to save your kit."
+            "",
+            ChatColor.YELLOW + "Click this to save your kit."
         );
     }
 
@@ -60,7 +60,7 @@ final class SaveButton extends Button {
         player.closeInventory();
         InventoryUtils.resetInventoryDelayed(player);
 
-        (new KitsMenu(kit.getType())).openMenu(player);
+        new KitsMenu(kit.getType()).openMenu(player);
 
         ItemStack[] defaultInventory = kit.getType().getMeta().getDefaultInventory();
         int foodInDefault = ItemUtils.countAmountMatching(defaultInventory, v -> v.getType().isEdible());

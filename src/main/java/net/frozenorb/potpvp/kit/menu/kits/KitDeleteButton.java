@@ -4,6 +4,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.kit.Kit;
+import net.frozenorb.potpvp.kit.KitHandler;
+import net.frozenorb.potpvp.kit.menu.editkit.EditKitMenu;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.qlib.menu.Button;
 
@@ -33,10 +36,10 @@ final class KitDeleteButton extends Button {
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-                "",
-                ChatColor.RED + "Click here to delete this kit",
-                ChatColor.RED + "You will " + ChatColor.BOLD + "NOT" + ChatColor.RED + " be able to",
-                ChatColor.RED + "recover this kit."
+            "",
+            ChatColor.RED + "Click here to delete this kit",
+            ChatColor.RED + "You will " + ChatColor.BOLD + "NOT" + ChatColor.RED + " be able to",
+            ChatColor.RED + "recover this kit."
         );
     }
 
@@ -52,7 +55,8 @@ final class KitDeleteButton extends Button {
 
     @Override
     public void clicked(Player player, int slot, ClickType clickType) {
-        PotPvPSI.getInstance().getKitHandler().removeKit(player.getUniqueId(), kitType, this.slot);
+        KitHandler kitHandler = PotPvPSI.getInstance().getKitHandler();
+        kitHandler.removeKit(player.getUniqueId(), kitType, this.slot);
     }
 
 }

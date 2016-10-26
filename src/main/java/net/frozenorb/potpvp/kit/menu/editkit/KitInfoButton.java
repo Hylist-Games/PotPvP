@@ -28,7 +28,7 @@ final class KitInfoButton extends Button {
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-                ChatColor.GRAY + "You are editing '" + kit.getName() + "'"
+            ChatColor.GRAY + "You are editing '" + kit.getName() + "'"
         );
     }
 

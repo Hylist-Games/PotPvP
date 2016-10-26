@@ -33,9 +33,9 @@ final class LoadDefaultKitButton extends Button {
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-                "",
-                ChatColor.YELLOW + "Click this to load the default kit",
-                ChatColor.YELLOW + "into the kit editing menu."
+            "",
+            ChatColor.YELLOW + "Click this to load the default kit",
+            ChatColor.YELLOW + "into the kit editing menu."
         );
     }
 

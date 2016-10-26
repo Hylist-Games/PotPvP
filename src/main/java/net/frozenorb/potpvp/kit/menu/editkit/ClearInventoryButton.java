@@ -24,9 +24,9 @@ final class ClearInventoryButton extends Button {
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-                "",
-                ChatColor.YELLOW + "This will clear your inventory",
-                ChatColor.YELLOW + "so you can start over."
+            "",
+            ChatColor.YELLOW + "This will clear your inventory",
+            ChatColor.YELLOW + "so you can start over."
         );
     }
 
