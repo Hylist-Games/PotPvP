@@ -29,19 +29,7 @@ public final class PartyHandler {
     static final int INVITE_EXPIRATION_SECONDS = 30;
 
     // TODO: O(1) player -> party lookups
-    //private final Map<UUID, Party> playerParties = new ConcurrentHashMap<>();
     private final Set<Party> parties = Collections.newSetFromMap(new ConcurrentHashMap<>());
-
-    // TODO: icon click listener
-    /*
-                    Party party = PotPvPLobby.getInstance().getPartyHandler().getLocalParty(event.getPlayer());
-
-                if (party != null) {
-                    if (event.getItem().isSimilar(PotPvPLobby.getInstance().getLobbyHandler().generatePartyItem(party))) {
-                        PartyInfoCommand.partyInfo(event.getPlayer(), event.getPlayer().getUniqueId()); // The same as making them type /party info.
-                    }
-                }
-     */
 
     public PartyHandler() {
         Bukkit.getPluginManager().registerEvents(new PartyChatListener(), PotPvPSI.getInstance());
