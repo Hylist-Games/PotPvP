@@ -1,5 +1,6 @@
 package net.frozenorb.potpvp;
 
+import com.comphenix.protocol.ProtocolLibrary;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
@@ -14,6 +15,7 @@ import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.nametag.PotPvPNametagProvider;
 import net.frozenorb.potpvp.party.PartyHandler;
+import net.frozenorb.potpvp.protocol.DisableCarpetSoundAdapter;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.potpvp.rematch.RematchHandler;
 import net.frozenorb.potpvp.scoreboard.PotPvPScoreboardConfiguration;
@@ -76,6 +78,8 @@ public final class PotPvPSI extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BasicPreventionListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
         getServer().getPluginManager().registerEvents(new PearlCooldownListener(), this);
+
+        ProtocolLibrary.getProtocolManager().addPacketListener(new DisableCarpetSoundAdapter());
 
         FrozenCommandHandler.registerAll(this);
         FrozenCommandHandler.registerParameterType(KitType.class, new KitTypeParameterType());
