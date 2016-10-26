@@ -58,6 +58,12 @@ public final class QueueHandler {
         return result;
     }
 
+    public int countPlayersQueued(KitType kitType) {
+        return soloQueues.get(kitType).countPlayersQueued() +
+               partyQueues.get(kitType).countPlayersQueued();
+    }
+
+
     public void joinQueue(Player player, KitType kitType) {
         // will never be null, queues are created in constructor
         // and KitTypes are static
