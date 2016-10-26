@@ -129,10 +129,13 @@ public final class Party {
     }
 
     public void invite(Player target) {
-        invites.add(new PartyInvite(this, target.getUniqueId()));
+        PartyInvite invite = new PartyInvite(this, target.getUniqueId());
 
         target.spigot().sendMessage(PartyLang.inviteAcceptPrompt(this));
         message(ChatColor.YELLOW + target.getName() + ChatColor.AQUA + " has been invited to join your party.");
+
+        invites.add(invite);
+        Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), () -> invites.remove(invite), PartyHandler.INVITE_EXPIRATION_SECONDS * 20);
     }
 
     public void join(Player player) {

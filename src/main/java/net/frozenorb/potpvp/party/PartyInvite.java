@@ -39,15 +39,4 @@ public final class PartyInvite {
         this.timeSent = Instant.now();
     }
 
-    /**
-     * Checks if this invitation is still active, where active means
-     * that the invitation has not expired (time between {@link #timeSent}
-     * and now are less than {@link PartyHandler#INVITE_EXPIRATION_SECONDS})
-     * @return if this invitation is still active
-     */
-    public boolean isActive() {
-        long sentAgoSeconds = ChronoUnit.SECONDS.between(timeSent, Instant.now());
-        return sentAgoSeconds < PartyHandler.INVITE_EXPIRATION_SECONDS;
-    }
-
 }
