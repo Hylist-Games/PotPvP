@@ -140,6 +140,12 @@ public final class Party {
             return;
         }
 
+        PartyInvite invite = getInvite(player.getUniqueId());
+
+        if (invite != null) {
+            revokeInvite(invite);
+        }
+
         Player leaderBukkit = Bukkit.getPlayer(leader);
         player.sendMessage(ChatColor.YELLOW + "You have joined " + ChatColor.AQUA + leaderBukkit.getName() + ChatColor.YELLOW + "'s party.");
 
