@@ -99,6 +99,7 @@ public final class QueueItemListener implements Listener {
             item.isSimilar(QueueItems.LEAVE_SOLO_RANKED_QUEUE_ITEM) ||
             item.isSimilar(QueueItems.LEAVE_PARTY_RANKED_QUEUE_ITEM)
         ) {
+            event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "Ranked is currently disabled.");
         }
     }
