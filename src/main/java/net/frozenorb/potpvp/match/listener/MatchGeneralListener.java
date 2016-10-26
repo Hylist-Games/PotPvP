@@ -39,6 +39,10 @@ public final class MatchGeneralListener implements Listener {
 
         MatchTeam team = match.getTeam(player.getUniqueId());
 
+        // creates 'proper' player death animation (of the player falling over)
+        // which we don't get due to our immediate respawn
+        PlayerUtils.animateDeath(player);
+
         team.markDead(player.getUniqueId());
         match.checkEnded();
         match.addSpectator(player, null);
