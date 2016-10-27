@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.party.event.PartyCreateEvent;
+import net.frozenorb.potpvp.party.event.PartyDisbandEvent;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.qlib.qLib;
 import net.md_5.bungee.api.ChatColor;
@@ -68,7 +70,9 @@ public final class Party {
     Party(UUID leader) {
         this.leader = Preconditions.checkNotNull(leader, "leader");
         this.members.add(leader);
+
         PotPvPSI.getInstance().getPartyHandler().updatePartyCache(leader, this);
+        Bukkit.getPluginManager().callEvent(new PartyCreateEvent(this));
     }
 
     /**
@@ -197,6 +201,7 @@ public final class Party {
     }
 
     public void disband() {
+        Bukkit.getPluginManager().callEvent(new PartyDisbandEvent(this));
         PotPvPSI.getInstance().getPartyHandler().unregisterParty(this);
 
         for (UUID member : members) {
