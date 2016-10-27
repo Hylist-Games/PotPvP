@@ -57,13 +57,13 @@ public final class QueueItemListener implements Listener {
             // (will be called again in QueueHandler#joinQueue)
             if (PotPvPValidation.canJoinQueue(player)) {
                 new CustomSelectKitTypeMenu(kitType -> {
-                    queueHandler.joinQueue(player, kitType);
+                    queueHandler.joinQueue(player, kitType, false);
                     event.getPlayer().closeInventory();
                 }, selectionMenuAddition).openMenu(player);
             }
         } else if (item.isSimilar(QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM)) {
             event.setCancelled(true);
-            queueHandler.leaveQueue(player);
+            queueHandler.leaveQueue(player, false);
         } else if (item.isSimilar(QueueItems.JOIN_PARTY_UNRANKED_QUEUE_ITEM)) {
             event.setCancelled(true);
 
@@ -79,7 +79,7 @@ public final class QueueItemListener implements Listener {
             // (will be called again in QueueHandler#joinQueue)
             if (PotPvPValidation.canJoinQueue(player)) {
                 new CustomSelectKitTypeMenu(kitType -> {
-                    queueHandler.joinQueue(party, kitType);
+                    queueHandler.joinQueue(party, kitType, false);
                     event.getPlayer().closeInventory();
                 }, selectionMenuAddition).openMenu(player);
             }
@@ -91,7 +91,7 @@ public final class QueueItemListener implements Listener {
             // just fail silently, players who aren't a leader
             // of a party shouldn't even have this item
             if (party != null && party.isLeader(player.getUniqueId())) {
-                queueHandler.leaveQueue(party);
+                queueHandler.leaveQueue(party, false);
             }
         } else if (
             item.isSimilar(QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM) ||

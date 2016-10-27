@@ -70,8 +70,7 @@ public final class QueueHandler {
                partyQueues.get(kitType).countPlayersQueued();
     }
 
-
-    public void joinQueue(Player player, KitType kitType) {
+    public void joinQueue(Player player, KitType kitType, boolean silent) {
         // will never be null, queues are created in constructor
         // and KitTypes are static
         SoloQueue queue = soloQueues.get(kitType);
@@ -81,12 +80,14 @@ public final class QueueHandler {
             queue.addToQueue(player.getUniqueId());
             soloQueueCache.put(player.getUniqueId(), queue);
 
-            player.sendMessage(String.format(JOIN_SOLO_MESSAGE, kitType.getDisplayName()));
-            InventoryUtils.resetInventoryDelayed(player);
+            if (!silent) {
+                player.sendMessage(String.format(JOIN_SOLO_MESSAGE, kitType.getDisplayName()));
+                InventoryUtils.resetInventoryDelayed(player);
+            }
         }
     }
 
-    public void leaveQueue(Player player) {
+    public void leaveQueue(Player player, boolean silent) {
         SoloQueueEntry queueEntry = getQueueEntry(player.getUniqueId());
 
         // fail silently
@@ -96,12 +97,14 @@ public final class QueueHandler {
             queue.removeFromQueue(player.getUniqueId());
             soloQueueCache.remove(player.getUniqueId());
 
-            player.sendMessage(String.format(LEAVE_SOLO_MESSAGE, queue.getKitType().getDisplayName()));
-            InventoryUtils.resetInventoryDelayed(player);
+            if (!silent) {
+                player.sendMessage(String.format(LEAVE_SOLO_MESSAGE, queue.getKitType().getDisplayName()));
+                InventoryUtils.resetInventoryDelayed(player);
+            }
         }
     }
 
-    public void joinQueue(Party party, KitType kitType) {
+    public void joinQueue(Party party, KitType kitType, boolean silent) {
         // will never be null, queues are created in constructor
         // and KitTypes are static
         PartyQueue queue = partyQueues.get(kitType);
@@ -111,12 +114,14 @@ public final class QueueHandler {
             queue.addToQueue(party);
             partyQueueCache.put(party, queue);
 
-            party.message(String.format(JOIN_PARTY_MESSAGE, kitType.getDisplayName()));
-            party.resetInventoriesDelayed();
+            if (!silent) {
+                party.message(String.format(JOIN_PARTY_MESSAGE, kitType.getDisplayName()));
+                party.resetInventoriesDelayed();
+            }
         }
     }
 
-    public void leaveQueue(Party party) {
+    public void leaveQueue(Party party, boolean silent) {
         PartyQueueEntry queueEntry = getQueueEntry(party);
 
         // fail silently
@@ -126,8 +131,10 @@ public final class QueueHandler {
             queue.removeFromQueue(party);
             partyQueueCache.remove(party);
 
-            party.message(String.format(LEAVE_PARTY_MESSAGE, queue.getKitType().getDisplayName()));
-            party.resetInventoriesDelayed();
+            if (!silent) {
+                party.message(String.format(LEAVE_PARTY_MESSAGE, queue.getKitType().getDisplayName()));
+                party.resetInventoriesDelayed();
+            }
         }
     }
 
