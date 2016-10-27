@@ -14,7 +14,7 @@ public final class MatchUtils {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Match match = matchHandler.getMatchSpectating(player.getUniqueId());
 
-        if (match == null) {
+        if (match == null || !match.isSpectator(player.getUniqueId())) {
             return;
         }
 

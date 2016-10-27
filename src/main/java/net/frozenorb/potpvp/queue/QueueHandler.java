@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.queue;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.party.Party;
+import net.frozenorb.potpvp.queue.listener.QueueGeneralListener;
 import net.frozenorb.potpvp.queue.listener.QueueItemListener;
 import net.frozenorb.potpvp.queue.party.PartyQueue;
 import net.frozenorb.potpvp.queue.party.PartyQueueEntry;
@@ -36,6 +37,7 @@ public final class QueueHandler {
     private final Map<Party, PartyQueue> partyQueueCache = new ConcurrentHashMap<>();
 
     public QueueHandler() {
+        Bukkit.getPluginManager().registerEvents(new QueueGeneralListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new QueueItemListener(), PotPvPSI.getInstance());
 
         for (KitType kitType : KitType.values()) {
