@@ -14,6 +14,7 @@ import net.frozenorb.potpvp.match.listener.MatchGeneralListener;
 import net.frozenorb.potpvp.match.listener.MatchSoupListener;
 import net.frozenorb.potpvp.match.listener.SpectatorItemListener;
 import net.frozenorb.potpvp.match.listener.SpectatorPreventionListener;
+import net.frozenorb.qlib.util.UUIDUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -47,6 +48,14 @@ public final class MatchHandler {
     }
 
     public Match startMatch(List<MatchTeam> teams, KitType kitType) {
+        for (MatchTeam team : teams) {
+            for (UUID member : team.getAllMembers()) {
+                if (isPlayingOrSpectatingMatch(member)) {
+                    throw new IllegalArgumentException(UUIDUtils.name(member) + " is already in a match!");
+                }
+            }
+        }
+        
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
         long matchSize = teams.stream()
             .mapToInt(t -> t.getAllMembers().size())
