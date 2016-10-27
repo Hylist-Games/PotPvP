@@ -31,6 +31,12 @@ import lombok.Setter;
 public final class Party {
 
     /**
+     * Random unique id for this party, can be used by clients to track a party
+     * across leader changes.
+     */
+    @Getter private UUID id;
+
+    /**
      * Leader of the party, given permission to perform
      * administrative commands (and perform actions like queueing)
      * on behalf of the party. Guaranteed to be online.
@@ -66,6 +72,7 @@ public final class Party {
     @Getter @Setter private String password = null;
 
     Party(UUID leader) {
+        this.id = UUID.randomUUID();
         this.leader = Preconditions.checkNotNull(leader, "leader");
         this.members.add(leader);
     }
