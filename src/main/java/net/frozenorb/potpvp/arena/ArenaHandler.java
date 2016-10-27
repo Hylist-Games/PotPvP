@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -169,24 +170,30 @@ public final class ArenaHandler {
      * @return The arena which has been allocated for use, or null, if one was not found.
      */
     public Arena allocateUnusedArena(Predicate<ArenaSchematic> acceptableSchematicPredicate) {
+        List<Arena> acceptableArenas = new ArrayList<>();
+
         for (ArenaSchematic schematic : schematics.values()) {
             if (!acceptableSchematicPredicate.test(schematic)) {
                 continue;
             }
 
             for (Arena arena : arenaInstances.get(schematic.getName()).values()) {
-                if (arena.isInUse()) {
-                    continue;
+                if (!arena.isInUse()) {
+                    acceptableArenas.add(arena);
                 }
-
-                arena.setInUse(true);
-                Bukkit.getPluginManager().callEvent(new ArenaAllocatedEvent(arena));
-
-                return arena;
             }
         }
 
-        return null;
+        if (acceptableArenas.isEmpty()) {
+            return null;
+        }
+
+        Arena selected = acceptableArenas.get(qLib.RANDOM.nextInt(acceptableArenas.size()));
+
+        selected.setInUse(true);
+        Bukkit.getPluginManager().callEvent(new ArenaAllocatedEvent(selected));
+
+        return selected;
     }
 
     /**
