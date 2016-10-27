@@ -29,14 +29,16 @@ public final class PartyInviteCommand {
             return;
         }
 
-        if (party.isMember(target.getUniqueId())) {
-            sender.sendMessage(ChatColor.RED + target.getName() + " is already in your party.");
-            return;
-        }
+        if (party != null) {
+            if (party.isMember(target.getUniqueId())) {
+                sender.sendMessage(ChatColor.RED + target.getName() + " is already in your party.");
+                return;
+            }
 
-        if (party.getInvite(target.getUniqueId()) != null) {
-            sender.sendMessage(ChatColor.RED + target.getName() + " already has a pending party invite.");
-            return;
+            if (party.getInvite(target.getUniqueId()) != null) {
+                sender.sendMessage(ChatColor.RED + target.getName() + " already has a pending party invite.");
+                return;
+            }
         }
 
         if (partyHandler.hasParty(target)) {
