@@ -1,5 +1,7 @@
 package net.frozenorb.potpvp.match.command;
 
+import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
 
@@ -10,19 +12,15 @@ import java.util.UUID;
 
 public final class SpectateCommand {
 
-    @Command(names = {"spectate", "spec"}, permission = "")
-    public static void spectate(Player sender, @Param(name = "target") UUID target) {
-        if (sender.getUniqueId().equals(target)) {
+    @Command(names = {"spectate", "spec"}, permission = "op")
+    public static void spectate(Player sender, @Param(name = "target") Player target) {
+        if (sender == target) {
             sender.sendMessage(ChatColor.RED + "You cannot spectate yourself.");
             return;
         }
 
-        /*if (WaitingForGcd.partyFromCache(sender.getUniqueId()) != null) {
-            sender.sendMessage(ChatColor.RED + "You cannot spectate while in your party. Leave to /spec");
-            return;
-        }
-
-        PotPvPLobby.getInstance().getMatchHandler().requestSpectate(target, sender);*/
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        matchHandler.getMatchPlayingOrSpectating(target).addSpectator(sender, null);
     }
 
 }
