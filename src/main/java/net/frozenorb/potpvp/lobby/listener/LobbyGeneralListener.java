@@ -1,7 +1,9 @@
 package net.frozenorb.potpvp.lobby.listener;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.kit.menu.editkit.EditKitMenu;
 import net.frozenorb.potpvp.match.MatchHandler;
+import net.frozenorb.qlib.menu.Menu;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,7 +55,14 @@ public final class LobbyGeneralListener implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
-        if (!matchHandler.isPlayingOrSpectatingMatch(event.getPlayer())) {
+        if (matchHandler.isPlayingOrSpectatingMatch(event.getPlayer())) {
+            return;
+        }
+
+        // just remove the item for players in the kit editor, so they can 'drop' items to remove them
+        if (Menu.currentlyOpenedMenus.get(event.getPlayer().getName()) instanceof EditKitMenu) {
+            event.getItemDrop().remove();
+        } else {
             event.setCancelled(true);
         }
     }
