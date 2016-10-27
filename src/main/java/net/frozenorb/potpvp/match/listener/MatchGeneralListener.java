@@ -45,7 +45,9 @@ public final class MatchGeneralListener implements Listener {
 
         team.markDead(player.getUniqueId());
         match.checkEnded();
-        match.addSpectator(player, null);
+
+        match.addSpectator(player, null, false);
+        player.teleport(player.getLocation().add(0, 2, 0));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

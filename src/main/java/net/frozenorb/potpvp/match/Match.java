@@ -177,7 +177,7 @@ public final class Match {
 
     // TODO: Don't require clients to call .checkEnded() and automatically
     // check when marking players as dead
-    public boolean checkEnded() {
+    public void checkEnded() {
         List<MatchTeam> teamsAlive = new ArrayList<>();
 
         for (MatchTeam team : teams) {
@@ -186,14 +186,10 @@ public final class Match {
             }
         }
 
-        if (teamsAlive.size() != 1) {
-            return false;
+        if (teamsAlive.size() == 1) {
+            this.winner = teamsAlive.get(0);
+            endMatch(MatchEndReason.ENEMIES_ELIMINATED);
         }
-
-        this.winner = teamsAlive.get(0);
-        endMatch(MatchEndReason.ENEMIES_ELIMINATED);
-
-        return true;
     }
 
     public boolean isSpectator(UUID uuid) {
@@ -201,9 +197,16 @@ public final class Match {
     }
 
     public void addSpectator(Player player, Player target) {
+        addSpectator(player, target, false);
+    }
+
+    public void addSpectator(Player player, Player target, boolean teleportPlayer) {
         spectators.add(player.getUniqueId());
 
-        player.teleport(target != null ? target.getLocation() : arena.getSpectatorSpawn());
+        if (teleportPlayer) {
+            player.teleport(target != null ? target.getLocation() : arena.getSpectatorSpawn());
+        }
+
         player.getInventory().setHeldItemSlot(0);
 
         /*
