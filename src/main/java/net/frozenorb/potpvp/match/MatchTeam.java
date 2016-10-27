@@ -30,7 +30,7 @@ public final class MatchTeam {
     /**
      * All players who were ever part of this team, including those who logged off / died
      */
-    private final Set<UUID> allMembers = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    @Getter private final Set<UUID> allMembers;
 
     /**
      * All players who are currently alive.
@@ -39,7 +39,7 @@ public final class MatchTeam {
 
     public MatchTeam(String id, Set<UUID> initialMembers) {
         this.id = Preconditions.checkNotNull(id, "id");
-        this.allMembers.addAll(initialMembers);
+        this.allMembers = ImmutableSet.copyOf(initialMembers);
         this.aliveMembers.addAll(initialMembers);
     }
 
@@ -67,15 +67,6 @@ public final class MatchTeam {
      */
     public Set<UUID> getAliveMembers() {
         return ImmutableSet.copyOf(aliveMembers);
-    }
-
-    /**
-     * Gets a immutable set of all team members
-     * @see MatchTeam#allMembers
-     * @return immutable set of all team members
-     */
-    public Set<UUID> getAllMembers() {
-        return ImmutableSet.copyOf(allMembers);
     }
 
     /**
