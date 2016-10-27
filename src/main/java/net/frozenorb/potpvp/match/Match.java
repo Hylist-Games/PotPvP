@@ -9,6 +9,8 @@ import net.frozenorb.potpvp.arena.Arena;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.match.event.MatchCountdownStartEvent;
 import net.frozenorb.potpvp.match.event.MatchEndEvent;
+import net.frozenorb.potpvp.match.event.MatchSpectatorJoinEvent;
+import net.frozenorb.potpvp.match.event.MatchSpectatorLeaveEvent;
 import net.frozenorb.potpvp.match.event.MatchStartEvent;
 import net.frozenorb.potpvp.match.event.MatchTerminateEvent;
 import net.frozenorb.potpvp.util.InventoryUtils;
@@ -236,11 +238,15 @@ public final class Match {
         VisibilityUtils.updateVisibility(player);
         PlayerUtils.resetInventory(player, GameMode.CREATIVE);
         InventoryUtils.resetInventoryDelayed(player);
+
+        Bukkit.getPluginManager().callEvent(new MatchSpectatorJoinEvent(player, this));
     }
 
     public void removeSpectator(Player player) {
         spectators.remove(player.getUniqueId());
         PotPvPSI.getInstance().getLobbyHandler().returnToLobby(player);
+
+        Bukkit.getPluginManager().callEvent(new MatchSpectatorLeaveEvent(player, this));
     }
 
     public MatchTeam getTeam(UUID playerUuid) {
