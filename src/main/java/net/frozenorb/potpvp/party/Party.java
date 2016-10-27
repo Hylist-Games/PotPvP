@@ -68,6 +68,7 @@ public final class Party {
     Party(UUID leader) {
         this.leader = Preconditions.checkNotNull(leader, "leader");
         this.members.add(leader);
+        PotPvPSI.getInstance().getPartyHandler().updatePartyCache(leader, this);
     }
 
     /**
@@ -155,6 +156,8 @@ public final class Party {
         message(ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " has joined your party.");
 
         members.add(player.getUniqueId());
+        PotPvPSI.getInstance().getPartyHandler().updatePartyCache(player.getUniqueId(), this);
+
         resetInventoriesDelayed();
     }
 
@@ -167,6 +170,8 @@ public final class Party {
         if (!members.remove(player.getUniqueId())) {
             return;
         }
+
+        PotPvPSI.getInstance().getPartyHandler().updatePartyCache(player.getUniqueId(), null);
 
         // randomly elect new leader if needed
         if (leader.equals(player.getUniqueId())) {
@@ -194,6 +199,10 @@ public final class Party {
     public void disband() {
         PotPvPSI.getInstance().getPartyHandler().unregisterParty(this);
 
+        for (UUID member : members) {
+            PotPvPSI.getInstance().getPartyHandler().updatePartyCache(member, null);
+        }
+
         message(ChatColor.YELLOW + "Your party has been disbanded.");
         resetInventoriesDelayed();
     }
@@ -202,6 +211,8 @@ public final class Party {
         if (!members.remove(player.getUniqueId())) {
             return;
         }
+
+        PotPvPSI.getInstance().getPartyHandler().updatePartyCache(player.getUniqueId(), null);
 
         player.sendMessage(ChatColor.YELLOW + "You have been kicked from your party.");
         message(ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " has been kicked from your party.");

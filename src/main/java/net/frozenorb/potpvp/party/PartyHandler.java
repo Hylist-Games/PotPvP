@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,8 +28,8 @@ public final class PartyHandler {
      */
     static final int INVITE_EXPIRATION_SECONDS = 30;
 
-    // TODO: O(1) player -> party lookups
     private final Set<Party> parties = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Map<UUID, Party> playerPartyCache = new ConcurrentHashMap<>();
 
     public PartyHandler() {
         Bukkit.getPluginManager().registerEvents(new PartyChatListener(), PotPvPSI.getInstance());
@@ -50,7 +51,7 @@ public final class PartyHandler {
      * @return if the player provided is in a party
      */
     public boolean hasParty(Player player) {
-        return getParty(player) != null;
+        return playerPartyCache.containsKey(player.getUniqueId());
     }
 
     /**
@@ -60,13 +61,7 @@ public final class PartyHandler {
      * @return the player's party, or null if the player is not in a party.
      */
     public Party getParty(Player player) {
-        for (Party party : parties) {
-            if (party.isMember(player.getUniqueId())) {
-                return party;
-            }
-        }
-
-        return null;
+        return playerPartyCache.get(player.getUniqueId());
     }
 
     /**
@@ -90,6 +85,14 @@ public final class PartyHandler {
 
     void unregisterParty(Party party) {
         parties.remove(party);
+    }
+
+    void updatePartyCache(UUID playerUuid, Party party) {
+        if (party != null) {
+            playerPartyCache.put(playerUuid, party);
+        } else {
+            playerPartyCache.remove(playerUuid);
+        }
     }
 
 }
