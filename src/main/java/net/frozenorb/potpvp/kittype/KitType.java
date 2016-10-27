@@ -45,7 +45,7 @@ public enum KitType {
     GAPPLE(
         "Gapple",
         ChatColor.GOLD,
-        Material.GOLDEN_APPLE
+        new MaterialData(Material.GOLDEN_APPLE, (byte) 1)
     ),
     SOUP(
         "Soup",
