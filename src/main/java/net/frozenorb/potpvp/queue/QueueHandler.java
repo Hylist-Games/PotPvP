@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class QueueHandler {
 
@@ -29,6 +30,10 @@ public final class QueueHandler {
     // we never call .put outside of the constructor so no concurrency is needed
     private final Map<KitType, SoloQueue> soloQueues = new HashMap<>();
     private final Map<KitType, PartyQueue> partyQueues = new HashMap<>();
+
+    // maps players (and parties) to the queue they're in for fast O(1) lookup
+    private final Map<UUID, SoloQueue> soloQueueCache = new ConcurrentHashMap<>();
+    private final Map<Party, PartyQueue> partyQueueCache = new ConcurrentHashMap<>();
 
     public QueueHandler() {
         Bukkit.getPluginManager().registerEvents(new QueueItemListener(), PotPvPSI.getInstance());
@@ -72,6 +77,7 @@ public final class QueueHandler {
         // will message players about validation errors
         if (PotPvPValidation.canJoinQueue(player)) {
             queue.addToQueue(player.getUniqueId());
+            soloQueueCache.put(player.getUniqueId(), queue);
 
             player.sendMessage(String.format(JOIN_SOLO_MESSAGE, kitType.getDisplayName()));
             InventoryUtils.resetInventoryDelayed(player);
@@ -86,6 +92,7 @@ public final class QueueHandler {
             SoloQueue queue = queueEntry.getQueue();
 
             queue.removeFromQueue(player.getUniqueId());
+            soloQueueCache.remove(player.getUniqueId());
 
             player.sendMessage(String.format(LEAVE_SOLO_MESSAGE, queue.getKitType().getDisplayName()));
             InventoryUtils.resetInventoryDelayed(player);
@@ -100,6 +107,7 @@ public final class QueueHandler {
         // will message players about validation errors
         if (PotPvPValidation.canJoinQueue(party)) {
             queue.addToQueue(party);
+            partyQueueCache.put(party, queue);
 
             party.message(String.format(JOIN_PARTY_MESSAGE, kitType.getDisplayName()));
             party.resetInventoriesDelayed();
@@ -114,6 +122,7 @@ public final class QueueHandler {
             PartyQueue queue = queueEntry.getQueue();
 
             queue.removeFromQueue(party);
+            partyQueueCache.remove(party);
 
             party.message(String.format(LEAVE_PARTY_MESSAGE, queue.getKitType().getDisplayName()));
             party.resetInventoriesDelayed();
@@ -121,35 +130,29 @@ public final class QueueHandler {
     }
 
     public boolean isQueued(UUID player) {
-        return getQueueEntry(player) != null;
+        return soloQueueCache.containsKey(player);
     }
 
     public SoloQueueEntry getQueueEntry(UUID player) {
-        for (SoloQueue queue : soloQueues.values()) {
-            SoloQueueEntry queueEntry = queue.getQueueEntry(player);
-
-            if (queueEntry != null) {
-                return queueEntry;
-            }
-        }
-
-        return null;
+        SoloQueue queue = soloQueueCache.get(player);
+        return queue != null ? queue.getQueueEntry(player) : null;
     }
 
     public boolean isQueued(Party party) {
-        return getQueueEntry(party) != null;
+        return partyQueueCache.containsKey(party);
     }
 
     public PartyQueueEntry getQueueEntry(Party party) {
-        for (PartyQueue queue : partyQueues.values()) {
-            PartyQueueEntry queueEntry = queue.getQueueEntry(party);
+        PartyQueue queue = partyQueueCache.get(party);
+        return queue != null ? queue.getQueueEntry(party) : null;
+    }
 
-            if (queueEntry != null) {
-                return queueEntry;
-            }
+    void removeFromQueueCache(Object entry) {
+        if (entry instanceof SoloQueueEntry) {
+            soloQueueCache.remove(((SoloQueueEntry) entry).getPlayer());
+        } else if (entry instanceof PartyQueueEntry) {
+            partyQueueCache.remove(((PartyQueueEntry) entry).getParty());
         }
-
-        return null;
     }
 
 }

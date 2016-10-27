@@ -13,10 +13,6 @@ public final class PartyQueue extends Queue<PartyQueueEntry> {
         super(kitType);
     }
 
-    public boolean isInQueue(Party party) {
-        return getQueueEntry(party) != null;
-    }
-
     public void addToQueue(Party party) {
         queueEntries.add(new PartyQueueEntry(this, party));
     }

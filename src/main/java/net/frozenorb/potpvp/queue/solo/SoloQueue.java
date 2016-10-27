@@ -11,10 +11,6 @@ public final class SoloQueue extends Queue<SoloQueueEntry> {
         super(kitType);
     }
 
-    public boolean isInQueue(UUID player) {
-        return getQueueEntry(player) != null;
-    }
-
     public void addToQueue(UUID player) {
         queueEntries.add(new SoloQueueEntry(this, player));
     }

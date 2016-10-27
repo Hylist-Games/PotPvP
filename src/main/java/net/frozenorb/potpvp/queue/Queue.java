@@ -24,11 +24,14 @@ public abstract class Queue<T extends QueueEntry> {
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
     }
 
+    // IntelliJ says protected isn't needed, but that's incorrect.
+    // because of the inheritance (SoloQueue and PartyQueue) this needs to be protected
     protected void tick() {
         // we clone queueEntries + always remove from the copy
         // to prevent infinite loops (when matches fail to create),
         // but only remove from the queueEntries on success
         List<T> queueCopy = new ArrayList<>(queueEntries);
+        QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
 
         while (queueCopy.size() >= 2) {
             // remove from 0 both times because index shifts down
@@ -37,7 +40,10 @@ public abstract class Queue<T extends QueueEntry> {
 
             if (createMatch(entryA, entryB)) {
                 queueEntries.remove(entryA);
+                queueHandler.removeFromQueueCache(entryA);
+
                 queueEntries.remove(entryB);
+                queueHandler.removeFromQueueCache(entryB);
             }
         }
     }
