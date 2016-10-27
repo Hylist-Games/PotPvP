@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.validation;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.queue.QueueHandler;
@@ -15,6 +16,7 @@ public final class PotPvPValidation {
 
     private static final String CANNOT_DO_THIS_IN_PARTY = ChatColor.RED + "You cannot do this while in a party!";
     private static final String CANNOT_DO_THIS_WHILE_QUEUED = ChatColor.RED + "You cannot do this while queued!";
+    private static final String CANNOT_DO_THIS_WHILE_IN_MATCH = ChatColor.RED + "You cannot do this while participating in or spectating a match!";
 
     public static boolean can1v1(Player player) {
         if (isInParty(player)) {
@@ -24,6 +26,11 @@ public final class PotPvPValidation {
 
         if (isInQueue(player)) {
             player.sendMessage(CANNOT_DO_THIS_WHILE_QUEUED);
+            return false;
+        }
+
+        if (isInOrSpectatingMatch(player)) {
+            player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
             return false;
         }
 
@@ -41,6 +48,11 @@ public final class PotPvPValidation {
             return false;
         }
 
+        if (isInOrSpectatingMatch(player)) {
+            player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
+            return false;
+        }
+
         return true;
     }
 
@@ -52,6 +64,11 @@ public final class PotPvPValidation {
 
         if (isInQueue(player)) {
             player.sendMessage(CANNOT_DO_THIS_WHILE_QUEUED);
+            return false;
+        }
+
+        if (isInOrSpectatingMatch(player)) {
+            player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
             return false;
         }
 
@@ -74,6 +91,11 @@ public final class PotPvPValidation {
             return false;
         }
 
+        if (isInOrSpectatingMatch(initiator)) {
+            initiator.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
+            return false;
+        }
+
         return true;
     }
 
@@ -90,6 +112,11 @@ public final class PotPvPValidation {
     private static boolean isInQueue(Party party) {
         QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
         return queueHandler.isQueued(party);
+    }
+
+    private boolean isInOrSpectatingMatch(Player player) {
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        return matchHandler.isPlayingOrSpectatingMatch(player);
     }
 
 }
