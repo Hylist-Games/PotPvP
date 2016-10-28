@@ -54,12 +54,12 @@ public final class KitHandler {
      */
     @Deprecated
     public void saveKitsAsync(UUID playerUuid) {
-        Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
+        /*Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
             MongoCollection<Document> collection = MongoUtils.getCollection("PlayerKits");
             Document playerKits = Document.parse(qLib.PLAIN_GSON.toJson(kitStores.get(playerUuid)));
 
             collection.updateOne(new Document("player", playerUuid.toString()), playerKits, MongoUtils.UPSERT_OPTIONS);
-        });
+        });*/
     }
 
     public void loadKits(UUID playerUuid) {

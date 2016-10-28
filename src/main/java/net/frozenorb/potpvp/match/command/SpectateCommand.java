@@ -8,8 +8,6 @@ import net.frozenorb.qlib.command.Param;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
-
 public final class SpectateCommand {
 
     @Command(names = {"spectate", "spec"}, permission = "op")
