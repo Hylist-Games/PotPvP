@@ -134,7 +134,10 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
                 }
 
                 namePrefix = "&a";
-                healthStr = healthColor.toString() + health + " *❤";
+                // we do some weird manipulation here to get the scoreboard api to not
+                // flicker. reads its documentation on the qLib wiki to understand the
+                // usage of the *s
+                healthStr = healthColor.toString() + health + " *❤*" + ChatColor.RESET;
             } else {
                 namePrefix = "&7&m";
                 healthStr = "&4RIP";
