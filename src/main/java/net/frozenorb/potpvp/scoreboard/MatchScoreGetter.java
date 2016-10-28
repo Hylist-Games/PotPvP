@@ -134,7 +134,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
                 }
 
                 namePrefix = "&a";
-                healthStr = healthColor.toString() + health + " ❤";
+                healthStr = healthColor.toString() + health + " *❤";
             } else {
                 namePrefix = "&7&m";
                 healthStr = "&4RIP";
@@ -185,7 +185,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
             MatchTeam teamTwo = teams.get(1);
 
             scores.add("&dTeam One: &f" + teamOne.getAliveMembers().size() + "/" + teamOne.getAllMembers().size()); // team 1 alive
-            scores.add("&bTeam Two: &f" + teamTwo.getAliveMembers().size() + "/" + teamOne.getAllMembers().size()); // team 2 alive
+            scores.add("&bTeam Two: &f" + teamTwo.getAliveMembers().size() + "/" + teamTwo.getAllMembers().size()); // team 2 alive
         }
     }
 
