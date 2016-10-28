@@ -2,6 +2,7 @@ package net.frozenorb.potpvp.match;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import net.frozenorb.potpvp.PotPvPSI;
@@ -13,6 +14,7 @@ import net.frozenorb.potpvp.match.event.MatchSpectatorJoinEvent;
 import net.frozenorb.potpvp.match.event.MatchSpectatorLeaveEvent;
 import net.frozenorb.potpvp.match.event.MatchStartEvent;
 import net.frozenorb.potpvp.match.event.MatchTerminateEvent;
+import net.frozenorb.potpvp.postmatchinv.PostMatchPlayer;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.potpvp.util.MongoUtils;
 import net.frozenorb.potpvp.util.VisibilityUtils;
@@ -31,8 +33,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -46,6 +50,7 @@ public final class Match {
     @Getter private final KitType kitType;
     @Getter private final Arena arena;
     @Getter private final List<MatchTeam> teams; // immutable so @Getter is ok
+    private final Map<UUID, PostMatchPlayer> postMatchPlayers = new HashMap<>();
     private final Set<UUID> spectators = new HashSet<>();
 
     @Getter private MatchTeam winner;
@@ -123,6 +128,15 @@ public final class Match {
         endedAt = Instant.now();
         endReason = reason;
 
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            UUID playerUuid = player.getUniqueId();
+            MatchTeam team = getTeam(playerUuid);
+
+            if (team != null) {
+                postMatchPlayers.computeIfAbsent(playerUuid, v -> new PostMatchPlayer(player));
+            }
+        }
+
         int delayTicks = MATCH_END_DELAY_SECONDS * 20;
 
         messageAll(ChatColor.RED + "Match ended.");
@@ -177,9 +191,11 @@ public final class Match {
         return ImmutableSet.copyOf(spectators);
     }
 
-    // TODO: Don't require clients to call .checkEnded() and automatically
-    // check when marking players as dead
-    public void checkEnded() {
+    public Map<UUID, PostMatchPlayer> getPostMatchPlayers() {
+        return ImmutableMap.copyOf(postMatchPlayers);
+    }
+
+    private void checkEnded() {
         List<MatchTeam> teamsAlive = new ArrayList<>();
 
         for (MatchTeam team : teams) {
@@ -247,6 +263,16 @@ public final class Match {
         PotPvPSI.getInstance().getLobbyHandler().returnToLobby(player);
 
         Bukkit.getPluginManager().callEvent(new MatchSpectatorLeaveEvent(player, this));
+    }
+
+    public void markDead(Player player) {
+        MatchTeam team = getTeam(player.getUniqueId());
+
+        if (team != null) {
+            postMatchPlayers.put(player.getUniqueId(), new PostMatchPlayer(player));
+            team.markDead(player.getUniqueId());
+            checkEnded();
+        }
     }
 
     public MatchTeam getTeam(UUID playerUuid) {

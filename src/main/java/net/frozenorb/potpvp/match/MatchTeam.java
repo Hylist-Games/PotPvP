@@ -47,7 +47,7 @@ public final class MatchTeam {
      * Marks the given player as dead (will no longer appear in {@link MatchTeam#getAliveMembers()}, etc)
      * @param playerUuid the player to mark as dead
      */
-    public void markDead(UUID playerUuid) {
+    void markDead(UUID playerUuid) {
         aliveMembers.remove(playerUuid);
     }
 

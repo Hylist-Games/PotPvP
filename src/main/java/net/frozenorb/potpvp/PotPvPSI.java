@@ -15,6 +15,7 @@ import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.nametag.PotPvPNametagProvider;
 import net.frozenorb.potpvp.party.PartyHandler;
+import net.frozenorb.potpvp.postmatchinv.PostMatchInvHandler;
 import net.frozenorb.potpvp.protocol.DisableSpectatorSoundAdapter;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.potpvp.rematch.RematchHandler;
@@ -51,6 +52,7 @@ public final class PotPvPSI extends JavaPlugin {
     @Getter private PartyHandler partyHandler;
     @Getter private QueueHandler queueHandler;
     @Getter private RematchHandler rematchHandler;
+    @Getter private PostMatchInvHandler postMatchInvHandler;
 
     @Override
     public void onEnable() {
@@ -74,6 +76,7 @@ public final class PotPvPSI extends JavaPlugin {
         partyHandler = new PartyHandler();
         queueHandler = new QueueHandler();
         rematchHandler = new RematchHandler();
+        postMatchInvHandler = new PostMatchInvHandler();
 
         getServer().getPluginManager().registerEvents(new BasicPreventionListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
