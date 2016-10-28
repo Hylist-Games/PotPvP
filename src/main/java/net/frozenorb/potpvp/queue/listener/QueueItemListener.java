@@ -77,7 +77,7 @@ public final class QueueItemListener implements Listener {
 
             // try to check validation issues in advance
             // (will be called again in QueueHandler#joinQueue)
-            if (PotPvPValidation.canJoinQueue(player)) {
+            if (PotPvPValidation.canJoinQueue(party)) {
                 new CustomSelectKitTypeMenu(kitType -> {
                     queueHandler.joinQueue(party, kitType, false);
                     event.getPlayer().closeInventory();
