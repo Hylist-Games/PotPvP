@@ -97,7 +97,7 @@ public final class SpectatorItemListener implements Listener {
         }
 
         boolean bypassPerm = clicker.hasPermission("potpvp.inventory.all");
-        boolean sameTeam = clickedTeam.getAllMembers().contains(clicked.getUniqueId());
+        boolean sameTeam = clickedTeam.getAllMembers().contains(clicker.getUniqueId());
 
         if (bypassPerm || sameTeam) {
             clicker.sendMessage(ChatColor.AQUA + "Opening inventory of: " + clicked.getName());
