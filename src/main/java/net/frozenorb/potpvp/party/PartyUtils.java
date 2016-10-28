@@ -58,7 +58,7 @@ public final class PartyUtils {
         Set<UUID> team2 = new HashSet<>();
         Player spectator = null; // only can be one
 
-        for (int i = 0; i < Math.floorDiv(members.size(), 2); i++) {
+        while (members.size() >= 2) {
             team1.add(members.remove(0));
             team2.add(members.remove(0));
         }
