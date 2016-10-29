@@ -34,7 +34,7 @@ public final class PotPvPNametagProvider extends NametagProvider {
         // prevent us from ever seeing them, but when something
         // breaks we should see other players as dark gray
         if (toRefreshMatch == null) {
-            return ChatColor.DARK_GRAY;
+            return ChatColor.BLUE;
         }
 
         MatchTeam toRefreshTeam = toRefreshMatch.getTeam(toRefresh.getUniqueId());
