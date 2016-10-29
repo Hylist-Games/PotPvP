@@ -1,5 +1,7 @@
 package net.frozenorb.potpvp.match.command;
 
+import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.qlib.command.Command;
 
 import org.bukkit.ChatColor;
@@ -11,14 +13,13 @@ public final class LeaveCommand {
     public static void leave(Player sender) {
         sender.sendMessage(ChatColor.YELLOW + "Leaving match...");
 
-        /*PotPvPSlave.getInstance().getGcdClient().leaveMatch(
-            new LeaveMatchRequest(sender.getUniqueId()),
-            (ignored) -> {}, // ignore the result, they're just leaving.
-            (ex) -> {
-                sender.sendMessage(PotPvPMessages.COULD_NOT_CONTACT_MATCH_SERVER);
-                sender.sendMessage(ChatColor.RED + "Please return to a hub with /hub.");
-            }
-        );*/
+        Match spectating = PotPvPSI.getInstance().getMatchHandler().getMatchSpectating(sender);
+
+        if (spectating == null) {
+            sender.sendMessage(ChatColor.RED + "You are not currently spectating a match.");
+        } else {
+            spectating.removeSpectator(sender);
+        }
     }
 
 }

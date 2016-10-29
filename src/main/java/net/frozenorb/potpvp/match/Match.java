@@ -223,7 +223,7 @@ public final class Match {
     }
 
     public void addSpectator(Player player, Player target) {
-        addSpectator(player, target, false);
+        addSpectator(player, target, true);
     }
 
     public void addSpectator(Player player, Player target, boolean teleportPlayer) {
