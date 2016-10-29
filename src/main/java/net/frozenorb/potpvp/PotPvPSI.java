@@ -86,7 +86,7 @@ public final class PotPvPSI extends JavaPlugin {
 
         FrozenCommandHandler.registerAll(this);
         FrozenCommandHandler.registerParameterType(KitType.class, new KitTypeParameterType());
-        FrozenTabHandler.setLayoutProvider(new PotPvPLayoutProvider());
+        //FrozenTabHandler.setLayoutProvider(new PotPvPLayoutProvider());
         FrozenNametagHandler.registerProvider(new PotPvPNametagProvider());
         FrozenScoreboardHandler.setConfiguration(PotPvPScoreboardConfiguration.create());
     }
