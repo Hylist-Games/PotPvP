@@ -49,7 +49,8 @@ public class DuelAcceptCommand {
                     new MatchTeam(UUID.randomUUID().toString(), senderTeam),
                     new MatchTeam(UUID.randomUUID().toString(), targetTeam)
                 ),
-                invite.kitType()
+                invite.kitType(),
+                true // see Match#startedViaDuel
         );
 
         if (match == null) {

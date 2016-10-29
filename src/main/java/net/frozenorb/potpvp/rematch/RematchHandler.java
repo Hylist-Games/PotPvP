@@ -56,6 +56,11 @@ public final class RematchHandler {
             return;
         }*/
 
+        // see Match#startedViaDuel
+        if (!match.isStartedViaDuel()) {
+            return;
+        }
+
         List<MatchTeam> teams = match.getTeams();
 
         if (teams.size() == 2) {

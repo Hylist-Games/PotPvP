@@ -48,6 +48,10 @@ public final class MatchHandler {
     }
 
     public Match startMatch(List<MatchTeam> teams, KitType kitType) {
+        return startMatch(teams, kitType, false);
+    }
+
+    public Match startMatch(List<MatchTeam> teams, KitType kitType, boolean startedViaDuel) {
         for (MatchTeam team : teams) {
             for (UUID member : team.getAllMembers()) {
                 if (isPlayingOrSpectatingMatch(member)) {
@@ -81,7 +85,7 @@ public final class MatchHandler {
             return null;
         }
 
-        Match match = new Match(kitType, openArena, teams);
+        Match match = new Match(kitType, openArena, teams, startedViaDuel);
 
         hostedMatches.add(match);
         match.startCountdown();
