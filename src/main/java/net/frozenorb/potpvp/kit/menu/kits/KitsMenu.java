@@ -55,6 +55,7 @@ public final class KitsMenu extends Menu {
             }
         }
 
+        buttons.put(getSlot(0, 4), new KitBackButton());
         return buttons;
     }
 
