@@ -7,6 +7,7 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.party.event.PartyCreateEvent;
 import net.frozenorb.potpvp.party.event.PartyDisbandEvent;
 import net.frozenorb.potpvp.util.InventoryUtils;
+import net.frozenorb.potpvp.util.VisibilityUtils;
 import net.frozenorb.qlib.qLib;
 import net.md_5.bungee.api.ChatColor;
 
@@ -162,6 +163,7 @@ public final class Party {
         members.add(player.getUniqueId());
         PotPvPSI.getInstance().getPartyHandler().updatePartyCache(player.getUniqueId(), this);
 
+        forEachOnline(VisibilityUtils::updateVisibility);
         resetInventoriesDelayed();
     }
 
@@ -189,6 +191,9 @@ public final class Party {
         player.sendMessage(ChatColor.YELLOW + "You have left your party.");
         message(ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " has left your party.");
 
+        VisibilityUtils.updateVisibility(player);
+        forEachOnline(VisibilityUtils::updateVisibility);
+
         InventoryUtils.resetInventoryDelayed(player);
         resetInventoriesDelayed();
     }
@@ -204,9 +209,10 @@ public final class Party {
         Bukkit.getPluginManager().callEvent(new PartyDisbandEvent(this));
         PotPvPSI.getInstance().getPartyHandler().unregisterParty(this);
 
-        for (UUID member : members) {
-            PotPvPSI.getInstance().getPartyHandler().updatePartyCache(member, null);
-        }
+        forEachOnline(player -> {
+            VisibilityUtils.updateVisibility(player);
+            PotPvPSI.getInstance().getPartyHandler().updatePartyCache(player.getUniqueId(), null);
+        });
 
         message(ChatColor.YELLOW + "Your party has been disbanded.");
         resetInventoriesDelayed();
@@ -221,6 +227,9 @@ public final class Party {
 
         player.sendMessage(ChatColor.YELLOW + "You have been kicked from your party.");
         message(ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " has been kicked from your party.");
+
+        VisibilityUtils.updateVisibility(player);
+        forEachOnline(VisibilityUtils::updateVisibility);
 
         InventoryUtils.resetInventoryDelayed(player);
         resetInventoriesDelayed();
