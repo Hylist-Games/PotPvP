@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import lombok.experimental.UtilityClass;
@@ -40,41 +41,41 @@ public final class PostMatchInvLang {
         INVENTORY_HEADER_COMPONENT.addExtra(clickToView);
     }
 
-    public static TextComponent[][] spectatorMessages(TextComponent[] team1Buttons, TextComponent[] team2Buttons) {
+    public static TextComponent[][] spectatorMessages(MatchTeam team1, MatchTeam team2) {
         return new TextComponent[][] {
             { LINE_COMPONENT },
             { INVENTORY_HEADER_COMPONENT },
             { TEAM_1_HEADER_COMPONENT },
-            team1Buttons,
+            clickToViewLine(team1.getAllMembers()),
             { TEAM_2_HEADER_COMPONENT },
-            team2Buttons,
+            clickToViewLine(team2.getAllMembers()),
             { LINE_COMPONENT }
         };
     }
 
-    public static TextComponent[][] teamMessages(TextComponent[] yourTeam, TextComponent[] enemyTeam) {
+    public static TextComponent[][] teamMessages(MatchTeam yourTeam, MatchTeam enemyTeam) {
         return new TextComponent[][] {
             { LINE_COMPONENT },
             { INVENTORY_HEADER_COMPONENT },
             { YOUR_TEAM_COMPONENT },
-            yourTeam,
+            clickToViewLine(yourTeam.getAllMembers()),
             { ENEMY_TEAM_COMPONENT },
-            enemyTeam,
+            clickToViewLine(enemyTeam.getAllMembers()),
             { LINE_COMPONENT }
         };
     }
 
-    public static TextComponent[] clickToViewLine(MatchTeam team) {
+    private static TextComponent[] clickToViewLine(Set<UUID> members) {
         List<TextComponent> components = new ArrayList<>();
 
-        for (UUID member : team.getAllMembers()) {
+        for (UUID member : members) {
             String memberName = UUIDUtils.name(member);
             TextComponent component = new TextComponent();
 
             component.setText(memberName);
             component.setColor(ChatColor.YELLOW);
             component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.GREEN + "Click to view inventory of " + ChatColor.GOLD + memberName).create()));
-            component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/checkPostMatchData " + memberName));
+            component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/_ " + memberName));
 
             components.add(component);
             components.add(COMMA_COMPONENT);

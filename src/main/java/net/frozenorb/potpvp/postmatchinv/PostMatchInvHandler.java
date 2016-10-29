@@ -6,9 +6,13 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.postmatchinv.listener.PostMatchInvGeneralListener;
+import net.md_5.bungee.api.chat.TextComponent;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,61 +21,65 @@ public final class PostMatchInvHandler {
 
     // uuid -> their "view" of their last match
     // this varies per player, so we must store them all individually
-    private final Map<UUID, Map<UUID, PostMatchPlayer>> postMatchData = new ConcurrentHashMap<>();
+    private final Map<UUID, Map<UUID, PostMatchPlayer>> playerData = new ConcurrentHashMap<>();
 
     public PostMatchInvHandler() {
         Bukkit.getPluginManager().registerEvents(new PostMatchInvGeneralListener(), PotPvPSI.getInstance());
     }
 
-    public void registerInventories(Match match) {
-        Map<UUID, PostMatchPlayer> postMatchPlayers = match.getPostMatchPlayers();
+    public void recordMatch(Match match) {
+        saveInventories(match);
+        messagePlayers(match);
+    }
+
+    private void saveInventories(Match match) {
+        Map<UUID, PostMatchPlayer> matchPlayers = match.getPostMatchPlayers();
 
         for (MatchTeam team : match.getTeams()) {
-            for (UUID member : team.getAliveMembers()) {
-                postMatchData.put(member, postMatchPlayers);
+            for (UUID member : team.getAllMembers()) {
+                playerData.put(member, matchPlayers);
             }
         }
+    }
 
-        for (UUID spectator : match.getSpectators()) {
-            postMatchData.put(spectator, postMatchPlayers);
+    private void messagePlayers(Match match) {
+        List<MatchTeam> teams = match.getTeams();
+
+        if (teams.size() != 2) {
+            return;
         }
 
-        /*if (match.getTe)
+        MatchTeam team1 = teams.get(0);
+        MatchTeam team2 = teams.get(1);
 
-        EndedTeamData team1 = endedMatch.teamData().get(0);
-        EndedTeamData team2 = endedMatch.teamData().get(0);
+        TextComponent[][] team1Messages = PostMatchInvLang.teamMessages(team1, team2);
+        TextComponent[][] team2Messages = PostMatchInvLang.teamMessages(team2, team1);
+        TextComponent[][] spectatorMessages = PostMatchInvLang.spectatorMessages(team1, team2);
 
-        TextComponent[] team1InvButtons = createInventoryComponents(team1);
-        TextComponent[] team2InvButtons = createInventoryComponents(team2);
+        Map<UUID, TextComponent[][]> messages = new HashMap<>();
 
-        BaseComponent[][] spectatorMessages = createSpectatorMessages(team1InvButtons, team2InvButtons);
-        BaseComponent[][] team1Messages = createTeamMessages(team1InvButtons, team2InvButtons);
-        BaseComponent[][] team2Messages = createTeamMessages(team2InvButtons, team1InvButtons);
+        // we specifically call spectators first so anyone who was in a team
+        // gets their messages overriden by their relational messages
+        match.getSpectators().forEach(p -> messages.put(p, spectatorMessages));
+        team1.getAllMembers().forEach(p -> messages.put(p, team1Messages));
+        team2.getAllMembers().forEach(p -> messages.put(p, team2Messages));
 
-        Map<UUID, BaseComponent[][]> messages = new HashMap<>();
+        // used to avoid repeating these couple lines 3 times
+        messages.forEach((player, lines) -> {
+            Player playerBukkit = Bukkit.getPlayer(player);
 
-        for (UUID specPlayer : endedMatch.match().spectators()) {
-            messages.put(specPlayer, spectatorMessages);
-        }
-
-        for (EndedPlayer team1Player : team1.players()) {
-            messages.put(team1Player.id(), team1Messages);
-        }
-
-        for (EndedPlayer team2Player : team2.players()) {
-            messages.put(team2Player.id(), team2Messages);
-        }
-
-        queuedMessages.putAll(messages);
-
-        // expire queued messages after 30 seconds (so we don't
-        // confuse players if their join failed and they eventually
-        // join this lobby later)
-        Bukkit.getScheduler().runTaskLater(PotPvPPlugin.getInstance(), () -> messages.forEach(queuedMessages::remove), 30 * 20L);*/
+            for (TextComponent[] line : lines) {
+                playerBukkit.spigot().sendMessage(line);
+            }
+        });
     }
 
     public Map<UUID, PostMatchPlayer> getPostMatchData(UUID forWhom) {
-        return postMatchData.getOrDefault(forWhom, ImmutableMap.of());
+        return playerData.getOrDefault(forWhom, ImmutableMap.of());
+    }
+
+    public void removePostMatchData(UUID forWhom) {
+        playerData.remove(forWhom);
     }
 
 }
