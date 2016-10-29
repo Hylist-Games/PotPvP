@@ -179,8 +179,6 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
     }
 
     private void renderSpectatorLines(List<String> scores, Match match, MatchTeam oldTeam) {
-        scores.add("&eKit: &f" + match.getKitType().getDisplayName());
-
         List<MatchTeam> teams = match.getTeams();
 
         // only render team overview if we have two teams
@@ -224,6 +222,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
 
         // spectators don't have any bold entries on their scoreboard
         scores.add("&6" + (participant ? "&l" : "") + "Duration: &f" + formattedDuration);
+        scores.add("&e" + (participant ? "&l" : "") + "Kit: &f" + match.getKitType().getDisplayName());
     }
 
     /* Returns the names of all alive players, colored + indented, followed
