@@ -44,7 +44,7 @@ import lombok.Getter;
 
 public final class Match {
 
-    private static final int MATCH_END_DELAY_SECONDS = 1;
+    private static final int MATCH_END_DELAY_SECONDS = 2;
 
     @Getter private final String id;
     @Getter private final KitType kitType;
