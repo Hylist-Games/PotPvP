@@ -1,7 +1,6 @@
 package net.frozenorb.potpvp.match.listener;
 
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 
@@ -26,7 +25,7 @@ public final class MatchSoupListener implements Listener {
         Player player = event.getPlayer();
         Match match = matchHandler.getMatchPlaying(player);
 
-        if (match == null || match.getKitType() != KitType.SOUP) {
+        if (match == null/* || match.getKitType() != KitType.SOUP*/) {
             return;
         }
 

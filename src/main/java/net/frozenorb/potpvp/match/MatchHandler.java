@@ -77,8 +77,8 @@ public final class MatchHandler {
         // right side covers the right side
         Arena openArena = arenaHandler.allocateUnusedArena(schematic ->
             matchSize <= schematic.getMaxPlayerCount() &&
-            matchSize >= schematic.getMinPlayerCount() &&
-            (kitType == KitType.ARCHER || !schematic.isArcherOnly())
+            matchSize >= schematic.getMinPlayerCount() /*&&
+            (kitType == KitType.ARCHER || !schematic.isArcherOnly())*/
         );
 
         if (openArena == null) {

@@ -26,8 +26,8 @@ public enum KitType {
         "HCTeams",
         ChatColor.GREEN,
         Material.DIAMOND_SWORD
-    ),
-    ARCHER(
+    );
+    /*ARCHER(
         "Archer",
         ChatColor.GRAY,
         Material.BOW
@@ -66,7 +66,7 @@ public enum KitType {
         "Wizard",
         ChatColor.DARK_PURPLE,
         Material.BLAZE_POWDER
-    );
+    );*/
 
     private static final String META_MONGO_COLLECTION_NAME = "KitTypeMeta";
 
