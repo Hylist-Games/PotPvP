@@ -5,6 +5,8 @@ import net.frozenorb.potpvp.kit.menu.editkit.EditKitMenu;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.qlib.menu.Menu;
 
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -28,6 +30,12 @@ public final class LobbyGeneralListener implements Listener {
         UUID entityUuid = event.getEntity().getUniqueId();
 
         if (!matchHandler.isPlayingOrSpectatingMatch(entityUuid)) {
+            // return players who fell off the map to spawn.
+            if (event.getEntityType() == EntityType.PLAYER && event.getCause() == EntityDamageEvent.DamageCause.VOID) {
+                Player player = (Player) event.getEntity();
+                PotPvPSI.getInstance().getLobbyHandler().returnToLobby(player);
+            }
+
             event.setCancelled(true);
         }
     }
