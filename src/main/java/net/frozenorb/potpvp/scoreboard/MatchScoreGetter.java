@@ -60,7 +60,8 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         if (isParticipant) {
             renderParticipantLines(scores, match, player);
         } else {
-            renderSpectatorLines(scores, match);
+            MatchTeam previousTeam = match.getPreviousTeam(player.getUniqueId());
+            renderSpectatorLines(scores, match, previousTeam);
         }
 
         renderMetaLines(scores, match, isParticipant);
@@ -177,7 +178,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         scores.add("&c&lOpponents: &f" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size());
     }
 
-    private void renderSpectatorLines(List<String> scores, Match match) {
+    private void renderSpectatorLines(List<String> scores, Match match, MatchTeam oldTeam) {
         scores.add("&eKit: &f" + match.getKitType().getDisplayName());
 
         List<MatchTeam> teams = match.getTeams();
@@ -187,8 +188,17 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
             MatchTeam teamOne = teams.get(0);
             MatchTeam teamTwo = teams.get(1);
 
-            scores.add("&dTeam One: &f" + teamOne.getAliveMembers().size() + "/" + teamOne.getAllMembers().size()); // team 1 alive
-            scores.add("&bTeam Two: &f" + teamTwo.getAliveMembers().size() + "/" + teamTwo.getAllMembers().size()); // team 2 alive
+            // spectators who were on a team see teams as they releate
+            // to them, not just one/two.
+            if (oldTeam == null) {
+                scores.add("&dTeam One: &f" + teamOne.getAliveMembers().size() + "/" + teamOne.getAllMembers().size());
+                scores.add("&bTeam Two: &f" + teamTwo.getAliveMembers().size() + "/" + teamTwo.getAllMembers().size());
+            } else {
+                MatchTeam otherTeam = oldTeam == teamOne ? teamTwo : teamOne;
+
+                scores.add("&aTeam: &f" + oldTeam.getAliveMembers().size() + "/" + oldTeam.getAllMembers().size());
+                scores.add("&cOpponents: &f" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size());
+            }
         }
     }
 
