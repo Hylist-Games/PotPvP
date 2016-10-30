@@ -3,4 +3,3 @@ version: ${version}
 author: MineHQ Development Team
 main: net.frozenorb.potpvp.PotPvPSI
 depend: [ qLib ]
-load: STARTUP

@@ -21,14 +21,12 @@ import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.potpvp.rematch.RematchHandler;
 import net.frozenorb.potpvp.scoreboard.PotPvPScoreboardConfiguration;
 import net.frozenorb.potpvp.setting.SettingHandler;
-import net.frozenorb.potpvp.util.VoidChunkGenerator;
 import net.frozenorb.qlib.command.FrozenCommandHandler;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
 import net.frozenorb.qlib.scoreboard.FrozenScoreboardHandler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
@@ -120,11 +118,6 @@ public final class PotPvPSI extends JavaPlugin {
             getConfig().getString("Redis.Host"),
             getConfig().getInt("Redis.Port")
         );
-    }
-
-    @Override
-    public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
-        return new VoidChunkGenerator();
     }
 
 }
