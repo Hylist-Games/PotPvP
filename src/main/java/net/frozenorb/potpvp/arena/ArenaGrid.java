@@ -55,9 +55,9 @@ public class ArenaGrid {
                 try {
                     arenas[z - 1] = createArena(data.x, z, schematic, data, false);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
-                    System.out.println("[ArenaGrid] Couldn't load schematic " + schematic.getName() +
-                            "'s arena at index " + z + " due to an exception!");
+                    //ex.printStackTrace();
+                    //System.out.println("[ArenaGrid] Couldn't load schematic " + schematic.getName() +
+                    //        "'s arena at index " + z + " due to an exception!");
                 }
             }
 
