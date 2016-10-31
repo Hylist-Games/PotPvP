@@ -12,6 +12,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class DuelInviteCommand {
@@ -34,13 +35,17 @@ public class DuelInviteCommand {
         }
 
         if (party != null && !party.isLeader(sender.getUniqueId())) {
-            String targetName = target.getName();
-            Player partyLeader = Bukkit.getPlayer(party.getLeader());
+            Player leader = Bukkit.getPlayer(party.getLeader());
 
-            partyLeader.sendMessage(DuelLang.DUEL_PARTY_SUGGESTION_START.fill(sender.getName(), targetName));
-            partyLeader.spigot().sendMessage(createInviteButton(targetName));
+            if (party.isMember(target.getUniqueId())) {
+                sender.sendMessage(ChatColor.RED + "You cannot duel a player in your party.");
+                return;
+            }
 
-            sender.sendMessage(DuelLang.DUEL_PARTY_SUGGESTED.fill(partyLeader.getName(), targetName));
+            leader.sendMessage(DuelLang.DUEL_PARTY_SUGGESTION_START.fill(sender.getName(), target.getName()));
+            leader.spigot().sendMessage(createInviteButton(target.getName()));
+
+            sender.sendMessage(DuelLang.DUEL_PARTY_SUGGESTED.fill(leader.getName(), target.getName()));
             return;
         }
 
