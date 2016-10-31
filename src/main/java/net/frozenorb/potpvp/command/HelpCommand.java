@@ -22,7 +22,7 @@ public final class HelpCommand {
         ChatColor.GOLD + PotPvPLang.LONG_LINE,
         "§9§lPotPvP Help",
         ChatColor.GOLD + PotPvPLang.LONG_LINE,
-        "§6§lRemember: §ePotPvP makes use of clickable buttons. Most things are clickable!",
+        "§6§lRemember: §eMost things are clickable!",
         ""
     );
 
