@@ -45,7 +45,7 @@ public enum KitType {
     GAPPLE(
         "Gapple",
         ChatColor.GOLD,
-        new MaterialData(Material.GOLDEN_APPLE, (byte) 1)
+        new MaterialData(Material.GOLDEN_APPLE, (byte) 1) // 1 = 'notch' apple
     ),
     SOUP(
         "Soup",
@@ -76,7 +76,7 @@ public enum KitType {
     @Getter private final String name;
 
     /**
-     * Display color for this KitType, only used to display to the name. Display colors are not unique
+     * Display color for this KitType, only used to display to the player. Display colors are not unique
      * to kit types, they can (and are) repeated.
      */
     @Getter private final ChatColor displayColor;
