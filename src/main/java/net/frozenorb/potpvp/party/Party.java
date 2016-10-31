@@ -8,6 +8,7 @@ import net.frozenorb.potpvp.party.event.PartyCreateEvent;
 import net.frozenorb.potpvp.party.event.PartyDisbandEvent;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.potpvp.util.VisibilityUtils;
+import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.qLib;
 import net.md_5.bungee.api.ChatColor;
 
@@ -146,6 +147,10 @@ public final class Party {
 
     public void join(Player player) {
         if (members.contains(player.getUniqueId())) {
+            return;
+        }
+
+        if (!PotPvPValidation.canJoinParty(player, this)) {
             return;
         }
 

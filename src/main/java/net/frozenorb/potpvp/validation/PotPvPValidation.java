@@ -18,14 +18,9 @@ public final class PotPvPValidation {
     private static final String CANNOT_DO_THIS_WHILE_QUEUED = ChatColor.RED + "You cannot do this while queued!";
     private static final String CANNOT_DO_THIS_WHILE_IN_MATCH = ChatColor.RED + "You cannot do this while participating in or spectating a match!";
 
-    public static boolean can1v1(Player player) {
+    public static boolean canJoinParty(Player player, Party party) {
         if (isInParty(player)) {
             player.sendMessage(CANNOT_DO_THIS_IN_PARTY);
-            return false;
-        }
-
-        if (isInQueue(player)) {
-            player.sendMessage(CANNOT_DO_THIS_WHILE_QUEUED);
             return false;
         }
 
@@ -38,25 +33,6 @@ public final class PotPvPValidation {
     }
 
     public static boolean canSpectate(Player player) {
-        if (isInParty(player)) {
-            player.sendMessage(CANNOT_DO_THIS_IN_PARTY);
-            return false;
-        }
-
-        if (isInQueue(player)) {
-            player.sendMessage(CANNOT_DO_THIS_WHILE_QUEUED);
-            return false;
-        }
-
-        if (isInOrSpectatingMatch(player)) {
-            player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
-            return false;
-        }
-
-        return true;
-    }
-
-    public static boolean canRematch(Player player) {
         if (isInParty(player)) {
             player.sendMessage(CANNOT_DO_THIS_IN_PARTY);
             return false;
