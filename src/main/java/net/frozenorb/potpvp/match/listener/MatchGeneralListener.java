@@ -106,11 +106,20 @@ public final class MatchGeneralListener implements Listener {
     }
 
     /**
-     * Prevent friendly fire
+     * Prevents (non-fall) damage between ANY two playuers not on opposing {@link MatchTeam}s.
+     * This includes cancelling damage from a player not in a match attacking a player in a match.
      */
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (event.getEntityType() != EntityType.PLAYER) {
+            return;
+        }
+
+        // in the context of an EntityDamageByEntityEvent, DamageCause.FALL
+        // is the 0 hearts of damage and knockback applied when hitting
+        // another player with a thrown enderpearl. We allow this damage
+        // in order to be consistent with HCTeams
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
             return;
         }
 
@@ -124,18 +133,18 @@ public final class MatchGeneralListener implements Listener {
 
         Match match = matchHandler.getMatchPlaying(damager);
 
-        if (match == null) {
-            return;
+        // we only specifically allow damage where both players are in a match together
+        // and not on the same team, everything else is cancelled.
+        if (match != null) {
+            MatchTeam victimTeam = match.getTeam(victim.getUniqueId());
+            MatchTeam damagerTeam = match.getTeam(damager.getUniqueId());
+
+            if (victimTeam != null && victimTeam != damagerTeam) {
+                return;
+            }
         }
 
-        MatchTeam damagerTeam = match.getTeam(damager.getUniqueId());
-
-        boolean pearlDamage = event.getCause() == EntityDamageEvent.DamageCause.FALL;
-        boolean sameTeam = damagerTeam != null && damagerTeam.isAlive(victim.getUniqueId());
-
-        if (!pearlDamage && sameTeam) {
-            event.setCancelled(true);
-        }
+        event.setCancelled(true);
     }
 
     @EventHandler
