@@ -38,7 +38,7 @@ final class PostMatchPotionEffectsButton extends Button {
                 (effect.getAmplifier() + 1) + // 0-indexed to 1-indexed
                 ChatColor.GRAY +
                 " - " +
-                TimeUtils.formatIntoMMSS(effect.getDuration() * 20) // * 20 to convert ticks to seconds
+                TimeUtils.formatIntoMMSS(effect.getDuration() / 20) // / 20 to convert ticks to seconds
             )
             .collect(Collectors.toList());
     }
