@@ -6,6 +6,9 @@ import com.google.common.collect.ImmutableSet;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.party.event.PartyCreateEvent;
 import net.frozenorb.potpvp.party.event.PartyDisbandEvent;
+import net.frozenorb.potpvp.party.event.PartyMemberJoinEvent;
+import net.frozenorb.potpvp.party.event.PartyMemberKickEvent;
+import net.frozenorb.potpvp.party.event.PartyMemberLeaveEvent;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.potpvp.util.VisibilityUtils;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
@@ -168,6 +171,8 @@ public final class Party {
         members.add(player.getUniqueId());
         PotPvPSI.getInstance().getPartyHandler().updatePartyCache(player.getUniqueId(), this);
 
+        Bukkit.getPluginManager().callEvent(new PartyMemberJoinEvent(player, this));
+
         forEachOnline(VisibilityUtils::updateVisibility);
         resetInventoriesDelayed();
     }
@@ -198,6 +203,8 @@ public final class Party {
 
         VisibilityUtils.updateVisibility(player);
         forEachOnline(VisibilityUtils::updateVisibility);
+
+        Bukkit.getPluginManager().callEvent(new PartyMemberLeaveEvent(player, this));
 
         InventoryUtils.resetInventoryDelayed(player);
         resetInventoriesDelayed();
@@ -235,6 +242,8 @@ public final class Party {
 
         VisibilityUtils.updateVisibility(player);
         forEachOnline(VisibilityUtils::updateVisibility);
+
+        Bukkit.getPluginManager().callEvent(new PartyMemberKickEvent(player, this));
 
         InventoryUtils.resetInventoryDelayed(player);
         resetInventoriesDelayed();
