@@ -118,6 +118,20 @@ public final class PotPvPValidation {
         return true;
     }
 
+    public static boolean canStartFfa(Party party, Player initiator) {
+        if (isInQueue(party)) {
+            initiator.sendMessage(CANNOT_DO_THIS_WHILE_QUEUED);
+            return false;
+        }
+
+        if (isInOrSpectatingMatch(initiator)) {
+            initiator.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
+            return false;
+        }
+
+        return true;
+    }
+
     private static boolean isInParty(Player player) {
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
         return partyHandler.hasParty(player);

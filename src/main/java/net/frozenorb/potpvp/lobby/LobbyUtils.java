@@ -56,6 +56,7 @@ public final class LobbyUtils {
                     inventory.setItem(2, QueueItems.JOIN_PARTY_RANKED_QUEUE_ITEM);
                 } else if (partySize > 2) {
                     inventory.setItem(1, PartyItems.START_TEAM_SPLIT_ITEM);
+                    inventory.setItem(2, PartyItems.START_FFA_ITEM);
                 }
             }
 

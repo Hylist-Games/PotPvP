@@ -4,11 +4,11 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.party.PartyItems;
-import net.frozenorb.potpvp.party.PartyUtils;
+import net.frozenorb.potpvp.party.command.PartyFfaCommand;
 import net.frozenorb.potpvp.party.command.PartyInfoCommand;
 import net.frozenorb.potpvp.party.command.PartyLeaveCommand;
+import net.frozenorb.potpvp.party.command.PartyTeamSplitCommand;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,18 +32,10 @@ public final class PartyItemListener implements Listener {
             PartyLeaveCommand.partyLeave(player);
         } else if (item.isSimilar(PartyItems.START_TEAM_SPLIT_ITEM)) {
             event.setCancelled(true);
-
-            Party party = partyHandler.getParty(player);
-
-            if (party == null) {
-                return;
-            }
-
-            if (party.isLeader(player.getUniqueId())) {
-                PartyUtils.startTeamSplit(party, player);
-            } else {
-                player.sendMessage(ChatColor.RED + "You aren't the leader of your party.");
-            }
+            PartyTeamSplitCommand.partyTeamSplit(player);
+        } else if (item.isSimilar(PartyItems.START_FFA_ITEM)) {
+            event.setCancelled(true);
+            PartyFfaCommand.partyFfa(player);
         } else if (item.getType() == PartyItems.ICON_TYPE) {
             // we just check for the same type (not isSimilar because
             // of a different title) to avoid running this code

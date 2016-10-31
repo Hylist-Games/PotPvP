@@ -19,12 +19,15 @@ import static org.bukkit.ChatColor.YELLOW;
 public final class PartyItems {
 
     public static final Material ICON_TYPE = Material.NETHER_STAR;
+
     public static final ItemStack LEAVE_PARTY_ITEM = new ItemStack(Material.FIRE);
     public static final ItemStack START_TEAM_SPLIT_ITEM = new ItemStack(Material.DIAMOND_SWORD);
+    public static final ItemStack START_FFA_ITEM = new ItemStack(Material.GOLD_SWORD);
 
     static {
         ItemUtils.setDisplayName(LEAVE_PARTY_ITEM, LEFT_ARROW + RED.toString() + BOLD + "Leave Party" + RIGHT_ARROW);
         ItemUtils.setDisplayName(START_TEAM_SPLIT_ITEM, LEFT_ARROW + YELLOW.toString() + BOLD + "Start Team Split" + RIGHT_ARROW);
+        ItemUtils.setDisplayName(START_FFA_ITEM, LEFT_ARROW + YELLOW.toString() + BOLD + "Start Team FFA" + RIGHT_ARROW);
     }
 
     public static ItemStack icon(Party party) {
