@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableSet;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.Arena;
+import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.match.event.MatchCountdownStartEvent;
 import net.frozenorb.potpvp.match.event.MatchEndEvent;
@@ -140,19 +141,12 @@ public final class Match {
         endedAt = Instant.now();
         endReason = reason;
 
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Map<UUID, Match> playingCache = matchHandler.getPlayingMatchCache();
-        Map<UUID, Match> spectateCache = matchHandler.getSpectatingMatchCache();
-
         for (Player player : Bukkit.getOnlinePlayers()) {
             UUID playerUuid = player.getUniqueId();
             MatchTeam team = getTeam(playerUuid);
 
             if (team != null) {
-                playingCache.remove(playerUuid);
                 postMatchPlayers.computeIfAbsent(playerUuid, v -> new PostMatchPlayer(player));
-            } else if (spectators.contains(playerUuid)) {
-                spectateCache.remove(playerUuid);
             }
         }
 
@@ -192,8 +186,25 @@ public final class Match {
             MongoUtils.getCollection("EndedMatches").insertOne(document);
         });
 
-        PotPvPSI.getInstance().getArenaHandler().releaseArena(arena);
-        PotPvPSI.getInstance().getMatchHandler().removeMatch(this);
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
+
+        Map<UUID, Match> playingCache = matchHandler.getPlayingMatchCache();
+        Map<UUID, Match> spectateCache = matchHandler.getSpectatingMatchCache();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            UUID playerUuid = player.getUniqueId();
+            MatchTeam team = getTeam(playerUuid);
+
+            if (team != null) {
+                playingCache.remove(playerUuid);
+            } else if (spectators.contains(playerUuid)) {
+                spectateCache.remove(playerUuid);
+            }
+        }
+
+        arenaHandler.releaseArena(arena);
+        matchHandler.removeMatch(this);
 
         // purposely placed after .removeMatch so any code after here
         // doesn't see that this match exists
