@@ -21,11 +21,13 @@ import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,6 +37,9 @@ public final class MatchHandler {
 
     @Getter @Setter private boolean rankedMatchesDisabled;
     @Getter @Setter private boolean unrankedMatchesDisabled;
+
+    @Getter(AccessLevel.PACKAGE) private final Map<UUID, Match> playingMatchCache = new ConcurrentHashMap<>();
+    @Getter(AccessLevel.PACKAGE) private final Map<UUID, Match> spectatingMatchCache = new ConcurrentHashMap<>();
 
     public MatchHandler() {
         Bukkit.getPluginManager().registerEvents(new KitSelectionListener(), PotPvPSI.getInstance());
@@ -118,7 +123,7 @@ public final class MatchHandler {
      * Returns a sum of all players who are playing in a {@link Match}
      * that passes the {@link Predicate} provided.
      * @return number of players playing in matches that
-     *          pass the {@link Predicate} provided\
+     *          pass the {@link Predicate} provided
      */
     public int countPlayersPlayingMatches(Predicate<Match> inclusionPredicate) {
         int result = 0;
@@ -177,15 +182,7 @@ public final class MatchHandler {
      * @return the match being played by the provided player
      */
     public Match getMatchPlaying(UUID playerUuid) {
-        for (Match match : hostedMatches) {
-            for (MatchTeam team : match.getTeams()) {
-                if (team.getAliveMembers().contains(playerUuid)) {
-                    return match;
-                }
-            }
-        }
-
-        return null;
+        return playingMatchCache.get(playerUuid);
     }
 
     /**
@@ -197,13 +194,7 @@ public final class MatchHandler {
      * @return the match being spectated by the provided player
      */
     public Match getMatchSpectating(UUID playerUuid) {
-        for (Match match : hostedMatches) {
-            if (match.isSpectator(playerUuid)) {
-                return match;
-            }
-        }
-
-        return null;
+        return spectatingMatchCache.get(playerUuid);
     }
 
     /**
@@ -215,19 +206,13 @@ public final class MatchHandler {
      * @return the match being played or spectated by the provided player
      */
     public Match getMatchPlayingOrSpectating(UUID playerUuid) {
-        for (Match match : hostedMatches) {
-            if (match.isSpectator(playerUuid)) {
-                return match;
-            }
+        Match playing = playingMatchCache.get(playerUuid);
 
-            for (MatchTeam team : match.getTeams()) {
-                if (team.getAliveMembers().contains(playerUuid)) {
-                    return match;
-                }
-            }
+        if (playing != null) {
+            return playing;
+        } else {
+            return spectatingMatchCache.get(playerUuid);
         }
-
-        return null;
     }
 
     /**
@@ -271,7 +256,7 @@ public final class MatchHandler {
      * @return if a match is being played by the provided player
      */
     public boolean isPlayingMatch(UUID playerUuid) {
-        return getMatchPlaying(playerUuid) != null;
+        return playingMatchCache.containsKey(playerUuid);
     }
 
     /**
@@ -282,7 +267,7 @@ public final class MatchHandler {
      * @return if a match is being spectated by the provided player
      */
     public boolean isSpectatingMatch(UUID playerUuid) {
-        return getMatchSpectating(playerUuid) != null;
+        return spectatingMatchCache.containsKey(playerUuid);
     }
 
     /**
@@ -293,7 +278,7 @@ public final class MatchHandler {
      * @return if a match is being played or spectated by the provided player
      */
     public boolean isPlayingOrSpectatingMatch(UUID playerUuid) {
-        return getMatchPlayingOrSpectating(playerUuid) != null;
+        return playingMatchCache.containsKey(playerUuid) || spectatingMatchCache.containsKey(playerUuid);
     }
 
 }

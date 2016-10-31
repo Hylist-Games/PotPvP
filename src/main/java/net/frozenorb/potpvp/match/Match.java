@@ -59,7 +59,7 @@ public final class Match {
     @Getter private Instant startedAt;
     @Getter private Instant endedAt;
 
-    // we track if matches we started by a duel (/dueL), so the RematchHandler can
+    // we track if matches are started by a duel (/dueL), so the RematchHandler can
     // only give rematches to 1v1s started by that command. prior to this change,
     // scenarios like a team split of a 3 man team (with one sitting out) would get
     // counted as a 1v1 when calculating rematches.
@@ -77,12 +77,16 @@ public final class Match {
     void startCountdown() {
         state = MatchState.COUNTDOWN;
 
+        Map<UUID, Match> playingCache = PotPvPSI.getInstance().getMatchHandler().getPlayingMatchCache();
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             MatchTeam team = getTeam(player.getUniqueId());
 
             if (team == null) {
                 continue;
             }
+
+            playingCache.put(player.getUniqueId(), this);
 
             Location spawn = team == teams.get(0) ? arena.getTeam1Spawn() : arena.getTeam2Spawn();
 
@@ -136,12 +140,19 @@ public final class Match {
         endedAt = Instant.now();
         endReason = reason;
 
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        Map<UUID, Match> playingCache = matchHandler.getPlayingMatchCache();
+        Map<UUID, Match> spectateCache = matchHandler.getSpectatingMatchCache();
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             UUID playerUuid = player.getUniqueId();
             MatchTeam team = getTeam(playerUuid);
 
             if (team != null) {
+                playingCache.remove(playerUuid);
                 postMatchPlayers.computeIfAbsent(playerUuid, v -> new PostMatchPlayer(player));
+            } else if (spectators.contains(playerUuid)) {
+                spectateCache.remove(playerUuid);
             }
         }
 
@@ -227,6 +238,9 @@ public final class Match {
     }
 
     public void addSpectator(Player player, Player target, boolean teleportPlayer) {
+        Map<UUID, Match> spectateCache = PotPvPSI.getInstance().getMatchHandler().getSpectatingMatchCache();
+
+        spectateCache.put(player.getUniqueId(), this);
         spectators.add(player.getUniqueId());
 
         if (teleportPlayer) {
@@ -267,9 +281,12 @@ public final class Match {
     }
 
     public void removeSpectator(Player player) {
-        spectators.remove(player.getUniqueId());
-        PotPvPSI.getInstance().getLobbyHandler().returnToLobby(player);
+        Map<UUID, Match> spectateCache = PotPvPSI.getInstance().getMatchHandler().getSpectatingMatchCache();
 
+        spectateCache.remove(player.getUniqueId());
+        spectators.remove(player.getUniqueId());
+
+        PotPvPSI.getInstance().getLobbyHandler().returnToLobby(player);
         Bukkit.getPluginManager().callEvent(new MatchSpectatorLeaveEvent(player, this));
     }
 
@@ -277,8 +294,12 @@ public final class Match {
         MatchTeam team = getTeam(player.getUniqueId());
 
         if (team != null) {
-            postMatchPlayers.put(player.getUniqueId(), new PostMatchPlayer(player));
+            Map<UUID, Match> playingCache = PotPvPSI.getInstance().getMatchHandler().getPlayingMatchCache();
+
             team.markDead(player.getUniqueId());
+            playingCache.remove(player.getUniqueId());
+
+            postMatchPlayers.put(player.getUniqueId(), new PostMatchPlayer(player));
             checkEnded();
         }
     }
