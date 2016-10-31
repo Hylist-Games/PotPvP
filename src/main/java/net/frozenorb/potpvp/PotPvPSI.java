@@ -21,9 +21,11 @@ import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.potpvp.rematch.RematchHandler;
 import net.frozenorb.potpvp.scoreboard.PotPvPScoreboardConfiguration;
 import net.frozenorb.potpvp.setting.SettingHandler;
+import net.frozenorb.potpvp.tab.PotPvPLayoutProvider;
 import net.frozenorb.qlib.command.FrozenCommandHandler;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
 import net.frozenorb.qlib.scoreboard.FrozenScoreboardHandler;
+import net.frozenorb.qlib.tab.FrozenTabHandler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -84,7 +86,7 @@ public final class PotPvPSI extends JavaPlugin {
 
         FrozenCommandHandler.registerAll(this);
         FrozenCommandHandler.registerParameterType(KitType.class, new KitTypeParameterType());
-        //FrozenTabHandler.setLayoutProvider(new PotPvPLayoutProvider());
+        FrozenTabHandler.setLayoutProvider(new PotPvPLayoutProvider());
         FrozenNametagHandler.registerProvider(new PotPvPNametagProvider());
         FrozenScoreboardHandler.setConfiguration(PotPvPScoreboardConfiguration.create());
     }
