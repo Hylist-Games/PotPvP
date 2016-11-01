@@ -56,8 +56,8 @@ public final class RematchHandler {
             return;
         }*/
 
-        // see Match#startedViaDuel
-        if (!match.isStartedViaDuel()) {
+        // see Match#allowRematches
+        if (!match.isAllowRematches()) {
             return;
         }
 

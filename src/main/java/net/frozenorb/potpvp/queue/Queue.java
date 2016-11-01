@@ -57,7 +57,7 @@ public abstract class Queue<T extends QueueEntry> {
             new MatchTeam(UUID.randomUUID().toString(), entryB.getMembers())
         );
 
-        return matchHandler.startMatch(teams, kitType) != null;
+        return matchHandler.startMatch(teams, kitType, true) != null;
     }
 
 }

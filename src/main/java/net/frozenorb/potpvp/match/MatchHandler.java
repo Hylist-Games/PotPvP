@@ -56,7 +56,7 @@ public final class MatchHandler {
         return startMatch(teams, kitType, false);
     }
 
-    public Match startMatch(List<MatchTeam> teams, KitType kitType, boolean startedViaDuel) {
+    public Match startMatch(List<MatchTeam> teams, KitType kitType, boolean allowRematches) {
         for (MatchTeam team : teams) {
             for (UUID member : team.getAllMembers()) {
                 if (isPlayingOrSpectatingMatch(member)) {
@@ -90,7 +90,7 @@ public final class MatchHandler {
             return null;
         }
 
-        Match match = new Match(kitType, openArena, teams, startedViaDuel);
+        Match match = new Match(kitType, openArena, teams, allowRematches);
 
         hostedMatches.add(match);
         match.startCountdown();

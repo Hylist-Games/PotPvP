@@ -60,19 +60,19 @@ public final class Match {
     @Getter private Instant startedAt;
     @Getter private Instant endedAt;
 
-    // we track if matches are started by a duel (/dueL), so the RematchHandler can
-    // only give rematches to 1v1s started by that command. prior to this change,
-    // scenarios like a team split of a 3 man team (with one sitting out) would get
-    // counted as a 1v1 when calculating rematches.
+    // we track if matches should give a rematch diamond manually. previouly
+    // we just checked if both teams had 1 player on them, but this wasn't
+    // always accurate. Scenarios like a team split of a 3 man team (with one
+    // sitting out) would get treated as a 1v1 when calculating rematches.
     // https://github.com/FrozenOrb/PotPvP-SI/issues/19
-    @Getter private boolean startedViaDuel;
+    @Getter private boolean allowRematches;
 
-    public Match(KitType kitType, Arena arena, List<MatchTeam> teams, boolean startedViaDuel) {
+    public Match(KitType kitType, Arena arena, List<MatchTeam> teams, boolean allowRematches) {
         this.id = UUID.randomUUID().toString();
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
         this.arena = Preconditions.checkNotNull(arena, "arena");
         this.teams = ImmutableList.copyOf(teams);
-        this.startedViaDuel = startedViaDuel;
+        this.allowRematches = allowRematches;
     }
 
     void startCountdown() {
