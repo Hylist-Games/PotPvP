@@ -18,6 +18,11 @@ import java.util.function.Function;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Similar to {@link SelectKitTypeMenu} but allows the user to set custom
+ * descriptions/item counts for each KitType. For example, this is used by
+ * the queue system to show the number of players in each queue prior to joining.
+ */
 public final class CustomSelectKitTypeMenu extends Menu {
 
     private final Callback<KitType> callback;

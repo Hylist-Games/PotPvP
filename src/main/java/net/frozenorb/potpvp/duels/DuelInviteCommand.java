@@ -19,6 +19,34 @@ public class DuelInviteCommand {
 
     @Command(names = {"duel", "1v1"}, permission = "")
     public static void duel(Player sender, @Param(name = "player") Player target) {
+        DuelHandler duelHandler = DuelHandler.instance();
+        Party party = PotPvPSI.getInstance().getPartyHandler().getParty(sender);
+
+        if (target == sender) {
+            sender.sendMessage(DuelLang.CANT_DUEL_YOURSELF.toString());
+            return;
+        }
+
+        if (party != null && !party.isLeader(sender.getUniqueId())) {
+            Player leader = Bukkit.getPlayer(party.getLeader());
+
+            if (party.isMember(target.getUniqueId())) {
+                sender.sendMessage(ChatColor.RED + "You cannot duel a player in your party.");
+                return;
+            }
+
+            leader.sendMessage(DuelLang.DUEL_PARTY_SUGGESTION_START.fill(sender.getName(), target.getName()));
+            leader.spigot().sendMessage(createInviteButton(target.getName()));
+
+            sender.sendMessage(DuelLang.DUEL_PARTY_SUGGESTED.fill(leader.getName(), target.getName()));
+            return;
+        }
+
+        if (!duelHandler.canInvite(target)) {
+            sender.sendMessage(DuelLang.CANNOT_INVITE_PLAYER.fill(target.getName()));
+            return;
+        }
+
         new SelectKitTypeMenu(kitType -> {
             sender.closeInventory();
             duel(sender, target, kitType);
@@ -111,4 +139,5 @@ public class DuelInviteCommand {
 
         return inviteButton;
     }
+
 }
