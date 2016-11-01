@@ -1,8 +1,10 @@
 package net.frozenorb.potpvp.duels;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.duels.listeners.DuelListener;
 import net.frozenorb.potpvp.setting.Setting;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -19,6 +21,7 @@ public final class DuelHandler {
     private Map<UUID, DuelInvite> invites = new HashMap<>();
 
     private DuelHandler() {
+        Bukkit.getPluginManager().registerEvents(new DuelListener(), PotPvPSI.getInstance());
     }
 
     public static DuelHandler instance() {
@@ -31,6 +34,11 @@ public final class DuelHandler {
 
     public DuelInvite purgeInvite(Player player) {
         return invites.remove(player.getUniqueId());
+    }
+
+    public void purgeInvitesTo(Player player) {
+        UUID playerUuid = player.getUniqueId();
+        invites.values().removeIf(v -> v.sentTo() == playerUuid);
     }
 
     public DuelInvite inviteBy(Player sender) {
