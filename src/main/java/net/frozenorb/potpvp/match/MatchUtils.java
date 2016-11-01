@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.match;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.party.PartyHandler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -11,7 +12,9 @@ import lombok.experimental.UtilityClass;
 public final class MatchUtils {
 
     public static void resetInventory(Player player) {
+        PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+
         Match match = matchHandler.getMatchSpectating(player.getUniqueId());
 
         if (match == null || !match.isSpectator(player.getUniqueId())) {
@@ -43,7 +46,12 @@ public final class MatchUtils {
             player.getInventory().setItem(2, SpectatorItems.VIEW_INVENTORY_ITEM);
         }
 
-        player.getInventory().setItem(8, SpectatorItems.RETURN_TO_LOBBY_ITEM);
+        // this bit is correct; see SpectatorItems file for more
+        if (partyHandler.hasParty(player)) {
+            player.getInventory().setItem(8, SpectatorItems.LEAVE_PARTY_ITEM);
+        } else {
+            player.getInventory().setItem(8, SpectatorItems.RETURN_TO_LOBBY_ITEM);
+        }
 
         Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), player::updateInventory, 1L);
     }

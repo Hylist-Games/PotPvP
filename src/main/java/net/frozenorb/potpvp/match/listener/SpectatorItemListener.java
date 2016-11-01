@@ -48,7 +48,8 @@ public final class SpectatorItemListener implements Listener {
         // carpet item does nothing, no point having an empty if block
         // view inventory item is handled in PlayerInteractEntityEvent
 
-        if (item.isSimilar(SpectatorItems.RETURN_TO_LOBBY_ITEM)) {
+        // this statement is correct; see SpectatorItems file for more
+        if (item.isSimilar(SpectatorItems.RETURN_TO_LOBBY_ITEM) || item.isSimilar(SpectatorItems.LEAVE_PARTY_ITEM)) {
             LeaveCommand.leave(player);
         } else if (item.isSimilar(SpectatorItems.TOGGLE_SPECTATORS_ITEM)) {
             SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
