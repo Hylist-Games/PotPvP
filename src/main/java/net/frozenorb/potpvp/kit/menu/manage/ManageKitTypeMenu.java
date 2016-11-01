@@ -68,19 +68,24 @@ public class ManageKitTypeMenu extends Menu {
         }
 
         ItemStack[] kit = type.getMeta().getEditorItems();
-        int index = -1;
+        int x = 0;
+        int y = 0;
 
-        o:
-        for (int x = 2; x <= 5; x++) {
-            for (int z = 2; z < 9; z++) {
-                if (index >= kit.length) {
-                    break o;
+        for (ItemStack editorItem : kit) {
+            if (editorItem != null) {
+                if (editorItem.getType() != Material.AIR) {
+                    buttons.put(getSlot(x + 2, y + 2), nonCancellingItem(editorItem));
                 }
+            }
 
-                ItemStack stack = kit[++index];
+            x++;
 
-                if (stack != null && stack.getType() != Material.AIR) {
-                    buttons.put(getSlot(x, z), nonCancellingItem(stack));
+            if (x > 6) {
+                x = 0;
+                y++;
+
+                if (y >= 4) {
+                    break;
                 }
             }
         }
