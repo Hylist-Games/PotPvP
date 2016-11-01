@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class KitHandler {
 
+    public static final String MONGO_COLLECTION_NAME = "playerKits";
     public static final int KITS_PER_TYPE = 4;
 
     private final Map<UUID, PlayerKitStore> kitStores = new ConcurrentHashMap<>();
@@ -55,7 +56,7 @@ public final class KitHandler {
     @Deprecated
     public void saveKitsAsync(UUID playerUuid) {
         Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
-            MongoCollection<Document> collection = MongoUtils.getCollection("PlayerKits");
+            MongoCollection<Document> collection = MongoUtils.getCollection(MONGO_COLLECTION_NAME);
             Document playerKits = Document.parse(qLib.PLAIN_GSON.toJson(kitStores.get(playerUuid)));
             playerKits.remove("player");
 
@@ -64,7 +65,7 @@ public final class KitHandler {
     }
 
     public void loadKits(UUID playerUuid) {
-        MongoCollection<Document> collection = MongoUtils.getCollection("PlayerKits");
+        MongoCollection<Document> collection = MongoUtils.getCollection(MONGO_COLLECTION_NAME);
         Document playerKits = collection.find(new Document("player", playerUuid.toString())).first();
 
         if (playerKits != null) {

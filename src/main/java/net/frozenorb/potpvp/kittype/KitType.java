@@ -68,7 +68,7 @@ public enum KitType {
         Material.BLAZE_POWDER
     );*/
 
-    private static final String META_MONGO_COLLECTION_NAME = "KitTypeMeta";
+    private static final String MONGO_COLLECTION_NAME = "kitTypeMeta";
 
     /**
      * Name of this KitType, only used to display to the player
@@ -103,7 +103,7 @@ public enum KitType {
         this.displayColor = Preconditions.checkNotNull(displayColor, "color");
         this.icon = Preconditions.checkNotNull(icon, "representation");
 
-        MongoCollection<Document> metaCollection = MongoUtils.getCollection(META_MONGO_COLLECTION_NAME);
+        MongoCollection<Document> metaCollection = MongoUtils.getCollection(MONGO_COLLECTION_NAME);
         Document metaJson = metaCollection.find(buildQuery()).first();
 
         if (metaJson != null) {
@@ -127,7 +127,7 @@ public enum KitType {
      */
     public void saveMetaAsync() {
         Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
-            MongoCollection<Document> metaCollection = MongoUtils.getCollection(META_MONGO_COLLECTION_NAME);
+            MongoCollection<Document> metaCollection = MongoUtils.getCollection(MONGO_COLLECTION_NAME);
             Document metaJson = Document.parse(qLib.PLAIN_GSON.toJson(meta));
             Document update = new Document("$set", new Document("meta", metaJson));
 

@@ -183,7 +183,7 @@ public final class Match {
 
         Bukkit.getPluginManager().callEvent(new MatchTerminateEvent(this, document));
         Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
-            MongoUtils.getCollection("EndedMatches").insertOne(document);
+            MongoUtils.getCollection(MatchHandler.MONGO_COLLECTION_NAME).insertOne(document);
         });
 
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();

@@ -34,6 +34,8 @@ import lombok.Setter;
 
 public final class MatchHandler {
 
+    public static final String MONGO_COLLECTION_NAME = "endedMatches";
+
     private final Set<Match> hostedMatches = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     @Getter @Setter private boolean rankedMatchesDisabled;
