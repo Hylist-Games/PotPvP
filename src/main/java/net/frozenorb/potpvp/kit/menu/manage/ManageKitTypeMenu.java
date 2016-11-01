@@ -5,9 +5,11 @@ import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,17 +39,16 @@ public class ManageKitTypeMenu extends Menu {
         // The horizontal row
         for (int i = 0; i <= 8; i++) {
             buttons.put(getSlot(i, 1), Button.placeholder(Material.OBSIDIAN));
-        }
 
-        // top row slots
-        for (int i = 3; i < 8; i++) {
-            buttons.put(getSlot(i, 0), Button.placeholder(Material.OBSIDIAN));
+            if (i >= 3) {
+                buttons.put(getSlot(i, 0), Button.placeholder(Material.OBSIDIAN));
+            }
         }
 
         buttons.put(getSlot(0, 0), new KitTypeInfoButton(type));
         buttons.put(getSlot(1, 0), Button.placeholder(Material.OBSIDIAN));
         buttons.put(getSlot(2, 0), new SaveKitTypeButton(type));
-        buttons.put(getSlot(7, 0), new ManageExitButton());
+        buttons.put(getSlot(8, 0), new ManageExitButton());
 
         for (ItemStack armorItem : type.getMeta().getDefaultArmor()) {
             int armorYOffset = 2;
@@ -79,11 +80,40 @@ public class ManageKitTypeMenu extends Menu {
                 ItemStack stack = kit[++index];
 
                 if (stack != null && stack.getType() != Material.AIR) {
-                    buttons.put(getSlot(x, z), Button.fromItem(stack));
+                    buttons.put(getSlot(x, z), nonCancellingItem(stack));
                 }
             }
         }
 
         return buttons;
+    }
+
+    private Button nonCancellingItem(ItemStack stack) {
+        return new Button() {
+            @Override
+            public ItemStack getButtonItem(Player player) {
+                return stack;
+            }
+
+            @Override
+            public String getName(Player player) {
+                return stack.getItemMeta().getDisplayName();
+            }
+
+            @Override
+            public List<String> getDescription(Player player) {
+                return stack.getItemMeta().getLore();
+            }
+
+            @Override
+            public Material getMaterial(Player player) {
+                return stack.getType();
+            }
+
+            @Override
+            public boolean shouldCancel(Player player, int slot, ClickType clickType) {
+                return false;
+            }
+        };
     }
 }

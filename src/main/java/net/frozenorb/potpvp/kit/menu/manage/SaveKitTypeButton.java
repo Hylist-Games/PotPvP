@@ -45,7 +45,7 @@ class SaveKitTypeButton extends Button {
     @Override
     public void clicked(Player player, int slot, ClickType clickType) {
         ItemStack[] fullInv = player.getOpenInventory().getTopInventory().getContents();
-        ItemStack[] kitInventory = new ItemStack[24];
+        ItemStack[] kitInventory = new ItemStack[28];
         int index = -1;
 
         for (int x = 2; x <= 5; x++) {
