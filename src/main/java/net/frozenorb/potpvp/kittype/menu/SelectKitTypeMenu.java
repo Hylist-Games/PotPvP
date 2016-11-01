@@ -15,17 +15,25 @@ import java.util.Map;
 
 public final class SelectKitTypeMenu extends Menu {
 
+    private final boolean reset;
     private final Callback<KitType> callback;
 
     public SelectKitTypeMenu(Callback<KitType> callback) {
+        this(callback, true);
+    }
+
+    public SelectKitTypeMenu(Callback<KitType> callback, boolean reset) {
         super("Select a kit type...");
 
         this.callback = Preconditions.checkNotNull(callback, "callback");
+        this.reset = reset;
     }
 
     @Override
     public void onClose(Player player) {
-        InventoryUtils.resetInventoryDelayed(player);
+        if (reset) {
+            InventoryUtils.resetInventoryDelayed(player);
+        }
     }
 
     @Override
