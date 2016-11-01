@@ -82,12 +82,13 @@ public final class QueueHandler {
 
             if (!silent) {
                 player.sendMessage(String.format(JOIN_SOLO_MESSAGE, kitType.getDisplayName()));
-                InventoryUtils.resetInventoryDelayed(player);
             }
+
+            InventoryUtils.resetInventoryDelayed(player);
         }
     }
 
-    public void leaveQueue(Player player, boolean silent) {
+    public boolean leaveQueue(Player player, boolean silent) {
         SoloQueueEntry queueEntry = getQueueEntry(player.getUniqueId());
 
         // fail silently
@@ -99,8 +100,12 @@ public final class QueueHandler {
 
             if (!silent) {
                 player.sendMessage(String.format(LEAVE_SOLO_MESSAGE, queue.getKitType().getDisplayName()));
-                InventoryUtils.resetInventoryDelayed(player);
             }
+
+            InventoryUtils.resetInventoryDelayed(player);
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -116,12 +121,13 @@ public final class QueueHandler {
 
             if (!silent) {
                 party.message(String.format(JOIN_PARTY_MESSAGE, kitType.getDisplayName()));
-                party.resetInventoriesDelayed();
             }
+
+            party.resetInventoriesDelayed();
         }
     }
 
-    public void leaveQueue(Party party, boolean silent) {
+    public boolean leaveQueue(Party party, boolean silent) {
         PartyQueueEntry queueEntry = getQueueEntry(party);
 
         // fail silently
@@ -133,8 +139,12 @@ public final class QueueHandler {
 
             if (!silent) {
                 party.message(String.format(LEAVE_PARTY_MESSAGE, queue.getKitType().getDisplayName()));
-                party.resetInventoriesDelayed();
             }
+
+            party.resetInventoriesDelayed();
+            return true;
+        } else {
+            return false;
         }
     }
 

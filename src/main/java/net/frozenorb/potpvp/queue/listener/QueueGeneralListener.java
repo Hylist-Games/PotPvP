@@ -7,9 +7,13 @@ import net.frozenorb.potpvp.match.event.MatchSpectatorJoinEvent;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.party.event.PartyDisbandEvent;
+import net.frozenorb.potpvp.party.event.PartyMemberJoinEvent;
+import net.frozenorb.potpvp.party.event.PartyMemberKickEvent;
+import net.frozenorb.potpvp.party.event.PartyMemberLeaveEvent;
 import net.frozenorb.potpvp.queue.QueueHandler;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,14 +25,36 @@ public final class QueueGeneralListener implements Listener {
 
     @EventHandler
     public void onPartyDisband(PartyDisbandEvent event) {
+        PotPvPSI.getInstance().getQueueHandler().leaveQueue(event.getParty(), true);
+    }
+
+    @EventHandler
+    public void onPartyMemberJoin(PartyMemberJoinEvent event) {
+        leaveQueue(event.getParty(), event.getMember(), "joined");
+    }
+
+    @EventHandler
+    public void onPartyMemberKick(PartyMemberKickEvent event) {
+        leaveQueue(event.getParty(), event.getMember(), "was kicked");
+    }
+
+    @EventHandler
+    public void onPartyMemberLeave(PartyMemberLeaveEvent event) {
+        leaveQueue(event.getParty(), event.getMember(), "left");
+    }
+
+    private void leaveQueue(Party party, Player member, String action) {
         QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
-        queueHandler.leaveQueue(event.getParty(), true);
+
+        if (queueHandler.leaveQueue(party, true)) {
+            String memberName = member.getName();
+            party.message(ChatColor.YELLOW + "Your party has been removed from the queue because " + memberName + " " + action + ".");
+        }
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
-        queueHandler.leaveQueue(event.getPlayer(), true);
+        PotPvPSI.getInstance().getQueueHandler().leaveQueue(event.getPlayer(), true);
     }
 
     @EventHandler
