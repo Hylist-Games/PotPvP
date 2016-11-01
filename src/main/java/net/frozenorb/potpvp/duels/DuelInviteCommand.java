@@ -62,19 +62,24 @@ public class DuelInviteCommand {
             return;
         }
 
-        if (party != null && !party.isLeader(sender.getUniqueId())) {
-            Player leader = Bukkit.getPlayer(party.getLeader());
+        if (party != null) {
+            if (!party.isLeader(sender.getUniqueId())) {
+                Player leader = Bukkit.getPlayer(party.getLeader());
 
-            if (party.isMember(target.getUniqueId())) {
+                if (party.isMember(target.getUniqueId())) {
+                    sender.sendMessage(ChatColor.RED + "You cannot duel a player in your party.");
+                    return;
+                }
+
+                leader.sendMessage(DuelLang.DUEL_PARTY_SUGGESTION_START.fill(sender.getName(), target.getName()));
+                leader.spigot().sendMessage(createInviteButton(target.getName()));
+
+                sender.sendMessage(DuelLang.DUEL_PARTY_SUGGESTED.fill(leader.getName(), target.getName()));
+                return;
+            } else if (party.isMember(target.getUniqueId())) {
                 sender.sendMessage(ChatColor.RED + "You cannot duel a player in your party.");
                 return;
             }
-
-            leader.sendMessage(DuelLang.DUEL_PARTY_SUGGESTION_START.fill(sender.getName(), target.getName()));
-            leader.spigot().sendMessage(createInviteButton(target.getName()));
-
-            sender.sendMessage(DuelLang.DUEL_PARTY_SUGGESTED.fill(leader.getName(), target.getName()));
-            return;
         }
 
         if (!duelHandler.canInvite(target)) {
