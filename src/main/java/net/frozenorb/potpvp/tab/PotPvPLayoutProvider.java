@@ -25,6 +25,8 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
     public TabLayout provide(Player player) {
         TabLayout layout = TabLayout.create(player);
 
+        renderHeader(player, layout);
+
         if (!PotPvPSI.getInstance().getMatchHandler().isPlayingOrSpectatingMatch(player)) {
             renderLobbyEntries(player, layout);
         } else {
@@ -43,6 +45,25 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
         return layout;
     }
 
+    private void renderHeader(Player player, TabLayout layout) {
+        {
+            // Column 1
+            layout.set(0, 1, ChatColor.GRAY + "Online: " + Bukkit.getOnlinePlayers().size());
+        }
+
+        {
+            // Column 2
+            layout.set(1, 0, ChatColor.GOLD.toString() + ChatColor.BOLD + "MineHQ Practice");
+            layout.set(1, 1, ChatColor.GRAY + "Your Connection", ((CraftPlayer)player).getHandle().ping);
+        }
+
+        {
+            // Column 3
+            layout.set(2, 1, ChatColor.GRAY + "In Fights: " + PotPvPSI.getInstance().getMatchHandler().countPlayersPlayingMatches());
+        }
+
+    }
+
     private void renderParticipantEntries(TabLayout layout, Match match, Player player) {
         List<MatchTeam> teams = match.getTeams();
 
@@ -56,8 +77,6 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
             {
                 // Column 1
-                layout.set(0, 1, ChatColor.GRAY + "Online: " + Bukkit.getOnlinePlayers().size());
-
                 // we handle duels a bit differently
                 if (!duel) {
                     layout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "Team " + ChatColor.GREEN + "(" + ourTeam.getAliveMembers().size() + "/" + ourTeam.getAllMembers().size() + ")");
@@ -68,15 +87,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
             }
 
             {
-                // Column 2
-                layout.set(1, 0, ChatColor.GOLD.toString() + ChatColor.BOLD + "MineHQ Practice");
-                layout.set(1, 1, ChatColor.GRAY + "Your Connection", ((CraftPlayer)player).getHandle().ping);
-            }
-
-            {
                 // Column 3
-                layout.set(2, 1, ChatColor.GRAY + "In Fights: " + PotPvPSI.getInstance().getMatchHandler().countPlayersPlayingMatches());
-
                 // we handle duels a bit differently
                 if (!duel) {
                     layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemies" + ChatColor.RED + "(" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
@@ -106,22 +117,12 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
                 {
                     // Column 1
-                    layout.set(0, 1, ChatColor.GRAY + "Online: " + Bukkit.getOnlinePlayers().size());
-
                     layout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "Team (" + ourTeam.getAliveMembers().size() + "/" + ourTeam.getAllMembers().size() + ")");
                     renderTeamMemberOverviewEntries(layout, ourTeam, 0, 4, ChatColor.GREEN);
                 }
 
                 {
-                    // Column 2
-                    layout.set(1, 0, ChatColor.GOLD.toString() + ChatColor.BOLD + "MineHQ Practice");
-                    layout.set(1, 1, ChatColor.GRAY + "Your Connection", ((CraftPlayer)player).getHandle().ping);
-                }
-
-                {
                     // Column 3
-                    layout.set(2, 1, ChatColor.GRAY + "In Fights: " + PotPvPSI.getInstance().getMatchHandler().countPlayersPlayingMatches());
-
                     layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemies (" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
                     renderTeamMemberOverviewEntries(layout, otherTeam, 2, 4, ChatColor.RED);
                 }
@@ -130,8 +131,6 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
                 {
                     // Column 1
-                    layout.set(0, 1, ChatColor.GRAY + "Online: " + Bukkit.getOnlinePlayers().size());
-
                     // we handle duels a bit differently
                     if (!duel) {
                         layout.set(0, 3, ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Team One (" + teamOne.getAliveMembers().size() + "/" + teamOne.getAllMembers().size() + ")");
@@ -142,15 +141,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                 }
 
                 {
-                    // Column 2
-                    layout.set(1, 0, ChatColor.GOLD.toString() + ChatColor.BOLD + "MineHQ Practice");
-                    layout.set(1, 1, ChatColor.GRAY + "Your Connection", ((CraftPlayer)player).getHandle().ping);
-                }
-
-                {
                     // Column 3
-                    layout.set(2, 1, ChatColor.GRAY + "In Fights: " + PotPvPSI.getInstance().getMatchHandler().countPlayersPlayingMatches());
-
                     // we handle duels a bit differently
                     if (!duel) {
                         layout.set(2, 3, ChatColor.AQUA + ChatColor.BOLD.toString() + "Team Two (" + teamTwo.getAliveMembers().size() + "/" + teamTwo.getAllMembers().size() + ")");
@@ -169,17 +160,12 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
         {
             // Column 1
-            layout.set(0, 1, ChatColor.GRAY + "Online: " + Bukkit.getOnlinePlayers().size());
-
             layout.set(0, 4, ChatColor.GOLD + "HCTeams - 2000");
             layout.set(0, 5, ChatColor.GOLD + "Classic - 2000");
         }
 
         {
             // Column 2
-            layout.set(1, 0, ChatColor.GOLD.toString() + ChatColor.BOLD + "MineHQ Practice");
-            layout.set(1, 1, ChatColor.GRAY + "Your Connection", ((CraftPlayer)player).getHandle().ping);
-
             layout.set(1, 3, ChatColor.GOLD.toString() + ChatColor.BOLD + "Your Rankings");
             layout.set(1, 4, ChatColor.GOLD + "No Ench - 2000");
             layout.set(1, 5, ChatColor.GOLD + "Vanilla - 2000");
@@ -192,8 +178,6 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
         {
             // Column 3
-            layout.set(2, 1, ChatColor.GRAY + "In Fights: " + PotPvPSI.getInstance().getMatchHandler().countPlayersPlayingMatches());
-
             layout.set(2, 4, ChatColor.GOLD + "Gapple - 2000");
             layout.set(2, 5, ChatColor.GOLD + "Archer - 2000");
         }
