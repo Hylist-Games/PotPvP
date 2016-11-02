@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.kit;
 import com.mongodb.client.MongoCollection;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.kit.listener.KitEditorListener;
 import net.frozenorb.potpvp.kit.listener.KitItemListener;
 import net.frozenorb.potpvp.kit.listener.KitLoadListener;
 import net.frozenorb.potpvp.kittype.KitType;
@@ -25,6 +26,7 @@ public final class KitHandler {
     private final Map<UUID, PlayerKitStore> kitStores = new ConcurrentHashMap<>();
 
     public KitHandler() {
+        Bukkit.getPluginManager().registerEvents(new KitEditorListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new KitItemListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new KitLoadListener(), PotPvPSI.getInstance());
     }

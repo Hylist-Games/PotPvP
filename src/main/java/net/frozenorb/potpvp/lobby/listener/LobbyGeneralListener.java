@@ -65,13 +65,16 @@ public final class LobbyGeneralListener implements Listener {
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        Player player = event.getPlayer();
 
-        if (matchHandler.isPlayingOrSpectatingMatch(event.getPlayer())) {
+        if (matchHandler.isPlayingOrSpectatingMatch(player)) {
             return;
         }
 
-        // just remove the item for players in the kit editor, so they can 'drop' items to remove them
-        if (Menu.currentlyOpenedMenus.get(event.getPlayer().getName()) instanceof EditKitMenu) {
+        Menu openMenu = Menu.currentlyOpenedMenus.get(player.getName());
+
+        // just remove the item for players in these menus, so they can 'drop' items to remove them
+        if (openMenu != null && openMenu.isNoncancellingInventory()) {
             event.getItemDrop().remove();
         } else {
             event.setCancelled(true);
