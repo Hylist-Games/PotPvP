@@ -21,30 +21,7 @@ import java.util.UUID;
 public final class PotPvPLayoutProvider implements LayoutProvider {
 
     private static final int MAX_Y = 20;
-    private static final List<String> ALL_COLORS = new ArrayList<>();
-
-    static {
-        List<ChatColor> colors = new ArrayList<>();
-        List<ChatColor> formats = new ArrayList<>();
-
-        for (ChatColor color : ChatColor.values()) {
-            if (color.isFormat() && color != ChatColor.MAGIC) {
-                formats.add(color);
-            } else if (color.isColor() && color != ChatColor.BLACK) {
-                colors.add(color);
-            }
-        }
-
-        for (ChatColor color : colors) {
-            ALL_COLORS.add(color.toString());
-        }
-
-        for (ChatColor color : colors) {
-            for (ChatColor format : formats) {
-                ALL_COLORS.add(color + format.toString());
-            }
-        }
-    }
+    private static final List<String> TEAM_COLORS = new ArrayList<>(); // all of the colors we use to display names for spectators in an FFA match
 
     @Override
     public TabLayout provide(Player player) {
@@ -70,6 +47,9 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
         return layout;
     }
 
+    /**
+     * Render the tab-list header, which is global (shown in-lobby, in-match, etc).
+     */
     private void renderHeader(Player player, TabLayout layout) {
         {
             // Column 1
@@ -89,6 +69,9 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
     }
 
+    /**
+     * Render the tab entries for a player who is participating in a match.
+     */
     private void renderParticipantEntries(TabLayout layout, Match match, Player player) {
         List<MatchTeam> teams = match.getTeams();
 
@@ -173,8 +156,34 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                 result.addAll(deadLines);
             }
 
-            for (String entry : result) {
+            // actually display our entries
+            for (int index = 0; index < result.size(); index++) {
+                String entry = result.get(index);
+
                 layout.set(x++, y, entry);
+
+                if (x == 3 && y == MAX_Y) {
+                    // if we're at the last slot, we want to see if we still have alive players to show
+                    int aliveLeft = 0;
+
+                    for (int i = index; i < result.size(); i++) {
+                        String currentEntry = result.get(i);
+                        boolean dead = ChatColor.getLastColors(currentEntry).equals(ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString());
+
+                        if (!dead) {
+                            aliveLeft++;
+                        }
+                    }
+
+                    if (aliveLeft != 0 && aliveLeft != 1) {
+                        // if there are players we weren't able to show and if it's more than one
+                        // (if it's only one they'll be shown as the last entry [look above: L302]), display the number
+                        // of alive players we weren't able to show instead.
+                        layout.set(x, y, ChatColor.GREEN + "+" + aliveLeft);
+                    }
+
+                    break;
+                }
 
                 if (x == 3) {
                     x = 0;
@@ -184,6 +193,10 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
         }
     }
 
+    /**
+     * Render the tab entries for a player who is spectating a match.
+     * This respects their previous team, still showing "Enemies", for example.
+     */
     private void renderSpectatorEntries(TabLayout layout, Match match, MatchTeam oldTeam) {
         List<MatchTeam> teams = match.getTeams();
 
@@ -246,6 +259,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
             List<String> result = new ArrayList<>();
 
             if (oldTeam != null) {
+                // if they were a part of this match, we want to render it like we would for an alive player, showing their team-mates first and in green.
                 {
                     // this is where we'll be adding our team members
                     List<String> aliveLines = new ArrayList<>();
@@ -288,8 +302,9 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                     result.addAll(deadLines);
                 }
             } else {
+                // if they're just a random spectator, we'll pick different colors for each team.
                 List<String> deadLines = new ArrayList<>();
-                List<String> colors = ImmutableList.copyOf(ALL_COLORS);
+                List<String> colors = ImmutableList.copyOf(TEAM_COLORS);
 
                 for (int index = 0; index < match.getTeams().size(); index++) {
                     MatchTeam team = match.getTeams().get(index);
@@ -307,12 +322,14 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                 result.addAll(deadLines);
             }
 
+            // actually display our entries
             for (int index = 0; index < result.size(); index++) {
                 String entry = result.get(index);
 
                 layout.set(x++, y, entry);
 
-                if (x == 2 && y == MAX_Y) {
+                if (x == 3 && y == MAX_Y) {
+                    // if we're at the last slot, we want to see if we still have alive players to show
                     int aliveLeft = 0;
 
                     for (int i = index; i < result.size(); i++) {
@@ -325,7 +342,9 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                     }
 
                     if (aliveLeft != 0 && aliveLeft != 1) {
-                        // show how many more alive players couldn't be displayed.
+                        // if there are players we weren't able to show and if it's more than one
+                        // (if it's only one they'll be shown as the last entry [look above: L302]), display the number
+                        // of alive players we weren't able to show instead.
                         layout.set(x, y, ChatColor.GREEN + "+" + aliveLeft);
                     }
 
@@ -340,6 +359,9 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
         }
     }
 
+    /**
+     * Render the tab entries for a player who is currently in the lobby.
+     */
     private void renderLobbyEntries(Player player, TabLayout layout) {
         Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
 
@@ -382,6 +404,16 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
         }
     }
 
+    /**
+     * Render tab entries which represent players of a certain team.
+     *
+     * @param column - The column we want to render the players in
+     * @param start  - The starting Y position.
+     *               This method will fill the column starting from that Y position
+     *               all the way to the bottom. If it can't fit all players inside
+     *               of the column, a number of alive players that couldn't be shown
+     *               will be displayed as the last entry.
+     */
     private void renderTeamMemberOverviewEntries(TabLayout layout, MatchTeam team, int column, int start, ChatColor color) {
         List<String> aliveLines = new ArrayList<>();
         List<String> deadLines = new ArrayList<>();
@@ -401,8 +433,10 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
         result.addAll(aliveLines);
         result.addAll(deadLines);
 
+        // how many spots we have left
         int spotsLeft = MAX_Y - start;
 
+        // we could've used the 'start' variable, but we create a new one for readability.
         int y = start;
 
         for (int index = 0; index < result.size(); index++) {
@@ -410,6 +444,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
             // we check if we only have 1 more spot to show
             if (spotsLeft == 1) {
+                // if so, count how many alive players we have left to show
                 int aliveLeft = 0;
 
                 for (int i = index; i < result.size(); i++) {
@@ -421,10 +456,13 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                     }
                 }
 
+                // if we have any
                 if (aliveLeft != 0) {
                     if (aliveLeft == 1) {
+                        // if it's only one, we display them as the last entry
                         layout.set(column, y, entry);
                     } else {
+                        // if it's more than one, display a number of how many we couldn't display.
                         layout.set(column, y, color + "+" + aliveLeft);
                     }
                 }
@@ -436,6 +474,31 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
             layout.set(column, y, entry);
             y++;
             spotsLeft--;
+        }
+    }
+
+    static {
+        // gather all of the colors we want to use for teams when showing them to spectators in FFAs
+
+        List<ChatColor> colors = new ArrayList<>();
+        List<ChatColor> formats = new ArrayList<>();
+
+        for (ChatColor color : ChatColor.values()) {
+            if (color.isFormat() && color != ChatColor.MAGIC && color != ChatColor.STRIKETHROUGH) {
+                formats.add(color);
+            } else if (color.isColor() && color != ChatColor.BLACK) {
+                colors.add(color);
+            }
+        }
+
+        for (ChatColor color : colors) {
+            TEAM_COLORS.add(color.toString());
+        }
+
+        for (ChatColor color : colors) {
+            for (ChatColor format : formats) {
+                TEAM_COLORS.add(color + format.toString());
+            }
         }
     }
 
