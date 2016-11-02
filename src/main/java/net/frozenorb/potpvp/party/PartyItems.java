@@ -27,7 +27,7 @@ public final class PartyItems {
     static {
         ItemUtils.setDisplayName(LEAVE_PARTY_ITEM, LEFT_ARROW + RED.toString() + BOLD + "Leave Party" + RIGHT_ARROW);
         ItemUtils.setDisplayName(START_TEAM_SPLIT_ITEM, LEFT_ARROW + YELLOW.toString() + BOLD + "Start Team Split" + RIGHT_ARROW);
-        ItemUtils.setDisplayName(START_FFA_ITEM, LEFT_ARROW + YELLOW.toString() + BOLD + "Start Team FFA" + RIGHT_ARROW);
+        ItemUtils.setDisplayName(START_FFA_ITEM, LEFT_ARROW + YELLOW.toString() + BOLD + "Start Party FFA" + RIGHT_ARROW);
     }
 
     public static ItemStack icon(Party party) {
