@@ -11,6 +11,7 @@ import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.command.Command;
+import net.frozenorb.qlib.command.Param;
 
 import org.bukkit.entity.Player;
 
@@ -48,6 +49,48 @@ public final class PartyFfaCommand {
                 for (UUID member : party.getMembers()) {
                     String uuid = UUID.randomUUID().toString();
                     teams.add(new MatchTeam(uuid, ImmutableSet.of(member)));
+                }
+
+                matchHandler.startMatch(teams, kitType);
+            }).openMenu(sender);
+        }
+    }
+
+    @Command(names = {"party devffa", "p devffa", "t devffa", "team devffa", "f devffa"}, permission = "")
+    public static void partyDevFfa(Player sender, @Param(name = "team size", defaultValue = "1") int teamSize) {
+        PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
+        Party party = partyHandler.getParty(sender);
+
+        if (party == null) {
+            sender.sendMessage(PotPvPLang.NOT_IN_PARTY);
+        } else if (!party.isLeader(sender.getUniqueId())) {
+            sender.sendMessage(PotPvPLang.NOT_LEADER_OF_PARTY);
+        } else  {
+            MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+
+            if (!PotPvPValidation.canStartFfa(party, sender)) {
+                return;
+            }
+
+            new SelectKitTypeMenu(kitType -> {
+                sender.closeInventory();
+
+                if (!PotPvPValidation.canStartFfa(party, sender)) {
+                    return;
+                }
+
+                List<MatchTeam> teams = new ArrayList<>();
+                List<UUID> availableMembers = new ArrayList<>(party.getMembers());
+
+                while (availableMembers.size() >= teamSize) {
+                    List<UUID> members = new ArrayList<>();
+
+                    for (int i = 0; i < teamSize; i++) {
+                        members.add(members.remove(0));
+                    }
+
+                    String uuid = UUID.randomUUID().toString();
+                    teams.add(new MatchTeam(uuid, ImmutableSet.copyOf(members)));
                 }
 
                 matchHandler.startMatch(teams, kitType);
