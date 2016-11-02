@@ -19,6 +19,8 @@ import java.util.UUID;
 
 public final class PotPvPLayoutProvider implements LayoutProvider {
 
+    private static final int MAX_Y = 20;
+
     @Override
     public TabLayout provide(Player player) {
         TabLayout layout = TabLayout.create(player);
@@ -58,7 +60,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
                 // we handle duels a bit differently
                 if (!duel) {
-                    layout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "Your Team " + ChatColor.GREEN + "(" + ourTeam.getAliveMembers().size() + "/" + ourTeam.getAllMembers().size() + ")");
+                    layout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "Team " + ChatColor.GREEN + "(" + ourTeam.getAliveMembers().size() + "/" + ourTeam.getAllMembers().size() + ")");
                 } else {
                     layout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "You");
                 }
@@ -77,7 +79,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
                 // we handle duels a bit differently
                 if (!duel) {
-                    layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemy Team" + ChatColor.RED + "(" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
+                    layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemies" + ChatColor.RED + "(" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
                 } else {
                     layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Opponent");
                 }
@@ -106,7 +108,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                     // Column 1
                     layout.set(0, 1, ChatColor.GRAY + "Online: " + Bukkit.getOnlinePlayers().size());
 
-                    layout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "Your Team (" + ourTeam.getAliveMembers().size() + "/" + ourTeam.getAllMembers().size() + ")");
+                    layout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "Team (" + ourTeam.getAliveMembers().size() + "/" + ourTeam.getAllMembers().size() + ")");
                     renderTeamMemberOverviewEntries(layout, ourTeam, 0, 4, ChatColor.GREEN);
                 }
 
@@ -120,7 +122,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                     // Column 3
                     layout.set(2, 1, ChatColor.GRAY + "In Fights: " + PotPvPSI.getInstance().getMatchHandler().countPlayersPlayingMatches());
 
-                    layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemy Team (" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
+                    layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemies (" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
                     renderTeamMemberOverviewEntries(layout, otherTeam, 2, 4, ChatColor.RED);
                 }
 
@@ -230,10 +232,31 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
         result.addAll(aliveLines);
         result.addAll(deadLines);
 
-        int index = start;
-        for (String entry : result) {
-            layout.set(column, index, entry);
-            index++;
+        int spotsLeft = MAX_Y - start;
+
+        int y = start;
+
+        for (int index = 0; index < result.size(); index++) {
+            String entry = result.get(index);
+
+            // we check if we only have 1 more spot to show
+            if (spotsLeft == 1) {
+                // if we only have one more entry, show it
+                if (index == result.size() - 1) {
+                    layout.set(column, y, entry);
+                } else { // if not, we show the number of how many more players we have, respecting the color
+                    boolean spectator = !ChatColor.getLastColors(entry).equals(color.toString());
+                    int playersLeft = (result.size() - 1) - index;
+
+                    layout.set(column, y, (spectator ? ChatColor.GRAY : color) + "+" + playersLeft);
+                }
+                break;
+            }
+
+            // if not, just display the entry.
+            layout.set(column, y, entry);
+            y++;
+            spotsLeft--;
         }
     }
 
