@@ -42,8 +42,6 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
     }
 
     private void renderParticipantEntries(TabLayout layout, Match match, Player player) {
-        Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
-
         List<MatchTeam> teams = match.getTeams();
 
         // only render tab if we have two teams
@@ -52,15 +50,19 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
             MatchTeam ourTeam = match.getTeam(player.getUniqueId());
             MatchTeam otherTeam = teams.get(0) == ourTeam ? teams.get(1) : teams.get(0);
 
+            boolean duel = ourTeam.getAllMembers().size() == 1 && otherTeam.getAllMembers().size() == 1;
+
             {
                 // Column 1
                 layout.set(0, 1, ChatColor.GRAY + "Online: " + Bukkit.getOnlinePlayers().size());
 
-                if (party != null) {
+                // we handle duels a bit differently
+                if (!duel) {
                     layout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "Your Team " + ChatColor.GREEN + "(" + ourTeam.getAliveMembers().size() + "/" + ourTeam.getAllMembers().size() + ")");
-
-                    renderTeamMemberOverviewEntries(layout, ourTeam, false, 0, 4);
+                } else {
+                    layout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "You");
                 }
+                renderTeamMemberOverviewEntries(layout, ourTeam, 0, 4, ChatColor.GREEN);
             }
 
             {
@@ -73,11 +75,13 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                 // Column 3
                 layout.set(2, 1, ChatColor.GRAY + "In Fights: " + PotPvPSI.getInstance().getMatchHandler().countPlayersPlayingMatches());
 
-                if (party != null) {
+                // we handle duels a bit differently
+                if (!duel) {
                     layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemy Team" + ChatColor.RED + "(" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
-
-                    renderTeamMemberOverviewEntries(layout, otherTeam, true, 0, 4);
+                } else {
+                    layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Opponent");
                 }
+                renderTeamMemberOverviewEntries(layout, otherTeam, 2, 4, ChatColor.RED);
             }
         }
     }
@@ -90,8 +94,11 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
             MatchTeam teamOne = teams.get(0);
             MatchTeam teamTwo = teams.get(1);
 
+            boolean duel = teamOne.getAllMembers().size() == 1 && teamTwo.getAllMembers().size() == 1;
+
             // first, we want to check if they were a part of the match and died, and if so, render the tab differently.
             if (oldTeam != null) {
+                // if they were, it means it couldn't have been a duel, so we don't check for that below.
                 MatchTeam ourTeam = teamOne == oldTeam ? teamOne : teamTwo;
                 MatchTeam otherTeam = teamOne == ourTeam ? teamTwo : teamOne;
 
@@ -99,9 +106,8 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                     // Column 1
                     layout.set(0, 1, ChatColor.GRAY + "Online: " + Bukkit.getOnlinePlayers().size());
 
-                    layout.set(0, 3, ChatColor.GREEN + "Your Team (" + ourTeam.getAliveMembers().size() + "/" + ourTeam.getAllMembers().size() + ")");
-
-                    renderTeamMemberOverviewEntries(layout, ourTeam, false, 0, 4);
+                    layout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "Your Team (" + ourTeam.getAliveMembers().size() + "/" + ourTeam.getAllMembers().size() + ")");
+                    renderTeamMemberOverviewEntries(layout, ourTeam, 0, 4, ChatColor.GREEN);
                 }
 
                 {
@@ -114,9 +120,8 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                     // Column 3
                     layout.set(2, 1, ChatColor.GRAY + "In Fights: " + PotPvPSI.getInstance().getMatchHandler().countPlayersPlayingMatches());
 
-                    layout.set(2, 3, ChatColor.RED + "Enemy Team (" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
-
-                    renderTeamMemberOverviewEntries(layout, otherTeam, true, 0, 4);
+                    layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemy Team (" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
+                    renderTeamMemberOverviewEntries(layout, otherTeam, 2, 4, ChatColor.RED);
                 }
 
             } else {
@@ -125,9 +130,13 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                     // Column 1
                     layout.set(0, 1, ChatColor.GRAY + "Online: " + Bukkit.getOnlinePlayers().size());
 
-                    layout.set(0, 3, ChatColor.LIGHT_PURPLE + "Team One (" + teamOne.getAliveMembers().size() + "/" + teamOne.getAllMembers().size() + ")");
-
-                    renderTeamOverviewEntries(layout, teamOne, 0, 4, ChatColor.LIGHT_PURPLE);
+                    // we handle duels a bit differently
+                    if (!duel) {
+                        layout.set(0, 3, ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Team One (" + teamOne.getAliveMembers().size() + "/" + teamOne.getAllMembers().size() + ")");
+                    } else {
+                        layout.set(0, 3, ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Player One");
+                    }
+                    renderTeamMemberOverviewEntries(layout, teamOne, 0, 4, ChatColor.LIGHT_PURPLE);
                 }
 
                 {
@@ -140,9 +149,13 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                     // Column 3
                     layout.set(2, 1, ChatColor.GRAY + "In Fights: " + PotPvPSI.getInstance().getMatchHandler().countPlayersPlayingMatches());
 
-                    layout.set(2, 3, ChatColor.AQUA + "Team Two (" + teamTwo.getAliveMembers().size() + "/" + teamTwo.getAllMembers().size() + ")");
-
-                    renderTeamOverviewEntries(layout, teamTwo, 0, 4, ChatColor.AQUA);
+                    // we handle duels a bit differently
+                    if (!duel) {
+                        layout.set(2, 3, ChatColor.AQUA + ChatColor.BOLD.toString() + "Team Two (" + teamTwo.getAliveMembers().size() + "/" + teamTwo.getAllMembers().size() + ")");
+                    } else {
+                        layout.set(2, 3, ChatColor.AQUA + ChatColor.BOLD.toString() + "Player Two");
+                    }
+                    renderTeamMemberOverviewEntries(layout, teamTwo, 2, 4, ChatColor.AQUA);
                 }
 
             }
@@ -198,7 +211,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
         }
     }
 
-    private void renderTeamOverviewEntries(TabLayout layout, MatchTeam team, int column, int start, ChatColor color) {
+    private void renderTeamMemberOverviewEntries(TabLayout layout, MatchTeam team, int column, int start, ChatColor color) {
         List<String> aliveLines = new ArrayList<>();
         List<String> deadLines = new ArrayList<>();
 
@@ -207,32 +220,6 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
         for (UUID teamMember : team.getAllMembers()) {
             if (team.isAlive(teamMember)) {
                 aliveLines.add(color + FrozenUUIDCache.name(teamMember));
-            } else {
-                deadLines.add("&7&m" + FrozenUUIDCache.name(teamMember));
-            }
-        }
-
-        List<String> result = new ArrayList<>();
-
-        result.addAll(aliveLines);
-        result.addAll(deadLines);
-
-        int index = start;
-        for (String entry : result) {
-            layout.set(column, index, entry);
-            index++;
-        }
-    }
-
-    private void renderTeamMemberOverviewEntries(TabLayout layout, MatchTeam team, boolean enemy, int column, int start) {
-        List<String> aliveLines = new ArrayList<>();
-        List<String> deadLines = new ArrayList<>();
-
-        // separate lists to sort alive players before dead
-        // + color differently
-        for (UUID teamMember : team.getAllMembers()) {
-            if (team.isAlive(teamMember)) {
-                aliveLines.add((!enemy ? ChatColor.GREEN : ChatColor.RED) + FrozenUUIDCache.name(teamMember));
             } else {
                 deadLines.add("&7&m" + FrozenUUIDCache.name(teamMember));
             }
