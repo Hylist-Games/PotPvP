@@ -38,7 +38,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                 renderParticipantEntries(layout, match, player);
             } else {
                 MatchTeam previousTeam = match.getPreviousTeam(player.getUniqueId());
-                renderSpectatorEntries(layout, match, player, previousTeam);
+                renderSpectatorEntries(layout, match, previousTeam);
             }
         }
 
@@ -67,7 +67,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
     private void renderParticipantEntries(TabLayout layout, Match match, Player player) {
         List<MatchTeam> teams = match.getTeams();
 
-        // only render tab if we have two teams
+        // if it's one team versus another
         if (teams.size() == 2) {
             // this method won't be called if the player isn't a participant
             MatchTeam ourTeam = match.getTeam(player.getUniqueId());
@@ -96,10 +96,70 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                 }
                 renderTeamMemberOverviewEntries(layout, otherTeam, 2, 4, ChatColor.RED);
             }
+        } else { // it's an FFA or something else like that
+            layout.set(2, 3, ChatColor.YELLOW + ChatColor.BOLD.toString() + "Party FFA");
+
+            int x = 0;
+            int y = 4;
+
+            List<String> result = new ArrayList<>();
+
+            {
+                // this is where we'll be adding our team members
+                MatchTeam ourTeam = match.getTeam(player.getUniqueId());
+
+                List<String> aliveLines = new ArrayList<>();
+                List<String> deadLines = new ArrayList<>();
+
+                // separate lists to sort alive players before dead
+                // + color differently
+                for (UUID teamMember : ourTeam.getAllMembers()) {
+                    if (ourTeam.isAlive(teamMember)) {
+                        aliveLines.add(ChatColor.GREEN + FrozenUUIDCache.name(teamMember));
+                    } else {
+                        deadLines.add("&7&m" + FrozenUUIDCache.name(teamMember));
+                    }
+                }
+
+                result.addAll(aliveLines);
+                result.addAll(deadLines);
+            }
+
+            {
+                // this is where we'll be adding everyone else
+                List<String> deadLines = new ArrayList<>();
+
+                for (MatchTeam otherTeam : match.getTeams()) {
+                    if (otherTeam == match.getTeam(player.getUniqueId())) {
+                        continue;
+                    }
+
+                    // separate lists to sort alive players before dead
+                    // + color differently
+                    for (UUID enemy : otherTeam.getAllMembers()) {
+                        if (otherTeam.isAlive(enemy)) {
+                            result.add(ChatColor.RED + FrozenUUIDCache.name(enemy));
+                        } else {
+                            deadLines.add("&7&m" + FrozenUUIDCache.name(enemy));
+                        }
+                    }
+                }
+
+                result.addAll(deadLines);
+            }
+
+            for (String entry : result) {
+                layout.set(x++, y, entry);
+
+                if (x == 3) {
+                    x = 0;
+                    y++;
+                }
+            }
         }
     }
 
-    private void renderSpectatorEntries(TabLayout layout, Match match, Player player, MatchTeam oldTeam) {
+    private void renderSpectatorEntries(TabLayout layout, Match match, MatchTeam oldTeam) {
         List<MatchTeam> teams = match.getTeams();
 
         // only render tab if we have two teams
@@ -229,10 +289,22 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                 if (index == result.size() - 1) {
                     layout.set(column, y, entry);
                 } else { // if not, we show the number of how many more players we have, respecting the color
-                    boolean spectator = !ChatColor.getLastColors(entry).equals(color.toString());
-                    int playersLeft = (result.size() - 1) - index;
+                    int aliveLeft = 0;
+                    int deadLeft = 0;
 
-                    layout.set(column, y, (spectator ? ChatColor.GRAY : color) + "+" + playersLeft);
+                    for (int i = index; i < result.size(); i++) {
+                        String currentEntry = result.get(i);
+                        boolean dead = !ChatColor.getLastColors(currentEntry).equals(color.toString());
+
+                        if (dead) {
+                            deadLeft++;
+                        } else {
+                            aliveLeft++;
+                        }
+                    }
+
+                    // show how many more alive/dead players couldn't be displayed.
+                    layout.set(column, y, (aliveLeft != 0 ? (color + "+" + aliveLeft + (deadLeft != 0 ? "&e, &7" : "")) : "") + (deadLeft != 0 ? deadLeft : ""));
                 }
                 break;
             }
