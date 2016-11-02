@@ -1,5 +1,6 @@
 package net.frozenorb.potpvp.tab;
 
+import com.google.common.collect.ImmutableList;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
@@ -20,6 +21,30 @@ import java.util.UUID;
 public final class PotPvPLayoutProvider implements LayoutProvider {
 
     private static final int MAX_Y = 20;
+    private static final List<String> ALL_COLORS = new ArrayList<>();
+
+    static {
+        List<ChatColor> colors = new ArrayList<>();
+        List<ChatColor> formats = new ArrayList<>();
+
+        for (ChatColor color : ChatColor.values()) {
+            if (color.isFormat() && color != ChatColor.MAGIC) {
+                formats.add(color);
+            } else if (color.isColor() && color != ChatColor.BLACK) {
+                colors.add(color);
+            }
+        }
+
+        for (ChatColor color : colors) {
+            ALL_COLORS.add(color.toString());
+        }
+
+        for (ChatColor color : colors) {
+            for (ChatColor format : formats) {
+                ALL_COLORS.add(color + format.toString());
+            }
+        }
+    }
 
     @Override
     public TabLayout provide(Player player) {
@@ -162,7 +187,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
     private void renderSpectatorEntries(TabLayout layout, Match match, MatchTeam oldTeam) {
         List<MatchTeam> teams = match.getTeams();
 
-        // only render tab if we have two teams
+        // if it's one team versus another
         if (teams.size() == 2) {
             MatchTeam teamOne = teams.get(0);
             MatchTeam teamTwo = teams.get(1);
@@ -211,6 +236,106 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                     renderTeamMemberOverviewEntries(layout, teamTwo, 2, 4, ChatColor.AQUA);
                 }
 
+            }
+        } else { // it's an FFA or something else like that
+            layout.set(2, 3, ChatColor.YELLOW + ChatColor.BOLD.toString() + "Party FFA");
+
+            int x = 0;
+            int y = 4;
+
+            List<String> result = new ArrayList<>();
+
+            if (oldTeam != null) {
+                {
+                    // this is where we'll be adding our team members
+                    List<String> aliveLines = new ArrayList<>();
+                    List<String> deadLines = new ArrayList<>();
+
+                    // separate lists to sort alive players before dead
+                    // + color differently
+                    for (UUID teamMember : oldTeam.getAllMembers()) {
+                        if (oldTeam.isAlive(teamMember)) {
+                            aliveLines.add(ChatColor.GREEN + FrozenUUIDCache.name(teamMember));
+                        } else {
+                            deadLines.add("&7&m" + FrozenUUIDCache.name(teamMember));
+                        }
+                    }
+
+                    result.addAll(aliveLines);
+                    result.addAll(deadLines);
+                }
+
+                {
+                    // this is where we'll be adding everyone else
+                    List<String> deadLines = new ArrayList<>();
+
+                    for (MatchTeam otherTeam : match.getTeams()) {
+                        if (otherTeam == oldTeam) {
+                            continue;
+                        }
+
+                        // separate lists to sort alive players before dead
+                        // + color differently
+                        for (UUID enemy : otherTeam.getAllMembers()) {
+                            if (otherTeam.isAlive(enemy)) {
+                                result.add(ChatColor.RED + FrozenUUIDCache.name(enemy));
+                            } else {
+                                deadLines.add("&7&m" + FrozenUUIDCache.name(enemy));
+                            }
+                        }
+                    }
+
+                    result.addAll(deadLines);
+                }
+            } else {
+                List<String> deadLines = new ArrayList<>();
+                List<String> colors = ImmutableList.copyOf(ALL_COLORS);
+
+                for (int index = 0; index < match.getTeams().size(); index++) {
+                    MatchTeam team = match.getTeams().get(index);
+                    String color = colors.get(index);
+
+                    for (UUID enemy : team.getAllMembers()) {
+                        if (team.isAlive(enemy)) {
+                            result.add(color + FrozenUUIDCache.name(enemy));
+                        } else {
+                            deadLines.add("&7&m" + FrozenUUIDCache.name(enemy));
+                        }
+                    }
+                }
+
+                result.addAll(deadLines);
+            }
+
+            for (int index = 0; index < result.size(); index++) {
+                String entry = result.get(index);
+
+                layout.set(x++, y, entry);
+
+                if (x == 2 && y == MAX_Y) {
+                    int aliveLeft = 0;
+
+                    for (int i = index; i < result.size(); i++) {
+                        String currentEntry = result.get(i);
+                        boolean dead = ChatColor.getLastColors(currentEntry).equals(ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString());
+
+                        if (!dead) {
+                            aliveLeft++;
+                        }
+                    }
+
+                    if (aliveLeft != 0 && aliveLeft != 1) {
+                        // show how many more alive players couldn't be displayed.
+                        layout.set(x, y, ChatColor.GREEN + "+" + aliveLeft);
+                    }
+
+                    break;
+                }
+
+                if (x == 3) {
+                    x = 0;
+                    y++;
+                }
             }
         }
     }
@@ -285,27 +410,25 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
             // we check if we only have 1 more spot to show
             if (spotsLeft == 1) {
-                // if we only have one more entry, show it
-                if (index == result.size() - 1) {
-                    layout.set(column, y, entry);
-                } else { // if not, we show the number of how many more players we have, respecting the color
-                    int aliveLeft = 0;
-                    int deadLeft = 0;
+                int aliveLeft = 0;
 
-                    for (int i = index; i < result.size(); i++) {
-                        String currentEntry = result.get(i);
-                        boolean dead = !ChatColor.getLastColors(currentEntry).equals(color.toString());
+                for (int i = index; i < result.size(); i++) {
+                    String currentEntry = result.get(i);
+                    boolean dead = !ChatColor.getLastColors(currentEntry).equals(color.toString());
 
-                        if (dead) {
-                            deadLeft++;
-                        } else {
-                            aliveLeft++;
-                        }
+                    if (!dead) {
+                        aliveLeft++;
                     }
-
-                    // show how many more alive/dead players couldn't be displayed.
-                    layout.set(column, y, (aliveLeft != 0 ? (color + "+" + aliveLeft + (deadLeft != 0 ? "&e, &7" : "")) : "") + (deadLeft != 0 ? deadLeft : ""));
                 }
+
+                if (aliveLeft != 0) {
+                    if (aliveLeft == 1) {
+                        layout.set(column, y, entry);
+                    } else {
+                        layout.set(column, y, color + "+" + aliveLeft);
+                    }
+                }
+
                 break;
             }
 
