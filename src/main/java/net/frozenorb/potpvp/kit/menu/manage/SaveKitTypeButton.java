@@ -1,8 +1,10 @@
 package net.frozenorb.potpvp.kit.menu.manage;
 
 import com.google.common.collect.ImmutableList;
+
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.qlib.menu.Button;
+
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;

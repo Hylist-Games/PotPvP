@@ -1,7 +1,6 @@
 package net.frozenorb.potpvp.lobby.listener;
 
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.kit.menu.editkit.EditKitMenu;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.qlib.menu.Menu;
 

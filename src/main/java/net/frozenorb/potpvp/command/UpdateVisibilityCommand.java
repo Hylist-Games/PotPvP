@@ -1,6 +1,5 @@
 package net.frozenorb.potpvp.command;
 
-import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.potpvp.util.VisibilityUtils;
 import net.frozenorb.qlib.command.Command;
 
