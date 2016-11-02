@@ -79,6 +79,7 @@ public final class Match {
         state = MatchState.COUNTDOWN;
 
         Map<UUID, Match> playingCache = PotPvPSI.getInstance().getMatchHandler().getPlayingMatchCache();
+        Set<Player> updateVisiblity = new HashSet<>();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             MatchTeam team = getTeam(player.getUniqueId());
@@ -97,9 +98,13 @@ public final class Match {
             FrozenNametagHandler.reloadPlayer(player);
             FrozenNametagHandler.reloadOthersFor(player);
 
-            VisibilityUtils.updateVisibility(player);
+            updateVisiblity.add(player);
             PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
         }
+
+        // we wait to update visibility until everyone's been put in the player cache
+        // then we update vis, otherwise we'll see 'partial' views of the match
+        updateVisiblity.forEach(VisibilityUtils::updateVisibility);
 
         Bukkit.getPluginManager().callEvent(new MatchCountdownStartEvent(this));
 
