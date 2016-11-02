@@ -83,14 +83,14 @@ public final class PartyFfaCommand {
                 List<UUID> availableMembers = new ArrayList<>(party.getMembers());
 
                 while (availableMembers.size() >= teamSize) {
-                    List<UUID> members = new ArrayList<>();
+                    List<UUID> teamMembers = new ArrayList<>();
 
                     for (int i = 0; i < teamSize; i++) {
-                        members.add(members.remove(0));
+                        teamMembers.add(availableMembers.remove(0));
                     }
 
                     String uuid = UUID.randomUUID().toString();
-                    teams.add(new MatchTeam(uuid, ImmutableSet.copyOf(members)));
+                    teams.add(new MatchTeam(uuid, ImmutableSet.copyOf(teamMembers)));
                 }
 
                 matchHandler.startMatch(teams, kitType);
