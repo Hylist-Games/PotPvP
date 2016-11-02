@@ -122,7 +122,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                 renderTeamMemberOverviewEntries(layout, otherTeam, 2, 4, ChatColor.RED);
             }
         } else { // it's an FFA or something else like that
-            layout.set(2, 3, ChatColor.YELLOW + ChatColor.BOLD.toString() + "Party FFA");
+            layout.set(2, 2, ChatColor.YELLOW + ChatColor.BOLD.toString() + "Party FFA");
 
             int x = 0;
             int y = 4;
@@ -238,7 +238,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
             }
         } else { // it's an FFA or something else like that
-            layout.set(2, 3, ChatColor.YELLOW + ChatColor.BOLD.toString() + "Party FFA");
+            layout.set(2, 2, ChatColor.YELLOW + ChatColor.BOLD.toString() + "Party FFA");
 
             int x = 0;
             int y = 4;
