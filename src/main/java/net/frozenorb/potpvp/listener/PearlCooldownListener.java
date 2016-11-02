@@ -1,6 +1,8 @@
 package net.frozenorb.potpvp.listener;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.match.MatchTeam;
+import net.frozenorb.potpvp.match.event.MatchCountdownStartEvent;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -100,6 +102,16 @@ public final class PearlCooldownListener implements Listener {
         }
 
         pearlCooldown.remove(player.getUniqueId());
+    }
+
+    // ensure players starting a match are never on pearl cooldown
+    @EventHandler
+    public void onMatchCountdownStart(MatchCountdownStartEvent event) {
+        for (MatchTeam team : event.getMatch().getTeams()) {
+            for (UUID member : team.getAllMembers()) {
+                pearlCooldown.remove(member);
+            }
+        }
     }
 
 }
