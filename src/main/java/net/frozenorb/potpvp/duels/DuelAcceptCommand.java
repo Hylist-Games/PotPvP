@@ -40,7 +40,7 @@ public class DuelAcceptCommand {
             party.leave(sender);
         }
 
-        DuelHandler.instance().purgeInvite(target);
+        DuelHandler.instance().purgeInvitesFrom(target);
         Set<UUID> senderTeam = teamFor(sender.getUniqueId());
         Set<UUID> targetTeam = teamFor(target.getUniqueId());
 

@@ -16,7 +16,11 @@ public final class DuelListener implements Listener {
 
     @EventHandler
     public void onMatchSpectatorJoin(MatchSpectatorJoinEvent event) {
-        DuelHandler.instance().purgeInvitesTo(event.getSpectator());
+        DuelHandler duelHandler = DuelHandler.instance();
+        Player player = event.getSpectator();
+
+        duelHandler.purgeInvitesFrom(player);
+        duelHandler.purgeInvitesTo(player);
     }
 
     @EventHandler
@@ -26,6 +30,8 @@ public final class DuelListener implements Listener {
         for (MatchTeam team : event.getMatch().getTeams()) {
             for (UUID member : team.getAllMembers()) {
                 Player memberPlayer = Bukkit.getPlayer(member);
+
+                duelHandler.purgeInvitesFrom(memberPlayer);
                 duelHandler.purgeInvitesTo(memberPlayer);
             }
         }

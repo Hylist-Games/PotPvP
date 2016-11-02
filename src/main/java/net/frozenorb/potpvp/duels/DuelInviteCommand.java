@@ -100,7 +100,7 @@ public class DuelInviteCommand {
             return;
         } else if (sentInvite != null) {
             sender.sendMessage(DuelLang.PREVIOUS_INVITE_DELETED.toString());
-            duelHandler.purgeInvite(sender);
+            duelHandler.purgeInvitesFrom(sender);
         }
 
         Party targetParty = PotPvPSI.getInstance().getPartyHandler().getParty(target);

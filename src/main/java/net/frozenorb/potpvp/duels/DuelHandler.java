@@ -32,7 +32,7 @@ public final class DuelHandler {
         invites.put(invite.sender(), invite);
     }
 
-    public DuelInvite purgeInvite(Player player) {
+    public DuelInvite purgeInvitesFrom(Player player) {
         return invites.remove(player.getUniqueId());
     }
 
