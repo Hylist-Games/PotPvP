@@ -107,6 +107,19 @@ public class DuelInviteCommand {
         boolean notLeader = targetParty != null && !targetParty.isLeader(target.getUniqueId());
         String senderName = sender.getName();
 
+        boolean senderInParty = party != null;
+        boolean targetInParty = targetParty != null;
+
+        if (senderInParty != targetInParty) {
+            if (senderInParty) {
+                sender.sendMessage(ChatColor.RED + "To duel " + target.getName() + "'s party first create a party with /party create");
+            } else {
+                sender.sendMessage(ChatColor.RED + "To duel " + target.getName() + " they must create a party.");
+            }
+
+            return;
+        }
+
         target.sendMessage(DuelLang.INVITED_MESSAGE_START.fill(senderName, kitType.getName()));
 
         if (notLeader) {
