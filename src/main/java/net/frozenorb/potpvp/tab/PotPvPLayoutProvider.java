@@ -177,7 +177,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
                     if (aliveLeft != 0 && aliveLeft != 1) {
                         // if there are players we weren't able to show and if it's more than one
-                        // (if it's only one they'll be shown as the last entry [look above: L302]), display the number
+                        // (if it's only one they'll be shown as the last entry [see 17 lines above]), display the number
                         // of alive players we weren't able to show instead.
                         layout.set(x, y, ChatColor.GREEN + "+" + aliveLeft);
                     }
@@ -343,7 +343,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
                     if (aliveLeft != 0 && aliveLeft != 1) {
                         // if there are players we weren't able to show and if it's more than one
-                        // (if it's only one they'll be shown as the last entry [look above: L302]), display the number
+                        // (if it's only one they'll be shown as the last entry [see 17 lines above]), display the number
                         // of alive players we weren't able to show instead.
                         layout.set(x, y, ChatColor.GREEN + "+" + aliveLeft);
                     }
