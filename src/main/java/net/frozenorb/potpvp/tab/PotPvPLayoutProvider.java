@@ -7,6 +7,7 @@ import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.qlib.tab.LayoutProvider;
 import net.frozenorb.qlib.tab.TabLayout;
+import net.frozenorb.qlib.util.PlayerUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
 import net.frozenorb.qlib.uuid.FrozenUUIDCache;
 import org.bukkit.Bukkit;
@@ -14,9 +15,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public final class PotPvPLayoutProvider implements LayoutProvider {
 
@@ -110,35 +109,36 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
             int x = 0;
             int y = 4;
 
-            List<String> result = new ArrayList<>();
+            Map<String, Integer> entries = new LinkedHashMap<>();
+
+            MatchTeam ourTeam = match.getTeam(player.getUniqueId());
 
             {
                 // this is where we'll be adding our team members
-                MatchTeam ourTeam = match.getTeam(player.getUniqueId());
 
-                List<String> aliveLines = new ArrayList<>();
-                List<String> deadLines = new ArrayList<>();
+                Map<String, Integer> aliveLines = new LinkedHashMap<>();
+                Map<String, Integer> deadLines = new LinkedHashMap<>();
 
                 // separate lists to sort alive players before dead
                 // + color differently
                 for (UUID teamMember : ourTeam.getAllMembers()) {
                     if (ourTeam.isAlive(teamMember)) {
-                        aliveLines.add(ChatColor.GREEN + FrozenUUIDCache.name(teamMember));
+                        aliveLines.put(ChatColor.GREEN + FrozenUUIDCache.name(teamMember),  getPing(teamMember));
                     } else {
-                        deadLines.add("&7&m" + FrozenUUIDCache.name(teamMember));
+                        deadLines.put("&7&m" + FrozenUUIDCache.name(teamMember), getPing(teamMember));
                     }
                 }
 
-                result.addAll(aliveLines);
-                result.addAll(deadLines);
+                entries.putAll(aliveLines);
+                entries.putAll(deadLines);
             }
 
             {
                 // this is where we'll be adding everyone else
-                List<String> deadLines = new ArrayList<>();
+                Map<String, Integer> deadLines = new LinkedHashMap<>();
 
                 for (MatchTeam otherTeam : match.getTeams()) {
-                    if (otherTeam == match.getTeam(player.getUniqueId())) {
+                    if (otherTeam == ourTeam) {
                         continue;
                     }
 
@@ -146,28 +146,30 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                     // + color differently
                     for (UUID enemy : otherTeam.getAllMembers()) {
                         if (otherTeam.isAlive(enemy)) {
-                            result.add(ChatColor.RED + FrozenUUIDCache.name(enemy));
+                            entries.put(ChatColor.RED + FrozenUUIDCache.name(enemy), getPing(enemy));
                         } else {
-                            deadLines.add("&7&m" + FrozenUUIDCache.name(enemy));
+                            deadLines.put("&7&m" + FrozenUUIDCache.name(enemy), getPing(enemy));
                         }
                     }
                 }
 
-                result.addAll(deadLines);
+                entries.putAll(deadLines);
             }
+
+            List<Map.Entry<String, Integer>> result = new ArrayList<>(entries.entrySet());
 
             // actually display our entries
             for (int index = 0; index < result.size(); index++) {
-                String entry = result.get(index);
+                Map.Entry<String, Integer> entry = result.get(index);
 
-                layout.set(x++, y, entry);
+                layout.set(x++, y, entry.getKey(), entry.getValue());
 
                 if (x == 3 && y == MAX_Y) {
                     // if we're at the last slot, we want to see if we still have alive players to show
                     int aliveLeft = 0;
 
                     for (int i = index; i < result.size(); i++) {
-                        String currentEntry = result.get(i);
+                        String currentEntry = result.get(i).getKey();
                         boolean dead = ChatColor.getLastColors(currentEntry).equals(ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString());
 
                         if (!dead) {
@@ -256,32 +258,32 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
             int x = 0;
             int y = 4;
 
-            List<String> result = new ArrayList<>();
+            Map<String, Integer> entries = new LinkedHashMap<>();
 
             if (oldTeam != null) {
                 // if they were a part of this match, we want to render it like we would for an alive player, showing their team-mates first and in green.
                 {
                     // this is where we'll be adding our team members
-                    List<String> aliveLines = new ArrayList<>();
-                    List<String> deadLines = new ArrayList<>();
+                    Map<String, Integer> aliveLines = new LinkedHashMap<>();
+                    Map<String, Integer> deadLines = new LinkedHashMap<>();
 
                     // separate lists to sort alive players before dead
                     // + color differently
                     for (UUID teamMember : oldTeam.getAllMembers()) {
                         if (oldTeam.isAlive(teamMember)) {
-                            aliveLines.add(ChatColor.GREEN + FrozenUUIDCache.name(teamMember));
+                            aliveLines.put(ChatColor.GREEN + FrozenUUIDCache.name(teamMember),  getPing(teamMember));
                         } else {
-                            deadLines.add("&7&m" + FrozenUUIDCache.name(teamMember));
+                            deadLines.put("&7&m" + FrozenUUIDCache.name(teamMember), getPing(teamMember));
                         }
                     }
 
-                    result.addAll(aliveLines);
-                    result.addAll(deadLines);
+                    entries.putAll(aliveLines);
+                    entries.putAll(deadLines);
                 }
 
                 {
                     // this is where we'll be adding everyone else
-                    List<String> deadLines = new ArrayList<>();
+                    Map<String, Integer> deadLines = new LinkedHashMap<>();
 
                     for (MatchTeam otherTeam : match.getTeams()) {
                         if (otherTeam == oldTeam) {
@@ -292,18 +294,18 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                         // + color differently
                         for (UUID enemy : otherTeam.getAllMembers()) {
                             if (otherTeam.isAlive(enemy)) {
-                                result.add(ChatColor.RED + FrozenUUIDCache.name(enemy));
+                                entries.put(ChatColor.RED + FrozenUUIDCache.name(enemy), getPing(enemy));
                             } else {
-                                deadLines.add("&7&m" + FrozenUUIDCache.name(enemy));
+                                deadLines.put("&7&m" + FrozenUUIDCache.name(enemy), getPing(enemy));
                             }
                         }
                     }
 
-                    result.addAll(deadLines);
+                    entries.putAll(deadLines);
                 }
             } else {
                 // if they're just a random spectator, we'll pick different colors for each team.
-                List<String> deadLines = new ArrayList<>();
+                Map<String, Integer> deadLines = new LinkedHashMap<>();
                 List<String> colors = ImmutableList.copyOf(TEAM_COLORS);
 
                 for (int index = 0; index < match.getTeams().size(); index++) {
@@ -312,28 +314,30 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
                     for (UUID enemy : team.getAllMembers()) {
                         if (team.isAlive(enemy)) {
-                            result.add(color + FrozenUUIDCache.name(enemy));
+                            entries.put(color + FrozenUUIDCache.name(enemy), getPing(enemy));
                         } else {
-                            deadLines.add("&7&m" + FrozenUUIDCache.name(enemy));
+                            deadLines.put("&7&m" + FrozenUUIDCache.name(enemy), getPing(enemy));
                         }
                     }
                 }
 
-                result.addAll(deadLines);
+                entries.putAll(deadLines);
             }
+
+            List<Map.Entry<String, Integer>> result = new ArrayList<>(entries.entrySet());
 
             // actually display our entries
             for (int index = 0; index < result.size(); index++) {
-                String entry = result.get(index);
+                Map.Entry<String, Integer> entry = result.get(index);
 
-                layout.set(x++, y, entry);
+                layout.set(x++, y, entry.getKey(), entry.getValue());
 
                 if (x == 3 && y == MAX_Y) {
                     // if we're at the last slot, we want to see if we still have alive players to show
                     int aliveLeft = 0;
 
                     for (int i = index; i < result.size(); i++) {
-                        String currentEntry = result.get(i);
+                        String currentEntry = result.get(i).getKey();
                         boolean dead = ChatColor.getLastColors(currentEntry).equals(ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString());
 
                         if (!dead) {
@@ -390,14 +394,39 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
         }
 
         if (party != null) {
-            int i = 0;
-            int y = 8;
+            Map<String, Integer> entries = new LinkedHashMap<>();
 
             for (UUID member : party.getMembers()) {
-                layout.set(i++, y, ChatColor.BLUE + UUIDUtils.name(member));
+                entries.put(ChatColor.BLUE + UUIDUtils.name(member), getPing(member));
+            }
 
-                if (i == 3) {
-                    i = 0;
+            List<Map.Entry<String, Integer>> result = new ArrayList<>(entries.entrySet());
+
+            int x = 0;
+            int y = 8;
+
+            // actually display our entries
+            for (int index = 0; index < result.size(); index++) {
+                Map.Entry<String, Integer> entry = result.get(index);
+
+                layout.set(x++, y, entry.getKey(), entry.getValue());
+
+                if (x == 3 && y == MAX_Y) {
+                    // if we're at the last slot, we want to see if we still have alive players to show
+                    int leftToShow = result.size() - index;
+
+                    if (leftToShow != 0 && leftToShow != 1) {
+                        // if there are players we weren't able to show and if it's more than one
+                        // (if it's only one they'll be shown as the last entry [see 8 lines above]), display the number
+                        // of alive players we weren't able to show instead.
+                        layout.set(x, y, ChatColor.BLUE + "+" + leftToShow);
+                    }
+
+                    break;
+                }
+
+                if (x == 3) {
+                    x = 0;
                     y++;
                 }
             }
@@ -415,23 +444,25 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
      *               will be displayed as the last entry.
      */
     private void renderTeamMemberOverviewEntries(TabLayout layout, MatchTeam team, int column, int start, ChatColor color) {
-        List<String> aliveLines = new ArrayList<>();
-        List<String> deadLines = new ArrayList<>();
+        Map<String, Integer> aliveLines = new LinkedHashMap<>();
+        Map<String, Integer> deadLines = new LinkedHashMap<>();
 
         // separate lists to sort alive players before dead
         // + color differently
         for (UUID teamMember : team.getAllMembers()) {
             if (team.isAlive(teamMember)) {
-                aliveLines.add(color + FrozenUUIDCache.name(teamMember));
+                aliveLines.put(color + FrozenUUIDCache.name(teamMember), getPing(teamMember));
             } else {
-                deadLines.add("&7&m" + FrozenUUIDCache.name(teamMember));
+                deadLines.put("&7&m" + FrozenUUIDCache.name(teamMember), getPing(teamMember));
             }
         }
 
-        List<String> result = new ArrayList<>();
+        Map<String, Integer> entries = new LinkedHashMap<>();
 
-        result.addAll(aliveLines);
-        result.addAll(deadLines);
+        entries.putAll(aliveLines);
+        entries.putAll(deadLines);
+
+        List<Map.Entry<String, Integer>> result = new ArrayList<>(entries.entrySet());
 
         // how many spots we have left
         int spotsLeft = MAX_Y - start;
@@ -440,7 +471,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
         int y = start;
 
         for (int index = 0; index < result.size(); index++) {
-            String entry = result.get(index);
+            Map.Entry<String, Integer> entry = result.get(index);
 
             // we check if we only have 1 more spot to show
             if (spotsLeft == 1) {
@@ -448,7 +479,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                 int aliveLeft = 0;
 
                 for (int i = index; i < result.size(); i++) {
-                    String currentEntry = result.get(i);
+                    String currentEntry = result.get(i).getKey();
                     boolean dead = !ChatColor.getLastColors(currentEntry).equals(color.toString());
 
                     if (!dead) {
@@ -460,7 +491,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                 if (aliveLeft != 0) {
                     if (aliveLeft == 1) {
                         // if it's only one, we display them as the last entry
-                        layout.set(column, y, entry);
+                        layout.set(column, y, entry.getKey(), entry.getValue());
                     } else {
                         // if it's more than one, display a number of how many we couldn't display.
                         layout.set(column, y, color + "+" + aliveLeft);
@@ -471,10 +502,20 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
             }
 
             // if not, just display the entry.
-            layout.set(column, y, entry);
+            layout.set(column, y, entry.getKey(), entry.getValue());
             y++;
             spotsLeft--;
         }
+    }
+
+    /**
+     * Gets a player's ping by their UUID.
+     *
+     * If the player is online, we return their ping,
+     *  otherwise we return Integer.MAX_VALUE, which displays empty bars.
+     */
+    private int getPing(UUID  playerUuid) {
+        return Bukkit.getPlayer(playerUuid) == null ? Integer.MAX_VALUE : PlayerUtils.getPing(Bukkit.getPlayer(playerUuid));
     }
 
     static {
