@@ -16,6 +16,7 @@ import net.frozenorb.qlib.command.Param;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -79,8 +80,10 @@ public final class PartyFfaCommand {
                     return;
                 }
 
-                List<MatchTeam> teams = new ArrayList<>();
                 List<UUID> availableMembers = new ArrayList<>(party.getMembers());
+                Collections.shuffle(availableMembers);
+                
+                List<MatchTeam> teams = new ArrayList<>();
 
                 while (availableMembers.size() >= teamSize) {
                     List<UUID> teamMembers = new ArrayList<>();

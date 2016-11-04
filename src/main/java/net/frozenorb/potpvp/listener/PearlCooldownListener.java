@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.listener;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.match.event.MatchCountdownStartEvent;
+import net.frozenorb.potpvp.match.event.MatchTerminateEvent;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -104,13 +105,24 @@ public final class PearlCooldownListener implements Listener {
         pearlCooldown.remove(player.getUniqueId());
     }
 
-    // ensure players starting a match are never on pearl cooldown
+    // reset pearl cooldowns when ending a match
+    // this is only so (most) players don't see the cooldown
+    // in the lobby - the 'actual' reset is the one prior to
+    // start a match, as with this we can 'forget' players who
+    // died (and aren't alive anymore) right before the end of
+    // a match.
+    @EventHandler
+    public void onMatchTerminate(MatchTerminateEvent event) {
+        for (MatchTeam team : event.getMatch().getTeams()) {
+            team.getAliveMembers().forEach(pearlCooldown::remove);
+        }
+    }
+
+    // see comment on #onMatchTerminate(MatchTerminateEvent)
     @EventHandler
     public void onMatchCountdownStart(MatchCountdownStartEvent event) {
         for (MatchTeam team : event.getMatch().getTeams()) {
-            for (UUID member : team.getAllMembers()) {
-                pearlCooldown.remove(member);
-            }
+            team.getAllMembers().forEach(pearlCooldown::remove);
         }
     }
 

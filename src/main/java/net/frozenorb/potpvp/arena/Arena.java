@@ -1,16 +1,22 @@
 package net.frozenorb.potpvp.arena;
 
+import com.google.common.base.Preconditions;
+
 import net.frozenorb.qlib.cuboid.Cuboid;
+import net.frozenorb.qlib.util.Callback;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Skull;
 
 import java.util.Objects;
 import java.util.function.Predicate;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -18,8 +24,6 @@ import lombok.Setter;
  * See {@link net.frozenorb.potpvp.arena} for a comparision of
  * {@link Arena}s and {@link ArenaSchematic}s.
  */
-@AllArgsConstructor
-@NoArgsConstructor
 public final class Arena {
 
     /**
@@ -68,6 +72,16 @@ public final class Arena {
     // or not in use by the appropriate methods in ArenaHandler
     @Getter @Setter(AccessLevel.PACKAGE) private transient boolean inUse;
 
+    public Arena() {} // for gson
+
+    public Arena(String schematic, int copy, Cuboid bounds) {
+        this.schematic = Preconditions.checkNotNull(schematic);
+        this.copy = copy;
+        this.bounds = Preconditions.checkNotNull(bounds);
+
+        scanLocations();
+    }
+
     public Location getSpectatorSpawn() {
         // if it's been defined in the actual map file or calculated before
         if (spectatorSpawn != null) {
@@ -89,6 +103,62 @@ public final class Arena {
         }
 
         return spectatorSpawn;
+    }
+
+    private void scanLocations() {
+        // iterating the cuboid doesn't work because
+        // its iterator is broken :(
+        forEachBlock(block -> {
+            Material type = block.getType();
+
+            if (type != Material.SKULL) {
+                return;
+            }
+
+            Skull skull = (Skull) block.getState();
+
+            Location skullLocation = block.getLocation().clone().add(0.5, 1.5, 0.5);
+            skullLocation.setYaw(GridUtils.faceToYaw(skull.getRotation()) + 90);
+
+            switch (skull.getSkullType()) {
+                case SKELETON:
+                    spectatorSpawn = skullLocation;
+
+                    block.setType(Material.AIR);
+                    block.getRelative(BlockFace.DOWN).setType(Material.AIR);
+                    break;
+                case PLAYER:
+                    if (team1Spawn == null) {
+                        team1Spawn = skullLocation;
+                    } else {
+                        team2Spawn = skullLocation;
+                    }
+
+                    block.setType(Material.AIR);
+                    block.getRelative(BlockFace.DOWN).setType(Material.AIR);
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        Preconditions.checkNotNull(spectatorSpawn, "Spectator spawn (skeleton skull) cannot be null.");
+        Preconditions.checkNotNull(team1Spawn, "Team 1 spawn (player skull) cannot be null.");
+        Preconditions.checkNotNull(team2Spawn, "Team 2 spawn (player skull) cannot be null.");
+    }
+
+    private void forEachBlock(Callback<Block> callback) {
+        Location start = bounds.getLowerNE();
+        Location end = bounds.getUpperSW();
+        World world = bounds.getWorld();
+
+        for (int x = start.getBlockX(); x <= end.getBlockX(); x++) {
+            for (int y = start.getBlockY(); y <= end.getBlockY(); y++) {
+                for (int z = start.getBlockZ(); z <= end.getBlockZ(); z++) {
+                    callback.callback(world.getBlockAt(x, y, z));
+                }
+            }
+        }
     }
 
     @Override
