@@ -40,6 +40,10 @@ public final class PostMatchInvHandler {
                 playerData.put(member, matchPlayers);
             }
         }
+
+        for (UUID spectator : match.getSpectators()) {
+            playerData.put(spectator, matchPlayers);
+        }
     }
 
     private void messagePlayers(Match match) {
