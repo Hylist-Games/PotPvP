@@ -209,6 +209,10 @@ public final class ArenaHandler {
                 continue;
             }
 
+            if (!arenaInstances.containsKey(schematic.getName())) {
+                continue;
+            }
+
             for (Arena arena : arenaInstances.get(schematic.getName()).values()) {
                 if (!arena.isInUse()) {
                     acceptableArenas.add(arena);
