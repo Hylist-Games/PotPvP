@@ -12,7 +12,6 @@ import net.frozenorb.qlib.util.UUIDUtils;
 import net.frozenorb.qlib.uuid.FrozenUUIDCache;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -58,7 +57,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
         {
             // Column 2
             layout.set(1, 0, ChatColor.GOLD.toString() + ChatColor.BOLD + "MineHQ Practice");
-            layout.set(1, 1, ChatColor.GRAY + "Your Connection", ((CraftPlayer)player).getHandle().ping);
+            layout.set(1, 1, ChatColor.GRAY + "Your Connection", PlayerUtils.getPing(player));
         }
 
         {
