@@ -2,19 +2,16 @@ package net.frozenorb.potpvp.party;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-
+import com.google.common.collect.Sets;
+import lombok.Getter;
+import lombok.Setter;
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.party.event.PartyCreateEvent;
-import net.frozenorb.potpvp.party.event.PartyDisbandEvent;
-import net.frozenorb.potpvp.party.event.PartyMemberJoinEvent;
-import net.frozenorb.potpvp.party.event.PartyMemberKickEvent;
-import net.frozenorb.potpvp.party.event.PartyMemberLeaveEvent;
+import net.frozenorb.potpvp.party.event.*;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.potpvp.util.VisibilityUtils;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.qLib;
 import net.md_5.bungee.api.ChatColor;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -24,9 +21,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Represents a collection of players which can perform
@@ -49,7 +43,7 @@ public final class Party {
      * Each player will only be a member of one party at a time.
      * Guaranteed to all be online.
      */
-    private final Set<UUID> members = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<UUID> members = Sets.newLinkedHashSet();
 
     /**
      * All active (non-expired) {@link PartyInvite}s. Players can have
