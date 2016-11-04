@@ -59,6 +59,8 @@ public final class MatchGeneralListener implements Listener {
         MatchState state = match.getState();
 
         if (state == MatchState.COUNTDOWN || state == MatchState.IN_PROGRESS) {
+            match.messageAll(ChatColor.YELLOW + player.getName() + " disconnected from the match.");
+
             match.markDead(player);
         }
     }

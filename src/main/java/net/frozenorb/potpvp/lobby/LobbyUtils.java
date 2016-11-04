@@ -60,8 +60,8 @@ public final class LobbyUtils {
                 }
             }
 
-            inventory.setItem(5, DuelItems.OTHER_PARTIES_ITEM);
-            inventory.setItem(6, DuelItems.PENDING_INVITES_ITEM);
+            inventory.setItem(6, DuelItems.OTHER_PARTIES_ITEM);
+//            inventory.setItem(6, DuelItems.PENDING_INVITES_ITEM);
             inventory.setItem(8, PartyItems.LEAVE_PARTY_ITEM);
         } else {
             RematchData rematchData = rematchHandler.getRematchData(player);

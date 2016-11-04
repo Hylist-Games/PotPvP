@@ -3,7 +3,6 @@ package net.frozenorb.potpvp.party.command;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.qlib.command.Command;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -17,6 +16,8 @@ public final class PartyCreateCommand {
             sender.sendMessage(ChatColor.RED + "You are already in a party.");
             return;
         }
+
+        PotPvPSI.getInstance().getQueueHandler().leaveQueue(sender, false);
 
         partyHandler.getOrCreateParty(sender);
         sender.sendMessage(ChatColor.YELLOW + "Created a new party.");
