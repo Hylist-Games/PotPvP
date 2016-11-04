@@ -49,9 +49,10 @@ public final class PartyJoinCommand {
 
                 if (invite == null && !correctPassword.equals(providedPassword)) {
                     sender.sendMessage(ChatColor.RED + "Invalid password.");
+                } else {
+                    targetParty.join(sender);
                 }
 
-                targetParty.join(sender);
                 break;
             default:
                 break;
