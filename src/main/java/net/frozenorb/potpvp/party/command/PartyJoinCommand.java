@@ -45,6 +45,12 @@ public final class PartyJoinCommand {
 
                 break;
             case PASSWORD:
+                if (providedPassword.equals(NO_PASSWORD_PROVIDED) && invite == null) {
+                    sender.sendMessage(ChatColor.RED + "You need the password or an invitation to join this party.");
+                    sender.sendMessage(ChatColor.YELLOW + "To join with a password, use " + ChatColor.YELLOW + "/party join " + target.getName() + " <password>");
+                    return;
+                }
+
                 String correctPassword = targetParty.getPassword();
 
                 if (invite == null && !correctPassword.equals(providedPassword)) {
