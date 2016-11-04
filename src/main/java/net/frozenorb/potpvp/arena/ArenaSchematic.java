@@ -42,10 +42,10 @@ public final class ArenaSchematic {
     @Getter private boolean archerOnly;
 
     /**
-     * Index on the X axis on the grid. 0 if not set yet
+     * Index on the X axis on the grid. -1 if not set yet
      * @see ArenaGrid
      */
-    @Getter @Setter(AccessLevel.PACKAGE) private int gridIndex = 0;
+    @Getter @Setter(AccessLevel.PACKAGE) private int gridIndex = -1;
 
     public File getSchematicFile() {
         return new File(ArenaHandler.WORLD_EDIT_SCHEMATICS_FOLDER, name + ".schematic");

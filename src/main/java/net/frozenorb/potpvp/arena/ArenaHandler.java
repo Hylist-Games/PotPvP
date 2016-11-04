@@ -89,8 +89,6 @@ public final class ArenaHandler {
             // just rethrow, can't recover from arenas failing to load
             throw new RuntimeException(ex);
         }
-
-        Bukkit.getScheduler().runTask(PotPvPSI.getInstance(), grid::loadSchematics);
     }
 
     void saveSchematics() throws IOException {
@@ -101,6 +99,29 @@ public final class ArenaHandler {
             new File(arenaWorld.getWorldFolder(), SCHEMATICS_FILE_NAME),
             Charsets.UTF_8
         );
+    }
+
+    void saveArenas() throws IOException {
+        World arenaWorld = Bukkit.getWorlds().get(0);
+        List<Arena> allArenas = new ArrayList<>();
+
+        arenaInstances.forEach((schematic, copies) -> {
+            allArenas.addAll(copies.values());
+        });
+
+        Files.write(
+            qLib.GSON.toJson(allArenas),
+            new File(arenaWorld.getWorldFolder(), ARENA_INSTANCES_FILE_NAME),
+            Charsets.UTF_8
+        );
+    }
+
+    void registerArena(Arena arena) {
+        arenaInstances.get(arena.getSchematic()).put(arena.getCopy(), arena);
+    }
+
+    void unregisterArena(Arena arena) {
+        arenaInstances.get(arena.getSchematic()).remove(arena.getCopy());
     }
 
     /**

@@ -9,6 +9,7 @@ import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.Map;
@@ -54,4 +55,5 @@ public class WorldSchematic {
         editSession.flushQueue();
         return new Pair<>(origin, origin.add(size));
     }
+
 }

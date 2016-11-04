@@ -171,17 +171,17 @@ public class SchematicUtil {
 
     private Vector getMin(Location one, Location two) {
         return new Vector(
-                Math.min(one.getBlockX(), two.getBlockX()),
-                Math.min(one.getBlockY(), two.getBlockY()),
-                Math.min(one.getBlockZ(), two.getBlockZ())
+            Math.min(one.getBlockX(), two.getBlockX()),
+            Math.min(one.getBlockY(), two.getBlockY()),
+            Math.min(one.getBlockZ(), two.getBlockZ())
         );
     }
 
     private Vector getMax(Location one, Location two) {
         return new Vector(
-                Math.max(one.getBlockX(), two.getBlockX()),
-                Math.max(one.getBlockY(), two.getBlockY()),
-                Math.max(one.getBlockZ(), two.getBlockZ())
+            Math.max(one.getBlockX(), two.getBlockX()),
+            Math.max(one.getBlockY(), two.getBlockY()),
+            Math.max(one.getBlockZ(), two.getBlockZ())
         );
     }
 }
