@@ -1,10 +1,9 @@
 package net.frozenorb.potpvp.arena;
 
+import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.Vector;
 
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.arena.schematic.SchematicUtil;
-import net.frozenorb.potpvp.arena.schematic.WorldSchematic;
 import net.frozenorb.qlib.cuboid.Cuboid;
 import net.frozenorb.qlib.util.BlockUtils;
 
@@ -12,8 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.io.IOException;
-
-import javafx.util.Pair;
 
 /**
  * Represents the grid on the world
@@ -95,18 +92,17 @@ public final class ArenaGrid {
     }
 
     private Arena createArena(ArenaSchematic schematic, int xStart, int zStart, int copy) {
-        WorldSchematic worldEditSchematic;
-        Pair<Vector, Vector> placedAt;
+        Location lowerCorner;
+        Location upperCorner;
 
         try {
-            worldEditSchematic = SchematicUtil.instance().load(schematic);
-            placedAt = worldEditSchematic.place(new Vector(xStart, STARTING_POINT.getY(), zStart));
+            CuboidClipboard clipboard = SchematicUtils.paste(schematic, new Vector(xStart, STARTING_POINT.getY(), zStart));
+
+            lowerCorner = vectorToLocation(clipboard.getOrigin());
+            upperCorner = vectorToLocation(clipboard.getOrigin().add(clipboard.getSize()));
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-
-        Location lowerCorner = vectorToLocation(placedAt.getKey());
-        Location upperCorner = vectorToLocation(placedAt.getValue());
 
         return new Arena(
             schematic.getName(),

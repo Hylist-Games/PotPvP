@@ -117,11 +117,22 @@ public final class ArenaHandler {
     }
 
     void registerArena(Arena arena) {
-        arenaInstances.get(arena.getSchematic()).put(arena.getCopy(), arena);
+        Map<Integer, Arena> copies = arenaInstances.get(arena.getSchematic());
+
+        if (copies == null) {
+            copies = new HashMap<>();
+            arenaInstances.put(arena.getSchematic(), copies);
+        }
+
+        copies.put(arena.getCopy(), arena);
     }
 
     void unregisterArena(Arena arena) {
-        arenaInstances.get(arena.getSchematic()).remove(arena.getCopy());
+        Map<Integer, Arena> copies = arenaInstances.get(arena.getSchematic());
+
+        if (copies != null) {
+            copies.remove(arena.getCopy());
+        }
     }
 
     /**
