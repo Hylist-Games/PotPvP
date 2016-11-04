@@ -6,7 +6,6 @@ import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.party.PartyInvite;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -31,13 +30,13 @@ public final class PartyJoinCommand {
             return;
         }
 
+        PartyInvite invite = targetParty.getInvite(sender.getUniqueId());
+
         switch (targetParty.getAccessRestriction()) {
             case PUBLIC:
                 targetParty.join(sender);
                 break;
             case INVITE_ONLY:
-                PartyInvite invite = targetParty.getInvite(sender.getUniqueId());
-
                 if (invite != null) {
                     targetParty.join(sender);
                 } else {
@@ -48,12 +47,11 @@ public final class PartyJoinCommand {
             case PASSWORD:
                 String correctPassword = targetParty.getPassword();
 
-                if (correctPassword.equals(providedPassword)) {
-                    targetParty.join(sender);
-                } else {
+                if (invite == null && !correctPassword.equals(providedPassword)) {
                     sender.sendMessage(ChatColor.RED + "Invalid password.");
                 }
 
+                targetParty.join(sender);
                 break;
             default:
                 break;
