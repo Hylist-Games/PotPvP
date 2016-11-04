@@ -216,13 +216,21 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
                 {
                     // Column 1
-                    layout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "Team (" + ourTeam.getAliveMembers().size() + "/" + ourTeam.getAllMembers().size() + ")");
+                    if (!duel) {
+                        layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemies" + ChatColor.RED + "(" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
+                    } else {
+                        layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Opponent");
+                    }
                     renderTeamMemberOverviewEntries(layout, ourTeam, 0, 4, ChatColor.GREEN);
                 }
 
                 {
                     // Column 3
-                    layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemies (" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
+                    if (!duel) {
+                        layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemies" + ChatColor.RED + "(" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
+                    } else {
+                        layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Opponent");
+                    }
                     renderTeamMemberOverviewEntries(layout, otherTeam, 2, 4, ChatColor.RED);
                 }
 
