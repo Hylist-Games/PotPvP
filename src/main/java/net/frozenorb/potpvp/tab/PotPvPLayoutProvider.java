@@ -396,7 +396,21 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
         if (party != null) {
             Map<String, Integer> entries = new LinkedHashMap<>();
 
+            UUID leader =  party.getLeader();
+
+            // we display the leader as second, after the watcher. however, if the watcher is the leader, we don't show them twice.
+            if (player.getUniqueId() != leader) {
+                entries.put(ChatColor.BLUE + player.getName(), PlayerUtils.getPing(player));
+            }
+
+            entries.put(ChatColor.BLUE + UUIDUtils.name(leader) + ChatColor.GRAY + "*", getPing(leader));
+
             for (UUID member : party.getMembers()) {
+                // don't display the leader or the watcher again
+                if (member == leader || member == player.getUniqueId()) {
+                    continue;
+                }
+
                 entries.put(ChatColor.BLUE + UUIDUtils.name(member), getPing(member));
             }
 
