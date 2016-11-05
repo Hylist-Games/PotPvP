@@ -41,7 +41,7 @@ public final class ArenaGrid {
 
     public void scaleCopies(ArenaSchematic schematic, int desiredCopies) {
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
-        int currentCopies = arenaHandler.getArenas(schematic).size();
+        int currentCopies = arenaHandler.countArenas(schematic);
 
         ensureGridIndexSet(schematic);
 
@@ -49,6 +49,16 @@ public final class ArenaGrid {
             deleteArenas(schematic, currentCopies, currentCopies - desiredCopies);
         } else if (currentCopies < desiredCopies) {
             createArenas(schematic, currentCopies, desiredCopies - currentCopies);
+        } else {
+            // if we're not actually changing anything return
+            // early to avoid unneeded arena save (see below)
+            return;
+        }
+
+        try {
+            arenaHandler.saveArenas();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -65,12 +75,6 @@ public final class ArenaGrid {
             Arena created = createArena(schematic, xStart, zStart, copy);
             arenaHandler.registerArena(created);
         }
-
-        try {
-            arenaHandler.saveArenas();
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
     }
 
     private void deleteArenas(ArenaSchematic schematic, int currentCopies, int toDelete) {
@@ -83,26 +87,19 @@ public final class ArenaGrid {
             wipeArena(existing);
             arenaHandler.unregisterArena(existing);
         }
-
-        try {
-            arenaHandler.saveArenas();
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
     }
 
     private Arena createArena(ArenaSchematic schematic, int xStart, int zStart, int copy) {
-        Location lowerCorner;
-        Location upperCorner;
+        CuboidClipboard clipboard;
 
         try {
-            CuboidClipboard clipboard = SchematicUtils.paste(schematic, new Vector(xStart, STARTING_POINT.getY(), zStart));
-
-            lowerCorner = vectorToLocation(clipboard.getOrigin());
-            upperCorner = vectorToLocation(clipboard.getOrigin().add(clipboard.getSize()));
+            clipboard = SchematicUtils.paste(schematic, new Vector(xStart, STARTING_POINT.getY(), zStart));
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+
+        Location lowerCorner = vectorToLocation(clipboard.getOrigin());
+        Location upperCorner = vectorToLocation(clipboard.getOrigin().add(clipboard.getSize()));
 
         return new Arena(
             schematic.getName(),
@@ -112,17 +109,16 @@ public final class ArenaGrid {
     }
 
     private void wipeArena(Arena arena) {
-        Cuboid bounds = arena.getBounds();
-        Location start = bounds.getLowerNE();
-        Location end = bounds.getUpperSW();
-
-        for (int x = start.getBlockX(); x <= end.getBlockX(); x++) {
-            for (int y = start.getBlockY(); y <= end.getBlockY(); y++) {
-                for (int z = start.getBlockZ(); z <= end.getBlockZ(); z++) {
-                    BlockUtils.setBlockFast(start.getWorld(), x, y, z, 0, (byte) 0);
-                }
-            }
-        }
+        arena.forEachBlock(b -> {
+            BlockUtils.setBlockFast(
+                b.getWorld(),
+                b.getX(),
+                b.getY(),
+                b.getZ(),
+                0, // type
+                (byte) 0 // data
+            );
+        });
     }
 
     private void ensureGridIndexSet(ArenaSchematic schematic) {

@@ -147,7 +147,7 @@ public final class Arena {
         Preconditions.checkNotNull(team2Spawn, "Team 2 spawn (player skull) cannot be null.");
     }
 
-    private void forEachBlock(Callback<Block> callback) {
+    public void forEachBlock(Callback<Block> callback) {
         Location start = bounds.getLowerNE();
         Location end = bounds.getUpperSW();
         World world = bounds.getWorld();
