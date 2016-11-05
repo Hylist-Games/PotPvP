@@ -1,5 +1,7 @@
 package net.frozenorb.potpvp.arena;
 
+import com.google.common.base.Preconditions;
+
 import java.io.File;
 
 import lombok.AccessLevel;
@@ -21,37 +23,43 @@ public final class ArenaSchematic {
      * If matches can be scheduled on an instance of this arena.
      * Only impacts match scheduling, admin commands are (ignoring visual differences) nonchanged
      */
-    @Getter @Setter private boolean enabled;
+    @Getter @Setter private boolean enabled = false;
 
     /**
      * Maximum number of players that can occupy an instance of this arena.
      * Some small schematics should only be used for smaller fights
      */
-    @Getter @Setter private int maxPlayerCount;
+    @Getter @Setter private int maxPlayerCount = 256;
 
     /**
      * Minimum number of players that can occupy an instance of this arena.
      * Some large schematics should only be used for larger fights
      */
-    @Getter @Setter private int minPlayerCount;
+    @Getter @Setter private int minPlayerCount = 2;
 
     /**
      * If this schematic can be used for ranked matches
      * Some "joke" schematics cannot be used for ranked (due to their nature)
      */
-    @Getter @Setter private boolean supportsRanked;
+    @Getter @Setter private boolean supportsRanked = false;
 
     /**
      * If this schematic can be only be used for archer matches
      * Some schematics are built for specifically archer fights
      */
-    @Getter @Setter private boolean archerOnly;
+    @Getter @Setter private boolean archerOnly = false;
 
     /**
      * Index on the X axis on the grid. -1 if not set yet
      * @see ArenaGrid
      */
     @Getter @Setter(AccessLevel.PACKAGE) private int gridIndex = -1;
+
+    public ArenaSchematic() {} // for gson
+
+    public ArenaSchematic(String name) {
+        this.name = Preconditions.checkNotNull(name, "name");
+    }
 
     public File getSchematicFile() {
         return new File(ArenaHandler.WORLD_EDIT_SCHEMATICS_FOLDER, name + ".schematic");

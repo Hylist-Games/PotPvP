@@ -39,8 +39,8 @@ public final class ArenaEnableDisableCommands {
         ArenaSchematic schematic = arenaHandler.getSchematic(schematicName);
 
         if (schematic != null) {
-            schematic.setEnabled(true);
-            sender.sendMessage(ChatColor.GREEN + schematic.getName() + " is now enabled.");
+            schematic.setEnabled(false);
+            sender.sendMessage(ChatColor.RED + schematic.getName() + " is now disabled.");
         } else {
             sender.sendMessage(ChatColor.RED + "Schematic " + schematicName + " not found.");
             sender.sendMessage(ChatColor.RED + "List all schematics with /arena listSchematics");

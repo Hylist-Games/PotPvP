@@ -152,9 +152,9 @@ public final class Arena {
         Location end = bounds.getUpperSW();
         World world = bounds.getWorld();
 
-        for (int x = start.getBlockX(); x <= end.getBlockX(); x++) {
-            for (int y = start.getBlockY(); y <= end.getBlockY(); y++) {
-                for (int z = start.getBlockZ(); z <= end.getBlockZ(); z++) {
+        for (int x = start.getBlockX(); x < end.getBlockX(); x++) {
+            for (int y = start.getBlockY(); y < end.getBlockY(); y++) {
+                for (int z = start.getBlockZ(); z < end.getBlockZ(); z++) {
                     callback.callback(world.getBlockAt(x, y, z));
                 }
             }

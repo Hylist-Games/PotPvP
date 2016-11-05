@@ -34,10 +34,10 @@ public final class ArenaGrid {
     /**
      * 'Starting' point of the grid. Expands (+, +) from this point.
      */
-    private static final Vector STARTING_POINT = new Vector(1_000, 50, 1_000);
+    private static final Vector STARTING_POINT = new Vector(1_000, 100, 1_000);
 
-    private static final int GRID_SPACING_X = 100;
-    private static final int GRID_SPACING_Z = 100;
+    private static final int GRID_SPACING_X = 300;
+    private static final int GRID_SPACING_Z = 300;
 
     public void scaleCopies(ArenaSchematic schematic, int desiredCopies) {
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
@@ -67,7 +67,7 @@ public final class ArenaGrid {
 
         // start at 1 and use >= so (currentCopies + i)
         // is the copy of the new arena
-        for (int i = 1; i >= toCreate; i++) {
+        for (int i = 1; i <= toCreate; i++) {
             int copy = currentCopies + i;
             int xStart = STARTING_POINT.getBlockX() + (GRID_SPACING_X * schematic.getGridIndex());
             int zStart = STARTING_POINT.getBlockZ() + (GRID_SPACING_Z * copy);
@@ -90,16 +90,17 @@ public final class ArenaGrid {
     }
 
     private Arena createArena(ArenaSchematic schematic, int xStart, int zStart, int copy) {
+        Vector pasteAt = new Vector(xStart, STARTING_POINT.getY(), zStart);
         CuboidClipboard clipboard;
 
         try {
-            clipboard = SchematicUtils.paste(schematic, new Vector(xStart, STARTING_POINT.getY(), zStart));
+            clipboard = SchematicUtils.paste(schematic, pasteAt);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
 
-        Location lowerCorner = vectorToLocation(clipboard.getOrigin());
-        Location upperCorner = vectorToLocation(clipboard.getOrigin().add(clipboard.getSize()));
+        Location lowerCorner = vectorToLocation(pasteAt);
+        Location upperCorner = vectorToLocation(pasteAt.add(clipboard.getSize()));
 
         return new Arena(
             schematic.getName(),

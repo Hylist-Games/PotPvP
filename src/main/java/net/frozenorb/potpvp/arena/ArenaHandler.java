@@ -116,6 +116,14 @@ public final class ArenaHandler {
         );
     }
 
+    public void registerSchematic(ArenaSchematic schematic) {
+        schematics.put(schematic.getName(), schematic);
+    }
+
+    public void unregisterSchematic(ArenaSchematic schematic) {
+        schematics.remove(schematic.getName());
+    }
+
     void registerArena(Arena arena) {
         Map<Integer, Arena> copies = arenaInstances.get(arena.getSchematic());
 
