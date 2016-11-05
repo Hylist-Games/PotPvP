@@ -35,6 +35,7 @@ public final class ArenaViewSchematicCommand {
         }
 
         sender.sendMessage(ChatColor.RED + "------ " + ChatColor.WHITE + schematic.getName() + ChatColor.RED + " ------");
+        sender.sendMessage(ChatColor.GREEN + "Enabled: " + ChatColor.WHITE + (schematic.isEnabled() ? "Yes" : "No"));
         sender.sendMessage(ChatColor.GREEN + "Max player count: " + ChatColor.WHITE + schematic.getMaxPlayerCount());
         sender.sendMessage(ChatColor.GREEN + "Min player count: " + ChatColor.WHITE + schematic.getMinPlayerCount());
         sender.sendMessage(ChatColor.GREEN + "Supports ranked: " + ChatColor.WHITE + (schematic.isSupportsRanked() ? "Yes" : "No"));

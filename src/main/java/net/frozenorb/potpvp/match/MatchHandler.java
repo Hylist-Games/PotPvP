@@ -85,6 +85,7 @@ public final class MatchHandler {
         // the left side of the or statement covers the top row, and the
         // right side covers the right side
         Arena openArena = arenaHandler.allocateUnusedArena(schematic ->
+            schematic.isEnabled() &&
             matchSize <= schematic.getMaxPlayerCount() &&
             matchSize >= schematic.getMinPlayerCount() /*&&
             (kitType == KitType.ARCHER || !schematic.isArcherOnly())*/
