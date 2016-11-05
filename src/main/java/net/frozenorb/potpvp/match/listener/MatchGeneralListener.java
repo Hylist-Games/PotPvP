@@ -6,8 +6,10 @@ import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchState;
 import net.frozenorb.potpvp.match.MatchTeam;
+import net.frozenorb.potpvp.nametag.PotPvPNametagProvider;
 import net.frozenorb.qlib.util.PlayerUtils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,6 +26,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.UUID;
 
 public final class MatchGeneralListener implements Listener {
 
@@ -59,8 +63,20 @@ public final class MatchGeneralListener implements Listener {
         MatchState state = match.getState();
 
         if (state == MatchState.COUNTDOWN || state == MatchState.IN_PROGRESS) {
-            match.messageAll(ChatColor.YELLOW + player.getName() + " disconnected from the match.");
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                UUID onlinePlayerUuid = onlinePlayer.getUniqueId();
 
+                // if this player has no relation to the match skip
+                if (match.getTeam(onlinePlayerUuid) == null && !match.isSpectator(onlinePlayerUuid)) {
+                    continue;
+                }
+
+                ChatColor playerColor = PotPvPNametagProvider.getNameColor(player, onlinePlayer);
+                String playerFormatted = playerColor + player.getName();
+
+                player.sendMessage(playerFormatted + ChatColor.YELLOW + " disconnected from the match.");
+            }
+            
             match.markDead(player);
         }
     }
