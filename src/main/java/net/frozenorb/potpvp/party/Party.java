@@ -151,8 +151,6 @@ public final class Party {
             return;
         }
 
-        PotPvPSI.getInstance().getQueueHandler().leaveQueue(player, false);
-
         PartyInvite invite = getInvite(player.getUniqueId());
 
         if (invite != null) {

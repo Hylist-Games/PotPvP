@@ -17,8 +17,6 @@ public final class PartyCreateCommand {
             return;
         }
 
-        PotPvPSI.getInstance().getQueueHandler().leaveQueue(sender, false);
-
         partyHandler.getOrCreateParty(sender);
         sender.sendMessage(ChatColor.YELLOW + "Created a new party.");
     }

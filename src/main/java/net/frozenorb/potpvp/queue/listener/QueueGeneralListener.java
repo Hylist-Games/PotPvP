@@ -6,6 +6,7 @@ import net.frozenorb.potpvp.match.event.MatchCountdownStartEvent;
 import net.frozenorb.potpvp.match.event.MatchSpectatorJoinEvent;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
+import net.frozenorb.potpvp.party.event.PartyCreateEvent;
 import net.frozenorb.potpvp.party.event.PartyDisbandEvent;
 import net.frozenorb.potpvp.party.event.PartyMemberJoinEvent;
 import net.frozenorb.potpvp.party.event.PartyMemberKickEvent;
@@ -29,7 +30,16 @@ public final class QueueGeneralListener implements Listener {
     }
 
     @EventHandler
+    public void onPartyCreate(PartyCreateEvent event) {
+        UUID leaderUuid = event.getParty().getLeader();
+        Player leaderPlayer = Bukkit.getPlayer(leaderUuid);
+
+        PotPvPSI.getInstance().getQueueHandler().leaveQueue(leaderPlayer, false);
+    }
+
+    @EventHandler
     public void onPartyMemberJoin(PartyMemberJoinEvent event) {
+        PotPvPSI.getInstance().getQueueHandler().leaveQueue(event.getMember(), false);
         leaveQueue(event.getParty(), event.getMember(), "joined");
     }
 
