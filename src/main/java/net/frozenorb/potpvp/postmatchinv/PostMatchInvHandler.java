@@ -36,7 +36,7 @@ public final class PostMatchInvHandler {
         Map<UUID, PostMatchPlayer> matchPlayers = match.getPostMatchPlayers();
 
         for (MatchTeam team : match.getTeams()) {
-            for (UUID member : team.getAllMembers()) {
+            for (UUID member : team.getAliveMembers()) {
                 playerData.put(member, matchPlayers);
             }
         }
@@ -65,15 +65,15 @@ public final class PostMatchInvHandler {
         // we specifically call spectators first so anyone who was in a team
         // gets their messages overriden by their relational messages
         match.getSpectators().forEach(p -> messages.put(p, spectatorMessages));
-        team1.getAllMembers().forEach(p -> messages.put(p, team1Messages));
-        team2.getAllMembers().forEach(p -> messages.put(p, team2Messages));
+        team1.getAliveMembers().forEach(p -> messages.put(p, team1Messages));
+        team2.getAliveMembers().forEach(p -> messages.put(p, team2Messages));
 
         // used to avoid repeating these couple lines 3 times
-        messages.forEach((player, lines) -> {
-            Player playerBukkit = Bukkit.getPlayer(player);
+        messages.forEach((uuid, lines) -> {
+            Player player = Bukkit.getPlayer(uuid);
 
             for (TextComponent[] line : lines) {
-                playerBukkit.spigot().sendMessage(line);
+                player.spigot().sendMessage(line);
             }
         });
     }
