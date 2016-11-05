@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.party.command;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.qlib.command.Command;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
