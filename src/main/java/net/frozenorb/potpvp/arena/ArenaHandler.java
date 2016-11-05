@@ -91,7 +91,7 @@ public final class ArenaHandler {
         }
     }
 
-    void saveSchematics() throws IOException {
+    public void saveSchematics() throws IOException {
         World arenaWorld = Bukkit.getWorlds().get(0);
 
         Files.write(
@@ -101,7 +101,7 @@ public final class ArenaHandler {
         );
     }
 
-    void saveArenas() throws IOException {
+    public void saveArenas() throws IOException {
         World arenaWorld = Bukkit.getWorlds().get(0);
         List<Arena> allArenas = new ArrayList<>();
 
