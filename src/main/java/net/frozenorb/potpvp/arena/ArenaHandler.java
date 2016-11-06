@@ -118,6 +118,15 @@ public final class ArenaHandler {
     }
 
     public void registerSchematic(ArenaSchematic schematic) {
+        // assign a grid index upon creation. currently this will not reuse
+        // lower grid indexes from deleted arenas.
+        int lastGridIndex = 0;
+
+        for (ArenaSchematic otherSchematic : schematics.values()) {
+            lastGridIndex = Math.max(lastGridIndex, otherSchematic.getGridIndex());
+        }
+
+        schematic.setGridIndex(lastGridIndex + 1);
         schematics.put(schematic.getName(), schematic);
     }
 

@@ -5,7 +5,6 @@ import com.sk89q.worldedit.Vector;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.qlib.cuboid.Cuboid;
-import net.frozenorb.qlib.util.BlockUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -34,16 +33,14 @@ public final class ArenaGrid {
     /**
      * 'Starting' point of the grid. Expands (+, +) from this point.
      */
-    private static final Vector STARTING_POINT = new Vector(1_000, 100, 1_000);
+    public static final Vector STARTING_POINT = new Vector(1_000, 100, 1_000);
 
-    private static final int GRID_SPACING_X = 300;
-    private static final int GRID_SPACING_Z = 300;
+    public static final int GRID_SPACING_X = 300;
+    public static final int GRID_SPACING_Z = 300;
 
     public void scaleCopies(ArenaSchematic schematic, int desiredCopies) {
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
         int currentCopies = arenaHandler.countArenas(schematic);
-
-        ensureGridIndexSet(schematic);
 
         if (currentCopies > desiredCopies) {
             deleteArenas(schematic, currentCopies, currentCopies - desiredCopies);
@@ -84,7 +81,7 @@ public final class ArenaGrid {
             int copy = currentCopies - i;
             Arena existing = arenaHandler.getArena(schematic, copy);
 
-            wipeArena(existing);
+            WorldEditUtils.clear(existing.getBounds());
             arenaHandler.unregisterArena(existing);
         }
     }
@@ -94,56 +91,19 @@ public final class ArenaGrid {
         CuboidClipboard clipboard;
 
         try {
-            clipboard = SchematicUtils.paste(schematic, pasteAt);
+            clipboard = WorldEditUtils.paste(schematic, pasteAt);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
 
-        Location lowerCorner = vectorToLocation(pasteAt);
-        Location upperCorner = vectorToLocation(pasteAt.add(clipboard.getSize()));
+        Location lowerCorner = WorldEditUtils.vectorToLocation(pasteAt);
+        Location upperCorner = WorldEditUtils.vectorToLocation(pasteAt.add(clipboard.getSize()));
 
         return new Arena(
             schematic.getName(),
             copy,
             new Cuboid(lowerCorner, upperCorner)
         );
-    }
-
-    private void wipeArena(Arena arena) {
-        arena.forEachBlock(b -> {
-            BlockUtils.setBlockFast(
-                b.getWorld(),
-                b.getX(),
-                b.getY(),
-                b.getZ(),
-                0, // type
-                (byte) 0 // data
-            );
-        });
-    }
-
-    private void ensureGridIndexSet(ArenaSchematic schematic) {
-        ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
-
-        if (schematic.getGridIndex() < 0) {
-            int lastUsed = 0;
-
-            for (ArenaSchematic otherSchematic : arenaHandler.getSchematics()) {
-                lastUsed = Math.max(lastUsed, otherSchematic.getGridIndex());
-            }
-
-            schematic.setGridIndex(lastUsed + 1);
-
-            try {
-                arenaHandler.saveSchematics();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-    }
-
-    private Location vectorToLocation(Vector vector) {
-        return new Location(Bukkit.getWorlds().get(0), vector.getBlockX(), vector.getBlockY(), vector.getBlockZ());
     }
 
 }

@@ -50,10 +50,10 @@ public final class ArenaSchematic {
     @Getter @Setter private boolean archerOnly = false;
 
     /**
-     * Index on the X axis on the grid. -1 if not set yet
+     * Index on the X axis on the grid (and in calculations regarding model arenas)
      * @see ArenaGrid
      */
-    @Getter @Setter(AccessLevel.PACKAGE) private int gridIndex = -1;
+    @Getter @Setter private int gridIndex;
 
     public ArenaSchematic() {} // for gson
 

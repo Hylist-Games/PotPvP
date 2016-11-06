@@ -26,6 +26,7 @@ public final class ManageSchematicMenu extends Menu {
 
         buttons.put(0, new SchematicStatusButton(schematic));
         buttons.put(1, new ToggleEnabledButton(schematic));
+        buttons.put(2, new TeleportToModelButton(schematic));
 
         buttons.put(7, new CreateCopiesButton(schematic));
         buttons.put(8, new RemoveCopiesButton(schematic));
