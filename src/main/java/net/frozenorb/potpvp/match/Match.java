@@ -34,6 +34,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -182,9 +183,11 @@ public final class Match {
         // rename 'id' to '_id' (for mongo)
         document.put("_id", document.remove("id"));
 
-        // overwrite fields which would normally serialize too much
+        // overwrite fields which would normally serialize too much or improperly
         document.put("winner", winner != null ? winner.getId() : null);
         document.put("arena", arena.getSchematic());
+        document.put("startedAt", Date.from(startedAt));
+        document.put("endedAt", Date.from(endedAt));
 
         Bukkit.getPluginManager().callEvent(new MatchTerminateEvent(this, document));
         Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
