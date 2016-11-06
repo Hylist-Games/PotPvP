@@ -6,7 +6,6 @@ import com.sk89q.worldedit.Vector;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.qlib.cuboid.Cuboid;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.io.IOException;
