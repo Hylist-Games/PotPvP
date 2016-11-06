@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.function.Predicate;
 
 import lombok.Getter;
@@ -44,7 +45,7 @@ public final class ArenaHandler {
     // schematic -> (instance id -> Arena instance)
     private final Map<String, Map<Integer, Arena>> arenaInstances = new HashMap<>();
     // schematic name -> ArenaSchematic instance
-    private final Map<String, ArenaSchematic> schematics = new HashMap<>();
+    private final Map<String, ArenaSchematic> schematics = new TreeMap<>();
     @Getter private final ArenaGrid grid = new ArenaGrid();
 
     public ArenaHandler() {
