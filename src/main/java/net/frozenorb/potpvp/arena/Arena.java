@@ -2,6 +2,7 @@ package net.frozenorb.potpvp.arena;
 
 import com.google.common.base.Preconditions;
 
+import net.frozenorb.potpvp.util.AngleUtils;
 import net.frozenorb.qlib.cuboid.Cuboid;
 import net.frozenorb.qlib.util.Callback;
 
@@ -118,7 +119,7 @@ public final class Arena {
             Skull skull = (Skull) block.getState();
 
             Location skullLocation = block.getLocation().clone().add(0.5, 1.5, 0.5);
-            skullLocation.setYaw(GridUtils.faceToYaw(skull.getRotation()) + 90);
+            skullLocation.setYaw(AngleUtils.faceToYaw(skull.getRotation()) + 90);
 
             switch (skull.getSkullType()) {
                 case SKELETON:

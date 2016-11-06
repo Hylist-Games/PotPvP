@@ -1,4 +1,4 @@
-package net.frozenorb.potpvp.arena;
+package net.frozenorb.potpvp.util;
 
 import org.bukkit.block.BlockFace;
 
@@ -8,7 +8,7 @@ import java.util.Map;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public final class GridUtils {
+public final class AngleUtils {
 
     private static final Map<BlockFace, Integer> NOTCHES = new EnumMap<>(BlockFace.class);
 
