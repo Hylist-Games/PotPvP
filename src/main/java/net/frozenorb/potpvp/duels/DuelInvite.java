@@ -1,54 +1,31 @@
 package net.frozenorb.potpvp.duels;
 
+import com.google.common.base.Preconditions;
+
 import net.frozenorb.potpvp.kittype.KitType;
 
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
-/**
- * @author Mazen Kotb
- */
-public class DuelInvite {
-    public static long EXPIRE_TIME = TimeUnit.SECONDS.toMillis(30);
-    private UUID sender;
-    private UUID sentTo;
-    private boolean party; // is the sender a party?
-    private KitType kitType;
-    private long timestamp;
+import lombok.Getter;
 
-    public DuelInvite(UUID sender, UUID sentTo, boolean party, KitType kitType, long timestamp) {
-        this.sender = sender;
-        this.sentTo = sentTo;
-        this.party = party;
-        this.kitType = kitType;
-        this.timestamp = timestamp;
-    }
+public abstract class DuelInvite<T> {
 
-    public UUID sender() {
-        return sender;
-    }
+    @Getter private final T sender;
+    @Getter private final T target;
+    @Getter private final KitType kitType;
+    @Getter private final Instant timeSent;
 
-    public UUID sentTo() {
-        return sentTo;
-    }
-
-    public boolean isParty() {
-        return party;
-    }
-
-    public KitType kitType() {
-        return kitType;
-    }
-
-    public long timestamp() {
-        return timestamp;
+    public DuelInvite(T sender, T target, KitType kitType) {
+        this.sender = Preconditions.checkNotNull(sender, "sender");
+        this.target = Preconditions.checkNotNull(target, "target");
+        this.kitType = Preconditions.checkNotNull(kitType, "kitType");
+        this.timeSent = Instant.now();
     }
 
     public boolean isExpired() {
-        return (System.currentTimeMillis() - timestamp) >= EXPIRE_TIME;
+        long sentAgo = ChronoUnit.SECONDS.between(timeSent, Instant.now());
+        return sentAgo > DuelHandler.DUEL_INVITE_TIMEOUT_SECONDS;
     }
 
-    public boolean matches(UUID sentTo, KitType type) {
-        return this.sentTo.equals(sentTo) && this.kitType.equals(type);
-    }
 }

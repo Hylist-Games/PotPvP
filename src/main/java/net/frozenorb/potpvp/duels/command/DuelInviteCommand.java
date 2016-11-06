@@ -1,6 +1,9 @@
-package net.frozenorb.potpvp.duels;
+package net.frozenorb.potpvp.duels.command;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.duels.DuelHandler;
+import net.frozenorb.potpvp.duels.DuelInvite;
+import net.frozenorb.potpvp.duels.DuelLang;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.kittype.menu.SelectKitTypeMenu;
 import net.frozenorb.potpvp.party.Party;
@@ -157,5 +160,12 @@ public class DuelInviteCommand {
 
         return inviteButton;
     }
+
+    /*
+        public boolean canInvite(Player player) {
+        return PotPvPSI.getInstance().getSettingHandler().getSetting(player.getUniqueId(), Setting.RECEIVE_DUELS) &&
+                !PotPvPSI.getInstance().getMatchHandler().isPlayingOrSpectatingMatch(player);
+    }
+     */
 
 }

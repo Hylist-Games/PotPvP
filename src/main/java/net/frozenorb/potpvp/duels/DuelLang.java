@@ -10,6 +10,7 @@ import static org.bukkit.ChatColor.RED;
  * @author Mazen Kotb
  */
 public enum DuelLang {
+
     DUEL_PREFIX(LEFT_ARROW + " " + GRAY),
     ERROR_STARTING_MATCH(DARK_RED + "Sorry! There was an error starting the match, please contact an admin."),
     CANT_DUEL_YOURSELF(DARK_RED + "You can't duel yourself!"),
@@ -25,10 +26,9 @@ public enum DuelLang {
     INVITED_MESSAGE_START(DUEL_PREFIX + string(GOLD) + "%s" + GRAY + " has invited you to a duel with kit type %s!"),
     INVITED_MESSAGE_BUTTON(DUEL_PREFIX + string(GOLD) + "Click here to accept their invite!"),
     INVITED_MESSAGE_OR_COMMAND(DUEL_PREFIX + "Or type " + GOLD + "/accept %s" + GRAY + "!"),
-    SUCCESSFULLY_SENT_INVITE(DUEL_PREFIX + "Successfully sent a duel invite to " + GOLD + "%s" + GRAY + "!")
-    ;
+    SUCCESSFULLY_SENT_INVITE(DUEL_PREFIX + "Successfully sent a duel invite to " + GOLD + "%s" + GRAY + "!");
 
-    private String value;
+    private final String value;
 
     DuelLang(String value) {
         this.value = value;
@@ -46,4 +46,5 @@ public enum DuelLang {
     public String toString() {
         return value;
     }
+
 }

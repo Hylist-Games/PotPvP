@@ -1,4 +1,4 @@
-package net.frozenorb.potpvp.duels.listeners;
+package net.frozenorb.potpvp.duels.listener;
 
 import net.frozenorb.potpvp.duels.DuelHandler;
 import net.frozenorb.potpvp.match.MatchTeam;

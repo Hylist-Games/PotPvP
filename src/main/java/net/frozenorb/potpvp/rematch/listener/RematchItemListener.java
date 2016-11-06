@@ -1,8 +1,8 @@
 package net.frozenorb.potpvp.rematch.listener;
 
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.duels.DuelAcceptCommand;
-import net.frozenorb.potpvp.duels.DuelInviteCommand;
+import net.frozenorb.potpvp.duels.command.DuelAcceptCommand;
+import net.frozenorb.potpvp.duels.command.DuelInviteCommand;
 import net.frozenorb.potpvp.rematch.RematchData;
 import net.frozenorb.potpvp.rematch.RematchHandler;
 import net.frozenorb.potpvp.rematch.RematchItems;

@@ -1,8 +1,11 @@
-package net.frozenorb.potpvp.duels;
+package net.frozenorb.potpvp.duels.command;
 
 import com.google.common.collect.ImmutableList;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.duels.DuelHandler;
+import net.frozenorb.potpvp.duels.DuelInvite;
+import net.frozenorb.potpvp.duels.DuelLang;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.party.Party;
@@ -16,10 +19,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-/**
- * @author Mazen Kotb
- */
-public class DuelAcceptCommand {
+public final class DuelAcceptCommand {
+
     @Command(names = {"accept"}, permission = "")
     public static void accept(Player sender, @Param(name = "player") Player target) {
         if (sender == target) {
@@ -71,4 +72,5 @@ public class DuelAcceptCommand {
         members.add(player);
         return members;
     }
+
 }

@@ -1,35 +1,36 @@
 package net.frozenorb.potpvp.duels;
 
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.duels.listeners.DuelListener;
+import net.frozenorb.potpvp.duels.listener.DuelListener;
 import net.frozenorb.potpvp.setting.Setting;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-/**
- * @author Mazen Kotb
- */
 public final class DuelHandler {
-    private static final DuelHandler INSTANCE = new DuelHandler();
-    private Map<UUID, DuelInvite> invites = new HashMap<>();
 
-    private DuelHandler() {
+    public static final int DUEL_INVITE_TIMEOUT_SECONDS = 30;
+
+    // this does mean lookups are O(n), but unlike matches or parties
+    // there are isn't enough volume + frequency to become an issue
+    private Set<DuelInvite> activeInvites = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
+    public DuelHandler() {
         Bukkit.getPluginManager().registerEvents(new DuelListener(), PotPvPSI.getInstance());
     }
 
-    public static DuelHandler instance() {
-        return INSTANCE;
-    }
-
     public void insertInvite(DuelInvite invite) {
-        invites.put(invite.sender(), invite);
+        activeInvites.add(invite);
     }
 
     public DuelInvite purgeInvitesFrom(Player player) {
@@ -71,8 +72,4 @@ public final class DuelHandler {
         return null;
     }
 
-    public boolean canInvite(Player player) {
-        return PotPvPSI.getInstance().getSettingHandler().getSetting(player.getUniqueId(), Setting.RECEIVE_DUELS) &&
-                !PotPvPSI.getInstance().getMatchHandler().isPlayingOrSpectatingMatch(player);
-    }
 }
