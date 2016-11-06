@@ -12,20 +12,20 @@ public final class AngleUtils {
 
     private static final Map<BlockFace, Integer> NOTCHES = new EnumMap<>(BlockFace.class);
 
-    private static final BlockFace[] RADIAL = {
-        BlockFace.WEST,
-        BlockFace.NORTH_WEST,
-        BlockFace.NORTH,
-        BlockFace.NORTH_EAST,
-        BlockFace.EAST,
-        BlockFace.SOUTH_EAST,
-        BlockFace.SOUTH,
-        BlockFace.SOUTH_WEST
-    };
-
     static {
-        for (int i = 0; i < RADIAL.length; i++) {
-            NOTCHES.put(RADIAL[i], i);
+        BlockFace[] radials = {
+                BlockFace.WEST,
+                BlockFace.NORTH_WEST,
+                BlockFace.NORTH,
+                BlockFace.NORTH_EAST,
+                BlockFace.EAST,
+                BlockFace.SOUTH_EAST,
+                BlockFace.SOUTH,
+                BlockFace.SOUTH_WEST
+        };
+
+        for (int i = 0; i < radials.length; i++) {
+            NOTCHES.put(radials[i], i);
         }
     }
 
