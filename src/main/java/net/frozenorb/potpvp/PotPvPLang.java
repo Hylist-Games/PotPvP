@@ -50,4 +50,9 @@ public final class PotPvPLang {
      */
     public static final String NOT_LEADER_OF_PARTY = ChatColor.RED + "You are not the leader of your party.";
 
+    /**
+     * `&cThere was an error starting the match, please contact an admin.` - Self explanatory
+     */
+    public static final String ERROR_WHILE_STARTING_MATCH = ChatColor.RED + "There was an error starting the match, please contact an admin.";
+
 }

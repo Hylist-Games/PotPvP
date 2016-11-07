@@ -1,7 +1,5 @@
 package net.frozenorb.potpvp.party.command;
 
-import com.google.common.collect.ImmutableSet;
-
 import net.frozenorb.potpvp.PotPvPLang;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kittype.menu.SelectKitTypeMenu;
@@ -48,8 +46,7 @@ public final class PartyFfaCommand {
                 List<MatchTeam> teams = new ArrayList<>();
 
                 for (UUID member : party.getMembers()) {
-                    String uuid = UUID.randomUUID().toString();
-                    teams.add(new MatchTeam(uuid, ImmutableSet.of(member)));
+                    teams.add(new MatchTeam(member));
                 }
 
                 matchHandler.startMatch(teams, kitType);
@@ -92,8 +89,7 @@ public final class PartyFfaCommand {
                         teamMembers.add(availableMembers.remove(0));
                     }
 
-                    String uuid = UUID.randomUUID().toString();
-                    teams.add(new MatchTeam(uuid, ImmutableSet.copyOf(teamMembers)));
+                    teams.add(new MatchTeam(teamMembers));
                 }
 
                 matchHandler.startMatch(teams, kitType);

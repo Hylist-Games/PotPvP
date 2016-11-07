@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
@@ -37,7 +38,16 @@ public final class MatchTeam {
      */
     private final Set<UUID> aliveMembers = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-    public MatchTeam(String id, Set<UUID> initialMembers) {
+    // convenience constructor for 1v1s, queues, etc
+    public MatchTeam(UUID initialMember) {
+        this(ImmutableSet.of(initialMember));
+    }
+
+    public MatchTeam(Collection<UUID> initialMembers) {
+        this(UUID.randomUUID().toString(), initialMembers);
+    }
+
+    public MatchTeam(String id, Collection<UUID> initialMembers) {
         this.id = Preconditions.checkNotNull(id, "id");
         this.allMembers = ImmutableSet.copyOf(initialMembers);
         this.aliveMembers.addAll(initialMembers);

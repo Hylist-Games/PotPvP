@@ -74,8 +74,8 @@ public final class PartyUtils {
 
         Match match = PotPvPSI.getInstance().getMatchHandler().startMatch(
             ImmutableList.of(
-                new MatchTeam(UUID.randomUUID().toString(), team1),
-                new MatchTeam(UUID.randomUUID().toString(), team2)
+                new MatchTeam(team1),
+                new MatchTeam(team2)
             ),
             kitType
         );

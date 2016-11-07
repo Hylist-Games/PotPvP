@@ -1,8 +1,8 @@
 package net.frozenorb.potpvp.lobby;
 
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.duels.DuelHandler;
-import net.frozenorb.potpvp.duels.DuelItems;
+import net.frozenorb.potpvp.duel.DuelHandler;
+import net.frozenorb.potpvp.duel.DuelItems;
 import net.frozenorb.potpvp.kit.KitItems;
 import net.frozenorb.potpvp.kit.menu.editkit.EditKitMenu;
 import net.frozenorb.potpvp.party.Party;
@@ -32,7 +32,7 @@ public final class LobbyUtils {
 
         RematchHandler rematchHandler = PotPvPSI.getInstance().getRematchHandler();
         QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
-        DuelHandler duelHandler = DuelHandler.instance();
+        DuelHandler duelHandler = PotPvPSI.getInstance().getDuelHandler();
 
         Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
         PlayerInventory inventory = player.getInventory();
@@ -61,7 +61,7 @@ public final class LobbyUtils {
             }
 
             inventory.setItem(6, DuelItems.OTHER_PARTIES_ITEM);
-//            inventory.setItem(6, DuelItems.PENDING_INVITES_ITEM);
+            //inventory.setItem(6, DuelItems.PENDING_INVITES_ITEM);
             inventory.setItem(8, PartyItems.LEAVE_PARTY_ITEM);
         } else {
             RematchData rematchData = rematchHandler.getRematchData(player);
@@ -69,10 +69,10 @@ public final class LobbyUtils {
             if (rematchData != null) {
                 Player target = Bukkit.getPlayer(rematchData.getTarget());
 
-                if (duelHandler.inviteTo(target, player) != null) {
+                if (duelHandler.findInvite(player, target) != null) {
                     // if we've sent an invite to them
                     inventory.setItem(0, RematchItems.SENT_REMATCH_ITEM);
-                } else if (duelHandler.inviteTo(player, target) != null) {
+                } else if (duelHandler.findInvite(target, player) != null) {
                     // if they've sent us an invite
                     inventory.setItem(0, RematchItems.ACCEPT_REMATCH_ITEM);
                 } else {

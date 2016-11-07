@@ -1,8 +1,8 @@
 package net.frozenorb.potpvp.rematch.listener;
 
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.duels.command.DuelAcceptCommand;
-import net.frozenorb.potpvp.duels.command.DuelInviteCommand;
+import net.frozenorb.potpvp.duel.command.AcceptCommand;
+import net.frozenorb.potpvp.duel.command.DuelCommand;
 import net.frozenorb.potpvp.rematch.RematchData;
 import net.frozenorb.potpvp.rematch.RematchHandler;
 import net.frozenorb.potpvp.rematch.RematchItems;
@@ -35,7 +35,7 @@ public final class RematchItemListener implements Listener {
 
             if (rematchData != null) {
                 Player target = Bukkit.getPlayer(rematchData.getTarget());
-                DuelInviteCommand.duel(player, target, rematchData.getKitType());
+                DuelCommand.duel(player, target, rematchData.getKitType());
                 
                 InventoryUtils.resetInventoryDelayed(player);
                 InventoryUtils.resetInventoryDelayed(target);
@@ -50,7 +50,7 @@ public final class RematchItemListener implements Listener {
 
             if (rematchData != null) {
                 Player target = Bukkit.getPlayer(rematchData.getTarget());
-                DuelAcceptCommand.accept(player, target);
+                AcceptCommand.accept(player, target);
             }
         }
     }

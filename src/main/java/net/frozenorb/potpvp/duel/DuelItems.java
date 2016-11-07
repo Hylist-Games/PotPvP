@@ -1,4 +1,4 @@
-package net.frozenorb.potpvp.duels;
+package net.frozenorb.potpvp.duel;
 
 import net.frozenorb.potpvp.util.ItemUtils;
 

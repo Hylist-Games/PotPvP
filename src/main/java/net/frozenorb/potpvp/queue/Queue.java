@@ -10,7 +10,6 @@ import net.frozenorb.potpvp.match.MatchTeam;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.Getter;
@@ -53,8 +52,8 @@ public abstract class Queue<T extends QueueEntry> {
     private boolean createMatch(T entryA, T entryB) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         List<MatchTeam> teams = ImmutableList.of(
-            new MatchTeam(UUID.randomUUID().toString(), entryA.getMembers()),
-            new MatchTeam(UUID.randomUUID().toString(), entryB.getMembers())
+            new MatchTeam(entryA.getMembers()),
+            new MatchTeam(entryB.getMembers())
         );
 
         return matchHandler.startMatch(teams, kitType, true) != null;
