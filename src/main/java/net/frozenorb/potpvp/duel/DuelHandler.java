@@ -7,11 +7,12 @@ import net.frozenorb.potpvp.party.Party;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public final class DuelHandler {
 
@@ -52,59 +53,65 @@ public final class DuelHandler {
     }
 
     public Set<PartyDuelInvite> findInvitesFrom(Party sender) {
-        return streamPartyInvites(sender, null).collect(Collectors.toSet());
+        return getPartyInvites().stream()
+            .filter(i -> i.getSender() == sender)
+            .collect(Collectors.toSet());
     }
 
     public Set<PartyDuelInvite> findInvitesTo(Party target) {
-        return streamPartyInvites(null, target).collect(Collectors.toSet());
+        return getPartyInvites().stream()
+            .filter(i -> i.getTarget() == target)
+            .collect(Collectors.toSet());
     }
 
     public PartyDuelInvite findInvite(Party sender, Party target) {
-        return streamPartyInvites(sender, target).findFirst().orElse(null);
+        return getPartyInvites().stream()
+            .filter(i -> i.getSender() == sender)
+            .filter(i -> i.getTarget() == target)
+            .findFirst().orElse(null);
     }
 
     public Set<PlayerDuelInvite> findInvitesFrom(Player sender) {
-        return streamPlayerInvites(sender, null).collect(Collectors.toSet());
+        return getPlayerInvites().stream()
+            .filter(i -> i.getSender().equals(sender.getUniqueId()))
+            .collect(Collectors.toSet());
     }
 
     public Set<PlayerDuelInvite> findInvitesTo(Player target) {
-        return streamPlayerInvites(null, target).collect(Collectors.toSet());
+        return getPlayerInvites().stream()
+            .filter(i -> i.getTarget().equals(target.getUniqueId()))
+            .collect(Collectors.toSet());
     }
 
     public PlayerDuelInvite findInvite(Player sender, Player target) {
-        return streamPlayerInvites(sender, target).findFirst().orElse(null);
+        return getPlayerInvites().stream()
+            .filter(i -> i.getSender().equals(sender.getUniqueId()))
+            .filter(i -> i.getTarget().equals(target.getUniqueId()))
+            .findFirst().orElse(null);
     }
 
-    private Stream<PartyDuelInvite> streamPartyInvites(Party sender, Party target) {
-        Stream<PartyDuelInvite> stream = activeInvites.stream()
-            .filter(i -> i instanceof PartyDuelInvite)
-            .map(i -> (PartyDuelInvite) i);
+    private List<PlayerDuelInvite> getPlayerInvites() {
+        List<PlayerDuelInvite> playerInvites = new ArrayList<>();
 
-        if (sender != null) {
-            stream.filter(i -> i.getSender() == sender);
+        for (DuelInvite invite : activeInvites) {
+            if (invite instanceof PlayerDuelInvite) {
+                playerInvites.add((PlayerDuelInvite) invite);
+            }
         }
 
-        if (target != null) {
-            stream.filter(i -> i.getTarget() == target);
-        }
-
-        return stream;
+        return playerInvites;
     }
 
-    private Stream<PlayerDuelInvite> streamPlayerInvites(Player sender, Player target) {
-        Stream<PlayerDuelInvite> stream = activeInvites.stream()
-                .filter(i -> i instanceof PlayerDuelInvite)
-                .map(i -> (PlayerDuelInvite) i);
+    private List<PartyDuelInvite> getPartyInvites() {
+        List<PartyDuelInvite> partyInvites = new ArrayList<>();
 
-        if (sender != null) {
-            stream.filter(i -> i.getSender().equals(sender.getUniqueId()));
+        for (DuelInvite invite : activeInvites) {
+            if (invite instanceof PartyDuelInvite) {
+                partyInvites.add((PartyDuelInvite) invite);
+            }
         }
 
-        if (target != null) {
-            stream.filter(i -> i.getTarget().equals(target.getUniqueId()));
-        }
-
-        return stream;
+        return partyInvites;
     }
 
 }
