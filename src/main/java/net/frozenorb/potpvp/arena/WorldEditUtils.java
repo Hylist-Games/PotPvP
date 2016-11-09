@@ -20,6 +20,8 @@ import org.bukkit.Material;
 
 import lombok.experimental.UtilityClass;
 
+import java.io.File;
+
 @UtilityClass
 public final class WorldEditUtils {
 
@@ -52,15 +54,29 @@ public final class WorldEditUtils {
         return clipboard;
     }
 
-    public static void clear(Cuboid bounds) {
+    public static void save(ArenaSchematic schematic, Vector saveFrom) throws Exception {
         primeWorldEditApi();
 
-        BaseBlock air = new BaseBlock(Material.AIR.getId());
-        Region region = new CuboidRegion(
-            worldEditWorld,
+        Vector schematicSize = readSchematicSize(schematic);
+
+        CuboidClipboard newSchematic = new CuboidClipboard(saveFrom, saveFrom.add(schematicSize));
+        newSchematic.copy(editSession);
+
+        SchematicFormat.MCEDIT.save(newSchematic, schematic.getSchematicFile());
+    }
+
+    public static void clear(Cuboid bounds) {
+        clear(
             new Vector(bounds.getLowerX(), bounds.getLowerY(), bounds.getLowerZ()),
             new Vector(bounds.getUpperX(), bounds.getUpperY(), bounds.getUpperZ())
         );
+    }
+
+    public static void clear(Vector lower, Vector upper) {
+        primeWorldEditApi();
+
+        BaseBlock air = new BaseBlock(Material.AIR.getId());
+        Region region = new CuboidRegion(worldEditWorld, lower, upper);
 
         try {
             editSession.setBlocks(region, air);
@@ -69,6 +85,13 @@ public final class WorldEditUtils {
             // have to worry about this happening
             throw new RuntimeException(ex);
         }
+    }
+
+    public static Vector readSchematicSize(ArenaSchematic schematic) throws Exception {
+        File schematicFile = schematic.getSchematicFile();
+        CuboidClipboard clipboard = SchematicFormat.MCEDIT.load(schematicFile);
+
+        return clipboard.getSize();
     }
 
     public static Location vectorToLocation(Vector vector) {

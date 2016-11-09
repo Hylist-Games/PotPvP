@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.arena.menu.manageschematic;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
+import com.sk89q.worldedit.Vector;
 import net.frozenorb.potpvp.arena.ArenaGrid;
 import net.frozenorb.potpvp.arena.ArenaSchematic;
 import net.frozenorb.qlib.menu.Button;
@@ -47,13 +48,16 @@ final class TeleportToModelButton extends Button {
     public void clicked(Player player, int slot, ClickType clickType) {
         player.closeInventory();
 
-        int xModifier = ArenaGrid.GRID_SPACING_X * schematic.getGridIndex();
+        Vector arenaStart = schematic.getModelArenaLocation();
 
+        // we add 50 so players don't spawn in the very botton corner of
+        // the schematic. perhaps later we should apply the same logic we
+        // do for spectators to center the player
         player.teleport(new Location(
-            Bukkit.getWorlds().get(0),
-            ArenaGrid.STARTING_POINT.getBlockX() - xModifier,
-            ArenaGrid.STARTING_POINT.getBlockY(),
-            ArenaGrid.STARTING_POINT.getBlockZ()
+            player.getWorld(),
+            arenaStart.getX() + 50,
+            arenaStart.getY() + 50,
+            arenaStart.getZ() + 50
         ));
     }
 

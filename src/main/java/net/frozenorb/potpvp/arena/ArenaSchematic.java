@@ -4,8 +4,11 @@ import com.google.common.base.Preconditions;
 
 import java.io.File;
 
+import com.sk89q.worldedit.Vector;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 /**
  * Represents an arena schematic. See {@link net.frozenorb.potpvp.arena}
@@ -62,6 +65,31 @@ public final class ArenaSchematic {
 
     public File getSchematicFile() {
         return new File(ArenaHandler.WORLD_EDIT_SCHEMATICS_FOLDER, name + ".schematic");
+    }
+
+    public Vector getModelArenaLocation() {
+        int xModifier = ArenaGrid.GRID_SPACING_X * gridIndex;
+
+        return new Vector(
+            ArenaGrid.STARTING_POINT.getBlockX() - xModifier,
+            ArenaGrid.STARTING_POINT.getBlockY(),
+            ArenaGrid.STARTING_POINT.getBlockZ()
+        );
+    }
+
+    public void pasteModelArena() throws Exception {
+        Vector start = getModelArenaLocation();
+        WorldEditUtils.paste(this, start);
+    }
+
+    public void removeModelArena() throws Exception {
+        Vector start = getModelArenaLocation();
+        Vector size = WorldEditUtils.readSchematicSize(this);
+
+        WorldEditUtils.clear(
+            start,
+            start.add(size)
+        );
     }
 
     @Override
