@@ -8,6 +8,7 @@ import net.frozenorb.potpvp.party.command.PartyFfaCommand;
 import net.frozenorb.potpvp.party.command.PartyInfoCommand;
 import net.frozenorb.potpvp.party.command.PartyLeaveCommand;
 import net.frozenorb.potpvp.party.command.PartyTeamSplitCommand;
+import net.frozenorb.potpvp.party.menu.otherparties.OtherPartiesMenu;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,19 +37,16 @@ public final class PartyItemListener implements Listener {
         } else if (item.isSimilar(PartyItems.START_FFA_ITEM)) {
             event.setCancelled(true);
             PartyFfaCommand.partyFfa(player);
+        } else if (item.isSimilar(PartyItems.OTHER_PARTIES_ITEM)) {
+            event.setCancelled(true);
+            new OtherPartiesMenu().openMenu(player);
         } else if (item.getType() == PartyItems.ICON_TYPE) {
             // we just check for the same type (not isSimilar because
             // of a different title) to avoid running this code
             // whenever any item is right clicked
             Party party = partyHandler.getParty(player);
 
-            if (party == null) {
-                return;
-            }
-
-            ItemStack icon = PartyItems.icon(party);
-
-            if (icon.isSimilar(item)) {
+            if (party != null && PartyItems.icon(party).isSimilar(item)) {
                 event.setCancelled(true);
                 PartyInfoCommand.partyInfo(player, player);
             }

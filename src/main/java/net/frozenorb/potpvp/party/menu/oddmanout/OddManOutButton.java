@@ -1,4 +1,4 @@
-package net.frozenorb.potpvp.party.menu;
+package net.frozenorb.potpvp.party.menu.oddmanout;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;

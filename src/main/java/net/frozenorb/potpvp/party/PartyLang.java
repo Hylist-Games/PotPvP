@@ -98,7 +98,7 @@ public final class PartyLang {
         membersWithoutLeader.remove(party.getLeader());
 
         // builds long text component that will be hoverable
-        ComponentBuilder builder = new ComponentBuilder("Members(").color(ChatColor.BLUE);
+        ComponentBuilder builder = new ComponentBuilder("Members (").color(ChatColor.BLUE);
 
         builder.append(String.valueOf(partySize)).color(ChatColor.GOLD);
         builder.append("):").color(ChatColor.BLUE);

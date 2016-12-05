@@ -7,7 +7,7 @@ import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.kittype.menu.SelectKitTypeMenu;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
-import net.frozenorb.potpvp.party.menu.OddManOutMenu;
+import net.frozenorb.potpvp.party.menu.oddmanout.OddManOutMenu;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
 
 import org.bukkit.Bukkit;

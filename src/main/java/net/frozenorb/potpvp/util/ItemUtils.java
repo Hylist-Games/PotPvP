@@ -67,18 +67,4 @@ public final class ItemUtils {
         return amountMatching;
     }
 
-    /**
-     * Changes the display name of the provided ItemStack.
-     *
-     * @param itemStack The ItemStack to rename
-     * @param name The new name for the ItemStack
-     */
-    public static void setDisplayName(ItemStack itemStack, String name) {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-
-        itemMeta.setDisplayName(name);
-
-        itemStack.setItemMeta(itemMeta);
-    }
-
 }

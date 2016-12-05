@@ -29,7 +29,7 @@ public final class PartyFfaCommand {
             sender.sendMessage(PotPvPLang.NOT_IN_PARTY);
         } else if (!party.isLeader(sender.getUniqueId())) {
             sender.sendMessage(PotPvPLang.NOT_LEADER_OF_PARTY);
-        } else  {
+        } else {
             MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
             if (!PotPvPValidation.canStartFfa(party, sender)) {
@@ -63,7 +63,7 @@ public final class PartyFfaCommand {
             sender.sendMessage(PotPvPLang.NOT_IN_PARTY);
         } else if (!party.isLeader(sender.getUniqueId())) {
             sender.sendMessage(PotPvPLang.NOT_LEADER_OF_PARTY);
-        } else  {
+        } else {
             MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
             if (!PotPvPValidation.canStartFfa(party, sender)) {
