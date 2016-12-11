@@ -67,15 +67,17 @@ public final class LobbyUtils {
             if (rematchData != null) {
                 Player target = Bukkit.getPlayer(rematchData.getTarget());
 
-                if (duelHandler.findInvite(player, target) != null) {
-                    // if we've sent an invite to them
-                    inventory.setItem(0, RematchItems.SENT_REMATCH_ITEM);
-                } else if (duelHandler.findInvite(target, player) != null) {
-                    // if they've sent us an invite
-                    inventory.setItem(0, RematchItems.ACCEPT_REMATCH_ITEM);
-                } else {
-                    // if no one has sent an invite
-                    inventory.setItem(0, RematchItems.REQUEST_REMATCH_ITEM);
+                if (target != null) {
+                    if (duelHandler.findInvite(player, target) != null) {
+                        // if we've sent an invite to them
+                        inventory.setItem(0, RematchItems.SENT_REMATCH_ITEM);
+                    } else if (duelHandler.findInvite(target, player) != null) {
+                        // if they've sent us an invite
+                        inventory.setItem(0, RematchItems.ACCEPT_REMATCH_ITEM);
+                    } else {
+                        // if no one has sent an invite
+                        inventory.setItem(0, RematchItems.REQUEST_REMATCH_ITEM);
+                    }
                 }
             }
 

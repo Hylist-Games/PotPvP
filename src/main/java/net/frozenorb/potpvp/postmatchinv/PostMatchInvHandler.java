@@ -82,6 +82,10 @@ public final class PostMatchInvHandler {
         messages.forEach((uuid, lines) -> {
             Player player = Bukkit.getPlayer(uuid);
 
+            if (player == null) {
+                return;
+            }
+
             for (TextComponent[] line : lines) {
                 player.spigot().sendMessage(line);
             }
