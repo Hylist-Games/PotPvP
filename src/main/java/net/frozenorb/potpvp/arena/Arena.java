@@ -126,7 +126,12 @@ public final class Arena {
                     spectatorSpawn = skullLocation;
 
                     block.setType(Material.AIR);
-                    block.getRelative(BlockFace.DOWN).setType(Material.AIR);
+                    Block down = block.getRelative(BlockFace.DOWN);
+
+                    if (down.getType() == Material.FENCE) {
+                        down.setType(Material.AIR);
+                    }
+
                     break;
                 case PLAYER:
                     if (team1Spawn == null) {
