@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.listener;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.MatchHandler;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -21,12 +22,20 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
 public final class BasicPreventionListener implements Listener {
+
+    @EventHandler
+    public void onPlayerLogin(PlayerLoginEvent event) {
+        if (!event.getPlayer().hasPermission("potpvp.vip")) {
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.GOLD + "PotPvP is VIP-only for testing");
+        }
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
