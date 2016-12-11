@@ -59,7 +59,7 @@ public final class WorldEditUtils {
 
         Vector schematicSize = readSchematicSize(schematic);
 
-        CuboidClipboard newSchematic = new CuboidClipboard(saveFrom, saveFrom.add(schematicSize));
+        CuboidClipboard newSchematic = new CuboidClipboard(schematicSize, saveFrom);
         newSchematic.copy(editSession);
 
         SchematicFormat.MCEDIT.save(newSchematic, schematic.getSchematicFile());
