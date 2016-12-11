@@ -165,17 +165,18 @@ public final class Match {
 
     private void terminateMatch(MatchEndReason reason) {
         state = MatchState.TERMINATED;
+        endReason = reason;
+
+        // if the match ends before the countdown ends
+        // we have to set this to avoid a NPE in Date#from
+        if (startedAt == null) {
+            startedAt = Instant.now();
+        }
 
         // if endedAt wasn't set before (if terminateMatch was called directly)
         // we want to make sure we set an ending time.
-        if (endedAt != null) {
+        if (endedAt == null) {
             endedAt = Instant.now();
-        }
-
-        // if endReason wasn't set before (if terminateMatch was called directly)
-        // we want to make sure we set an end reason.
-        if (endReason != null) {
-            endReason = reason;
         }
 
         Document document = Document.parse(qLib.PLAIN_GSON.toJson(this));
