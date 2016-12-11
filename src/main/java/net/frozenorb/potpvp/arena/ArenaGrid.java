@@ -32,7 +32,7 @@ public final class ArenaGrid {
     /**
      * 'Starting' point of the grid. Expands (+, +) from this point.
      */
-    public static final Vector STARTING_POINT = new Vector(1_000, 100, 1_000);
+    public static final Vector STARTING_POINT = new Vector(1_000, 60, 1_000);
 
     public static final int GRID_SPACING_X = 300;
     public static final int GRID_SPACING_Z = 300;
