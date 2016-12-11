@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.arena.menu.manageschematic;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
+import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.ArenaSchematic;
 import net.frozenorb.qlib.menu.Button;
 
@@ -11,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
+import java.io.IOException;
 import java.util.List;
 
 final class ToggleEnabledButton extends Button {
@@ -58,6 +60,12 @@ final class ToggleEnabledButton extends Button {
     @Override
     public void clicked(Player player, int slot, ClickType clickType) {
         schematic.setEnabled(!schematic.isEnabled());
+
+        try {
+            PotPvPSI.getInstance().getArenaHandler().saveArenas();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
 }
