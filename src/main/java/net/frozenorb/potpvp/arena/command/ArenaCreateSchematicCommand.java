@@ -26,8 +26,9 @@ public final class ArenaCreateSchematicCommand {
         arenaHandler.registerSchematic(schematic);
 
         try {
+            schematic.pasteModelArena();
             arenaHandler.saveSchematics();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
 
