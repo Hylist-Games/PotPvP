@@ -51,9 +51,9 @@ final class CreateCopiesButton extends Button {
 
         try {
             arenaHandler.getGrid().scaleCopies(schematic, desired);
-            player.sendMessage(ChatColor.GREEN + "Scalled " + schematic.getName() + " to " + desired + "...");
+            player.sendMessage(ChatColor.GREEN + "Scaled " + schematic.getName() + " to " + desired + "...");
         } catch (Exception ex) {
-            player.sendMessage(ChatColor.RED + "Failed to paste: " + ex.getMessage());
+            player.sendMessage(ChatColor.RED + "Failed to paste " + schematic.getName() + ": " + ex.getMessage());
             ex.printStackTrace();
         }
     }

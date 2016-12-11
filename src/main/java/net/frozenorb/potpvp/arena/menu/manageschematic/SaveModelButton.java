@@ -45,7 +45,7 @@ final class SaveModelButton extends Button {
         try {
             WorldEditUtils.save(schematic, schematic.getModelArenaLocation());
         } catch (Exception ex) {
-            player.sendMessage(ChatColor.RED + "Failed to save: " + ex.getMessage());
+            player.sendMessage(ChatColor.RED + "Failed to save " + schematic.getName() + ": " + ex.getMessage());
             ex.printStackTrace();
         }
     }

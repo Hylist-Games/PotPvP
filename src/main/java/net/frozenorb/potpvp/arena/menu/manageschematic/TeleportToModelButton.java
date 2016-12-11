@@ -59,6 +59,8 @@ final class TeleportToModelButton extends Button {
             arenaStart.getY() + 50,
             arenaStart.getZ() + 50
         ));
+
+        player.sendMessage(ChatColor.GREEN + "Teleporting to " + schematic.getName());
     }
 
 }

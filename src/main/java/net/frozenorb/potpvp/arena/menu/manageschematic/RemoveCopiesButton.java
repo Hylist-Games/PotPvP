@@ -50,7 +50,7 @@ final class RemoveCopiesButton extends Button {
         int desired = Math.max(existing - remove, 0);
 
         arenaHandler.getGrid().scaleCopies(schematic, desired);
-        player.sendMessage(ChatColor.GREEN + "Scalled " + schematic.getName() + " to " + desired + "...");
+        player.sendMessage(ChatColor.GREEN + "Scaled " + schematic.getName() + " to " + desired + "...");
     }
 
 }
