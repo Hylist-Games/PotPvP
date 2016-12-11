@@ -102,7 +102,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
                 // Column 3
                 // we handle duels a bit differently
                 if (!duel) {
-                    layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemies" + ChatColor.RED + "(" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
+                    layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemies " + ChatColor.RED + "(" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
                 } else {
                     layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Opponent");
                 }
