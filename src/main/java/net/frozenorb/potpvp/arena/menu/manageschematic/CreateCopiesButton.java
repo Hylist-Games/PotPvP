@@ -47,8 +47,15 @@ final class CreateCopiesButton extends Button {
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
         int existing = arenaHandler.countArenas(schematic);
         int create = clickType.isShiftClick() ? 10 : 1;
+        int desired = existing + create;
 
-        arenaHandler.getGrid().scaleCopies(schematic, existing + create);
+        try {
+            arenaHandler.getGrid().scaleCopies(schematic, desired);
+            player.sendMessage(ChatColor.GREEN + "Scalled " + schematic.getName() + " to " + desired + "...");
+        } catch (Exception ex) {
+            player.sendMessage(ChatColor.RED + "Failed to paste: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 
 }

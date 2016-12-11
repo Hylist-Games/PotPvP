@@ -64,7 +64,8 @@ final class ToggleEnabledButton extends Button {
         try {
             PotPvPSI.getInstance().getArenaHandler().saveArenas();
         } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            player.sendMessage(ChatColor.RED + "Failed to save: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 

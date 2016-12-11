@@ -47,8 +47,10 @@ final class RemoveCopiesButton extends Button {
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
         int existing = arenaHandler.countArenas(schematic);
         int remove = clickType.isShiftClick() ? 10 : 1;
+        int desired = Math.max(existing - remove, 0);
 
-        arenaHandler.getGrid().scaleCopies(schematic, Math.max(existing - remove, 0));
+        arenaHandler.getGrid().scaleCopies(schematic, desired);
+        player.sendMessage(ChatColor.GREEN + "Scalled " + schematic.getName() + " to " + desired + "...");
     }
 
 }
