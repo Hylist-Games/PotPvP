@@ -33,7 +33,7 @@ public final class ArenaListSchematicsCommand {
             String inUseStr = inUseCopies + "/" + totalCopies;
             String rankedStr = schematic.isSupportsRanked() ? ChatColor.GREEN + "Ranked allowed" : ChatColor.RED + "Unranked only";
 
-            sender.sendMessage(enabledColor + schematic.getName() + ": " + ChatColor.GREEN + inUseStr + ChatColor.GRAY + " - " + rankedStr);
+            sender.sendMessage(enabledColor + schematic.getName() + ": " + ChatColor.GREEN + inUseStr + ChatColor.GRAY + " - " + rankedStr + ChatColor.DARK_GRAY + " (" + schematic.getGridIndex() + ")");
         }
     }
 
