@@ -51,6 +51,15 @@ public final class ArenaGrid {
             return;
         }
 
+        if (currentCopies == 0 && desiredCopies > 0) {
+            try {
+                schematic.removeModelArena();
+                schematic.pasteModelArena();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
         try {
             arenaHandler.saveArenas();
         } catch (IOException ex) {
