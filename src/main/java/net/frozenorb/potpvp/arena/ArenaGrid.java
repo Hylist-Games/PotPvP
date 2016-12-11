@@ -41,6 +41,15 @@ public final class ArenaGrid {
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
         int currentCopies = arenaHandler.countArenas(schematic);
 
+        if (currentCopies == 0 && desiredCopies > 0) {
+            try {
+                schematic.removeModelArena();
+                schematic.pasteModelArena();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
         if (currentCopies > desiredCopies) {
             deleteArenas(schematic, currentCopies, currentCopies - desiredCopies);
         } else if (currentCopies < desiredCopies) {
@@ -49,15 +58,6 @@ public final class ArenaGrid {
             // if we're not actually changing anything return
             // early to avoid unneeded arena save (see below)
             return;
-        }
-
-        if (currentCopies == 0 && desiredCopies > 0) {
-            try {
-                schematic.removeModelArena();
-                schematic.pasteModelArena();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
         }
 
         try {
