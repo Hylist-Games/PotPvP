@@ -62,7 +62,7 @@ final class ToggleEnabledButton extends Button {
         schematic.setEnabled(!schematic.isEnabled());
 
         try {
-            PotPvPSI.getInstance().getArenaHandler().saveArenas();
+            PotPvPSI.getInstance().getArenaHandler().saveSchematics();
         } catch (IOException ex) {
             player.sendMessage(ChatColor.RED + "Failed to save " + schematic.getName() + ": " + ex.getMessage());
             ex.printStackTrace();
