@@ -62,7 +62,7 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
         {
             // Column 2
-            layout.set(1, 0, ChatColor.GOLD.toString() + ChatColor.BOLD + "MineHQ Practice");
+            layout.set(1, 0, ChatColor.GOLD.toString() + ChatColor.BOLD + "MineHQ PotPvP");
             layout.set(1, 1, ChatColor.GRAY + "Your Connection", PlayerUtils.getPing(player));
         }
 

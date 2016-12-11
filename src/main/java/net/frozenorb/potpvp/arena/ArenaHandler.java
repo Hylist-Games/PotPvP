@@ -67,7 +67,7 @@ public final class ArenaHandler {
 
                     for (Arena arena : arenaList) {
                         // create inner Map for schematic if not present
-                        arenaInstances.computeIfAbsent(arena.getSchematic(), i -> new HashMap<>());
+                        arenaInstances.computeIfAbsent(arena.getSchematic(), i -> new TreeMap<>());
 
                         // register this copy with the inner Map
                         arenaInstances.get(arena.getSchematic()).put(arena.getCopy(), arena);
@@ -138,7 +138,7 @@ public final class ArenaHandler {
         Map<Integer, Arena> copies = arenaInstances.get(arena.getSchematic());
 
         if (copies == null) {
-            copies = new HashMap<>();
+            copies = new TreeMap<>();
             arenaInstances.put(arena.getSchematic(), copies);
         }
 
