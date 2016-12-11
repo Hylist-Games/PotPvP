@@ -63,10 +63,20 @@ public final class PostMatchInvHandler {
         Map<UUID, TextComponent[][]> messages = new HashMap<>();
 
         // we specifically call spectators first so anyone who was in a team
-        // gets their messages overriden by their relational messages
+        // gets their messages overriden by their relational messages.
+        // we have to have the if + use getAllMembers() to ensure all members get
+        // their messagtes overriden, not just those alive at the end of the match
         match.getSpectators().forEach(p -> messages.put(p, spectatorMessages));
-        team1.getAliveMembers().forEach(p -> messages.put(p, team1Messages));
-        team2.getAliveMembers().forEach(p -> messages.put(p, team2Messages));
+        team1.getAllMembers().forEach(p -> {
+            if (messages.containsKey(p) || team1.isAlive(p)) {
+                messages.put(p, team1Messages);
+            }
+        });
+        team2.getAllMembers().forEach(p -> {
+            if (messages.containsKey(p) || team2.isAlive(p)) {
+                messages.put(p, team2Messages);
+            }
+        });
 
         // used to avoid repeating these couple lines 3 times
         messages.forEach((uuid, lines) -> {
