@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.command;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import net.frozenorb.potpvp.arena.menu.manageschematics.ManageSchematicsMenu;
 import net.frozenorb.potpvp.kit.menu.manage.ManageKitTypeMenu;
@@ -33,21 +34,10 @@ public final class ManageCommand {
 
         @Override
         public Map<Integer, Button> getButtons(Player player) {
-            Map<Integer, Button> buttons = new HashMap<>();
-
-            for (int i = 0; i < 3; i++) {
-                buttons.put(i, Button.placeholder(Material.OBSIDIAN));
-            }
-
-            buttons.put(3, new ManageKitButton());
-            // 4 (5th slot) is empty
-            buttons.put(5, new ManageArenaButton());
-
-            for (int i = 6; i < 9; i++) {
-                buttons.put(i, Button.placeholder(Material.OBSIDIAN));
-            }
-
-            return buttons;
+            return ImmutableMap.of(
+                3, new ManageKitButton(),
+                5, new ManageArenaButton()
+            );
         }
 
     }
