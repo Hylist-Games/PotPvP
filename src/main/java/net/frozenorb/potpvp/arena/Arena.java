@@ -143,7 +143,6 @@ public final class Arena {
             }
         });
 
-        Preconditions.checkNotNull(spectatorSpawn, "Spectator spawn (skeleton skull) cannot be null.");
         Preconditions.checkNotNull(team1Spawn, "Team 1 spawn (player skull) cannot be null.");
         Preconditions.checkNotNull(team2Spawn, "Team 2 spawn (player skull) cannot be null.");
     }
