@@ -112,14 +112,8 @@ public final class MatchGeneralListener implements Listener {
         Arena arena = match.getArena();
 
         if (!arena.getBounds().contains(to)) {
-            // spectators get a nice message, players
-            // just get cancelled
-            if (match.isSpectator(player.getUniqueId())) {
-                player.teleport(arena.getSpectatorSpawn());
-                player.sendMessage(ChatColor.RED + "You aren't allowed to leave the arena.");
-            } else {
-                event.setCancelled(true);
-            }
+            player.teleport(arena.getSpectatorSpawn());
+            player.sendMessage(ChatColor.RED + "You aren't allowed to leave the arena.");
         }
     }
 
