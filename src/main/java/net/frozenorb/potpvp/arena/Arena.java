@@ -117,6 +117,7 @@ public final class Arena {
             }
 
             Skull skull = (Skull) block.getState();
+            Block below = block.getRelative(BlockFace.DOWN);
 
             Location skullLocation = block.getLocation().clone().add(0.5, 1.5, 0.5);
             skullLocation.setYaw(AngleUtils.faceToYaw(skull.getRotation()) + 90);
@@ -126,10 +127,9 @@ public final class Arena {
                     spectatorSpawn = skullLocation;
 
                     block.setType(Material.AIR);
-                    Block down = block.getRelative(BlockFace.DOWN);
 
-                    if (down.getType() == Material.FENCE) {
-                        down.setType(Material.AIR);
+                    if (below.getType() == Material.FENCE) {
+                        below.setType(Material.AIR);
                     }
 
                     break;
@@ -141,7 +141,11 @@ public final class Arena {
                     }
 
                     block.setType(Material.AIR);
-                    block.getRelative(BlockFace.DOWN).setType(Material.AIR);
+
+                    if (below.getType() == Material.FENCE) {
+                        below.setType(Material.AIR);
+                    }
+
                     break;
                 default:
                     break;
