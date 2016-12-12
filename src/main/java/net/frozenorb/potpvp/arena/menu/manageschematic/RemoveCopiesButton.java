@@ -49,8 +49,11 @@ final class RemoveCopiesButton extends Button {
         int remove = clickType.isShiftClick() ? 10 : 1;
         int desired = Math.max(existing - remove, 0);
 
-        arenaHandler.getGrid().scaleCopies(schematic, desired);
-        player.sendMessage(ChatColor.GREEN + "Scaled " + schematic.getName() + " to " + desired + "...");
+        player.sendMessage(ChatColor.GREEN + "Starting...");
+
+        arenaHandler.getGrid().scaleCopies(schematic, desired, () -> {
+            player.sendMessage(ChatColor.GREEN + "Scaled " + schematic.getName() + " to " + desired + "...");
+        });
     }
 
 }

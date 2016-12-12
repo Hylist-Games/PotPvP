@@ -22,8 +22,11 @@ public final class ArenaScaleCommand {
             return;
         }
 
-        arenaHandler.getGrid().scaleCopies(schematic, count);
-        sender.sendMessage(ChatColor.GREEN + "Scaled " + schematic.getName() + " to " + count + " copies.");
+        sender.sendMessage(ChatColor.GREEN + "Starting...");
+
+        arenaHandler.getGrid().scaleCopies(schematic, count, () -> {
+            sender.sendMessage(ChatColor.GREEN + "Scaled " + schematic.getName() + " to " + count + " copies.");
+        });
     }
 
 }

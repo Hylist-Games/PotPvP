@@ -33,10 +33,15 @@ public final class ArenaRepasteSchematicCommand {
 
         ArenaGrid arenaGrid = arenaHandler.getGrid();
 
-        arenaGrid.scaleCopies(schematic, 0);
-        arenaGrid.scaleCopies(schematic, currentCopies);
+        sender.sendMessage(ChatColor.GREEN + "Starting...");
 
-        sender.sendMessage(ChatColor.GREEN + "Repasted " + currentCopies + " arenas using the newest " + schematic.getName() + " schematic.");
+        arenaGrid.scaleCopies(schematic, 0, () -> {
+            sender.sendMessage(ChatColor.GREEN + "Removed old maps, creating new copies...");
+
+            arenaGrid.scaleCopies(schematic, currentCopies, () -> {
+                sender.sendMessage(ChatColor.GREEN + "Repasted " + currentCopies + " arenas using the newest " + schematic.getName() + " schematic.");
+            });
+        });
     }
 
 }
