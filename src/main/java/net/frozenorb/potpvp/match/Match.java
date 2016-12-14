@@ -9,6 +9,7 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.Arena;
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.kittype.KitType;
+import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.match.event.MatchCountdownStartEvent;
 import net.frozenorb.potpvp.match.event.MatchEndEvent;
 import net.frozenorb.potpvp.match.event.MatchSpectatorJoinEvent;
@@ -147,25 +148,29 @@ public final class Match {
         endedAt = Instant.now();
         endReason = reason;
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            UUID playerUuid = player.getUniqueId();
-            MatchTeam team = getTeam(playerUuid);
+        try {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                UUID playerUuid = player.getUniqueId();
+                MatchTeam team = getTeam(playerUuid);
 
-            if (team != null) {
-                postMatchPlayers.computeIfAbsent(playerUuid, v -> new PostMatchPlayer(player));
+                if (team != null) {
+                    postMatchPlayers.computeIfAbsent(playerUuid, v -> new PostMatchPlayer(player));
+                }
             }
+
+            messageAll(ChatColor.RED + "Match ended.");
+            Bukkit.getPluginManager().callEvent(new MatchEndEvent(this));
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         int delayTicks = MATCH_END_DELAY_SECONDS * 20;
-
-        messageAll(ChatColor.RED + "Match ended.");
-        Bukkit.getPluginManager().callEvent(new MatchEndEvent(this));
-        Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), () -> terminateMatch(reason), delayTicks);
+        Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), this::terminateMatch, delayTicks);
     }
 
-    private void terminateMatch(MatchEndReason reason) {
+    // we try-catch a lot of code here to ensure a match never fails to end
+    private void terminateMatch() {
         state = MatchState.TERMINATED;
-        endReason = reason;
 
         // if the match ends before the countdown ends
         // we have to set this to avoid a NPE in Date#from
@@ -179,49 +184,49 @@ public final class Match {
             endedAt = Instant.now();
         }
 
-        Document document = Document.parse(qLib.PLAIN_GSON.toJson(this));
+        try {
+            Document document = Document.parse(qLib.PLAIN_GSON.toJson(this));
 
-        // rename 'id' to '_id' (for mongo)
-        document.put("_id", document.remove("id"));
+            // rename 'id' to '_id' (for mongo)
+            document.put("_id", document.remove("id"));
 
-        // overwrite fields which would normally serialize too much or improperly
-        document.put("winner", winner != null ? winner.getId() : null);
-        document.put("arena", arena.getSchematic());
-        document.put("startedAt", Date.from(startedAt));
-        document.put("endedAt", Date.from(endedAt));
+            // overwrite fields which would normally serialize too much or improperly
+            document.put("winner", winner != null ? winner.getId() : null);
+            document.put("arena", arena.getSchematic());
+            document.put("startedAt", Date.from(startedAt));
+            document.put("endedAt", Date.from(endedAt));
 
-        Bukkit.getPluginManager().callEvent(new MatchTerminateEvent(this, document));
-        Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
-            MongoUtils.getCollection(MatchHandler.MONGO_COLLECTION_NAME).insertOne(document);
-        });
+            Bukkit.getPluginManager().callEvent(new MatchTerminateEvent(this, document));
+            Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
+                MongoUtils.getCollection(MatchHandler.MONGO_COLLECTION_NAME).insertOne(document);
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
+        LobbyHandler lobbyHandler = PotPvPSI.getInstance().getLobbyHandler();
 
         Map<UUID, Match> playingCache = matchHandler.getPlayingMatchCache();
         Map<UUID, Match> spectateCache = matchHandler.getSpectatingMatchCache();
+
+        arenaHandler.releaseArena(arena);
+        matchHandler.removeMatch(this);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             UUID playerUuid = player.getUniqueId();
             MatchTeam team = getTeam(playerUuid);
 
-            if (team != null) {
+            if (team != null || spectators.contains(playerUuid)) {
                 playingCache.remove(playerUuid);
-            } else if (spectators.contains(playerUuid)) {
                 spectateCache.remove(playerUuid);
-            }
-        }
 
-        arenaHandler.releaseArena(arena);
-        matchHandler.removeMatch(this);
-
-        // purposely placed after .removeMatch so any code after here
-        // doesn't see that this match exists
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            UUID playerUuid = player.getUniqueId();
-
-            if (getTeam(playerUuid) != null || spectators.contains(playerUuid)) {
-                PotPvPSI.getInstance().getLobbyHandler().returnToLobby(player);
+                try {
+                    lobbyHandler.returnToLobby(player);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }
