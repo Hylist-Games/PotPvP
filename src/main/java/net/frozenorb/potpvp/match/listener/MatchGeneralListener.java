@@ -13,14 +13,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -30,6 +33,16 @@ import org.bukkit.inventory.ItemStack;
 import java.util.UUID;
 
 public final class MatchGeneralListener implements Listener {
+
+    // speed up thrown potions
+    @EventHandler
+    public void onProjectileLaunch(ProjectileLaunchEvent event) {
+        Entity entity = event.getEntity();
+
+        if (entity instanceof ThrownPotion) {
+            entity.setVelocity(entity.getVelocity().multiply(1.3F));
+        }
+    }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
