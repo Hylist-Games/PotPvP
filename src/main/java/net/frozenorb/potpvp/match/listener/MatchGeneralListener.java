@@ -34,16 +34,6 @@ import java.util.UUID;
 
 public final class MatchGeneralListener implements Listener {
 
-    // speed up thrown potions
-    @EventHandler
-    public void onProjectileLaunch(ProjectileLaunchEvent event) {
-        Entity entity = event.getEntity();
-
-        if (entity instanceof ThrownPotion) {
-            entity.setVelocity(entity.getVelocity().multiply(1.3F));
-        }
-    }
-
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
