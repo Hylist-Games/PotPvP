@@ -1,5 +1,8 @@
 package net.frozenorb.potpvp.listener;
 
+import net.frozenorb.hydrogen.Hydrogen;
+import net.frozenorb.hydrogen.profile.Profile;
+import net.frozenorb.hydrogen.profile.ProfileHandler;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.MatchHandler;
 
@@ -28,11 +31,27 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
+import java.util.Map;
+import java.util.Optional;
+
 public final class BasicPreventionListener implements Listener {
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
-        if (!event.getPlayer().hasPermission("potpvp.vip")) {
+        ProfileHandler profileHandler = Hydrogen.getInstance().getProfileHandler();
+        Optional<Profile> profileOpt = profileHandler.getProfile(event.getPlayer().getUniqueId());
+
+        boolean bukkitPass = event.getPlayer().hasPermission("potpvp.vip");
+        boolean hydroPass = false;
+
+        if (profileOpt.isPresent()) {
+            Map<String, Boolean> perms = profileOpt.get().getPermissions();
+            hydroPass = perms.getOrDefault("potpvp.vip", false);
+        }
+
+        System.out.println("Performed permission check on " + event.getPlayer().getName() + ": Can join? { Hydrogen: " + hydroPass + ", Bukkit: " + bukkitPass);
+
+        if (!hydroPass) {
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.GOLD + "PotPvP is VIP-only for testing");
         }
     }

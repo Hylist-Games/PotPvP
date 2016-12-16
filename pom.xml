@@ -40,6 +40,11 @@
             <artifactId>qLib</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>net.frozenorb</groupId>
+            <artifactId>Hydrogen</artifactId>
+            <version>1.0</version>
+        </dependency>
 
         <!-- Misc. Jars -->
         <dependency>
