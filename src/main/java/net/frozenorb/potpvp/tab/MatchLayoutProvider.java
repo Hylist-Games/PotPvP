@@ -6,6 +6,7 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.qlib.tab.TabLayout;
+import net.frozenorb.qlib.util.UUIDUtils;
 import net.frozenorb.qlib.uuid.FrozenUUIDCache;
 
 import org.bukkit.ChatColor;
@@ -20,7 +21,34 @@ import java.util.function.BiConsumer;
 
 final class MatchLayoutProvider implements BiConsumer<Player, TabLayout> {
 
-    private static final List<String> TEAM_COLORS = new ArrayList<>(); // all of the colors we use to display names for spectators in an FFA match
+    private static final List<String> TEAM_COLOR_PREFIXES;
+
+    static {
+        List<String> teamColors = new ArrayList<>();
+
+        List<ChatColor> colors = new ArrayList<>();
+        List<ChatColor> formats = new ArrayList<>();
+
+        for (ChatColor color : ChatColor.values()) {
+            if (color.isFormat() && color != ChatColor.MAGIC && color != ChatColor.STRIKETHROUGH) {
+                formats.add(color);
+            } else if (color.isColor() && color != ChatColor.BLACK) {
+                colors.add(color);
+            }
+        }
+
+        for (ChatColor color : colors) {
+            teamColors.add(color.toString());
+        }
+
+        for (ChatColor color : colors) {
+            for (ChatColor format : formats) {
+                teamColors.add(color + format.toString());
+            }
+        }
+
+        TEAM_COLOR_PREFIXES = ImmutableList.copyOf(teamColors);
+    }
 
     @Override
     public void accept(Player player, TabLayout tabLayout) {
@@ -36,9 +64,6 @@ final class MatchLayoutProvider implements BiConsumer<Player, TabLayout> {
         }
     }
 
-    /**
-     * Render the tab entries for a player who is participating in a match.
-     */
     private void renderParticipantEntries(TabLayout layout, Match match, Player player) {
         List<MatchTeam> teams = match.getTeams();
 
@@ -163,10 +188,6 @@ final class MatchLayoutProvider implements BiConsumer<Player, TabLayout> {
         }
     }
 
-    /**
-     * Render the tab entries for a player who is spectating a match.
-     * This respects their previous team, still showing "Enemies", for example.
-     */
     private void renderSpectatorEntries(TabLayout layout, Match match, MatchTeam oldTeam) {
         List<MatchTeam> teams = match.getTeams();
 
@@ -238,24 +259,7 @@ final class MatchLayoutProvider implements BiConsumer<Player, TabLayout> {
 
             if (oldTeam != null) {
                 // if they were a part of this match, we want to render it like we would for an alive player, showing their team-mates first and in green.
-                {
-                    // this is where we'll be adding our team members
-                    Map<String, Integer> aliveLines = new LinkedHashMap<>();
-                    Map<String, Integer> deadLines = new LinkedHashMap<>();
-
-                    // separate lists to sort alive players before dead
-                    // + color differently
-                    for (UUID teamMember : oldTeam.getAllMembers()) {
-                        if (oldTeam.isAlive(teamMember)) {
-                            aliveLines.put(ChatColor.GREEN + FrozenUUIDCache.name(teamMember),  PotPvPLayoutProvider.getPingOrDefault(teamMember));
-                        } else {
-                            deadLines.put("&7&m" + FrozenUUIDCache.name(teamMember), PotPvPLayoutProvider.getPingOrDefault(teamMember));
-                        }
-                    }
-
-                    entries.putAll(aliveLines);
-                    entries.putAll(deadLines);
-                }
+                entries = renderTeamMemberOverviewLines(oldTeam, ChatColor.GREEN);
 
                 {
                     // this is where we'll be adding everyone else
@@ -282,11 +286,10 @@ final class MatchLayoutProvider implements BiConsumer<Player, TabLayout> {
             } else {
                 // if they're just a random spectator, we'll pick different colors for each team.
                 Map<String, Integer> deadLines = new LinkedHashMap<>();
-                List<String> colors = ImmutableList.copyOf(TEAM_COLORS);
 
                 for (int index = 0; index < match.getTeams().size(); index++) {
                     MatchTeam team = match.getTeams().get(index);
-                    String color = colors.get(index);
+                    String color = TEAM_COLOR_PREFIXES.get(index);
 
                     for (UUID enemy : team.getAllMembers()) {
                         if (team.isAlive(enemy)) {
@@ -339,36 +342,8 @@ final class MatchLayoutProvider implements BiConsumer<Player, TabLayout> {
         }
     }
 
-    /**
-     * Render tab entries which represent players of a certain team.
-     *
-     * @param column - The column we want to render the players in
-     * @param start  - The starting Y position.
-     *               This method will fill the column starting from that Y position
-     *               all the way to the bottom. If it can't fit all players inside
-     *               of the column, a number of alive players that couldn't be shown
-     *               will be displayed as the last entry.
-     */
     private void renderTeamMemberOverviewEntries(TabLayout layout, MatchTeam team, int column, int start, ChatColor color) {
-        Map<String, Integer> aliveLines = new LinkedHashMap<>();
-        Map<String, Integer> deadLines = new LinkedHashMap<>();
-
-        // separate lists to sort alive players before dead
-        // + color differently
-        for (UUID teamMember : team.getAllMembers()) {
-            if (team.isAlive(teamMember)) {
-                aliveLines.put(color + FrozenUUIDCache.name(teamMember), PotPvPLayoutProvider.getPingOrDefault(teamMember));
-            } else {
-                deadLines.put("&7&m" + FrozenUUIDCache.name(teamMember), PotPvPLayoutProvider.getPingOrDefault(teamMember));
-            }
-        }
-
-        Map<String, Integer> entries = new LinkedHashMap<>();
-
-        entries.putAll(aliveLines);
-        entries.putAll(deadLines);
-
-        List<Map.Entry<String, Integer>> result = new ArrayList<>(entries.entrySet());
+        List<Map.Entry<String, Integer>> result = new ArrayList<>(renderTeamMemberOverviewLines(team, color).entrySet());
 
         // how many spots we have left
         int spotsLeft = PotPvPLayoutProvider.MAX_TAB_Y - start;
@@ -414,29 +389,26 @@ final class MatchLayoutProvider implements BiConsumer<Player, TabLayout> {
         }
     }
 
-    static {
-        // gather all of the colors we want to use for teams when showing them to spectators in FFAs
+    private Map<String, Integer> renderTeamMemberOverviewLines(MatchTeam team, ChatColor aliveColor) {
+        Map<String, Integer> aliveLines = new LinkedHashMap<>();
+        Map<String, Integer> deadLines = new LinkedHashMap<>();
 
-        List<ChatColor> colors = new ArrayList<>();
-        List<ChatColor> formats = new ArrayList<>();
+        for (UUID member : team.getAllMembers()) {
+            int ping = PotPvPLayoutProvider.getPingOrDefault(member);
 
-        for (ChatColor color : ChatColor.values()) {
-            if (color.isFormat() && color != ChatColor.MAGIC && color != ChatColor.STRIKETHROUGH) {
-                formats.add(color);
-            } else if (color.isColor() && color != ChatColor.BLACK) {
-                colors.add(color);
+            if (team.isAlive(member)) {
+                aliveLines.put(aliveColor + UUIDUtils.name(member), ping);
+            } else {
+                deadLines.put("&7&m" + UUIDUtils.name(member), ping);
             }
         }
 
-        for (ChatColor color : colors) {
-            TEAM_COLORS.add(color.toString());
-        }
+        Map<String, Integer> result = new LinkedHashMap<>();
 
-        for (ChatColor color : colors) {
-            for (ChatColor format : formats) {
-                TEAM_COLORS.add(color + format.toString());
-            }
-        }
+        result.putAll(aliveLines);
+        result.putAll(deadLines);
+
+        return result;
     }
 
 }
