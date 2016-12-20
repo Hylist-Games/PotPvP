@@ -42,31 +42,15 @@ final class LobbyLayoutProvider implements BiConsumer<Player, TabLayout> {
                 return;
             }
 
-            Set<UUID> orderedMembers = Sets.newSetFromMap(new LinkedHashMap<>());
-            UUID leader = party.getLeader();
-
-            orderedMembers.add(player.getUniqueId());
-
-            // if they're the leader we don't display them twice
-            if (player.getUniqueId() != leader) {
-                orderedMembers.add(leader);
-            }
-
-            for (UUID member : party.getMembers()) {
-                // don't display the leader or the watcher again
-                if (member == leader || member == player.getUniqueId()) {
-                    continue;
-                }
-
-                orderedMembers.add(member);
-            }
-
             int x = 0;
             int y = 8;
 
-            for (UUID member : orderedMembers) {
-                String displayName = ChatColor.BLUE + UUIDUtils.name(member) + (member == leader ? ChatColor.GRAY + "*" : "");
-                tabLayout.set(x++, y, displayName, PotPvPLayoutProvider.getPingOrDefault(member));
+            for (UUID member : getOrderedMembers(player, party)) {
+                int ping = PotPvPLayoutProvider.getPingOrDefault(member);
+                String suffix = member == party.getLeader() ? ChatColor.GRAY + "*" : "";
+                String displayName = ChatColor.BLUE + UUIDUtils.name(member) + suffix;
+
+                tabLayout.set(x++, y, displayName, ping);
 
                 if (x == 3 && y == PotPvPLayoutProvider.MAX_TAB_Y) {
                     break;
@@ -78,6 +62,30 @@ final class LobbyLayoutProvider implements BiConsumer<Player, TabLayout> {
                 }
             }
         }
+    }
+
+    // player first, leader next, then all other members
+    private Set<UUID> getOrderedMembers(Player viewer, Party party) {
+        Set<UUID> orderedMembers = Sets.newSetFromMap(new LinkedHashMap<>());
+        UUID leader = party.getLeader();
+
+        orderedMembers.add(viewer.getUniqueId());
+
+        // if they're the leader we don't display them twice
+        if (viewer.getUniqueId() != leader) {
+            orderedMembers.add(leader);
+        }
+
+        for (UUID member : party.getMembers()) {
+            // don't display the leader or the viewer again
+            if (member == leader || member == viewer.getUniqueId()) {
+                continue;
+            }
+
+            orderedMembers.add(member);
+        }
+
+        return orderedMembers;
     }
 
 }

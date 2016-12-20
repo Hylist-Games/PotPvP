@@ -17,16 +17,13 @@ final class HeaderLayoutProvider implements BiConsumer<Player, TabLayout> {
     public void accept(Player player, TabLayout tabLayout) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
-        column1: {
-            tabLayout.set(0, 1, ChatColor.GRAY + "Online: " + Bukkit.getOnlinePlayers().size());
-        }
-
-        column2: {
+        header: {
             tabLayout.set(1, 0, ChatColor.GOLD.toString() + ChatColor.BOLD + "MineHQ PotPvP");
-            tabLayout.set(1, 1, ChatColor.GRAY + "Your Connection", PlayerUtils.getPing(player));
         }
 
-        column3: {
+        status: {
+            tabLayout.set(0, 1, ChatColor.GRAY + "Online: " + Bukkit.getOnlinePlayers().size());
+            tabLayout.set(1, 1, ChatColor.GRAY + "Your Connection", PlayerUtils.getPing(player));
             tabLayout.set(2, 1, ChatColor.GRAY + "In Fights: " + matchHandler.countPlayersPlayingMatches());
         }
     }
