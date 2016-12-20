@@ -8,7 +8,9 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -85,59 +87,40 @@ public final class PartyLang {
     }
 
     public static HoverEvent hoverablePreviewTooltip(Party party) {
-        int linesCreated = 0; // used to cut off preview at certain line length
-        Set<UUID> partyMembers = party.getMembers();
-        int partySize = partyMembers.size();
-
-        // if we're a 3/4 member party we present we already wrote 2 entries (leader + ghost player)
-        // instead of 1 (just the leader) so we wrap into a 2x2 (wrapping code thinks it's a 3x2 though)
-        int index = partySize == 3 || partySize == 4 ? 2 : 1;
-
-        // leader is added manually, this set isn't mutated at all
-        Set<UUID> membersWithoutLeader = new HashSet<>(partyMembers);
-        membersWithoutLeader.remove(party.getLeader());
-
-        // builds long text component that will be hoverable
         ComponentBuilder builder = new ComponentBuilder("Members (").color(ChatColor.BLUE);
+        String size = "" + party.getMembers().size();
 
-        builder.append(String.valueOf(partySize)).color(ChatColor.GOLD);
+        builder.append(size).color(ChatColor.GOLD);
         builder.append("):").color(ChatColor.BLUE);
-        builder.append("\n"); // \n is the proper way to do a line break in tooltips
-        // manually add leader (with * to indicate status)
-        builder.append(UUIDUtils.name(party.getLeader()) + "*, ").color(ChatColor.YELLOW);
 
-        // used to store each line of the grid as it's being created
-        StringBuilder lineBuilder = new StringBuilder();
-
-        for (UUID member : membersWithoutLeader) {
-            lineBuilder.append(UUIDUtils.name(member));
-
-            if (index == 0) {
-                lineBuilder.append(", ");
-            }
-
-            if (linesCreated == 3 && partyMembers.size() > 12) {
-                builder.append((partyMembers.size() - 12) + " more.").color(ChatColor.GRAY);
-                break;
-            }
-
-            builder.append(lineBuilder.toString()).color(ChatColor.YELLOW);
-
-            if (index > 2) {
-                builder.append("\n"); // actually move to next line
-                lineBuilder = new StringBuilder();
-                // we reset to 0 instead of 2 or 1 so we do a full 3 entries on all non-initial lines
-                index = 0;
-                linesCreated++;
-
-                continue;
-            }
-
-            index++;
+        for (String member : getMemberPreviewNames(party)) {
+            builder.append("\n");
+            builder.append(member);
         }
 
         HoverEvent.Action action = HoverEvent.Action.SHOW_TEXT;
         return new HoverEvent(action, builder.create());
+    }
+
+    // this method is probably named badly;
+    // it puts min(partySize, 6) member display names into a set,
+    // with a String indicating how many more members are present (if there are any)
+    private static Set<String> getMemberPreviewNames(Party party) {
+        List<UUID> members = new ArrayList<>(party.getMembers());
+        Set<String> displayNames = new HashSet<>();
+
+        for (int i = 0; i < Math.min(members.size(), 6); i++) {
+            UUID member = members.remove(0);
+            String suffix = party.isLeader(member) ? "*" : "";
+
+            displayNames.add(ChatColor.YELLOW + UUIDUtils.name(member) + suffix);
+        }
+
+        if (!members.isEmpty()) {
+            displayNames.add(ChatColor.GRAY + "+ " + members.size() + " more");
+        }
+
+        return displayNames;
     }
 
 }
