@@ -41,17 +41,14 @@ public final class BasicPreventionListener implements Listener {
         ProfileHandler profileHandler = Hydrogen.getInstance().getProfileHandler();
         Optional<Profile> profileOpt = profileHandler.getProfile(event.getPlayer().getUniqueId());
 
-        boolean bukkitPass = event.getPlayer().hasPermission("potpvp.vip");
-        boolean hydroPass = false;
+        boolean allowed = false;
 
         if (profileOpt.isPresent()) {
             Map<String, Boolean> perms = profileOpt.get().getPermissions();
-            hydroPass = perms.getOrDefault("potpvp.vip", false);
+            allowed = perms.getOrDefault("potpvp.vip", false);
         }
 
-        System.out.println("Performed permission check on " + event.getPlayer().getName() + ": Can join? { Hydrogen: " + hydroPass + ", Bukkit: " + bukkitPass);
-
-        if (!hydroPass) {
+        if (!allowed) {
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.GOLD + "PotPvP is VIP-only for testing");
         }
     }
