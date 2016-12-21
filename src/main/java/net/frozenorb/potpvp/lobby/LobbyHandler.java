@@ -37,6 +37,8 @@ public final class LobbyHandler {
         VisibilityUtils.updateVisibility(player);
         PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
         InventoryUtils.resetInventoryDelayed(player);
+
+        PotPvPSI.getInstance().getLogger().info("Teleported " + player.getName() + " to spawn");
     }
 
     public Location getLobbyLocation() {

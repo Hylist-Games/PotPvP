@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.lobby.listener;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.qlib.menu.Menu;
 
@@ -16,10 +17,17 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import java.util.UUID;
 
 public final class LobbyGeneralListener implements Listener {
+
+    @EventHandler
+    public void onPlayerSpawnLocation(PlayerSpawnLocationEvent event) {
+        LobbyHandler lobbyHandler = PotPvPSI.getInstance().getLobbyHandler();
+        event.setSpawnLocation(lobbyHandler.getLobbyLocation());
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
