@@ -4,7 +4,6 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.qlib.tab.LayoutProvider;
 import net.frozenorb.qlib.tab.TabLayout;
-import net.frozenorb.qlib.util.PingUtils;
 import net.frozenorb.qlib.util.PlayerUtils;
 
 import org.bukkit.Bukkit;

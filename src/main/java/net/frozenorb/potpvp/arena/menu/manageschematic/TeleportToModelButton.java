@@ -6,12 +6,10 @@ import com.google.common.collect.ImmutableList;
 import com.sk89q.worldedit.Vector;
 
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.arena.ArenaGrid;
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.arena.ArenaSchematic;
 import net.frozenorb.qlib.menu.Button;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;

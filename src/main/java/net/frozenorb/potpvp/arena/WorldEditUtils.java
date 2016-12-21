@@ -15,13 +15,12 @@ import com.sk89q.worldedit.schematic.SchematicFormat;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.qlib.cuboid.Cuboid;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-import lombok.experimental.UtilityClass;
-
 import java.io.File;
+
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public final class WorldEditUtils {

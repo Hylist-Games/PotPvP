@@ -9,8 +9,6 @@ import net.frozenorb.qlib.command.Param;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
-
 public final class ArenaCreateSchematicCommand {
 
     @Command(names = { "arena createSchematic" }, permission = "op")

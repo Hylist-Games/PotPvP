@@ -2,13 +2,12 @@ package net.frozenorb.potpvp.arena;
 
 import com.google.common.base.Preconditions;
 
+import com.sk89q.worldedit.Vector;
+
 import java.io.File;
 
-import com.sk89q.worldedit.Vector;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 
 /**
  * Represents an arena schematic. See {@link net.frozenorb.potpvp.arena}
