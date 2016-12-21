@@ -50,13 +50,10 @@ public final class ArenaHandler {
 
     public ArenaHandler() {
         Bukkit.getPluginManager().registerEvents(new ArenaClearListener(), PotPvPSI.getInstance());
+        File worldFolder = getArenaWorld().getWorldFolder();
 
-        // even though the locations stored in Arenas contain a World object we
-        // store arenas in (and host matches in) the overworld
-        World arenaWorld = Bukkit.getWorlds().get(0);
-
-        File arenaInstancesFile = new File(arenaWorld.getWorldFolder(), ARENA_INSTANCES_FILE_NAME);
-        File schematicsFile = new File(arenaWorld.getWorldFolder(), SCHEMATICS_FILE_NAME);
+        File arenaInstancesFile = new File(worldFolder, ARENA_INSTANCES_FILE_NAME);
+        File schematicsFile = new File(worldFolder, SCHEMATICS_FILE_NAME);
 
         try {
             // parsed as a List<Arena> and then inserted into Map<String, Map<Integer. Arena>>
@@ -93,17 +90,14 @@ public final class ArenaHandler {
     }
 
     public void saveSchematics() throws IOException {
-        World arenaWorld = Bukkit.getWorlds().get(0);
-
         Files.write(
             qLib.GSON.toJson(schematics.values()),
-            new File(arenaWorld.getWorldFolder(), SCHEMATICS_FILE_NAME),
+            new File(getArenaWorld().getWorldFolder(), SCHEMATICS_FILE_NAME),
             Charsets.UTF_8
         );
     }
 
     public void saveArenas() throws IOException {
-        World arenaWorld = Bukkit.getWorlds().get(0);
         List<Arena> allArenas = new ArrayList<>();
 
         arenaInstances.forEach((schematic, copies) -> {
@@ -112,9 +106,13 @@ public final class ArenaHandler {
 
         Files.write(
             qLib.GSON.toJson(allArenas),
-            new File(arenaWorld.getWorldFolder(), ARENA_INSTANCES_FILE_NAME),
+            new File(getArenaWorld().getWorldFolder(), ARENA_INSTANCES_FILE_NAME),
             Charsets.UTF_8
         );
+    }
+
+    public World getArenaWorld() {
+        return Bukkit.getWorlds().get(0);
     }
 
     public void registerSchematic(ArenaSchematic schematic) {

@@ -4,7 +4,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import com.sk89q.worldedit.Vector;
+
+import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.ArenaGrid;
+import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.arena.ArenaSchematic;
 import net.frozenorb.qlib.menu.Button;
 
@@ -48,13 +51,14 @@ final class TeleportToModelButton extends Button {
     public void clicked(Player player, int slot, ClickType clickType) {
         player.closeInventory();
 
+        ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
         Vector arenaStart = schematic.getModelArenaLocation();
 
         // we add 50 so players don't spawn in the very botton corner of
         // the schematic. perhaps later we should apply the same logic we
         // do for spectators to center the player
         player.teleport(new Location(
-            player.getWorld(),
+            arenaHandler.getArenaWorld(),
             arenaStart.getX() + 50,
             arenaStart.getY() + 50,
             arenaStart.getZ() + 50

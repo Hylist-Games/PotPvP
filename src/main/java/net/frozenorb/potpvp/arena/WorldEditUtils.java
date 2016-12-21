@@ -12,6 +12,7 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 
+import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.qlib.cuboid.Cuboid;
 
 import org.bukkit.Bukkit;
@@ -34,8 +35,9 @@ public final class WorldEditUtils {
         }
 
         EditSessionFactory esFactory = WorldEdit.getInstance().getEditSessionFactory();
+        ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
 
-        worldEditWorld = new BukkitWorld(Bukkit.getWorlds().get(0));
+        worldEditWorld = new BukkitWorld(arenaHandler.getArenaWorld());
         editSession = esFactory.getEditSession(worldEditWorld, Integer.MAX_VALUE);
     }
 
@@ -95,8 +97,10 @@ public final class WorldEditUtils {
     }
 
     public static Location vectorToLocation(Vector vector) {
+        ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
+
         return new Location(
-            Bukkit.getWorlds().get(0),
+            arenaHandler.getArenaWorld(),
             vector.getBlockX(),
             vector.getBlockY(),
             vector.getBlockZ()

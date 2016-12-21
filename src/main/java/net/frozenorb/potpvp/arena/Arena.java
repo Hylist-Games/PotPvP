@@ -2,6 +2,7 @@ package net.frozenorb.potpvp.arena;
 
 import com.google.common.base.Preconditions;
 
+import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.util.AngleUtils;
 import net.frozenorb.qlib.cuboid.Cuboid;
 import net.frozenorb.qlib.util.Callback;
@@ -97,7 +98,8 @@ public final class Arena {
         int newY = Math.min(team1Spawn.getBlockY(), team2Spawn.getBlockY()) + (yDiff / 2);
         int newZ = Math.min(team1Spawn.getBlockZ(), team2Spawn.getBlockZ()) + (zDiff / 2);
 
-        spectatorSpawn = new Location(team1Spawn.getWorld(), newX, newY, newZ);
+        ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
+        spectatorSpawn = new Location(arenaHandler.getArenaWorld(), newX, newY, newZ);
 
         while (spectatorSpawn.getBlock().getType().isSolid()) {
             spectatorSpawn = spectatorSpawn.add(0, 1, 0);

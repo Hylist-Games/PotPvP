@@ -27,8 +27,7 @@ public final class LobbyHandler {
      * @param player the player who is to be returned
      */
     public void returnToLobby(Player player) {
-        Location spawn = player.getWorld().getSpawnLocation();
-        player.teleport(spawn.add(0.5, 0.5, 0.5));
+        player.teleport(getLobbyLocation());
         
         player.getInventory().setHeldItemSlot(0);
 
@@ -38,6 +37,12 @@ public final class LobbyHandler {
         VisibilityUtils.updateVisibility(player);
         PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
         InventoryUtils.resetInventoryDelayed(player);
+    }
+
+    public Location getLobbyLocation() {
+        Location spawn = Bukkit.getWorlds().get(0).getSpawnLocation();
+        spawn.add(0.5, 0.5, 0.5); // 'prettify' so players spawn in middle of block
+        return spawn;
     }
 
 }
