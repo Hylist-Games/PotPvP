@@ -3,26 +3,27 @@ package net.frozenorb.potpvp.kit.listener;
 import net.frozenorb.potpvp.kit.menu.editkit.EditKitMenu;
 import net.frozenorb.qlib.menu.Menu;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 public final class KitEditorListener implements Listener {
 
     @EventHandler
-    public void onInventoryMoveItem(InventoryMoveItemEvent event) {
-        if (!(event.getSource() instanceof PlayerInventory)) {
+    public void onInventoryClick(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+
+        if (event.getCursor() == null || event.getCursor().getType() == Material.AIR) {
             return;
         }
 
-        PlayerInventory playerInv = (PlayerInventory) event.getSource();
-        Player player = (Player) playerInv.getHolder();
+        if (event.getClickedInventory() != event.getView().getTopInventory()) {
+            return;
+        }
 
-        Menu openMenu = Menu.currentlyOpenedMenus.get(player);
-
-        if (openMenu instanceof EditKitMenu) {
+        if (Menu.currentlyOpenedMenus.get(player.getName()) instanceof EditKitMenu) {
             event.setCancelled(true);
         }
     }
