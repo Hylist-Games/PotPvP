@@ -9,6 +9,7 @@ import net.frozenorb.potpvp.match.command.LeaveCommand;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
 
+import net.frozenorb.potpvp.util.ItemListener;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,35 +24,17 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public final class SpectatorItemListener implements Listener {
+public final class SpectatorItemListener extends ItemListener {
 
     private static final long TOGGLE_SPECTATORS_COOLDOWN_MILLIS = TimeUnit.SECONDS.toMillis(3);
 
     private final Map<UUID, Long> toggleVisiblityUsable = new ConcurrentHashMap<>();
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        if (!event.hasItem() || !event.getAction().name().contains("RIGHT_")) {
-            return;
-        }
-
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Match match = matchHandler.getMatchSpectating(event.getPlayer());
-
-        if (match == null) {
-            return;
-        }
-
-        ItemStack item = event.getItem();
-        Player player = event.getPlayer();
-
-        // carpet item does nothing, no point having an empty if block
-        // view inventory item is handled in PlayerInteractEntityEvent
-
-        // this statement is correct; see SpectatorItems file for more
-        if (item.isSimilar(SpectatorItems.RETURN_TO_LOBBY_ITEM) || item.isSimilar(SpectatorItems.LEAVE_PARTY_ITEM)) {
-            LeaveCommand.leave(player);
-        } else if (item.isSimilar(SpectatorItems.TOGGLE_SPECTATORS_ITEM)) {
+    public SpectatorItemListener(MatchHandler matchHandler) {
+        setPreProcessPredicate(matchHandler::isSpectatingMatch);
+        addHandler(SpectatorItems.RETURN_TO_LOBBY_ITEM, LeaveCommand::leave);
+        addHandler(SpectatorItems.LEAVE_PARTY_ITEM, LeaveCommand::leave);
+        addHandler(SpectatorItems.TOGGLE_SPECTATORS_ITEM, player -> {
             SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
             UUID playerUuid = player.getUniqueId();
             boolean togglePermitted = toggleVisiblityUsable.getOrDefault(playerUuid, 0L) < System.currentTimeMillis();
@@ -71,7 +54,7 @@ public final class SpectatorItemListener implements Listener {
             }
 
             toggleVisiblityUsable.put(playerUuid, System.currentTimeMillis() + TOGGLE_SPECTATORS_COOLDOWN_MILLIS);
-        }
+        });
     }
 
     @EventHandler

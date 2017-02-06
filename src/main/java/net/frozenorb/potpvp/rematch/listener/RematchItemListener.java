@@ -1,6 +1,5 @@
 package net.frozenorb.potpvp.rematch.listener;
 
-import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.duel.command.AcceptCommand;
 import net.frozenorb.potpvp.duel.command.DuelCommand;
 import net.frozenorb.potpvp.rematch.RematchData;
@@ -8,51 +7,38 @@ import net.frozenorb.potpvp.rematch.RematchHandler;
 import net.frozenorb.potpvp.rematch.RematchItems;
 import net.frozenorb.potpvp.util.InventoryUtils;
 
+import net.frozenorb.potpvp.util.ItemListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 
-public final class RematchItemListener implements Listener {
+public final class RematchItemListener extends ItemListener {
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        if (!event.hasItem() || !event.getAction().name().contains("RIGHT_")) {
-            return;
-        }
-
-        RematchHandler rematchHandler = PotPvPSI.getInstance().getRematchHandler();
-        ItemStack item = event.getItem();
-        Player player = event.getPlayer();
-
-        if (item.isSimilar(RematchItems.REQUEST_REMATCH_ITEM)) {
-            event.setCancelled(true);
-
+    public RematchItemListener(RematchHandler rematchHandler) {
+        addHandler(RematchItems.REQUEST_REMATCH_ITEM, player -> {
             RematchData rematchData = rematchHandler.getRematchData(player);
 
             if (rematchData != null) {
                 Player target = Bukkit.getPlayer(rematchData.getTarget());
                 DuelCommand.duel(player, target, rematchData.getKitType());
-                
+
                 InventoryUtils.resetInventoryDelayed(player);
                 InventoryUtils.resetInventoryDelayed(target);
             }
-        } else if (item.isSimilar(RematchItems.SENT_REMATCH_ITEM)) {
-            event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + "You have already sent a rematch request.");
-        } else if (item.isSimilar(RematchItems.ACCEPT_REMATCH_ITEM)) {
-            event.setCancelled(true);
+        });
 
+        addHandler(RematchItems.SENT_REMATCH_ITEM, player -> {
+            player.sendMessage(ChatColor.RED + "You have already sent a rematch request.");
+        });
+
+        addHandler(RematchItems.ACCEPT_REMATCH_ITEM, player -> {
             RematchData rematchData = rematchHandler.getRematchData(player);
 
             if (rematchData != null) {
                 Player target = Bukkit.getPlayer(rematchData.getTarget());
                 AcceptCommand.accept(player, target);
             }
-        }
+        });
     }
 
 }

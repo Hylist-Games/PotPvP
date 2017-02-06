@@ -33,7 +33,7 @@ public final class PartyHandler {
 
     public PartyHandler() {
         Bukkit.getPluginManager().registerEvents(new PartyChatListener(), PotPvPSI.getInstance());
-        Bukkit.getPluginManager().registerEvents(new PartyItemListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new PartyItemListener(this), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new PartyLeaveListener(), PotPvPSI.getInstance());
     }
 

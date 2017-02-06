@@ -38,7 +38,7 @@ public final class QueueHandler {
 
     public QueueHandler() {
         Bukkit.getPluginManager().registerEvents(new QueueGeneralListener(), PotPvPSI.getInstance());
-        Bukkit.getPluginManager().registerEvents(new QueueItemListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new QueueItemListener(this), PotPvPSI.getInstance());
 
         for (KitType kitType : KitType.values()) {
             soloQueues.put(kitType, new SoloQueue(kitType));

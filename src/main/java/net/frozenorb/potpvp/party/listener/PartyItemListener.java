@@ -10,46 +10,38 @@ import net.frozenorb.potpvp.party.command.PartyLeaveCommand;
 import net.frozenorb.potpvp.party.command.PartyTeamSplitCommand;
 import net.frozenorb.potpvp.party.menu.otherparties.OtherPartiesMenu;
 
+import net.frozenorb.potpvp.util.ItemListener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 
-public final class PartyItemListener implements Listener {
+public final class PartyItemListener extends ItemListener {
 
+    public PartyItemListener(PartyHandler partyHandler) {
+        addHandler(PartyItems.LEAVE_PARTY_ITEM, PartyLeaveCommand::partyLeave);
+        addHandler(PartyItems.START_TEAM_SPLIT_ITEM, PartyTeamSplitCommand::partyTeamSplit);
+        addHandler(PartyItems.START_FFA_ITEM, PartyFfaCommand::partyFfa);
+        addHandler(PartyItems.OTHER_PARTIES_ITEM, p -> new OtherPartiesMenu().openMenu(p));
+    }
+
+    // this item changes based on who your party leader is,
+    // so we have to manually implement this one.
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
+    public void fastPartyIcon(PlayerInteractEvent event) {
         if (!event.hasItem() || !event.getAction().name().contains("RIGHT_")) {
             return;
         }
 
-        PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
-        ItemStack item = event.getItem();
+        if (event.getItem().getType() != PartyItems.ICON_TYPE) {
+            return;
+        }
+
         Player player = event.getPlayer();
+        Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
 
-        if (item.isSimilar(PartyItems.LEAVE_PARTY_ITEM)) {
+        if (party != null && PartyItems.icon(party).isSimilar(event.getItem())) {
             event.setCancelled(true);
-            PartyLeaveCommand.partyLeave(player);
-        } else if (item.isSimilar(PartyItems.START_TEAM_SPLIT_ITEM)) {
-            event.setCancelled(true);
-            PartyTeamSplitCommand.partyTeamSplit(player);
-        } else if (item.isSimilar(PartyItems.START_FFA_ITEM)) {
-            event.setCancelled(true);
-            PartyFfaCommand.partyFfa(player);
-        } else if (item.isSimilar(PartyItems.OTHER_PARTIES_ITEM)) {
-            event.setCancelled(true);
-            new OtherPartiesMenu().openMenu(player);
-        } else if (item.getType() == PartyItems.ICON_TYPE) {
-            // we just check for the same type (not isSimilar because
-            // of a different title) to avoid running this code
-            // whenever any item is right clicked
-            Party party = partyHandler.getParty(player);
-
-            if (party != null && PartyItems.icon(party).isSimilar(item)) {
-                event.setCancelled(true);
-                PartyInfoCommand.partyInfo(player, player);
-            }
+            PartyInfoCommand.partyInfo(player, player);
         }
     }
 

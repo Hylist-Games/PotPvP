@@ -52,7 +52,7 @@ public final class MatchHandler {
         Bukkit.getPluginManager().registerEvents(new MatchGeneralListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new MatchPartySpectateListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new MatchSoupListener(), PotPvPSI.getInstance());
-        Bukkit.getPluginManager().registerEvents(new SpectatorItemListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new SpectatorItemListener(this), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new SpectatorPreventionListener(), PotPvPSI.getInstance());
     }
 

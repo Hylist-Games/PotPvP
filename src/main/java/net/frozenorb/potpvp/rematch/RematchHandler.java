@@ -27,7 +27,7 @@ public final class RematchHandler {
 
     public RematchHandler() {
         Bukkit.getPluginManager().registerEvents(new RematchGeneralListener(), PotPvPSI.getInstance());
-        Bukkit.getPluginManager().registerEvents(new RematchItemListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new RematchItemListener(this), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new RematchUnloadListener(), PotPvPSI.getInstance());
 
         // remove expired entries
