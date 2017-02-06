@@ -128,18 +128,47 @@ public final class PotPvPValidation {
     }
 
     public static boolean canSpectate(Player player) {
+        return canSpectate(player, false);
+    }
+
+    public static boolean canSpectate(Player player, boolean silent) {
+        if (isInOrSpectatingMatch(player)) {
+            if (!silent) {
+                player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
+            }
+
+            return false;
+        }
+
+        return canSpectateIgnoreMatchSpectating(player, silent);
+    }
+
+    public static boolean canSpectateIgnoreMatchSpectating(Player player) {
+        return canSpectateIgnoreMatchSpectating(player, false);
+    }
+
+    public static boolean canSpectateIgnoreMatchSpectating(Player player, boolean silent) {
         if (isInParty(player)) {
-            player.sendMessage(CANNOT_DO_THIS_IN_PARTY);
+            if (!silent) {
+                player.sendMessage(CANNOT_DO_THIS_IN_PARTY);
+            }
+
             return false;
         }
 
         if (isInQueue(player)) {
-            player.sendMessage(CANNOT_DO_THIS_WHILE_QUEUED);
+            if (!silent) {
+                player.sendMessage(CANNOT_DO_THIS_WHILE_QUEUED);
+            }
+
             return false;
         }
 
-        if (isInOrSpectatingMatch(player)) {
-            player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
+        if (isInMatch(player)) {
+            if (!silent) {
+                player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
+            }
+
             return false;
         }
 
@@ -225,6 +254,11 @@ public final class PotPvPValidation {
     private static boolean isInQueue(Party party) {
         QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
         return queueHandler.isQueued(party);
+    }
+
+    private boolean isInMatch(Player player) {
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        return matchHandler.isPlayingMatch(player);
     }
 
     private boolean isInOrSpectatingMatch(Player player) {

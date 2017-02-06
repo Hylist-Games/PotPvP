@@ -11,6 +11,7 @@ import net.frozenorb.potpvp.queue.QueueItems;
 import net.frozenorb.potpvp.rematch.RematchData;
 import net.frozenorb.potpvp.rematch.RematchHandler;
 import net.frozenorb.potpvp.rematch.RematchItems;
+import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.menu.Menu;
 
 import org.bukkit.Bukkit;
@@ -81,14 +82,19 @@ public final class LobbyUtils {
                 }
             }
 
-            if (!queueHandler.isQueued(player.getUniqueId())) {
-                inventory.setItem(1, QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM);
-            } else {
-                inventory.setItem(1, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
+            if (PotPvPValidation.canSpectate(player, true)) {
+                inventory.setItem(1, LobbyItems.SPECTATE_RANDOM_ITEM);
+                inventory.setItem(2, LobbyItems.SPECTATE_MENU_ITEM);
             }
 
-            inventory.setItem(3, QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM);
-            inventory.setItem(5, LobbyItems.EVENTS_ITEM);
+            if (!queueHandler.isQueued(player.getUniqueId())) {
+                inventory.setItem(4, QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM);
+            } else {
+                inventory.setItem(4, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
+            }
+
+            inventory.setItem(5, QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM);
+            inventory.setItem(6, LobbyItems.EVENTS_ITEM);
         }
 
         inventory.setItem(7, KitItems.OPEN_EDITOR_ITEM);

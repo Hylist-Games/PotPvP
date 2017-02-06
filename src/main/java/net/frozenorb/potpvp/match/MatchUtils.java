@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.match;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.lobby.LobbyItems;
 import net.frozenorb.potpvp.party.PartyHandler;
 
 import org.bukkit.Bukkit;
@@ -52,6 +53,9 @@ public final class MatchUtils {
         } else {
             player.getInventory().setItem(8, SpectatorItems.RETURN_TO_LOBBY_ITEM);
         }
+
+        player.getInventory().setItem(4, LobbyItems.SPECTATE_RANDOM_ITEM);
+        player.getInventory().setItem(5, LobbyItems.SPECTATE_MENU_ITEM);
 
         Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), player::updateInventory, 1L);
     }
