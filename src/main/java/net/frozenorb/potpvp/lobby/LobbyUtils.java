@@ -33,9 +33,9 @@ public final class LobbyUtils {
         RematchHandler rematchHandler = PotPvPSI.getInstance().getRematchHandler();
         QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
         DuelHandler duelHandler = PotPvPSI.getInstance().getDuelHandler();
-
         Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
         PlayerInventory inventory = player.getInventory();
+        boolean specMode = PotPvPSI.getInstance().getLobbyHandler().isInSpectatorMode(player);
 
         inventory.clear();
         inventory.setArmorContents(null);
@@ -63,38 +63,46 @@ public final class LobbyUtils {
             inventory.setItem(6, PartyItems.OTHER_PARTIES_ITEM);
             inventory.setItem(8, PartyItems.LEAVE_PARTY_ITEM);
         } else {
-            RematchData rematchData = rematchHandler.getRematchData(player);
+            player.setAllowFlight(specMode);
 
-            if (rematchData != null) {
-                Player target = Bukkit.getPlayer(rematchData.getTarget());
+            if (specMode) {
+                inventory.setItem(1, LobbyItems.DISABLE_SPEC_MODE_ITEM);
 
-                if (target != null) {
-                    if (duelHandler.findInvite(player, target) != null) {
-                        // if we've sent an invite to them
-                        inventory.setItem(0, RematchItems.SENT_REMATCH_ITEM);
-                    } else if (duelHandler.findInvite(target, player) != null) {
-                        // if they've sent us an invite
-                        inventory.setItem(0, RematchItems.ACCEPT_REMATCH_ITEM);
-                    } else {
-                        // if no one has sent an invite
-                        inventory.setItem(0, RematchItems.REQUEST_REMATCH_ITEM);
+                if (PotPvPValidation.canSpectate(player, true)) {
+                    inventory.setItem(3, LobbyItems.SPECTATE_RANDOM_ITEM);
+                    inventory.setItem(4, LobbyItems.SPECTATE_MENU_ITEM);
+                }
+            } else {
+                RematchData rematchData = rematchHandler.getRematchData(player);
+
+                if (rematchData != null) {
+                    Player target = Bukkit.getPlayer(rematchData.getTarget());
+
+                    if (target != null) {
+                        if (duelHandler.findInvite(player, target) != null) {
+                            // if we've sent an invite to them
+                            inventory.setItem(0, RematchItems.SENT_REMATCH_ITEM);
+                        } else if (duelHandler.findInvite(target, player) != null) {
+                            // if they've sent us an invite
+                            inventory.setItem(0, RematchItems.ACCEPT_REMATCH_ITEM);
+                        } else {
+                            // if no one has sent an invite
+                            inventory.setItem(0, RematchItems.REQUEST_REMATCH_ITEM);
+                        }
                     }
                 }
-            }
 
-            if (PotPvPValidation.canSpectate(player, true)) {
-                inventory.setItem(1, LobbyItems.SPECTATE_RANDOM_ITEM);
-                inventory.setItem(2, LobbyItems.SPECTATE_MENU_ITEM);
-            }
+                inventory.setItem(1, LobbyItems.ENABLE_SPEC_MODE_ITEM);
 
-            if (!queueHandler.isQueued(player.getUniqueId())) {
-                inventory.setItem(4, QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM);
-            } else {
-                inventory.setItem(4, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
-            }
+                if (!queueHandler.isQueued(player.getUniqueId())) {
+                    inventory.setItem(3, QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM);
+                } else {
+                    inventory.setItem(3, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
+                }
 
-            inventory.setItem(5, QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM);
-            inventory.setItem(6, LobbyItems.EVENTS_ITEM);
+                inventory.setItem(4, QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM);
+                inventory.setItem(6, LobbyItems.EVENTS_ITEM);
+            }
         }
 
         inventory.setItem(7, KitItems.OPEN_EDITOR_ITEM);

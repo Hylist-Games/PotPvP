@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.lobby.listener;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.lobby.LobbyItems;
 
 import net.frozenorb.potpvp.lobby.menu.SpectateMenu;
@@ -17,13 +18,17 @@ import java.util.List;
 
 public final class LobbyItemListener extends ItemListener {
 
-    public LobbyItemListener() {
+    public LobbyItemListener(LobbyHandler lobbyHandler) {
         addHandler(LobbyItems.EVENTS_ITEM, p -> p.sendMessage(ChatColor.RED + "Events are not yet completed! They will be done soon!"));
+        addHandler(LobbyItems.ENABLE_SPEC_MODE_ITEM, p -> lobbyHandler.setSpectatorMode(p, true));
+        addHandler(LobbyItems.DISABLE_SPEC_MODE_ITEM, p -> lobbyHandler.setSpectatorMode(p, false));
+
         addHandler(LobbyItems.SPECTATE_MENU_ITEM, player -> {
             if (PotPvPValidation.canSpectateIgnoreMatchSpectating(player)) {
                 new SpectateMenu().openMenu(player);
             }
         });
+
         addHandler(LobbyItems.SPECTATE_RANDOM_ITEM, player -> {
             MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 

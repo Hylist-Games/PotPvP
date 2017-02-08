@@ -13,11 +13,23 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 public final class LobbyHandler {
+
+    /**
+     * Stores players who are in "spectator mode", which gives them fly mode
+     * and a different lobby hotbar. This setting is purely cosmetic, it doesn't
+     * change what a player can/can't do (with the exception of not giving them
+     * certain clickable items - but that's just a UX decision)
+     */
+    private final Set<UUID> spectatorMode = new HashSet<>();
 
     public LobbyHandler() {
         Bukkit.getPluginManager().registerEvents(new LobbyGeneralListener(), PotPvPSI.getInstance());
-        Bukkit.getPluginManager().registerEvents(new LobbyItemListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new LobbyItemListener(this), PotPvPSI.getInstance());
     }
 
     /**
@@ -34,11 +46,27 @@ public final class LobbyHandler {
         FrozenNametagHandler.reloadPlayer(player);
         FrozenNametagHandler.reloadOthersFor(player);
 
+        spectatorMode.remove(player.getUniqueId()); // before the inv reset
         VisibilityUtils.updateVisibility(player);
         PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
         InventoryUtils.resetInventoryDelayed(player);
 
         PotPvPSI.getInstance().getLogger().info("Teleported " + player.getName() + " to spawn");
+    }
+
+    public boolean isInSpectatorMode(Player player) {
+        return spectatorMode.contains(player.getUniqueId());
+    }
+
+    public void setSpectatorMode(Player player, boolean mode) {
+        if (mode) {
+            spectatorMode.add(player.getUniqueId());
+        } else {
+            spectatorMode.remove(player.getUniqueId());
+        }
+
+        // fly mode is toggled in the inventory reset method
+        InventoryUtils.resetInventoryNow(player);
     }
 
     public Location getLobbyLocation() {
