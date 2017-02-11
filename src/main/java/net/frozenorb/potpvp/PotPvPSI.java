@@ -6,6 +6,7 @@ import com.mongodb.client.MongoDatabase;
 
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.duel.DuelHandler;
+import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.kit.KitHandler;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.kittype.KitTypeParameterType;
@@ -32,6 +33,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import lombok.Generated;
 import lombok.Getter;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -55,6 +57,7 @@ public final class PotPvPSI extends JavaPlugin {
     @Getter private QueueHandler queueHandler;
     @Getter private RematchHandler rematchHandler;
     @Getter private PostMatchInvHandler postMatchInvHandler;
+    @Getter private FollowHandler followHandler;
 
     @Override
     public void onEnable() {
@@ -80,6 +83,7 @@ public final class PotPvPSI extends JavaPlugin {
         queueHandler = new QueueHandler();
         rematchHandler = new RematchHandler();
         postMatchInvHandler = new PostMatchInvHandler();
+        followHandler = new FollowHandler();
 
         getServer().getPluginManager().registerEvents(new BasicPreventionListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
