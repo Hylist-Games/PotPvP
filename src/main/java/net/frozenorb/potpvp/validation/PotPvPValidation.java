@@ -38,11 +38,6 @@ public final class PotPvPValidation {
             return false;
         }
 
-        if (isInParty(sender)) {
-            sender.sendMessage(CAN_ONLY_DUEL_OTHER_PARTIES);
-            return false;
-        }
-
         if (isInOrSpectatingMatch(sender)) {
             sender.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
             return false;
