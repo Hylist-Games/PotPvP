@@ -10,8 +10,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 
+/**
+ * "Modifications" needed to make the EditKitMenu work as expected
+ */
 public final class KitEditorListener implements Listener {
 
+    /**
+     * Prevents placing items into the top inventory
+     */
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
@@ -29,6 +35,12 @@ public final class KitEditorListener implements Listener {
         }
     }
 
+    /**
+     * Prevents all forms of dragging (the goal of this is
+     * to prevent items being put into the top inventory,
+     * but item dragging overall is too complicated to deal
+     * with properly so we just disallow dragging.)
+     */
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
         Player player = (Player) event.getWhoClicked();
