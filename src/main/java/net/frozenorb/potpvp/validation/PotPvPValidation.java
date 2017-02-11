@@ -21,7 +21,6 @@ public final class PotPvPValidation {
 
     private static final String CANNOT_DUEL_SELF = ChatColor.RED + "You can't duel yourself!";
     private static final String CANNOT_DUEL_OWN_PARTY = ChatColor.RED + "You can't duel your own party!";
-    private static final String CAN_ONLY_DUEL_OTHER_PARTIES = ChatColor.RED + "Your party can only duel other parties!";
     private static final String CANNOT_DO_THIS_IN_PARTY = ChatColor.RED + "You can't do this while in a party!";
     private static final String CANNOT_DO_THIS_WHILE_QUEUED = ChatColor.RED + "You can't do this while queued!";
     private static final String CANNOT_DO_THIS_WHILE_IN_MATCH = ChatColor.RED + "You can't do this while participating in or spectating a match!";
