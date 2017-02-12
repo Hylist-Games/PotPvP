@@ -3,6 +3,8 @@ package net.frozenorb.potpvp.match.command;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
+import net.frozenorb.potpvp.setting.Setting;
+import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
@@ -20,10 +22,17 @@ public final class SpectateCommand {
         }
 
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
+
         Match targetMatch = matchHandler.getMatchPlayingOrSpectating(target);
 
         if (targetMatch == null) {
             sender.sendMessage(ChatColor.RED + target.getName() + " is not in a match.");
+            return;
+        }
+
+        if (!settingHandler.getSetting(target.getUniqueId(), Setting.ALLOW_SPECTATORS)) {
+            sender.sendMessage(ChatColor.RED + target.getName() + " doesn't allow spectators at the moment.");
             return;
         }
 

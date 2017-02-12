@@ -61,6 +61,20 @@ public enum Setting {
         true,
         null // no permission required
     ),
+    ALLOW_SPECTATORS(
+            ChatColor.DARK_GREEN + "Allow Spectators",
+            ImmutableList.of(
+                    ChatColor.BLUE + "If enabled, players can spectate your",
+                    ChatColor.BLUE + "matches with /spectate.",
+                    "",
+                    ChatColor.BLUE + "Disable to disallow match spectators."
+            ),
+            Material.GLASS,
+            ChatColor.YELLOW + "Let players spectate your matches",
+            ChatColor.YELLOW + "Don't let players spectate your matches",
+            true,
+            null // no permission required
+    ),
     RECEIVE_DUELS(
         ChatColor.GREEN + "Duel Invites",
         ImmutableList.of(

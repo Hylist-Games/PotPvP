@@ -2,6 +2,8 @@ package net.frozenorb.potpvp.follow.command;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.follow.FollowHandler;
+import net.frozenorb.potpvp.setting.Setting;
+import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
@@ -21,6 +23,8 @@ public final class FollowCommand {
         }
 
         FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
+        SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
+
         UUID alreadyFollowing = followHandler.getFollowing(sender).orElse(null);
 
         if (alreadyFollowing != null) {
@@ -28,6 +32,9 @@ public final class FollowCommand {
             return;
         } else if (sender == target) {
             sender.sendMessage(ChatColor.RED + "No, you can't follow yourself.");
+            return;
+        } else if (!settingHandler.getSetting(target.getUniqueId(), Setting.ALLOW_SPECTATORS)) {
+            sender.sendMessage(ChatColor.RED + target.getName() + " doesn't allow spectators at the moment.");
             return;
         }
 

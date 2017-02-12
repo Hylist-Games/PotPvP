@@ -5,6 +5,8 @@ import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.match.event.MatchSpectatorLeaveEvent;
 import net.frozenorb.potpvp.match.event.MatchStartEvent;
+import net.frozenorb.potpvp.setting.Setting;
+import net.frozenorb.potpvp.setting.event.SettingUpdateEvent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -51,6 +53,18 @@ public final class FollowGeneralListener implements Listener {
 
         // garbage collects players who leave
         followHandler.stopFollowing(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onSettingUpdate(SettingUpdateEvent event) {
+        if (event.getSetting() != Setting.ALLOW_SPECTATORS || event.isEnabled()) {
+            return;
+        }
+
+        // can't follow a player who doesn't allow spectators
+        for (UUID follower : followHandler.getFollowers(event.getPlayer())) {
+            followHandler.stopFollowing(Bukkit.getPlayer(follower));
+        }
     }
 
 }
