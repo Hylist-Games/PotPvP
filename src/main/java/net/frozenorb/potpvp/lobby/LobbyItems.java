@@ -9,7 +9,11 @@ import lombok.experimental.UtilityClass;
 
 import static net.frozenorb.potpvp.PotPvPLang.LEFT_ARROW;
 import static net.frozenorb.potpvp.PotPvPLang.RIGHT_ARROW;
-import static org.bukkit.ChatColor.*;
+import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.BOLD;
+import static org.bukkit.ChatColor.GREEN;
+import static org.bukkit.ChatColor.LIGHT_PURPLE;
+import static org.bukkit.ChatColor.YELLOW;
 
 @UtilityClass
 public final class LobbyItems {

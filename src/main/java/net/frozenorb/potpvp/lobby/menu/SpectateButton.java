@@ -1,12 +1,14 @@
 package net.frozenorb.potpvp.lobby.menu;
 
 import com.google.common.base.Preconditions;
+
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.util.UUIDUtils;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

@@ -7,6 +7,7 @@ import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.pagination.PaginatedMenu;
+
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

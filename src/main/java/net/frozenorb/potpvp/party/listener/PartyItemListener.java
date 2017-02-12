@@ -9,8 +9,8 @@ import net.frozenorb.potpvp.party.command.PartyInfoCommand;
 import net.frozenorb.potpvp.party.command.PartyLeaveCommand;
 import net.frozenorb.potpvp.party.command.PartyTeamSplitCommand;
 import net.frozenorb.potpvp.party.menu.otherparties.OtherPartiesMenu;
-
 import net.frozenorb.potpvp.util.ItemListener;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;

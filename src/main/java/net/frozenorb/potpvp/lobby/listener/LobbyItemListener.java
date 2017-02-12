@@ -3,7 +3,6 @@ package net.frozenorb.potpvp.lobby.listener;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.lobby.LobbyItems;
-
 import net.frozenorb.potpvp.lobby.menu.SpectateMenu;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
@@ -11,6 +10,7 @@ import net.frozenorb.potpvp.match.MatchState;
 import net.frozenorb.potpvp.util.ItemListener;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.qLib;
+
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;

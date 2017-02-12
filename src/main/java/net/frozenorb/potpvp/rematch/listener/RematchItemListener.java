@@ -6,8 +6,8 @@ import net.frozenorb.potpvp.rematch.RematchData;
 import net.frozenorb.potpvp.rematch.RematchHandler;
 import net.frozenorb.potpvp.rematch.RematchItems;
 import net.frozenorb.potpvp.util.InventoryUtils;
-
 import net.frozenorb.potpvp.util.ItemListener;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

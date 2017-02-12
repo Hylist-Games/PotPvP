@@ -11,7 +11,6 @@ import net.frozenorb.potpvp.queue.QueueItems;
 import net.frozenorb.potpvp.rematch.RematchData;
 import net.frozenorb.potpvp.rematch.RematchHandler;
 import net.frozenorb.potpvp.rematch.RematchItems;
-import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.menu.Menu;
 
 import org.bukkit.Bukkit;
