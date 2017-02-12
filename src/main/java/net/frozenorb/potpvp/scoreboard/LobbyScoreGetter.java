@@ -1,12 +1,14 @@
 package net.frozenorb.potpvp.scoreboard;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.queue.QueueEntry;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.qlib.util.TimeUtils;
+import net.frozenorb.qlib.util.UUIDUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,9 +20,11 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
 
     @Override
     public void accept(Player player, List<String> scores) {
+        FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
         QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
+
         Party party = partyHandler.getParty(player);
 
         if (party != null) {
@@ -30,6 +34,10 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
         scores.add("&eOnline: *&f" + Bukkit.getOnlinePlayers().size());
         scores.add("&dIn Fights: *&f" + matchHandler.countPlayersPlayingMatches());
         scores.add("&bIn Queues: *&f" + queueHandler.countPlayersQueued());
+
+        followHandler.getFollowing(player).ifPresent(following -> {
+            scores.add("&6Following: *&f" + UUIDUtils.name(following));
+        });
 
         QueueEntry queueEntry;
 

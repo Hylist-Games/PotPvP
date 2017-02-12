@@ -77,7 +77,7 @@ final class SpectateButton extends Button {
 
     @Override
     public void clicked(Player player, int i, ClickType clickType) {
-        if (!PotPvPValidation.canSpectateIgnoreMatchSpectating(player)) {
+        if (!PotPvPValidation.canUseSpectateItemIgnoreMatchSpectating(player)) {
             return;
         }
 

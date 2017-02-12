@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.command;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchTeam;
@@ -19,6 +20,7 @@ public final class PStatusCommand {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
+        FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
 
         sender.sendMessage(ChatColor.RED + target.getName() + ":");
         sender.sendMessage("In match: " + matchHandler.isPlayingMatch(target));
@@ -29,6 +31,7 @@ public final class PStatusCommand {
         sender.sendMessage("In or spectating match (NC): " + noCacheIsPlayingOrSpectatingMatch(target));
         sender.sendMessage("In queue: " + queueHandler.isQueued(target.getUniqueId()));
         sender.sendMessage("In party: " + partyHandler.hasParty(target));
+        sender.sendMessage("Following: " + followHandler.getFollowing(target).isPresent());
     }
 
     private static boolean noCacheIsPlayingMatch(Player target) {

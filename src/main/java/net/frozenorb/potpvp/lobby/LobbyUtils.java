@@ -67,11 +67,8 @@ public final class LobbyUtils {
 
             if (specMode) {
                 inventory.setItem(1, LobbyItems.DISABLE_SPEC_MODE_ITEM);
-
-                if (PotPvPValidation.canSpectate(player, true)) {
-                    inventory.setItem(3, LobbyItems.SPECTATE_RANDOM_ITEM);
-                    inventory.setItem(4, LobbyItems.SPECTATE_MENU_ITEM);
-                }
+                inventory.setItem(3, LobbyItems.SPECTATE_RANDOM_ITEM);
+                inventory.setItem(4, LobbyItems.SPECTATE_MENU_ITEM);
             } else {
                 RematchData rematchData = rematchHandler.getRematchData(player);
 

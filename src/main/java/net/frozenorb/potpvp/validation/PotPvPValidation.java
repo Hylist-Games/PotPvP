@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.validation;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
@@ -24,6 +25,7 @@ public final class PotPvPValidation {
     private static final String CANNOT_DO_THIS_IN_PARTY = ChatColor.RED + "You can't do this while in a party!";
     private static final String CANNOT_DO_THIS_WHILE_QUEUED = ChatColor.RED + "You can't do this while queued!";
     private static final String CANNOT_DO_THIS_WHILE_IN_MATCH = ChatColor.RED + "You can't do this while participating in or spectating a match!";
+    private static final String CANNOT_DO_THIS_WHILE_FOLLOWING = ChatColor.RED + "You cannot do this while following someone! Type /unfollow to exit.";
 
     private static final String TARGET_PLAYER_IN_MATCH = ChatColor.RED + "That player is participating in or spectating a match!";
     private static final String TARGET_PLAYER_HAS_DUELS_DISABLED = ChatColor.RED + "The player has duels disabled!";
@@ -47,6 +49,11 @@ public final class PotPvPValidation {
             return false;
         }
 
+        if (isFollowingSomeone(sender)) {
+            sender.sendMessage(CANNOT_DO_THIS_WHILE_FOLLOWING);
+            return false;
+        }
+
         if (!getSetting(target, Setting.RECEIVE_DUELS)) {
             sender.sendMessage(TARGET_PLAYER_HAS_DUELS_DISABLED);
             return false;
@@ -63,6 +70,16 @@ public final class PotPvPValidation {
 
         if (isInOrSpectatingMatch(target)) {
             sender.sendMessage(TARGET_PLAYER_IN_MATCH);
+            return false;
+        }
+
+        if (isFollowingSomeone(target)) {
+            sender.sendMessage(CANNOT_DO_THIS_WHILE_FOLLOWING);
+            return false;
+        }
+
+        if (isFollowingSomeone(sender)) {
+            sender.sendMessage(CANNOT_DO_THIS_WHILE_FOLLOWING);
             return false;
         }
 
@@ -118,51 +135,60 @@ public final class PotPvPValidation {
             return false;
         }
 
-        return true;
-    }
-
-    public static boolean canSpectate(Player player) {
-        return canSpectate(player, false);
-    }
-
-    public static boolean canSpectate(Player player, boolean silent) {
-        if (isInOrSpectatingMatch(player)) {
-            if (!silent) {
-                player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
-            }
-
+        if (isFollowingSomeone(player)) {
+            player.sendMessage(CANNOT_DO_THIS_WHILE_FOLLOWING);
             return false;
         }
 
-        return canSpectateIgnoreMatchSpectating(player, silent);
+        return true;
     }
 
-    public static boolean canSpectateIgnoreMatchSpectating(Player player) {
-        return canSpectateIgnoreMatchSpectating(player, false);
+    public static boolean canUseSpectateItem(Player player) {
+        if (isInOrSpectatingMatch(player)) {
+            player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
+            return false;
+        }
+
+        return canUseSpectateItemIgnoreMatchSpectating(player);
     }
 
-    public static boolean canSpectateIgnoreMatchSpectating(Player player, boolean silent) {
+    public static boolean canUseSpectateItemIgnoreMatchSpectating(Player player) {
         if (isInParty(player)) {
-            if (!silent) {
-                player.sendMessage(CANNOT_DO_THIS_IN_PARTY);
-            }
-
+            player.sendMessage(CANNOT_DO_THIS_IN_PARTY);
             return false;
         }
 
         if (isInQueue(player)) {
-            if (!silent) {
-                player.sendMessage(CANNOT_DO_THIS_WHILE_QUEUED);
-            }
-
+            player.sendMessage(CANNOT_DO_THIS_WHILE_QUEUED);
             return false;
         }
 
         if (isInMatch(player)) {
-            if (!silent) {
-                player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
-            }
+            player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
+            return false;
+        }
 
+        if (isFollowingSomeone(player)) {
+            player.sendMessage(CANNOT_DO_THIS_WHILE_FOLLOWING);
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean canFollowSomeone(Player player) {
+        if (isInParty(player)) {
+            player.sendMessage(CANNOT_DO_THIS_IN_PARTY);
+            return false;
+        }
+
+        if (isInQueue(player)) {
+            player.sendMessage(CANNOT_DO_THIS_WHILE_QUEUED);
+            return false;
+        }
+
+        if (isInOrSpectatingMatch(player)) {
+            player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
             return false;
         }
 
@@ -182,6 +208,11 @@ public final class PotPvPValidation {
 
         if (isInOrSpectatingMatch(player)) {
             player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
+            return false;
+        }
+
+        if (isFollowingSomeone(player)) {
+            player.sendMessage(CANNOT_DO_THIS_WHILE_FOLLOWING);
             return false;
         }
 
@@ -258,6 +289,11 @@ public final class PotPvPValidation {
     private boolean isInOrSpectatingMatch(Player player) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         return matchHandler.isPlayingOrSpectatingMatch(player);
+    }
+
+    private boolean isFollowingSomeone(Player player) {
+        FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
+        return followHandler.getFollowing(player).isPresent();
     }
 
 }

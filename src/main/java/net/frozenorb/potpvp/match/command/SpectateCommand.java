@@ -35,7 +35,7 @@ public final class SpectateCommand {
             teleportTo = target;
         }
 
-        if (PotPvPValidation.canSpectate(sender)) {
+        if (PotPvPValidation.canUseSpectateItem(sender)) {
             targetMatch.addSpectator(sender, teleportTo);
         }
     }

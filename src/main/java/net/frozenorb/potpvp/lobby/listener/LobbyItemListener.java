@@ -24,7 +24,7 @@ public final class LobbyItemListener extends ItemListener {
         addHandler(LobbyItems.DISABLE_SPEC_MODE_ITEM, p -> lobbyHandler.setSpectatorMode(p, false));
 
         addHandler(LobbyItems.SPECTATE_MENU_ITEM, player -> {
-            if (PotPvPValidation.canSpectateIgnoreMatchSpectating(player)) {
+            if (PotPvPValidation.canUseSpectateItemIgnoreMatchSpectating(player)) {
                 new SpectateMenu().openMenu(player);
             }
         });
@@ -32,7 +32,7 @@ public final class LobbyItemListener extends ItemListener {
         addHandler(LobbyItems.SPECTATE_RANDOM_ITEM, player -> {
             MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
-            if (!PotPvPValidation.canSpectateIgnoreMatchSpectating(player)) {
+            if (!PotPvPValidation.canUseSpectateItemIgnoreMatchSpectating(player)) {
                 return;
             }
 
