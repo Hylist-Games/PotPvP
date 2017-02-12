@@ -81,10 +81,20 @@ public final class MatchGeneralListener implements Listener {
         }
     }
 
+    // "natural" teleports (like enderpearls) are forward down and
+    // treated as a move event, plugin teleports (specifically
+    // those originating in this plugin) are ignored.
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        // PlayerTeleportEvent extends PlayerMoveEvent, so we can just
-        // 'forward' this event down to our move handler.
+        switch (event.getCause()) {
+            case PLUGIN:
+            case COMMAND:
+            case UNKNOWN:
+                return;
+            default:
+                break;
+        }
+
         onPlayerMove(event);
     }
 
@@ -112,8 +122,13 @@ public final class MatchGeneralListener implements Listener {
         Arena arena = match.getArena();
 
         if (!arena.getBounds().contains(to)) {
-            player.teleport(arena.getSpectatorSpawn());
-            player.sendMessage(ChatColor.RED + "You aren't allowed to leave the arena.");
+            // spectators get a nice message, players just get cancelled
+            if (match.isSpectator(player.getUniqueId())) {
+                player.teleport(arena.getSpectatorSpawn());
+                player.sendMessage(ChatColor.RED + "You aren't allowed to leave the arena.");
+            } else {
+                event.setCancelled(true);
+            }
         }
     }
 
