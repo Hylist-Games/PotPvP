@@ -17,6 +17,8 @@ import net.frozenorb.potpvp.match.event.MatchSpectatorLeaveEvent;
 import net.frozenorb.potpvp.match.event.MatchStartEvent;
 import net.frozenorb.potpvp.match.event.MatchTerminateEvent;
 import net.frozenorb.potpvp.postmatchinv.PostMatchPlayer;
+import net.frozenorb.potpvp.setting.Setting;
+import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.potpvp.util.MongoUtils;
 import net.frozenorb.potpvp.util.VisibilityUtils;
@@ -279,28 +281,10 @@ public final class Match {
             player.teleport(tpTo);
         }
 
+        // so players don't accidentally click the item to stop spectating
         player.getInventory().setHeldItemSlot(0);
 
-        /*
-        MatchSpectator specData = match.getSpectators().get(player.getUniqueId());
-
-        if (!specData.isHidden() && match.getState() == MatchState.IN_PROGRESS) {
-            SettingHandler settingHandler = PotPvPSlave.getInstance().getSettingHandler();
-
-            for (Player onlinePlayer : PotPvPSlave.getInstance().getServer().getOnlinePlayers()) {
-                if (onlinePlayer == player) {
-                    continue;
-                }
-
-                boolean sameMatch = match.isSpectator(onlinePlayer.getUniqueId()) || match.getCurrentTeam(onlinePlayer) != null;
-                boolean spectatorMessagesEnabled = settingHandler.isSettingEnabled(onlinePlayer.getUniqueId(), Setting.SHOW_SPECTATOR_JOIN_MESSAGES);
-
-                if (sameMatch && spectatorMessagesEnabled) {
-                    onlinePlayer.sendMessage(ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " is now spectating.");
-                }
-            }
-        }
-        */
+        sendSpectatorMessage(player, ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " is now spectating.");
 
         FrozenNametagHandler.reloadPlayer(player);
         FrozenNametagHandler.reloadOthersFor(player);
@@ -319,8 +303,31 @@ public final class Match {
         spectateCache.remove(player.getUniqueId());
         spectators.remove(player.getUniqueId());
 
+        sendSpectatorMessage(player, ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " is no longer spectating.");
+
         PotPvPSI.getInstance().getLobbyHandler().returnToLobby(player);
         Bukkit.getPluginManager().callEvent(new MatchSpectatorLeaveEvent(player, this));
+    }
+
+    private void sendSpectatorMessage(Player spectator, String message) {
+        if (spectator.hasMetadata("ModMode")) {
+            return;
+        }
+
+        SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
+
+        for (Player online : Bukkit.getOnlinePlayers()) {
+            if (online == spectator) {
+                continue;
+            }
+
+            boolean sameMatch = isSpectator(online.getUniqueId()) || getTeam(online.getUniqueId()) != null;
+            boolean spectatorMessagesEnabled = settingHandler.getSetting(online.getUniqueId(), Setting.SHOW_SPECTATOR_JOIN_MESSAGES);
+
+            if (sameMatch && spectatorMessagesEnabled) {
+                online.sendMessage(message);
+            }
+        }
     }
 
     public void markDead(Player player) {
