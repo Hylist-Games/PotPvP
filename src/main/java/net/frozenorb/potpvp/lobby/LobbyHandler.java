@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.lobby;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.lobby.listener.LobbyGeneralListener;
 import net.frozenorb.potpvp.lobby.listener.LobbyItemListener;
+import net.frozenorb.potpvp.lobby.listener.LobbySpecModeListener;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.potpvp.util.VisibilityUtils;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
@@ -30,6 +31,7 @@ public final class LobbyHandler {
     public LobbyHandler() {
         Bukkit.getPluginManager().registerEvents(new LobbyGeneralListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new LobbyItemListener(this), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new LobbySpecModeListener(), PotPvPSI.getInstance());
     }
 
     /**
@@ -59,14 +61,18 @@ public final class LobbyHandler {
     }
 
     public void setSpectatorMode(Player player, boolean mode) {
+        boolean changed;
+
         if (mode) {
-            spectatorMode.add(player.getUniqueId());
+            changed = spectatorMode.add(player.getUniqueId());
         } else {
-            spectatorMode.remove(player.getUniqueId());
+            changed = spectatorMode.remove(player.getUniqueId());
         }
 
-        // fly mode is toggled in the inventory reset method
-        InventoryUtils.resetInventoryNow(player);
+        if (changed) {
+            // fly mode is toggled in the inventory reset method
+            InventoryUtils.resetInventoryNow(player);
+        }
     }
 
     public Location getLobbyLocation() {
