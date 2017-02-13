@@ -9,9 +9,11 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import lombok.experimental.UtilityClass;
 
@@ -22,6 +24,7 @@ public final class PostMatchInvLang {
     private static final TextComponent TEAM_2_HEADER_COMPONENT = new TextComponent("Team 2: ");
     private static final TextComponent YOUR_TEAM_COMPONENT = new TextComponent("Your team: ");
     private static final TextComponent ENEMY_TEAM_COMPONENT = new TextComponent("Enemy team: ");
+    private static final TextComponent PARTICIPANTS_COMPONENT = new TextComponent("Participants: ");
     private static final TextComponent LINE_COMPONENT = new TextComponent("-----------------------------------------------------");
     private static final TextComponent INVENTORY_HEADER_COMPONENT = new TextComponent("Post-Match Inventories ");
     private static final TextComponent COMMA_COMPONENT = new TextComponent(", ");
@@ -31,6 +34,7 @@ public final class PostMatchInvLang {
         TEAM_2_HEADER_COMPONENT.setColor(ChatColor.AQUA);
         YOUR_TEAM_COMPONENT.setColor(ChatColor.GREEN);
         ENEMY_TEAM_COMPONENT.setColor(ChatColor.RED);
+        PARTICIPANTS_COMPONENT.setColor(ChatColor.YELLOW);
         LINE_COMPONENT.setColor(ChatColor.GRAY);
         LINE_COMPONENT.setStrikethrough(true);
         INVENTORY_HEADER_COMPONENT.setColor(ChatColor.GOLD);
@@ -41,6 +45,7 @@ public final class PostMatchInvLang {
         INVENTORY_HEADER_COMPONENT.addExtra(clickToView);
     }
 
+    // when viewing a 2 team match as a spectator
     public static TextComponent[][] spectatorMessages(MatchTeam team1, MatchTeam team2) {
         return new TextComponent[][] {
             { LINE_COMPONENT },
@@ -53,6 +58,7 @@ public final class PostMatchInvLang {
         };
     }
 
+    // when viewing a 2 team match as a participant
     public static TextComponent[][] teamMessages(MatchTeam yourTeam, MatchTeam enemyTeam) {
         return new TextComponent[][] {
             { LINE_COMPONENT },
@@ -61,6 +67,21 @@ public final class PostMatchInvLang {
             clickToViewLine(yourTeam.getAllMembers()),
             { ENEMY_TEAM_COMPONENT },
             clickToViewLine(enemyTeam.getAllMembers()),
+            { LINE_COMPONENT }
+        };
+    }
+
+    // when viewing a non-2 team match from any perspective
+    public static TextComponent[][] genericMessages(Collection<MatchTeam> teams) {
+        Set<UUID> members = teams.stream()
+            .flatMap(t -> t.getAllMembers().stream())
+            .collect(Collectors.toSet());
+
+        return new TextComponent[][] {
+            { LINE_COMPONENT },
+            { INVENTORY_HEADER_COMPONENT },
+            { PARTICIPANTS_COMPONENT },
+            clickToViewLine(members),
             { LINE_COMPONENT }
         };
     }

@@ -47,47 +47,59 @@ public final class PostMatchInvHandler {
     }
 
     private void messagePlayers(Match match) {
+        Map<UUID, TextComponent[][]> messages = new HashMap<>();
         List<MatchTeam> teams = match.getTeams();
 
-        if (teams.size() != 2) {
-            return;
+        // matches with 2 teams get relational sections,
+        // any other match just gets a big 'participants' section
+        if (teams.size() == 2) {
+            MatchTeam team1 = teams.get(0);
+            MatchTeam team2 = teams.get(1);
+
+            TextComponent[][] team1Messages = PostMatchInvLang.teamMessages(team1, team2);
+            TextComponent[][] team2Messages = PostMatchInvLang.teamMessages(team2, team1);
+            TextComponent[][] spectatorMessages = PostMatchInvLang.spectatorMessages(team1, team2);
+
+            // we specifically call spectators first so anyone who was in a team
+            // gets their messages overriden by their relational messages.
+            // we have to have the if + use getAllMembers() to ensure all members get
+            // their messagtes overriden, not just those alive at the end of the match
+            for (UUID spectator : match.getSpectators()) {
+                messages.put(spectator, spectatorMessages);
+            }
+
+            for (UUID member : team1.getAllMembers()) {
+                if (messages.containsKey(member) || team1.isAlive(member)) {
+                    messages.put(member, team1Messages);
+                }
+            }
+
+            for (UUID member : team2.getAllMembers()) {
+                if (messages.containsKey(member) || team2.isAlive(member)) {
+                    messages.put(member, team2Messages);
+                }
+            }
+        } else {
+            TextComponent[][] generic = PostMatchInvLang.genericMessages(teams);
+
+            for (UUID spectator : match.getSpectators()) {
+                messages.put(spectator, generic);
+            }
+
+            for (MatchTeam team : teams) {
+                for (UUID member : team.getAllMembers()) {
+                    messages.put(member, generic);
+                }
+            }
         }
 
-        MatchTeam team1 = teams.get(0);
-        MatchTeam team2 = teams.get(1);
-
-        TextComponent[][] team1Messages = PostMatchInvLang.teamMessages(team1, team2);
-        TextComponent[][] team2Messages = PostMatchInvLang.teamMessages(team2, team1);
-        TextComponent[][] spectatorMessages = PostMatchInvLang.spectatorMessages(team1, team2);
-
-        Map<UUID, TextComponent[][]> messages = new HashMap<>();
-
-        // we specifically call spectators first so anyone who was in a team
-        // gets their messages overriden by their relational messages.
-        // we have to have the if + use getAllMembers() to ensure all members get
-        // their messagtes overriden, not just those alive at the end of the match
-        match.getSpectators().forEach(p -> messages.put(p, spectatorMessages));
-        team1.getAllMembers().forEach(p -> {
-            if (messages.containsKey(p) || team1.isAlive(p)) {
-                messages.put(p, team1Messages);
-            }
-        });
-        team2.getAllMembers().forEach(p -> {
-            if (messages.containsKey(p) || team2.isAlive(p)) {
-                messages.put(p, team2Messages);
-            }
-        });
-
-        // used to avoid repeating these couple lines 3 times
         messages.forEach((uuid, lines) -> {
             Player player = Bukkit.getPlayer(uuid);
 
-            if (player == null) {
-                return;
-            }
-
-            for (TextComponent[] line : lines) {
-                player.spigot().sendMessage(line);
+            if (player != null) {
+                for (TextComponent[] line : lines) {
+                    player.spigot().sendMessage(line);
+                }
             }
         });
     }
