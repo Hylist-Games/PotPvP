@@ -269,7 +269,14 @@ public final class Match {
         spectators.add(player.getUniqueId());
 
         if (teleportPlayer) {
-            player.teleport(target != null ? target.getLocation() : arena.getSpectatorSpawn());
+            Location tpTo = arena.getSpectatorSpawn();
+
+            if (target != null) {
+                // we tp them a bit up so they're not inside of their target
+                tpTo = target.getLocation().clone().add(0, 1.5, 0);
+            }
+
+            player.teleport(tpTo);
         }
 
         player.getInventory().setHeldItemSlot(0);
@@ -301,6 +308,7 @@ public final class Match {
         VisibilityUtils.updateVisibility(player);
         PlayerUtils.resetInventory(player, GameMode.CREATIVE);
         InventoryUtils.resetInventoryDelayed(player);
+        player.setFlying(true); // called after PlayerUtils reset, make sure they don't fall out of the sky
 
         Bukkit.getPluginManager().callEvent(new MatchSpectatorJoinEvent(player, this));
     }
