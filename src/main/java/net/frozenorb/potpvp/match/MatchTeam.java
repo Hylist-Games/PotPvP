@@ -22,13 +22,6 @@ import lombok.Getter;
 public final class MatchTeam {
 
     /**
-     * Unique identifier for this MatchTeam. An id field is necessary
-     * because {@link Match}s can have any number of teams
-     * @see Match#winner
-     */
-    @Getter private final String id;
-
-    /**
      * All players who were ever part of this team, including those who logged off / died
      */
     @Getter private final Set<UUID> allMembers;
@@ -43,12 +36,8 @@ public final class MatchTeam {
         this(ImmutableSet.of(initialMember));
     }
 
-    public MatchTeam(Collection<UUID> initialMembers) {
-        this(UUID.randomUUID().toString(), initialMembers);
-    }
 
-    public MatchTeam(String id, Collection<UUID> initialMembers) {
-        this.id = Preconditions.checkNotNull(id, "id");
+    public MatchTeam(Collection<UUID> initialMembers) {
         this.allMembers = ImmutableSet.copyOf(initialMembers);
         this.aliveMembers.addAll(initialMembers);
     }

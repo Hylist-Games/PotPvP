@@ -60,7 +60,7 @@ public final class Match {
 
     @Getter private MatchTeam winner;
     @Getter private MatchEndReason endReason;
-    @Getter private MatchState state;
+    @Getter private transient MatchState state; // transient: no need to store
     @Getter private Instant startedAt;
     @Getter private Instant endedAt;
 
@@ -69,7 +69,8 @@ public final class Match {
     // always accurate. Scenarios like a team split of a 3 man team (with one
     // sitting out) would get treated as a 1v1 when calculating rematches.
     // https://github.com/FrozenOrb/PotPvP-SI/issues/19
-    @Getter private boolean allowRematches;
+    // transient: no need to store
+    @Getter private transient boolean allowRematches;
 
     public Match(KitType kitType, Arena arena, List<MatchTeam> teams, boolean allowRematches) {
         this.id = UUID.randomUUID().toString();
@@ -193,7 +194,7 @@ public final class Match {
             document.put("_id", document.remove("id"));
 
             // overwrite fields which would normally serialize too much or improperly
-            document.put("winner", winner != null ? winner.getId() : null);
+            document.put("winner", teams.indexOf(winner)); // replace the full team with their index in the full list
             document.put("arena", arena.getSchematic());
             document.put("startedAt", Date.from(startedAt));
             document.put("endedAt", Date.from(endedAt));
