@@ -11,9 +11,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -203,23 +203,23 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
     }
 
     private void renderMetaLines(List<String> scores, Match match, boolean participant) {
-        Instant startedAt = match.getStartedAt();
-        Instant endedAt = match.getEndedAt();
+        Date startedAt = match.getStartedAt();
+        Date endedAt = match.getEndedAt();
 
         // if the match hasn't yet started we pretend it started now
         // we do this so the duration is frozen at 0 until the countdown is done
         if (startedAt == null) {
-            startedAt = Instant.now();
+            startedAt = new Date();
         }
 
         // if the match is in progress we pretend it ended at our current time.
         // otherwise we use its actual end time to avoid incrementing duration
         // for players while a match is ending
         if (endedAt == null) {
-            endedAt = Instant.now();
+            endedAt = new Date();
         }
 
-        int duration = (int) ChronoUnit.SECONDS.between(startedAt, endedAt);
+        int duration = (int) ChronoUnit.SECONDS.between(startedAt.toInstant(), endedAt.toInstant());
         String formattedDuration = TimeUtils.formatIntoMMSS(duration);
 
         // spectators don't have any bold entries on their scoreboard

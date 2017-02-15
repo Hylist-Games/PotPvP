@@ -50,7 +50,7 @@ public final class VisibilityUtils {
         } else {
             // we're in a match so we only hide other spectators (if our settings say so)
             boolean targetIsSpectator = targetMatch.isSpectator(target.getUniqueId());
-            boolean viewerSpecSetting = settingHandler.getSetting(viewer.getUniqueId(), Setting.VIEW_OTHER_SPECTATORS);
+            boolean viewerSpecSetting = settingHandler.getSetting(viewer, Setting.VIEW_OTHER_SPECTATORS);
             boolean viewerIsSpectator = matchHandler.isSpectatingMatch(viewer.getUniqueId());
 
             return !targetIsSpectator || (viewerSpecSetting && viewerIsSpectator);

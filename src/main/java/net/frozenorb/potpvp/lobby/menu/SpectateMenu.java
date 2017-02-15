@@ -8,6 +8,7 @@ import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.pagination.PaginatedMenu;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -41,8 +42,8 @@ public final class SpectateMenu extends PaginatedMenu {
             }
 
             long numSpecDisabled = match.getTeams().stream()
-                .flatMap(t -> t.getAllMembers().stream())
-                .filter(p -> !settingHandler.getSetting(p, Setting.ALLOW_SPECTATORS))
+                .flatMap(t -> t.getAliveMembers().stream()) // has to be getAlive because of Bukkit#getPlayer call
+                .filter(p -> !settingHandler.getSetting(Bukkit.getPlayer(p), Setting.ALLOW_SPECTATORS))
                 .count();
 
             // currently we require no one has spectators disabled,

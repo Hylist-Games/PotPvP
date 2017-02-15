@@ -41,6 +41,11 @@ public final class MatchHandler {
     @Getter @Setter private boolean rankedMatchesDisabled;
     @Getter @Setter private boolean unrankedMatchesDisabled;
 
+    // these two maps are one of my least favorite bits of code in the match module, but
+    // they let us run O(1) lookups of player matches, so we absolutely should keep them.
+    // we do, however, have to be very careful to keep them updated with the "actuaL" data.
+    // if we ever have issues with these, we have /pstatus to compare the "actual" data (O(n) scan)
+    // with the O(1) data here
     @Getter(AccessLevel.PACKAGE) private final Map<UUID, Match> playingMatchCache = new ConcurrentHashMap<>();
     @Getter(AccessLevel.PACKAGE) private final Map<UUID, Match> spectatingMatchCache = new ConcurrentHashMap<>();
 

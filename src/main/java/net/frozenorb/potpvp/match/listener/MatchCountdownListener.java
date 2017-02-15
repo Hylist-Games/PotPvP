@@ -16,6 +16,8 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 
+// the name of this listener is definitely kind of iffy (as it's really any non-IN_PROGRESS match),
+// but any other ideas I had were even less descriptive
 public final class MatchCountdownListener implements Listener {
 
     /**

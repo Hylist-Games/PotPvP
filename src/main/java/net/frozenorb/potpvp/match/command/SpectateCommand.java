@@ -31,7 +31,7 @@ public final class SpectateCommand {
             return;
         }
 
-        if (!settingHandler.getSetting(target.getUniqueId(), Setting.ALLOW_SPECTATORS)) {
+        if (!settingHandler.getSetting(target, Setting.ALLOW_SPECTATORS)) {
             sender.sendMessage(ChatColor.RED + target.getName() + " doesn't allow spectators at the moment.");
             return;
         }

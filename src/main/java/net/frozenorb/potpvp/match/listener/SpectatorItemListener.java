@@ -41,8 +41,8 @@ public final class SpectatorItemListener extends ItemListener {
                 return;
             }
 
-            boolean enabled = !settingHandler.getSetting(playerUuid, Setting.VIEW_OTHER_SPECTATORS);
-            settingHandler.updateSetting(playerUuid, Setting.VIEW_OTHER_SPECTATORS, enabled);
+            boolean enabled = !settingHandler.getSetting(player, Setting.VIEW_OTHER_SPECTATORS);
+            settingHandler.updateSetting(player, Setting.VIEW_OTHER_SPECTATORS, enabled);
 
             if (enabled) {
                 player.sendMessage(ChatColor.GREEN + "Now showing other spectators.");

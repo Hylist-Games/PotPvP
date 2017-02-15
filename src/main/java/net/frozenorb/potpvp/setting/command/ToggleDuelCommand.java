@@ -21,9 +21,9 @@ public final class ToggleDuelCommand {
         }
 
         SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
-        boolean enabled = !settingHandler.getSetting(sender.getUniqueId(), Setting.RECEIVE_DUELS);
+        boolean enabled = !settingHandler.getSetting(sender, Setting.RECEIVE_DUELS);
 
-        settingHandler.updateSetting(sender.getUniqueId(), Setting.RECEIVE_DUELS, enabled);
+        settingHandler.updateSetting(sender, Setting.RECEIVE_DUELS, enabled);
 
         if (enabled) {
             sender.sendMessage(ChatColor.GREEN + "Toggled duel requests on.");

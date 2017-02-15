@@ -9,6 +9,7 @@ import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public final class OtherPartiesMenu extends Menu {
                 continue;
             }
 
-            if (!settingHandler.getSetting(party.getLeader(), Setting.RECEIVE_DUELS)) {
+            if (!settingHandler.getSetting(Bukkit.getPlayer(party.getLeader()), Setting.RECEIVE_DUELS)) {
                 continue;
             }
 

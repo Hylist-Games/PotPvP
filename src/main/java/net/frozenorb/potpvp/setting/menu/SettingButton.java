@@ -42,7 +42,7 @@ final class SettingButton extends Button {
         description.addAll(setting.getDescription());
         description.add("");
 
-        if (PotPvPSI.getInstance().getSettingHandler().getSetting(player.getUniqueId(), setting)) {
+        if (PotPvPSI.getInstance().getSettingHandler().getSetting(player, setting)) {
             description.add(ENABLED_ARROW + setting.getEnabledText());
             description.add(DISABLED_SPACER + setting.getDisabledText());
         } else {
@@ -66,8 +66,8 @@ final class SettingButton extends Button {
 
         SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
 
-        boolean enabled = !settingHandler.getSetting(player.getUniqueId(), setting);
-        settingHandler.updateSetting(player.getUniqueId(), setting, enabled);
+        boolean enabled = !settingHandler.getSetting(player, setting);
+        settingHandler.updateSetting(player, setting, enabled);
     }
 
 }

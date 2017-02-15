@@ -13,8 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
-
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -102,7 +100,7 @@ public final class PotPvPValidation {
             return false;
         }
 
-        if (!getSetting(target.getLeader(), Setting.RECEIVE_DUELS)) {
+        if (!getSetting(Bukkit.getPlayer(target.getLeader()), Setting.RECEIVE_DUELS)) {
             initiator.sendMessage(TARGET_PARTY_HAS_DUELS_DISABLED);
             return false;
         }
@@ -258,12 +256,8 @@ public final class PotPvPValidation {
     }
 
     private static boolean getSetting(Player player, Setting setting) {
-        return getSetting(player.getUniqueId(), setting);
-    }
-
-    private static boolean getSetting(UUID playerUuid, Setting setting) {
         SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
-        return settingHandler.getSetting(playerUuid, setting);
+        return settingHandler.getSetting(player, setting);
     }
 
     private static boolean isInParty(Player player) {

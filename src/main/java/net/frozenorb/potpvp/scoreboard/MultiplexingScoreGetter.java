@@ -33,7 +33,7 @@ final class MultiplexingScoreGetter implements ScoreGetter {
 
         scores.add("&a&7&m--------------------");
 
-        if (settingHandler.getSetting(player.getUniqueId(), Setting.SHOW_SCOREBOARD)) {
+        if (settingHandler.getSetting(player, Setting.SHOW_SCOREBOARD)) {
             if (matchHandler.isPlayingOrSpectatingMatch(player)) {
                 matchScoreGetter.accept(player, scores);
             } else {

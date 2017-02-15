@@ -7,7 +7,6 @@ import com.google.common.collect.ImmutableSet;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.Arena;
-import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.match.event.MatchCountdownStartEvent;
@@ -32,10 +31,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.libs.com.google.gson.annotations.SerializedName;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,7 +50,7 @@ public final class Match {
 
     private static final int MATCH_END_DELAY_SECONDS = 2;
 
-    @Getter private final String id;
+    @Getter @SerializedName("_id") private final String id; // @SerializedName for mongo
     @Getter private final KitType kitType;
     @Getter private final Arena arena;
     @Getter private final List<MatchTeam> teams; // immutable so @Getter is ok
@@ -61,8 +60,8 @@ public final class Match {
     @Getter private MatchTeam winner;
     @Getter private MatchEndReason endReason;
     @Getter private transient MatchState state; // transient: no need to store
-    @Getter private Instant startedAt;
-    @Getter private Instant endedAt;
+    @Getter private Date startedAt;
+    @Getter private Date endedAt;
 
     // we track if matches should give a rematch diamond manually. previouly
     // we just checked if both teams had 1 player on them, but this wasn't
@@ -108,7 +107,7 @@ public final class Match {
         }
 
         // we wait to update visibility until everyone's been put in the player cache
-        // then we update vis, otherwise we'll see 'partial' views of the match
+        // then we update vis, otherwise the update code will see 'partial' views of the match
         updateVisiblity.forEach(VisibilityUtils::updateVisibility);
 
         Bukkit.getPluginManager().callEvent(new MatchCountdownStartEvent(this));
@@ -140,7 +139,7 @@ public final class Match {
 
     private void startMatch() {
         state = MatchState.IN_PROGRESS;
-        startedAt = Instant.now();
+        startedAt = new Date();
 
         messageAll(ChatColor.GREEN + "Match started.");
         Bukkit.getPluginManager().callEvent(new MatchStartEvent(this));
@@ -148,7 +147,7 @@ public final class Match {
 
     public void endMatch(MatchEndReason reason) {
         state = MatchState.ENDING;
-        endedAt = Instant.now();
+        endedAt = new Date();
         endReason = reason;
 
         try {
@@ -171,50 +170,47 @@ public final class Match {
         Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), this::terminateMatch, delayTicks);
     }
 
-    // we try-catch a lot of code here to ensure a match never fails to end
     private void terminateMatch() {
+        // prevent double terminations
+        if (state == MatchState.TERMINATED) {
+            return;
+        }
+
         state = MatchState.TERMINATED;
 
         // if the match ends before the countdown ends
         // we have to set this to avoid a NPE in Date#from
         if (startedAt == null) {
-            startedAt = Instant.now();
+            startedAt = new Date();
         }
 
         // if endedAt wasn't set before (if terminateMatch was called directly)
-        // we want to make sure we set an ending time.
+        // we want to make sure we set an ending time. Otherwise we keep the
+        // technically more accurate time set in endMatch
         if (endedAt == null) {
-            endedAt = Instant.now();
+            endedAt = new Date();
         }
 
-        try {
-            Document document = Document.parse(qLib.PLAIN_GSON.toJson(this));
+        Bukkit.getPluginManager().callEvent(new MatchTerminateEvent(this));
 
-            // rename 'id' to '_id' (for mongo)
-            document.put("_id", document.remove("id"));
+        // we have to make a few edits to the document so we use Gson (which has adapters
+        // for things like Locations) and then parse it
+        Document document = Document.parse(qLib.PLAIN_GSON.toJson(this));
 
-            // overwrite fields which would normally serialize too much or improperly
-            document.put("winner", teams.indexOf(winner)); // replace the full team with their index in the full list
-            document.put("arena", arena.getSchematic());
-            document.put("startedAt", Date.from(startedAt));
-            document.put("endedAt", Date.from(endedAt));
+        document.put("winner", teams.indexOf(winner)); // replace the full team with their index in the full list
+        document.put("arena", arena.getSchematic()); // replace the full arena with its schematic (website doesn't care which copy we used)
 
-            Bukkit.getPluginManager().callEvent(new MatchTerminateEvent(this, document));
-            Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
-                MongoUtils.getCollection(MatchHandler.MONGO_COLLECTION_NAME).insertOne(document);
-            });
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
+            MongoUtils.getCollection(MatchHandler.MONGO_COLLECTION_NAME).insertOne(document);
+        });
 
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
         LobbyHandler lobbyHandler = PotPvPSI.getInstance().getLobbyHandler();
 
         Map<UUID, Match> playingCache = matchHandler.getPlayingMatchCache();
         Map<UUID, Match> spectateCache = matchHandler.getSpectatingMatchCache();
 
-        arenaHandler.releaseArena(arena);
+        PotPvPSI.getInstance().getArenaHandler().releaseArena(arena);
         matchHandler.removeMatch(this);
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -224,12 +220,7 @@ public final class Match {
             if (team != null || spectators.contains(playerUuid)) {
                 playingCache.remove(playerUuid);
                 spectateCache.remove(playerUuid);
-
-                try {
-                    lobbyHandler.returnToLobby(player);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+                lobbyHandler.returnToLobby(player);
             }
         }
     }
@@ -323,7 +314,7 @@ public final class Match {
             }
 
             boolean sameMatch = isSpectator(online.getUniqueId()) || getTeam(online.getUniqueId()) != null;
-            boolean spectatorMessagesEnabled = settingHandler.getSetting(online.getUniqueId(), Setting.SHOW_SPECTATOR_JOIN_MESSAGES);
+            boolean spectatorMessagesEnabled = settingHandler.getSetting(online, Setting.SHOW_SPECTATOR_JOIN_MESSAGES);
 
             if (sameMatch && spectatorMessagesEnabled) {
                 online.sendMessage(message);

@@ -33,12 +33,12 @@ public final class SettingHandler {
      * setting's default value if the player hasn't updated the setting or the player's
      * settings failed to load.
      *
-     * @param playerUuid The player to look up settings for
+     * @param player The player to look up settings for
      * @param setting The Setting to look up the value of
      * @return If the setting is, after considered defaults and player customizations, enabled.
      */
-    public boolean getSetting(UUID playerUuid, Setting setting) {
-        Map<Setting, Boolean> playerSettings = settingsData.get(playerUuid);
+    public boolean getSetting(Player player, Setting setting) {
+        Map<Setting, Boolean> playerSettings = settingsData.get(player.getUniqueId());
         return playerSettings.getOrDefault(setting, setting.getDefaultValue());
     }
 
@@ -46,32 +46,24 @@ public final class SettingHandler {
      * Updates the value of a setting for the player provided. Automatically handles
      * calling {@link SettingUpdateEvent}s and saving the changes in a database.
      *
-     * @param playerUuid The player to update settings for
+     * @param player The player to update settings for
      * @param setting The Setting to update the value of
      * @param enabled If the setting should be enabled
      */
-    public void updateSetting(UUID playerUuid, Setting setting, boolean enabled) {
-        Map<Setting, Boolean> playerSettings = settingsData.get(playerUuid);
+    public void updateSetting(Player player, Setting setting, boolean enabled) {
+        Map<Setting, Boolean> playerSettings = settingsData.get(player.getUniqueId());
         playerSettings.put(setting, enabled);
 
         Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
             try {
-                // we call .get() again instead of referencing playerSettings to avoid a
-                // problem w/ out of order execution if players change settings rapidly
-                settingRepository.saveSettings(playerUuid, settingsData.get(playerUuid));
+                settingRepository.saveSettings(player.getUniqueId(), playerSettings);
             } catch (IOException ex) {
                 // just log, nothing else to do.
                 ex.printStackTrace();
             }
         });
 
-        // call SettingUpdateEvent if possible
-        Player bukkitPlayer = Bukkit.getPlayer(playerUuid);
-
-        if (bukkitPlayer != null) {
-            SettingUpdateEvent settingUpdateEvent = new SettingUpdateEvent(bukkitPlayer, setting, enabled);
-            Bukkit.getPluginManager().callEvent(settingUpdateEvent);
-        }
+        Bukkit.getPluginManager().callEvent(new SettingUpdateEvent(player, setting, enabled));
     }
 
     public void loadSettings(UUID playerUuid) {

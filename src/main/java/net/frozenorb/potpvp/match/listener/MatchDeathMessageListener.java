@@ -66,7 +66,7 @@ public final class MatchDeathMessageListener implements Listener {
                 onlinePlayer.sendMessage(String.format(KILLED_BY_OTHER_MESSAGE, killerFormattedName, killedFormattedName));
             }
 
-            if (settingHandler.getSetting(onlinePlayerUuid, Setting.VIEW_OTHERS_LIGHTNING)) {
+            if (settingHandler.getSetting(onlinePlayer, Setting.VIEW_OTHERS_LIGHTNING)) {
                 onlinePlayer.playSound(killed.getLocation(), Sound.AMBIENCE_THUNDER, 10000F, 0.8F);
                 sendLightningPacket(onlinePlayer, lightningPacket);
             }
