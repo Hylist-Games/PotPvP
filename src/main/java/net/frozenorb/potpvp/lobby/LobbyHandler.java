@@ -71,10 +71,7 @@ public final class LobbyHandler {
         if (changed) {
             InventoryUtils.resetInventoryNow(player);
 
-            if (mode) {
-                player.setAllowFlight(true);
-                player.setFlying(true);
-            } else {
+            if (!mode) {
                 returnToLobby(player);
             }
         }
