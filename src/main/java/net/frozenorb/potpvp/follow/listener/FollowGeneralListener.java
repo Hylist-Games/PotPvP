@@ -5,7 +5,6 @@ import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.match.event.MatchCountdownStartEvent;
 import net.frozenorb.potpvp.match.event.MatchSpectatorLeaveEvent;
-import net.frozenorb.potpvp.match.event.MatchStartEvent;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.event.SettingUpdateEvent;
 
