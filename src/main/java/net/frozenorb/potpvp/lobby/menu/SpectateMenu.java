@@ -44,21 +44,21 @@ public final class SpectateMenu extends PaginatedMenu {
             }
 
             int numTotalPlayers = 0;
-            int numSpecEnabled = 0;
+            int numSpecDisabled = 0;
 
             for (MatchTeam team : match.getTeams()) {
                 for (UUID member : team.getAliveMembers()) {
                     numTotalPlayers++;
 
-                    if (settingHandler.getSetting(Bukkit.getPlayer(member), Setting.ALLOW_SPECTATORS)) {
-                        numSpecEnabled++;
+                    if (!settingHandler.getSetting(Bukkit.getPlayer(member), Setting.ALLOW_SPECTATORS)) {
+                        numSpecDisabled++;
                     }
                 }
             }
 
-            // if less than 50% of participants have spectators enabled
+            // if >= 50% of participants have spectators disabled
             // we won't render this match in the menu
-            if ((float) numSpecEnabled / (float) numTotalPlayers < 0.5) {
+            if ((float) numSpecDisabled / (float) numTotalPlayers >= 0.5) {
                 continue;
             }
 
