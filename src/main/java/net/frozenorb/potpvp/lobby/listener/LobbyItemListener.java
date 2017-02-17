@@ -20,12 +20,17 @@ public final class LobbyItemListener extends ItemListener {
 
     public LobbyItemListener(LobbyHandler lobbyHandler) {
         addHandler(LobbyItems.EVENTS_ITEM, p -> p.sendMessage(ChatColor.RED + "Events are not yet completed! They will be done soon!"));
-        addHandler(LobbyItems.ENABLE_SPEC_MODE_ITEM, p -> lobbyHandler.setSpectatorMode(p, true));
         addHandler(LobbyItems.DISABLE_SPEC_MODE_ITEM, p -> lobbyHandler.setSpectatorMode(p, false));
 
         addHandler(LobbyItems.SPECTATE_MENU_ITEM, player -> {
             if (PotPvPValidation.canUseSpectateItemIgnoreMatchSpectating(player)) {
                 new SpectateMenu().openMenu(player);
+            }
+        });
+
+        addHandler(LobbyItems.ENABLE_SPEC_MODE_ITEM, player -> {
+            if (PotPvPValidation.canUseSpectateItem(player)) {
+                lobbyHandler.setSpectatorMode(player, true);
             }
         });
 
