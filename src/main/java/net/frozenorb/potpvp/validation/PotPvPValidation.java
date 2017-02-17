@@ -60,24 +60,25 @@ public final class PotPvPValidation {
         return true;
     }
 
-    public static boolean canAcceptDuel(Player target, Player sender) {
+    // sender = the one who typed /accept
+    public static boolean canAcceptDuel(Player sender, Player duelSentBy) {
         if (isInOrSpectatingMatch(sender)) {
             sender.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
             return false;
         }
 
-        if (isInOrSpectatingMatch(target)) {
+        if (isInOrSpectatingMatch(sender)) {
             sender.sendMessage(TARGET_PLAYER_IN_MATCH);
-            return false;
-        }
-
-        if (isFollowingSomeone(target)) {
-            sender.sendMessage(CANNOT_DO_THIS_WHILE_FOLLOWING);
             return false;
         }
 
         if (isFollowingSomeone(sender)) {
             sender.sendMessage(CANNOT_DO_THIS_WHILE_FOLLOWING);
+            return false;
+        }
+
+        if (isFollowingSomeone(duelSentBy)) {
+            sender.sendMessage(ChatColor.RED + "That player is following someone!");
             return false;
         }
 
