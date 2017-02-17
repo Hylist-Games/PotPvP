@@ -66,12 +66,22 @@ public final class MatchHandler {
     }
 
     public Match startMatch(List<MatchTeam> teams, KitType kitType, boolean allowRematches) {
+        boolean anyOps = false;
+
         for (MatchTeam team : teams) {
             for (UUID member : team.getAllMembers()) {
+                if (!anyOps && Bukkit.getPlayer(member).isOp()) {
+                    anyOps = true;
+                }
+
                 if (isPlayingOrSpectatingMatch(member)) {
                     throw new IllegalArgumentException(UUIDUtils.name(member) + " is already in a match!");
                 }
             }
+        }
+
+        if (!anyOps && (rankedMatchesDisabled || unrankedMatchesDisabled)) {
+            throw new IllegalArgumentException("Match creation is disabled!");
         }
         
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
