@@ -287,6 +287,7 @@ public final class Match {
         VisibilityUtils.updateVisibility(player);
         PatchedPlayerUtils.resetInventory(player, GameMode.CREATIVE);
         InventoryUtils.resetInventoryDelayed(player);
+        player.setAllowFlight(true);
         player.setFlying(true); // called after PlayerUtils reset, make sure they don't fall out of the sky
 
         Bukkit.getPluginManager().callEvent(new MatchSpectatorJoinEvent(player, this));
