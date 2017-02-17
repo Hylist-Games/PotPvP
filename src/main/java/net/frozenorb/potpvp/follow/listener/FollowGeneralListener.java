@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.follow.listener;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
+import net.frozenorb.potpvp.match.event.MatchCountdownStartEvent;
 import net.frozenorb.potpvp.match.event.MatchSpectatorLeaveEvent;
 import net.frozenorb.potpvp.match.event.MatchStartEvent;
 import net.frozenorb.potpvp.setting.Setting;
@@ -25,7 +26,7 @@ public final class FollowGeneralListener implements Listener {
     }
 
     @EventHandler
-    public void onMatchStart(MatchStartEvent event) {
+    public void onMatchStart(MatchCountdownStartEvent event) {
         Match match = event.getMatch();
 
         for (MatchTeam team : match.getTeams()) {
