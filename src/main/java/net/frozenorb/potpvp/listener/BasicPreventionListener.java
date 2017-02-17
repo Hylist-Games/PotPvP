@@ -6,6 +6,7 @@ import net.frozenorb.hydrogen.profile.ProfileHandler;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.MatchHandler;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -38,6 +39,12 @@ public final class BasicPreventionListener implements Listener {
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
+        // if we have a whitelist we probably are manually
+        // controlling who can log in and don't need this
+        if (Bukkit.hasWhitelist()) {
+            return;
+        }
+
         ProfileHandler profileHandler = Hydrogen.getInstance().getProfileHandler();
         Optional<Profile> profileOpt = profileHandler.getProfile(event.getPlayer().getUniqueId());
 
