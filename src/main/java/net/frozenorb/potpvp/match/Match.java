@@ -20,6 +20,7 @@ import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.potpvp.util.MongoUtils;
+import net.frozenorb.potpvp.util.PatchedPlayerUtils;
 import net.frozenorb.potpvp.util.VisibilityUtils;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
 import net.frozenorb.qlib.qLib;
@@ -104,7 +105,7 @@ public final class Match {
             FrozenNametagHandler.reloadOthersFor(player);
 
             updateVisiblity.add(player);
-            PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
+            PatchedPlayerUtils.resetInventory(player, GameMode.SURVIVAL);
         }
 
         // we wait to update visibility until everyone's been put in the player cache
@@ -285,7 +286,7 @@ public final class Match {
         FrozenNametagHandler.reloadOthersFor(player);
 
         VisibilityUtils.updateVisibility(player);
-        PlayerUtils.resetInventory(player, GameMode.CREATIVE);
+        PatchedPlayerUtils.resetInventory(player, GameMode.CREATIVE);
         InventoryUtils.resetInventoryDelayed(player);
         player.setFlying(true); // called after PlayerUtils reset, make sure they don't fall out of the sky
 

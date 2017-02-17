@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.kit;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.util.ItemUtils;
+import net.frozenorb.potpvp.util.PatchedPlayerUtils;
 import net.frozenorb.qlib.util.PlayerUtils;
 
 import org.bukkit.Bukkit;
@@ -36,7 +37,7 @@ public final class Kit {
     }
 
     public void apply(Player player) {
-        PlayerUtils.resetInventory(player);
+        PatchedPlayerUtils.resetInventory(player);
 
         // we don't let players actually customize their armor, we just apply default
         player.getInventory().setArmorContents(type.getMeta().getDefaultArmor());

@@ -5,6 +5,7 @@ import net.frozenorb.potpvp.lobby.listener.LobbyGeneralListener;
 import net.frozenorb.potpvp.lobby.listener.LobbyItemListener;
 import net.frozenorb.potpvp.lobby.listener.LobbySpecModeListener;
 import net.frozenorb.potpvp.util.InventoryUtils;
+import net.frozenorb.potpvp.util.PatchedPlayerUtils;
 import net.frozenorb.potpvp.util.VisibilityUtils;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
 import net.frozenorb.qlib.util.PlayerUtils;
@@ -49,7 +50,7 @@ public final class LobbyHandler {
         FrozenNametagHandler.reloadOthersFor(player);
 
         VisibilityUtils.updateVisibility(player);
-        PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
+        PatchedPlayerUtils.resetInventory(player, GameMode.SURVIVAL);
         InventoryUtils.resetInventoryDelayed(player);
 
         PotPvPSI.getInstance().getLogger().info("Teleported " + player.getName() + " to spawn");
@@ -72,9 +73,9 @@ public final class LobbyHandler {
             InventoryUtils.resetInventoryNow(player);
 
             if (mode) {
+                player.teleport(player.getLocation().clone().add(0, 2, 0));
                 player.setAllowFlight(true);
                 player.setFlying(true);
-                player.teleport(player.getLocation().clone().add(0, 2, 0));
             } else {
                 returnToLobby(player);
             }
