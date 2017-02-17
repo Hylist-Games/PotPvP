@@ -48,7 +48,6 @@ public final class LobbyHandler {
         FrozenNametagHandler.reloadPlayer(player);
         FrozenNametagHandler.reloadOthersFor(player);
 
-        spectatorMode.remove(player.getUniqueId()); // before the inv reset
         VisibilityUtils.updateVisibility(player);
         PlayerUtils.resetInventory(player, GameMode.SURVIVAL);
         InventoryUtils.resetInventoryDelayed(player);
@@ -70,8 +69,15 @@ public final class LobbyHandler {
         }
 
         if (changed) {
-            // fly mode is toggled in the inventory reset method
             InventoryUtils.resetInventoryNow(player);
+
+            if (mode) {
+                player.setAllowFlight(true);
+                player.setFlying(true);
+                player.teleport(player.getLocation().clone().add(0, 2, 0));
+            } else {
+                returnToLobby(player);
+            }
         }
     }
 
