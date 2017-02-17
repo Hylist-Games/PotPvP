@@ -136,7 +136,7 @@ public final class MatchHandler {
      * @return number of players playing in IN_PROGRESS matches
      */
     public int countPlayersPlayingInProgressMatches() {
-        return countPlayersPlayingMatches(m -> m.getState() == MatchState.IN_PROGRESS);
+        return countPlayersPlayingMatches(m -> m.getState() == MatchState.COUNTDOWN || m.getState() == MatchState.IN_PROGRESS);
     }
 
     /**
