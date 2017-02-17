@@ -8,10 +8,15 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public abstract class ItemListener implements Listener {
+
+    // we add a 500ms silent cooldown between all button uses
+    private static final Map<UUID, Long> canUseButton = new ConcurrentHashMap<>();
 
     private final Map<ItemStack, Consumer<Player>> handlers = new HashMap<>();
     private Predicate<Player> preProcessPredicate = null;
@@ -39,8 +44,14 @@ public abstract class ItemListener implements Listener {
 
         for (Map.Entry<ItemStack, Consumer<Player>> entry : handlers.entrySet()) {
             if (item.isSimilar(entry.getKey())) {
+                boolean permitted = canUseButton.getOrDefault(player.getUniqueId(), 0L) < System.currentTimeMillis();
+
+                if (permitted) {
+                    entry.getValue().accept(player);
+                    canUseButton.put(player.getUniqueId(), System.currentTimeMillis() + 500);
+                }
+
                 event.setCancelled(true);
-                entry.getValue().accept(player);
                 return;
             }
         }
