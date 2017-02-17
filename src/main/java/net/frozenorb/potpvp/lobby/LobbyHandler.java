@@ -41,9 +41,12 @@ public final class LobbyHandler {
      * @param player the player who is to be returned
      */
     public void returnToLobby(Player player) {
-        player.teleport(getLobbyLocation());
-        
+        returnToLobbySkipItemSlot(player);
         player.getInventory().setHeldItemSlot(0);
+    }
+
+    private void returnToLobbySkipItemSlot(Player player) {
+        player.teleport(getLobbyLocation());
 
         FrozenNametagHandler.reloadPlayer(player);
         FrozenNametagHandler.reloadOthersFor(player);
@@ -72,7 +75,7 @@ public final class LobbyHandler {
             InventoryUtils.resetInventoryNow(player);
 
             if (!mode) {
-                returnToLobby(player);
+                returnToLobbySkipItemSlot(player);
             }
         }
     }
