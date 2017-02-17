@@ -6,6 +6,7 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.Arena;
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.kittype.KitType;
+import net.frozenorb.potpvp.match.event.MatchStartEvent;
 import net.frozenorb.potpvp.match.listener.KitSelectionListener;
 import net.frozenorb.potpvp.match.listener.MatchCountdownListener;
 import net.frozenorb.potpvp.match.listener.MatchDeathMessageListener;
@@ -132,11 +133,11 @@ public final class MatchHandler {
     }
 
     /**
-     * Returns a sum of all players who are playing in a match
-     * @return number of players playing in matches
+     * Returns a sum of all players who are playing in an IN_PROGRESS match
+     * @return number of players playing in IN_PROGRESS matches
      */
-    public int countPlayersPlayingMatches() {
-        return countPlayersPlayingMatches(i -> true);
+    public int countPlayersPlayingInProgressMatches() {
+        return countPlayersPlayingMatches(m -> m.getState() == MatchState.IN_PROGRESS);
     }
 
     /**

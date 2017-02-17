@@ -32,7 +32,7 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
         }
 
         scores.add("&eOnline: *&f" + Bukkit.getOnlinePlayers().size());
-        scores.add("&dIn Fights: *&f" + matchHandler.countPlayersPlayingMatches());
+        scores.add("&dIn Fights: *&f" + matchHandler.countPlayersPlayingInProgressMatches());
         scores.add("&bIn Queues: *&f" + queueHandler.countPlayersQueued());
 
         followHandler.getFollowing(player).ifPresent(following -> {
