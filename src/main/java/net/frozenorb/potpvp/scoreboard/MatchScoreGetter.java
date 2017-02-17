@@ -188,6 +188,11 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
             MatchTeam teamOne = teams.get(0);
             MatchTeam teamTwo = teams.get(1);
 
+            // only for 1v1s we don't show this
+            if (teamOne.getAllMembers().size() == 1 && teamTwo.getAllMembers().size() == 1) {
+                return;
+            }
+
             // spectators who were on a team see teams as they releate
             // to them, not just one/two.
             if (oldTeam == null) {
