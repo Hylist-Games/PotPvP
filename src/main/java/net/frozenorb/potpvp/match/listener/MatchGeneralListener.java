@@ -46,7 +46,7 @@ public final class MatchGeneralListener implements Listener {
         PlayerUtils.animateDeath(player);
 
         match.markDead(player);
-        match.addSpectator(player, null, false);
+        match.addSpectator(player, null, true);
         player.teleport(player.getLocation().add(0, 2, 0));
     }
 

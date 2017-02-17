@@ -253,16 +253,18 @@ public final class Match {
     }
 
     public void addSpectator(Player player, Player target) {
-        addSpectator(player, target, true);
+        addSpectator(player, target, false);
     }
 
-    public void addSpectator(Player player, Player target, boolean teleportPlayer) {
+    // fromMatch indicates if they were a player immediately before spectating.
+    // we use this for things like teleporting and messages
+    public void addSpectator(Player player, Player target, boolean fromMatch) {
         Map<UUID, Match> spectateCache = PotPvPSI.getInstance().getMatchHandler().getSpectatingMatchCache();
 
         spectateCache.put(player.getUniqueId(), this);
         spectators.add(player.getUniqueId());
 
-        if (teleportPlayer) {
+        if (!fromMatch) {
             Location tpTo = arena.getSpectatorSpawn();
 
             if (target != null) {
@@ -271,12 +273,11 @@ public final class Match {
             }
 
             player.teleport(tpTo);
+            sendSpectatorMessage(player, ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " is now spectating.");
         }
 
         // so players don't accidentally click the item to stop spectating
         player.getInventory().setHeldItemSlot(0);
-
-        sendSpectatorMessage(player, ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " is now spectating.");
 
         FrozenNametagHandler.reloadPlayer(player);
         FrozenNametagHandler.reloadOthersFor(player);
