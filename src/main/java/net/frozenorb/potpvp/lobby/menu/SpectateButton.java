@@ -28,17 +28,7 @@ final class SpectateButton extends Button {
 
     @Override
     public String getName(Player player) {
-        MatchTeam teamA = match.getTeams().get(0);
-        MatchTeam teamB = match.getTeams().get(1);
-
-        if (teamA.getAliveMembers().size() != 1 || teamB.getAliveMembers().size() != 1) {
-            return ChatColor.YELLOW.toString() + ChatColor.BOLD + teamA.getAliveMembers().size() + " vs " + teamB.getAliveMembers().size();
-        } else {
-            String nameA = UUIDUtils.name(teamA.getAliveMembers().iterator().next());
-            String nameB = UUIDUtils.name(teamB.getAliveMembers().iterator().next());
-
-            return ChatColor.YELLOW.toString() + ChatColor.BOLD + nameA + " vs " + nameB;
-        }
+        return ChatColor.YELLOW.toString() + ChatColor.BOLD + match.getSimpleDescription();
     }
 
     @Override

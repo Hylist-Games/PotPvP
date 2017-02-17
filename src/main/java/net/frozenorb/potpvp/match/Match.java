@@ -24,6 +24,7 @@ import net.frozenorb.potpvp.util.VisibilityUtils;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
 import net.frozenorb.qlib.qLib;
 import net.frozenorb.qlib.util.PlayerUtils;
+import net.frozenorb.qlib.util.UUIDUtils;
 
 import org.bson.Document;
 import org.bukkit.Bukkit;
@@ -273,6 +274,7 @@ public final class Match {
             }
 
             player.teleport(tpTo);
+            player.sendMessage(ChatColor.YELLOW + "Now spectating " + ChatColor.AQUA + getSimpleDescription() + ChatColor.YELLOW + "...");
             sendSpectatorMessage(player, ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " is now spectating.");
         }
 
@@ -355,6 +357,25 @@ public final class Match {
         }
 
         return null;
+    }
+
+    /**
+     * Creates a simple, one line description of this match
+     * This will include two players (if a 1v1) or player counts and the kit type
+     * @return A simple description of this match
+     */
+    public String getSimpleDescription() {
+        MatchTeam teamA = teams.get(0);
+        MatchTeam teamB = teams.get(1);
+
+        if (teamA.getAliveMembers().size() != 1 || teamB.getAliveMembers().size() != 1) {
+            return teamA.getAliveMembers().size() + " vs " + teamB.getAliveMembers().size();
+        } else {
+            String nameA = UUIDUtils.name(teamA.getAliveMembers().iterator().next());
+            String nameB = UUIDUtils.name(teamB.getAliveMembers().iterator().next());
+
+            return nameA + " vs " + nameB + " (" + kitType.getName() + ")";
+        }
     }
 
     /**
