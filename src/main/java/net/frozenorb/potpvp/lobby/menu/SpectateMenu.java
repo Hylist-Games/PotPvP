@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.lobby.menu;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchState;
+import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.qlib.menu.Button;
@@ -13,6 +14,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public final class SpectateMenu extends PaginatedMenu {
 
@@ -41,14 +43,22 @@ public final class SpectateMenu extends PaginatedMenu {
                 continue;
             }
 
-            long numSpecDisabled = match.getTeams().stream()
-                .flatMap(t -> t.getAliveMembers().stream()) // has to be getAlive because of Bukkit#getPlayer call
-                .filter(p -> !settingHandler.getSetting(Bukkit.getPlayer(p), Setting.ALLOW_SPECTATORS))
-                .count();
+            int numTotalPlayers = 0;
+            int numSpecEnabled = 0;
 
-            // currently we require no one has spectators disabled,
-            // we might change this to a percentage or something later
-            if (numSpecDisabled != 0) {
+            for (MatchTeam team : match.getTeams()) {
+                for (UUID member : team.getAliveMembers()) {
+                    numTotalPlayers++;
+
+                    if (settingHandler.getSetting(Bukkit.getPlayer(member), Setting.ALLOW_SPECTATORS)) {
+                        numSpecEnabled++;
+                    }
+                }
+            }
+
+            // if less than 50% of participants have spectators enabled
+            // we won't render this match in the menu
+            if ((float) numSpecEnabled / (float) numTotalPlayers < 0.5) {
                 continue;
             }
 
