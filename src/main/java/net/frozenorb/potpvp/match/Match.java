@@ -24,7 +24,6 @@ import net.frozenorb.potpvp.util.PatchedPlayerUtils;
 import net.frozenorb.potpvp.util.VisibilityUtils;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
 import net.frozenorb.qlib.qLib;
-import net.frozenorb.qlib.util.PlayerUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
 
 import org.bson.Document;

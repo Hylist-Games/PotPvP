@@ -6,7 +6,6 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.Arena;
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.kittype.KitType;
-import net.frozenorb.potpvp.match.event.MatchStartEvent;
 import net.frozenorb.potpvp.match.listener.KitSelectionListener;
 import net.frozenorb.potpvp.match.listener.MatchCountdownListener;
 import net.frozenorb.potpvp.match.listener.MatchDeathMessageListener;

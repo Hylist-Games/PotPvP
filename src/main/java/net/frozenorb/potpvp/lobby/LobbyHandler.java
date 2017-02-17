@@ -8,7 +8,6 @@ import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.potpvp.util.PatchedPlayerUtils;
 import net.frozenorb.potpvp.util.VisibilityUtils;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
-import net.frozenorb.qlib.util.PlayerUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
