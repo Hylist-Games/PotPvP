@@ -22,7 +22,10 @@ public final class UnfollowCommand {
         }
 
         Match spectating = matchHandler.getMatchSpectating(sender);
-        spectating.removeSpectator(sender);
+
+        if (spectating != null) {
+            spectating.removeSpectator(sender);
+        }
 
         followHandler.stopFollowing(sender);
     }
