@@ -73,7 +73,6 @@ public final class LobbyHandler {
             InventoryUtils.resetInventoryNow(player);
 
             if (mode) {
-                player.teleport(player.getLocation().clone().add(0, 2, 0));
                 player.setAllowFlight(true);
                 player.setFlying(true);
             } else {
