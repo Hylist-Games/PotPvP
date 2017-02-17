@@ -28,7 +28,7 @@ public final class MatchUtils {
         // if they've been on any team or are staff they'll be able to
         // use this item on at least 1 player. if they can't use it all
         // we just don't give it to them (UX purposes)
-        boolean canViewInventories = player.hasPermission("basic.staff");
+        boolean canViewInventories = player.hasPermission("potpvp.inventory.all");
 
         if (!canViewInventories) {
             for (MatchTeam team : match.getTeams()) {
