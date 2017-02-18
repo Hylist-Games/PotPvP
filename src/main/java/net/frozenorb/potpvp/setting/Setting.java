@@ -25,17 +25,6 @@ public enum Setting {
         true,
         null // no permission required
     ),
-    /*SHOW_ELO(
-        ChatColor.LIGHT_PURPLE + "Elo Scoreboard",
-        ImmutableList.of(
-            ChatColor.BLUE + "Toggles side scoreboard elo in lobbies"
-        ),
-        Material.EXP_BOTTLE,
-        ChatColor.YELLOW + "Show elo scoreboard",
-        ChatColor.YELLOW + "Hide elo scoreboard",
-        true,
-        null // no permission required
-    ),*/
     SHOW_SPECTATOR_JOIN_MESSAGES(
         ChatColor.AQUA + "Spectator Join Messages",
         ImmutableList.of(

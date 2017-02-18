@@ -3,6 +3,8 @@ package net.frozenorb.potpvp.tab;
 import com.google.common.collect.Sets;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.elo.EloHandler;
+import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.qlib.tab.TabLayout;
 import net.frozenorb.qlib.util.UUIDUtils;
@@ -20,17 +22,22 @@ final class LobbyLayoutProvider implements BiConsumer<Player, TabLayout> {
     @Override
     public void accept(Player player, TabLayout tabLayout) {
         Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
+        EloHandler eloHandler = PotPvPSI.getInstance().getEloHandler();
 
         rankings: {
-            tabLayout.set(0, 4, ChatColor.GOLD + "HCTeams - 2000");
-            tabLayout.set(0, 5, ChatColor.GOLD + "Classic - 2000");
-
             tabLayout.set(1, 3, ChatColor.GOLD.toString() + ChatColor.BOLD + "Your Rankings");
-            tabLayout.set(1, 4, ChatColor.GOLD + "No Ench - 2000");
-            tabLayout.set(1, 5, ChatColor.GOLD + "Vanilla - 2000");
 
-            tabLayout.set(2, 4, ChatColor.GOLD + "Gapple - 2000");
-            tabLayout.set(2, 5, ChatColor.GOLD + "Archer - 2000");
+            int x = 0;
+            int y = 4;
+
+            for (KitType kitType : KitType.values()) {
+                tabLayout.set(x++, y, ChatColor.GOLD + kitType.getName() + " - " + eloHandler.getElo(player, kitType));
+
+                if (x == 3) {
+                    x = 0;
+                    y++;
+                }
+            }
         }
 
         party: {

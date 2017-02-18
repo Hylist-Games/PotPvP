@@ -51,11 +51,6 @@ public final class RematchHandler {
     }
 
     public void registerRematches(Match match) {
-        // cannot send rematches for ranked matches
-        /*if (match.isRanked()) {
-            return;
-        }*/
-
         // see Match#allowRematches
         if (!match.isAllowRematches()) {
             return;

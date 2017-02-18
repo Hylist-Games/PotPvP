@@ -6,6 +6,7 @@ import com.mongodb.client.MongoDatabase;
 
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.duel.DuelHandler;
+import net.frozenorb.potpvp.elo.EloHandler;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.kit.KitHandler;
 import net.frozenorb.potpvp.kittype.KitType;
@@ -57,6 +58,7 @@ public final class PotPvPSI extends JavaPlugin {
     @Getter private RematchHandler rematchHandler;
     @Getter private PostMatchInvHandler postMatchInvHandler;
     @Getter private FollowHandler followHandler;
+    @Getter private EloHandler eloHandler;
 
     @Override
     public void onEnable() {
@@ -83,6 +85,7 @@ public final class PotPvPSI extends JavaPlugin {
         rematchHandler = new RematchHandler();
         postMatchInvHandler = new PostMatchInvHandler();
         followHandler = new FollowHandler();
+        eloHandler = new EloHandler();
 
         getServer().getPluginManager().registerEvents(new BasicPreventionListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);

@@ -61,11 +61,7 @@ public final class MatchHandler {
         Bukkit.getPluginManager().registerEvents(new SpectatorPreventionListener(), PotPvPSI.getInstance());
     }
 
-    public Match startMatch(List<MatchTeam> teams, KitType kitType) {
-        return startMatch(teams, kitType, false);
-    }
-
-    public Match startMatch(List<MatchTeam> teams, KitType kitType, boolean allowRematches) {
+    public Match startMatch(List<MatchTeam> teams, KitType kitType, boolean ranked, boolean allowRematches) {
         boolean anyOps = false;
 
         for (MatchTeam team : teams) {
@@ -80,8 +76,12 @@ public final class MatchHandler {
             }
         }
 
-        if (!anyOps && (rankedMatchesDisabled || unrankedMatchesDisabled)) {
-            throw new IllegalArgumentException("Match creation is disabled!");
+        if (!anyOps) {
+            if (ranked && rankedMatchesDisabled) {
+                throw new IllegalArgumentException("Ranked match creation is disabled!");
+            } else if (unrankedMatchesDisabled) {
+                throw new IllegalArgumentException("Unranked match creation is disabled!");
+            }
         }
         
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
@@ -102,7 +102,8 @@ public final class MatchHandler {
         Arena openArena = arenaHandler.allocateUnusedArena(schematic ->
             schematic.isEnabled() &&
             matchSize <= schematic.getMaxPlayerCount() &&
-            matchSize >= schematic.getMinPlayerCount() /*&&
+            matchSize >= schematic.getMinPlayerCount() &&
+            (!ranked || schematic.isSupportsRanked()) /*&&
             (kitType == KitType.ARCHER || !schematic.isArcherOnly())*/
         );
 
@@ -110,7 +111,7 @@ public final class MatchHandler {
             return null;
         }
 
-        Match match = new Match(kitType, openArena, teams, allowRematches);
+        Match match = new Match(kitType, openArena, teams, ranked, allowRematches);
 
         hostedMatches.add(match);
         match.startCountdown();

@@ -63,20 +63,23 @@ public final class Match {
     @Getter private transient MatchState state; // transient: no need to store
     @Getter private Date startedAt;
     @Getter private Date endedAt;
+    @Getter private boolean ranked;
 
     // we track if matches should give a rematch diamond manually. previouly
     // we just checked if both teams had 1 player on them, but this wasn't
     // always accurate. Scenarios like a team split of a 3 man team (with one
     // sitting out) would get treated as a 1v1 when calculating rematches.
     // https://github.com/FrozenOrb/PotPvP-SI/issues/19
+    // this will also be set to false for ranked matches (which don't allow rematches)
     // transient: no need to store
     @Getter private transient boolean allowRematches;
 
-    public Match(KitType kitType, Arena arena, List<MatchTeam> teams, boolean allowRematches) {
+    public Match(KitType kitType, Arena arena, List<MatchTeam> teams, boolean ranked, boolean allowRematches) {
         this.id = UUID.randomUUID().toString();
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
         this.arena = Preconditions.checkNotNull(arena, "arena");
         this.teams = ImmutableList.copyOf(teams);
+        this.ranked = ranked;
         this.allowRematches = allowRematches;
     }
 

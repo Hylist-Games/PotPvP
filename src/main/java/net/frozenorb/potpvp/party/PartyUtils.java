@@ -77,7 +77,9 @@ public final class PartyUtils {
                 new MatchTeam(team1),
                 new MatchTeam(team2)
             ),
-            kitType
+            kitType,
+            false,
+            false
         );
 
         if (match == null) {

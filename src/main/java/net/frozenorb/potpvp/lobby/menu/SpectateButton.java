@@ -37,6 +37,12 @@ final class SpectateButton extends Button {
         MatchTeam teamA = match.getTeams().get(0);
         MatchTeam teamB = match.getTeams().get(1);
 
+        if (match.isRanked()) {
+            description.add(ChatColor.GREEN + "Ranked");
+        } else {
+            description.add(ChatColor.GRAY + "Unranked");
+        }
+
         description.add("");
         description.add(ChatColor.YELLOW + "Kit: " + ChatColor.WHITE + match.getKitType().getName());
         description.add(ChatColor.YELLOW + "Arena: " + ChatColor.WHITE + match.getArena().getSchematic());
@@ -57,7 +63,7 @@ final class SpectateButton extends Button {
         }
 
         description.add("");
-        description.add(ChatColor.GREEN.toString() + ChatColor.BOLD + "Click to spectate");
+        description.add(ChatColor.GREEN + "» Click to spectate «");
 
         return description;
     }

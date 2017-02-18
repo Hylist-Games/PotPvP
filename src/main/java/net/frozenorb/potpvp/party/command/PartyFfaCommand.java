@@ -49,7 +49,7 @@ public final class PartyFfaCommand {
                     teams.add(new MatchTeam(member));
                 }
 
-                matchHandler.startMatch(teams, kitType);
+                matchHandler.startMatch(teams, kitType, false, false);
             }).openMenu(sender);
         }
     }
@@ -92,7 +92,7 @@ public final class PartyFfaCommand {
                     teams.add(new MatchTeam(teamMembers));
                 }
 
-                matchHandler.startMatch(teams, kitType);
+                matchHandler.startMatch(teams, kitType, false, false);
             }).openMenu(sender);
         }
     }
