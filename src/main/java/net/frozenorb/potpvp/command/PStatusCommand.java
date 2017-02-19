@@ -56,7 +56,6 @@ public final class PStatusCommand {
         return false;
     }
 
-
     private static boolean noCacheIsPlayingOrSpectatingMatch(Player target) {
         return noCacheIsPlayingMatch(target) || noCacheIsSpectatingMatch(target);
     }

@@ -13,9 +13,6 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.Setter;
-
 public final class ManageSchematicMenu extends Menu {
 
     private final ArenaSchematic schematic;
