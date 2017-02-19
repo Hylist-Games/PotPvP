@@ -24,6 +24,7 @@ public final class DuelHandler {
 
     public DuelHandler() {
         Bukkit.getPluginManager().registerEvents(new DuelListener(), PotPvPSI.getInstance());
+        Bukkit.getScheduler().runTaskTimerAsynchronously(PotPvPSI.getInstance(), () -> activeInvites.removeIf(DuelInvite::isExpired), 20, 20);
     }
 
     public void insertInvite(DuelInvite invite) {
@@ -33,8 +34,6 @@ public final class DuelHandler {
     public void removeInvite(DuelInvite invite) {
         activeInvites.remove(invite);
     }
-
-    // TODO: EXPIRE
 
     public void removeInvitesTo(Player player) {
         findInvitesTo(player).forEach(activeInvites::remove);
