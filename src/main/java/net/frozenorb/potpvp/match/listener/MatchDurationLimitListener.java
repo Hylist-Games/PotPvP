@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class MatchDurationLimitListener implements Listener {
 
-    private static final int DURATION_LIMIT_SECONDS = (int) TimeUnit.MINUTES.toSeconds(15);
+    private static final int DURATION_LIMIT_SECONDS = (int) TimeUnit.MINUTES.toSeconds(20);
     private static final String TIME_WARNING_MESSAGE = ChatColor.RED + "The match will forcefully end in %s.";
     private static final String TIME_EXCEEDED_MESSAGE = ChatColor.RED.toString() + ChatColor.BOLD + "Match time exceeded %s. Ending match...";
 
