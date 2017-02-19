@@ -124,7 +124,7 @@ public final class ArenaGrid {
                 }
             }
 
-        }.runTaskTimer(PotPvPSI.getInstance(), 10L, 10L);
+        }.runTaskTimer(PotPvPSI.getInstance(), 5L, 5L);
     }
 
     private Arena createArena(ArenaSchematic schematic, int xStart, int zStart, int copy) {
