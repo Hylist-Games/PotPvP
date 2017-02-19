@@ -87,7 +87,7 @@ public final class PostMatchInvHandler {
             }
 
             for (MatchTeam team : teams) {
-                for (UUID member : team.getAllMembers()) {
+                for (UUID member : team.getAliveMembers()) {
                     messages.put(member, generic);
                 }
             }
