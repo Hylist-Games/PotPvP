@@ -32,10 +32,4 @@ public final class SoloMatchQueueEntry extends MatchQueueEntry {
         return ImmutableSet.of(player);
     }
 
-    @Override
-    public int getElo() {
-        EloHandler eloHandler = PotPvPSI.getInstance().getEloHandler();
-        return eloHandler.getElo(Bukkit.getPlayer(player), getQueue().getKitType());
-    }
-
 }

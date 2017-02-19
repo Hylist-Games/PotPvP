@@ -17,7 +17,7 @@ public final class SettingLoadListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR) // MONITOR runs last
     public void onPlayerQuit(PlayerQuitEvent event) {
-        PotPvPSI.getInstance().getSettingHandler().unloadSettings(event.getPlayer().getUniqueId());
+        PotPvPSI.getInstance().getSettingHandler().unloadSettings(event.getPlayer());
     }
 
 }

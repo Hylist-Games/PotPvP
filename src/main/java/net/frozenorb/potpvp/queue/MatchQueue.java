@@ -33,12 +33,13 @@ public final class MatchQueue {
         // (sometimes matches fail to create [ex no maps open] and
         // we should retry)
         List<MatchQueueEntry> entriesCopy = new ArrayList<>(entries);
+        EloHandler eloHandler = PotPvPSI.getInstance().getEloHandler();
 
         // ranked match algorithm requires entries are in
         // order by elo. There's no reason we only do this for ranked
         // matches aside from performance
         if (ranked) {
-            entriesCopy.sort(Comparator.comparing(MatchQueueEntry::getElo));
+            entriesCopy.sort(Comparator.comparing(e -> eloHandler.getElo(e.getMembers(), kitType)));
         }
 
         while (entriesCopy.size() >= 2) {
@@ -50,11 +51,13 @@ public final class MatchQueue {
             // except for the fact ranked matches can't be made if the elo window for
             // both players don't overlap
             if (ranked) {
+                int aElo = eloHandler.getElo(a.getMembers(), kitType);
+                int bElo = eloHandler.getElo(b.getMembers(), kitType);
+
                 double aEloWindow = a.getWaitSeconds() * QueueHandler.RANKED_WINDOW_GROWTH_PER_SECOND;
                 double bEloWindow = b.getWaitSeconds() * QueueHandler.RANKED_WINDOW_GROWTH_PER_SECOND;
-                int abEloDiff = Math.abs(a.getElo() - b.getElo());
 
-                if (abEloDiff > aEloWindow + bEloWindow) {
+                if (Math.abs(aElo - bElo) > aEloWindow + bEloWindow) {
                     continue;
                 }
             }

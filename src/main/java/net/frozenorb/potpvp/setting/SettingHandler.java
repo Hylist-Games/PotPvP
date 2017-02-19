@@ -81,8 +81,8 @@ public final class SettingHandler {
         settingsData.put(playerUuid, playerSettings);
     }
 
-    public void unloadSettings(UUID playerUuid) {
-        settingsData.remove(playerUuid);
+    public void unloadSettings(Player player) {
+        settingsData.remove(player.getUniqueId());
     }
 
 }

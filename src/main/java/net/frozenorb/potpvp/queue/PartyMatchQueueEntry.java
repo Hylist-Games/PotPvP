@@ -30,10 +30,4 @@ public final class PartyMatchQueueEntry extends MatchQueueEntry {
         return party.getMembers();
     }
 
-    @Override
-    public int getElo() {
-        EloHandler eloHandler = PotPvPSI.getInstance().getEloHandler();
-        return eloHandler.getElo(party, getQueue().getKitType());
-    }
-
 }

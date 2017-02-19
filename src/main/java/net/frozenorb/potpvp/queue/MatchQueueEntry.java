@@ -26,8 +26,6 @@ public abstract class MatchQueueEntry {
 
     public abstract Set<UUID> getMembers();
 
-    public abstract int getElo();
-
     /**
      * Gets how long, in seconds, this MatchQueueEntry has been waiting in a queue
      * @return the duration, in seconds, this entry has been waiting in a queue
