@@ -6,10 +6,12 @@ import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public final class MatchSoupListener implements Listener {
@@ -30,12 +32,26 @@ public final class MatchSoupListener implements Listener {
             return;
         }
 
-        if (event.getItem().getType() == Material.MUSHROOM_SOUP) {
+        if (event.getItem().getType() == Material.MUSHROOM_SOUP && player.getHealth() <= 19) {
             double current = player.getHealth();
             double max = player.getMaxHealth();
 
             player.getItemInHand().setType(Material.BOWL);
             player.setHealth(Math.min(max, current + 7D));
+        }
+    }
+
+    @EventHandler
+    public void onFoodLevelChange(FoodLevelChangeEvent event) {
+        if (event.getEntityType() != EntityType.PLAYER) {
+            return;
+        }
+
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        Match match = matchHandler.getMatchPlaying((Player) event.getEntity());
+
+        if (match != null && match.getKitType() == KitType.SOUP) {
+            event.setFoodLevel(20);
         }
     }
 

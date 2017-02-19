@@ -189,7 +189,7 @@ public final class MatchGeneralListener implements Listener {
         int heldSlot = player.getInventory().getHeldItemSlot();
 
         // don't let players drop swords, axes, and bows in the first slot
-        if (heldSlot == 0 && (itemTypeName.contains("sword") || itemTypeName.contains("axe") || itemTypeName.contains("bow"))) {
+        if (heldSlot == 0 && (itemTypeName.contains("sword") || itemTypeName.contains("axe") || itemType == Material.BOW)) {
             player.sendMessage(ChatColor.RED + "You can't drop that while you're holding it in slot 1.");
             event.setCancelled(true);
         }

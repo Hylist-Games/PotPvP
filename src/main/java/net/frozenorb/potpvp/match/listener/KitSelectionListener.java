@@ -42,9 +42,14 @@ public final class KitSelectionListener implements Listener {
 
             int slot = 2; // start in 3rd slot
 
-            for (Kit kit : kitHandler.getKits(player.getUniqueId(), kitType)) {
-                player.getInventory().setItem(slot, kit.createSelectionItem());
-                slot += 2;
+            try {
+                for (Kit kit : kitHandler.getKits(player.getUniqueId(), kitType)) {
+                    player.getInventory().setItem(slot, kit.createSelectionItem());
+                    slot += 2;
+                }
+            } catch (Exception ex) {
+                player.sendMessage(ChatColor.RED + "Failed to load your kits. Using default layout.");
+                ex.printStackTrace();
             }
 
             player.getInventory().setItem(0, Kit.ofDefaultKit(kitType).createSelectionItem());
