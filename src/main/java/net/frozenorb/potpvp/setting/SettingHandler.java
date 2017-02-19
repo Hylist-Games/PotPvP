@@ -1,5 +1,7 @@
 package net.frozenorb.potpvp.setting;
 
+import com.google.common.collect.ImmutableMap;
+
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.setting.event.SettingUpdateEvent;
 import net.frozenorb.potpvp.setting.listener.SettingLoadListener;
@@ -38,7 +40,7 @@ public final class SettingHandler {
      * @return If the setting is, after considered defaults and player customizations, enabled.
      */
     public boolean getSetting(Player player, Setting setting) {
-        Map<Setting, Boolean> playerSettings = settingsData.get(player.getUniqueId());
+        Map<Setting, Boolean> playerSettings = settingsData.getOrDefault(player.getUniqueId(), ImmutableMap.of());
         return playerSettings.getOrDefault(setting, setting.getDefaultValue());
     }
 
