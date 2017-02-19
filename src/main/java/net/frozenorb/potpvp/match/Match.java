@@ -369,18 +369,32 @@ public final class Match {
      * @return A simple description of this match
      */
     public String getSimpleDescription() {
-        MatchTeam teamA = teams.get(0);
-        MatchTeam teamB = teams.get(1);
+        String players;
 
-        if (teamA.getAliveMembers().size() != 1 || teamB.getAliveMembers().size() != 1) {
-            return teamA.getAliveMembers().size() + " vs " + teamB.getAliveMembers().size();
+        if (teams.size() == 2) {
+            MatchTeam teamA = teams.get(0);
+            MatchTeam teamB = teams.get(1);
+
+            if (teamA.getAliveMembers().size() == 1 && teamB.getAliveMembers().size() == 1) {
+                String nameA = UUIDUtils.name(teamA.getAliveMembers().iterator().next());
+                String nameB = UUIDUtils.name(teamB.getAliveMembers().iterator().next());
+
+                players = nameA + " vs " + nameB;
+            } else {
+                players = teamA.getAliveMembers().size() + " vs " + teamB.getAliveMembers().size();
+            }
         } else {
-            String nameA = UUIDUtils.name(teamA.getAliveMembers().iterator().next());
-            String nameB = UUIDUtils.name(teamB.getAliveMembers().iterator().next());
-            String rankedStr = ranked ? "Ranked" : "Unranked";
+            int numTotalPlayers = 0;
 
-            return nameA + " vs " + nameB + " (" + rankedStr + " " + kitType.getName() + ")";
+            for (MatchTeam team : teams) {
+                numTotalPlayers += team.getAliveMembers().size();
+            }
+
+            players = numTotalPlayers + " player FFA";
         }
+
+        String rankedStr = ranked ? "Ranked" : "Unranked";
+        return players + " (" + rankedStr + " " + kitType.getName() + ")";
     }
 
     /**

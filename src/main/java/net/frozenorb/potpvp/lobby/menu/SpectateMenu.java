@@ -39,7 +39,7 @@ public final class SpectateMenu extends PaginatedMenu {
                 continue;
             }
 
-            if (match.getTeams().size() != 2 || match.getState() == MatchState.ENDING) {
+            if (match.getState() == MatchState.ENDING) {
                 continue;
             }
 

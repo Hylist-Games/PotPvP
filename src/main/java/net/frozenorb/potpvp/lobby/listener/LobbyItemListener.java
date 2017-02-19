@@ -12,11 +12,18 @@ import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.qLib;
 
 import org.bukkit.ChatColor;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public final class LobbyItemListener extends ItemListener {
+
+    private final Map<UUID, Long> canUseRandomSpecItem = new HashMap<>();
 
     public LobbyItemListener(LobbyHandler lobbyHandler) {
         addHandler(LobbyItems.EVENTS_ITEM, p -> p.sendMessage(ChatColor.RED + "Events are not yet completed! They will be done soon!"));
@@ -41,8 +48,13 @@ public final class LobbyItemListener extends ItemListener {
                 return;
             }
 
+            if (canUseRandomSpecItem.getOrDefault(player.getUniqueId(), 0L) > System.currentTimeMillis()) {
+                player.sendMessage(ChatColor.RED + "Please wait before spectating again.");
+                return;
+            }
+
             List<Match> matches = new ArrayList<>(matchHandler.getHostedMatches());
-            matches.removeIf(m -> m.isSpectator(player.getUniqueId()) || m.getState() == MatchState.ENDING || m.getTeams().size() != 2);
+            matches.removeIf(m -> m.isSpectator(player.getUniqueId()) || m.getState() == MatchState.ENDING);
 
             if (matches.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "There are no matches available to spectate.");
@@ -57,6 +69,11 @@ public final class LobbyItemListener extends ItemListener {
                 target.addSpectator(player, null);
             }
         });
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        canUseRandomSpecItem.remove(event.getPlayer().getUniqueId());
     }
 
 }
