@@ -14,7 +14,9 @@ import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
 import net.frozenorb.qlib.util.UUIDUtils;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import org.bukkit.Bukkit;
@@ -151,7 +153,10 @@ public final class DuelCommand {
         TextComponent button = new TextComponent(ChatColor.GOLD + "Click here or type /accept to accept the invite");
 
         ClickEvent.Action runCommand = ClickEvent.Action.RUN_COMMAND;
+        HoverEvent.Action showText = HoverEvent.Action.SHOW_TEXT;
+
         button.setClickEvent(new ClickEvent(runCommand, "/accept " + sender));
+        button.setHoverEvent(new HoverEvent(showText, new BaseComponent[] { new TextComponent(ChatColor.GREEN + "Click here to accept") }));
 
         return button;
     }
