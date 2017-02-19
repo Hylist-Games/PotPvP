@@ -9,7 +9,6 @@ import java.util.Set;
 
 import lombok.experimental.UtilityClass;
 
-// TODO: Consider adding this class to qLib
 @UtilityClass
 public final class PotionUtils {
 
@@ -22,16 +21,6 @@ public final class PotionUtils {
         PotionType.SLOWNESS,
         PotionType.POISON,
         PotionType.INSTANT_DAMAGE
-    );
-
-    /**
-     * {@link PotionEffectType}s which are considered debuffs. This list is not sourced from
-     * anywhere.
-     */
-    public static final Set<PotionEffectType> DEBUFF_POTION_EFFECT_TYPES = ImmutableSet.of(
-        PotionEffectType.WEAKNESS,
-        PotionEffectType.SLOW,
-        PotionEffectType.POISON
     );
 
 }

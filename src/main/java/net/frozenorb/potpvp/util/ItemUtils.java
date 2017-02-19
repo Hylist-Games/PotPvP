@@ -9,7 +9,6 @@ import java.util.function.Predicate;
 
 import lombok.experimental.UtilityClass;
 
-// TODO: Consider merging this into qLib's ItemUtils class.
 @UtilityClass
 public final class ItemUtils {
 

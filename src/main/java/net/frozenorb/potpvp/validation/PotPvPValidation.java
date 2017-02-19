@@ -220,7 +220,10 @@ public final class PotPvPValidation {
 
     public static boolean canJoinQueue(Party party) {
         if (isInQueue(party)) {
-            // TODO: Is it best to message the whole party here?
+            // we shouldn't really message the whole party
+            // here, but players should never really be able to click
+            // this item while in a queue anyway (and it takes a lot of work
+            // to rework this validation to include an initiator)
             party.message(CANNOT_DO_THIS_WHILE_QUEUED);
             return false;
         }
