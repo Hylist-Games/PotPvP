@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.party.command;
 import net.frozenorb.potpvp.PotPvPLang;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kittype.menu.SelectKitTypeMenu;
+import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.party.Party;
@@ -11,6 +12,7 @@ import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -92,7 +94,13 @@ public final class PartyFfaCommand {
                     teams.add(new MatchTeam(teamMembers));
                 }
 
-                matchHandler.startMatch(teams, kitType, false, false);
+                Match match = matchHandler.startMatch(teams, kitType, false, false);
+
+                if (match != null) {
+                    for (UUID leftOut : availableMembers) {
+                        match.addSpectator(Bukkit.getPlayer(leftOut), null);
+                    }
+                }
             }).openMenu(sender);
         }
     }
