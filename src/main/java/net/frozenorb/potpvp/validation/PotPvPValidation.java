@@ -67,7 +67,7 @@ public final class PotPvPValidation {
             return false;
         }
 
-        if (isInOrSpectatingMatch(sender)) {
+        if (isInOrSpectatingMatch(duelSentBy)) {
             sender.sendMessage(TARGET_PLAYER_IN_MATCH);
             return false;
         }

@@ -39,7 +39,6 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 // TODO: Buttons to edit schematic properties
-// TODO: Don't show hotbar items that can't be used
 // TODO: Restoring arenas after matches (?)
 public final class PotPvPSI extends JavaPlugin {
 

@@ -27,9 +27,7 @@ public final class RematchItemListener extends ItemListener {
             }
         });
 
-        addHandler(RematchItems.SENT_REMATCH_ITEM, player -> {
-            player.sendMessage(ChatColor.RED + "You have already sent a rematch request.");
-        });
+        addHandler(RematchItems.SENT_REMATCH_ITEM, p -> p.sendMessage(ChatColor.RED + "You have already sent a rematch request."));
 
         addHandler(RematchItems.ACCEPT_REMATCH_ITEM, player -> {
             RematchData rematchData = rematchHandler.getRematchData(player);
