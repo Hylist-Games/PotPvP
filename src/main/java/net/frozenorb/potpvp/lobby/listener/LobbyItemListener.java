@@ -49,7 +49,7 @@ public final class LobbyItemListener extends ItemListener {
             }
 
             if (canUseRandomSpecItem.getOrDefault(player.getUniqueId(), 0L) > System.currentTimeMillis()) {
-                player.sendMessage(ChatColor.RED + "Please wait before spectating again.");
+                player.sendMessage(ChatColor.RED + "Please wait before doing this again!");
                 return;
             }
 
