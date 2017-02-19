@@ -1,14 +1,13 @@
 package net.frozenorb.potpvp.queue;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.queue.listener.QueueGeneralListener;
 import net.frozenorb.potpvp.queue.listener.QueueItemListener;
-import net.frozenorb.potpvp.queue.party.PartyQueue;
-import net.frozenorb.potpvp.queue.party.PartyQueueEntry;
-import net.frozenorb.potpvp.queue.solo.SoloQueue;
-import net.frozenorb.potpvp.queue.solo.SoloQueueEntry;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
 
@@ -16,161 +15,162 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lombok.Getter;
+
 public final class QueueHandler {
 
-    private static final String JOIN_SOLO_MESSAGE = ChatColor.GREEN + "You are now queued for %s" + ChatColor.GREEN + ".";
-    private static final String LEAVE_SOLO_MESSAGE = ChatColor.GREEN + "You are no longer queued for %s" + ChatColor.GREEN + ".";
-    private static final String JOIN_PARTY_MESSAGE = ChatColor.GREEN + "Your party is now queued for %s" + ChatColor.GREEN + ".";
-    private static final String LEAVE_PARTY_MESSAGE = ChatColor.GREEN + "Your party is no longer queued for %s" + ChatColor.GREEN + ".";
+    public static final double RANKED_WINDOW_GROWTH_PER_SECOND = 5;
+
+    private static final String JOIN_SOLO_MESSAGE = ChatColor.GREEN + "You are now queued for %s %s" + ChatColor.GREEN + ".";
+    private static final String LEAVE_SOLO_MESSAGE = ChatColor.GREEN + "You are no longer queued for %s %s" + ChatColor.GREEN + ".";
+    private static final String JOIN_PARTY_MESSAGE = ChatColor.GREEN + "Your party is now queued for %s %s" + ChatColor.GREEN + ".";
+    private static final String LEAVE_PARTY_MESSAGE = ChatColor.GREEN + "Your party is no longer queued for %s %s" + ChatColor.GREEN + ".";
 
     // we never call .put outside of the constructor so no concurrency is needed
-    private final Map<KitType, SoloQueue> soloQueues = new HashMap<>();
-    private final Map<KitType, PartyQueue> partyQueues = new HashMap<>();
+    // (KitType type, boolean ranked) -> MatchQueue
+    private final Table<KitType, Boolean, MatchQueue> soloQueues = HashBasedTable.create();
+    private final Table<KitType, Boolean, MatchQueue> partyQueues = HashBasedTable.create();
 
-    // maps players (and parties) to the queue they're in for fast O(1) lookup
-    private final Map<UUID, SoloQueue> soloQueueCache = new ConcurrentHashMap<>();
-    private final Map<Party, PartyQueue> partyQueueCache = new ConcurrentHashMap<>();
+    // maps players (and parties) to their entry for fast O(1) lookup
+    private final Map<UUID, SoloMatchQueueEntry> soloQueueCache = new ConcurrentHashMap<>();
+    private final Map<Party, PartyMatchQueueEntry> partyQueueCache = new ConcurrentHashMap<>();
+
+    // because this is called very often (it's on the lobby scoreboard)
+    // we cache every second (per KitType counts aren't cached, however)
+    @Getter private int queuedCount = 0;
 
     public QueueHandler() {
-        Bukkit.getPluginManager().registerEvents(new QueueGeneralListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new QueueGeneralListener(this), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new QueueItemListener(this), PotPvPSI.getInstance());
 
         for (KitType kitType : KitType.values()) {
-            soloQueues.put(kitType, new SoloQueue(kitType));
-            partyQueues.put(kitType, new PartyQueue(kitType));
+            soloQueues.put(kitType, true, new MatchQueue(kitType, true));
+            soloQueues.put(kitType, false, new MatchQueue(kitType, false));
+
+            partyQueues.put(kitType, true, new MatchQueue(kitType, true));
+            partyQueues.put(kitType, false, new MatchQueue(kitType, false));
         }
 
         Bukkit.getScheduler().runTaskTimer(PotPvPSI.getInstance(), () -> {
-            soloQueues.values().forEach(SoloQueue::tick);
-            partyQueues.values().forEach(PartyQueue::tick);
+            soloQueues.values().forEach(MatchQueue::tick);
+            partyQueues.values().forEach(MatchQueue::tick);
+
+            int i = 0;
+
+            for (MatchQueue queue : soloQueues.values()) {
+                i += queue.countPlayersQueued();
+            }
+
+            for (MatchQueue queue : partyQueues.values()) {
+                i += queue.countPlayersQueued();
+            }
+
+            queuedCount = i;
         }, 20L, 20L);
     }
 
-    public int countPlayersQueued() {
-        int result = 0;
-
-        for (SoloQueue queue : soloQueues.values()) {
-            result += queue.countPlayersQueued();
-        }
-
-        for (PartyQueue queue : partyQueues.values()) {
-            result += queue.countPlayersQueued();
-        }
-
-        return result;
+    public int countPlayersQueued(KitType kitType, boolean ranked) {
+        return soloQueues.get(kitType, ranked).countPlayersQueued() +
+               partyQueues.get(kitType, ranked).countPlayersQueued();
     }
 
-    public int countPlayersQueued(KitType kitType) {
-        return soloQueues.get(kitType).countPlayersQueued() +
-               partyQueues.get(kitType).countPlayersQueued();
-    }
-
-    public void joinQueue(Player player, KitType kitType, boolean silent) {
-        // will never be null, queues are created in constructor
-        // and KitTypes are static
-        SoloQueue queue = soloQueues.get(kitType);
-
-        // will message players about validation errors
-        if (PotPvPValidation.canJoinQueue(player)) {
-            queue.addToQueue(player.getUniqueId());
-            soloQueueCache.put(player.getUniqueId(), queue);
-
-            if (!silent) {
-                player.sendMessage(String.format(JOIN_SOLO_MESSAGE, kitType.getDisplayName()));
-            }
-
-            InventoryUtils.resetInventoryDelayed(player);
+    public boolean joinQueue(Player player, KitType kitType, boolean ranked) {
+        if (!PotPvPValidation.canJoinQueue(player)) {
+            return false;
         }
+
+        MatchQueue queue = soloQueues.get(kitType, ranked);
+        SoloMatchQueueEntry entry = new SoloMatchQueueEntry(queue, player.getUniqueId());
+
+        queue.addToQueue(entry);
+        soloQueueCache.put(player.getUniqueId(), entry);
+
+        player.sendMessage(String.format(JOIN_SOLO_MESSAGE, ranked ? "ranked" : "unranked", kitType.getDisplayName()));
+        InventoryUtils.resetInventoryDelayed(player);
+        return true;
     }
 
     public boolean leaveQueue(Player player, boolean silent) {
-        SoloQueueEntry queueEntry = getQueueEntry(player.getUniqueId());
+        MatchQueueEntry entry = getQueueEntry(player.getUniqueId());
 
-        // fail silently
-        if (queueEntry != null) {
-            SoloQueue queue = queueEntry.getQueue();
-
-            queue.removeFromQueue(player.getUniqueId());
-            soloQueueCache.remove(player.getUniqueId());
-
-            if (!silent) {
-                player.sendMessage(String.format(LEAVE_SOLO_MESSAGE, queue.getKitType().getDisplayName()));
-            }
-
-            InventoryUtils.resetInventoryDelayed(player);
-            return true;
-        } else {
+        if (entry == null) {
             return false;
         }
+
+        MatchQueue queue = entry.getQueue();
+
+        queue.removeFromQueue(entry);
+        soloQueueCache.remove(player.getUniqueId());
+
+        if (!silent) {
+            player.sendMessage(String.format(LEAVE_SOLO_MESSAGE, queue.isRanked() ? "ranked" : "unranked", queue.getKitType().getDisplayName()));
+        }
+
+        InventoryUtils.resetInventoryDelayed(player);
+        return true;
     }
 
-    public void joinQueue(Party party, KitType kitType, boolean silent) {
-        // will never be null, queues are created in constructor
-        // and KitTypes are static
-        PartyQueue queue = partyQueues.get(kitType);
-
-        // will message players about validation errors
-        if (PotPvPValidation.canJoinQueue(party)) {
-            queue.addToQueue(party);
-            partyQueueCache.put(party, queue);
-
-            if (!silent) {
-                party.message(String.format(JOIN_PARTY_MESSAGE, kitType.getDisplayName()));
-            }
-
-            party.resetInventoriesDelayed();
+    public boolean joinQueue(Party party, KitType kitType, boolean ranked) {
+        if (!PotPvPValidation.canJoinQueue(party)) {
+            return false;
         }
+
+        MatchQueue queue = partyQueues.get(kitType, ranked);
+        PartyMatchQueueEntry entry = new PartyMatchQueueEntry(queue, party);
+
+        queue.addToQueue(entry);
+        partyQueueCache.put(party, entry);
+
+        party.message(String.format(JOIN_PARTY_MESSAGE, ranked ? "ranked" : "unranked", kitType.getDisplayName()));
+        party.resetInventoriesDelayed();
+        return true;
     }
 
     public boolean leaveQueue(Party party, boolean silent) {
-        PartyQueueEntry queueEntry = getQueueEntry(party);
+        MatchQueueEntry entry = getQueueEntry(party);
 
-        // fail silently
-        if (queueEntry != null) {
-            PartyQueue queue = queueEntry.getQueue();
-
-            queue.removeFromQueue(party);
-            partyQueueCache.remove(party);
-
-            if (!silent) {
-                party.message(String.format(LEAVE_PARTY_MESSAGE, queue.getKitType().getDisplayName()));
-            }
-
-            party.resetInventoriesDelayed();
-            return true;
-        } else {
+        if (entry == null) {
             return false;
         }
+
+        MatchQueue queue = entry.getQueue();
+
+        queue.removeFromQueue(entry);
+        partyQueueCache.remove(party);
+
+        if (!silent) {
+            party.message(String.format(LEAVE_PARTY_MESSAGE, queue.isRanked() ? "ranked" : "unranked", queue.getKitType().getDisplayName()));
+        }
+
+        party.resetInventoriesDelayed();
+        return true;
     }
 
     public boolean isQueued(UUID player) {
         return soloQueueCache.containsKey(player);
     }
 
-    public SoloQueueEntry getQueueEntry(UUID player) {
-        SoloQueue queue = soloQueueCache.get(player);
-        return queue != null ? queue.getQueueEntry(player) : null;
+    public SoloMatchQueueEntry getQueueEntry(UUID player) {
+        return soloQueueCache.get(player);
     }
 
     public boolean isQueued(Party party) {
         return partyQueueCache.containsKey(party);
     }
 
-    public PartyQueueEntry getQueueEntry(Party party) {
-        PartyQueue queue = partyQueueCache.get(party);
-        return queue != null ? queue.getQueueEntry(party) : null;
+    public PartyMatchQueueEntry getQueueEntry(Party party) {
+        return partyQueueCache.get(party);
     }
 
-    void removeFromQueueCache(Object entry) {
-        if (entry instanceof SoloQueueEntry) {
-            soloQueueCache.remove(((SoloQueueEntry) entry).getPlayer());
-        } else if (entry instanceof PartyQueueEntry) {
-            partyQueueCache.remove(((PartyQueueEntry) entry).getParty());
+    void removeFromQueueCache(MatchQueueEntry entry) {
+        if (entry instanceof SoloMatchQueueEntry) {
+            soloQueueCache.remove(((SoloMatchQueueEntry) entry).getPlayer());
+        } else if (entry instanceof PartyMatchQueueEntry) {
+            partyQueueCache.remove(((PartyMatchQueueEntry) entry).getParty());
         }
     }
 

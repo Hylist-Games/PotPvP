@@ -24,9 +24,15 @@ import java.util.UUID;
 
 public final class QueueGeneralListener implements Listener {
 
+    private final QueueHandler queueHandler;
+
+    public QueueGeneralListener(QueueHandler queueHandler) {
+        this.queueHandler = queueHandler;
+    }
+
     @EventHandler
     public void onPartyDisband(PartyDisbandEvent event) {
-        PotPvPSI.getInstance().getQueueHandler().leaveQueue(event.getParty(), true);
+        queueHandler.leaveQueue(event.getParty(), true);
     }
 
     @EventHandler
@@ -34,12 +40,12 @@ public final class QueueGeneralListener implements Listener {
         UUID leaderUuid = event.getParty().getLeader();
         Player leaderPlayer = Bukkit.getPlayer(leaderUuid);
 
-        PotPvPSI.getInstance().getQueueHandler().leaveQueue(leaderPlayer, false);
+        queueHandler.leaveQueue(leaderPlayer, false);
     }
 
     @EventHandler
     public void onPartyMemberJoin(PartyMemberJoinEvent event) {
-        PotPvPSI.getInstance().getQueueHandler().leaveQueue(event.getMember(), false);
+        queueHandler.leaveQueue(event.getMember(), false);
         leaveQueue(event.getParty(), event.getMember(), "joined");
     }
 
@@ -54,29 +60,24 @@ public final class QueueGeneralListener implements Listener {
     }
 
     private void leaveQueue(Party party, Player member, String action) {
-        QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
-
         if (queueHandler.leaveQueue(party, true)) {
-            String memberName = member.getName();
-            party.message(ChatColor.YELLOW + "Your party has been removed from the queue because " + memberName + " " + action + ".");
+            party.message(ChatColor.YELLOW + "Your party has been removed from the queue because " + ChatColor.AQUA + member.getName() + ChatColor.YELLOW + " " + action + ".");
         }
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        PotPvPSI.getInstance().getQueueHandler().leaveQueue(event.getPlayer(), true);
+        queueHandler.leaveQueue(event.getPlayer(), true);
     }
 
     @EventHandler
     public void onMatchSpectatorJoin(MatchSpectatorJoinEvent event) {
-        QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
         queueHandler.leaveQueue(event.getSpectator(), true);
     }
 
     @EventHandler
     public void onMatchCountdownStart(MatchCountdownStartEvent event) {
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
-        QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
 
         for (MatchTeam team : event.getMatch().getTeams()) {
             for (UUID member : team.getAllMembers()) {

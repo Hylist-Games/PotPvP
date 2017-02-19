@@ -30,11 +30,11 @@ public final class QueueItems {
     public static final ItemStack LEAVE_PARTY_RANKED_QUEUE_ITEM = new ItemStack(Material.ARROW);
 
     static {
-        ItemUtils.setDisplayName(JOIN_SOLO_UNRANKED_QUEUE_ITEM, LEFT_ARROW + AQUA.toString() + BOLD + "Join Quickmatch Queue" + RIGHT_ARROW);
-        ItemUtils.setDisplayName(LEAVE_SOLO_UNRANKED_QUEUE_ITEM, LEFT_ARROW + RED.toString() + BOLD + "Leave Quickmatch Queue" + RIGHT_ARROW);
+        ItemUtils.setDisplayName(JOIN_SOLO_UNRANKED_QUEUE_ITEM, LEFT_ARROW + AQUA.toString() + BOLD + "Join Quickmatch MatchQueue" + RIGHT_ARROW);
+        ItemUtils.setDisplayName(LEAVE_SOLO_UNRANKED_QUEUE_ITEM, LEFT_ARROW + RED.toString() + BOLD + "Leave Quickmatch MatchQueue" + RIGHT_ARROW);
 
-        ItemUtils.setDisplayName(JOIN_SOLO_RANKED_QUEUE_ITEM, LEFT_ARROW + GREEN.toString() + BOLD + "Join " + AQUA.toString() + BOLD + "Ranked " + GREEN.toString() + BOLD + "Match Queue" + RIGHT_ARROW);
-        ItemUtils.setDisplayName(LEAVE_SOLO_RANKED_QUEUE_ITEM, LEFT_ARROW + RED.toString() + BOLD + "Leave " + AQUA.toString() + BOLD + "Ranked " + RED.toString() + BOLD + "Match Queue" + RIGHT_ARROW);
+        ItemUtils.setDisplayName(JOIN_SOLO_RANKED_QUEUE_ITEM, LEFT_ARROW + GREEN.toString() + BOLD + "Join " + AQUA.toString() + BOLD + "Ranked " + GREEN.toString() + BOLD + "Match MatchQueue" + RIGHT_ARROW);
+        ItemUtils.setDisplayName(LEAVE_SOLO_RANKED_QUEUE_ITEM, LEFT_ARROW + RED.toString() + BOLD + "Leave " + AQUA.toString() + BOLD + "Ranked " + RED.toString() + BOLD + "Match MatchQueue" + RIGHT_ARROW);
 
         ItemUtils.setDisplayName(JOIN_PARTY_UNRANKED_QUEUE_ITEM, LEFT_ARROW + GREEN.toString() + BOLD + "Join 2v2 Unranked" + RIGHT_ARROW);
         ItemUtils.setDisplayName(LEAVE_PARTY_UNRANKED_QUEUE_ITEM, LEFT_ARROW + RED.toString() + BOLD + "Leave 2v2 Unranked" + RIGHT_ARROW);

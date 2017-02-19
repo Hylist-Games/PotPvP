@@ -5,7 +5,7 @@ import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
-import net.frozenorb.potpvp.queue.QueueEntry;
+import net.frozenorb.potpvp.queue.MatchQueueEntry;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.qlib.util.TimeUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
@@ -33,23 +33,23 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
 
         scores.add("&eOnline: *&f" + Bukkit.getOnlinePlayers().size());
         scores.add("&dIn Fights: *&f" + matchHandler.countPlayersPlayingInProgressMatches());
-        scores.add("&bIn Queues: *&f" + queueHandler.countPlayersQueued());
+        scores.add("&bIn Queues: *&f" + queueHandler.getQueuedCount());
 
         followHandler.getFollowing(player).ifPresent(following -> {
             scores.add("&6Following: *&f" + UUIDUtils.name(following));
         });
 
-        QueueEntry queueEntry;
+        MatchQueueEntry matchQueueEntry;
 
         if (party != null) {
-           queueEntry = queueHandler.getQueueEntry(party);
+           matchQueueEntry = queueHandler.getQueueEntry(party);
         } else {
-            queueEntry = queueHandler.getQueueEntry(player.getUniqueId());
+            matchQueueEntry = queueHandler.getQueueEntry(player.getUniqueId());
         }
 
-        if (queueEntry != null) {
-            String queueTypeFormatted = queueEntry.getQueue().getKitType().getDisplayName();
-            String waitTimeFormatted = TimeUtils.formatIntoMMSS(queueEntry.getWaitTime());
+        if (matchQueueEntry != null) {
+            String queueTypeFormatted = matchQueueEntry.getQueue().getKitType().getDisplayName();
+            String waitTimeFormatted = TimeUtils.formatIntoMMSS(matchQueueEntry.getWaitSeconds());
 
             scores.add("&b&7&m--------------------");
             scores.add("&cQueued: &f" + queueTypeFormatted);

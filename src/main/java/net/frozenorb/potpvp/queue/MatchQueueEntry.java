@@ -1,7 +1,5 @@
 package net.frozenorb.potpvp.queue;
 
-import net.frozenorb.potpvp.queue.solo.SoloQueue;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
@@ -9,30 +7,32 @@ import java.util.UUID;
 
 import lombok.Getter;
 
-public abstract class QueueEntry<T extends Queue> {
+public abstract class MatchQueueEntry {
 
     /**
-     * {@link Queue} this QueueEntry is entered in
+     * {@link MatchQueue} this MatchQueueEntry is entered in
      */
-    @Getter private final T queue;
+    @Getter private final MatchQueue queue;
 
     /**
-     * Time this QueueEntry joined its {@link SoloQueue}
+     * Time this MatchQueueEntry joined its {@link MatchQueue}
      */
     @Getter private final Instant timeJoined;
 
-    protected QueueEntry(T queue) {
+    MatchQueueEntry(MatchQueue queue) {
         this.queue = queue;
         this.timeJoined = Instant.now();
     }
 
     public abstract Set<UUID> getMembers();
 
+    public abstract int getElo();
+
     /**
      * Gets how long, in seconds, this MatchQueueEntry has been waiting in a queue
      * @return the duration, in seconds, this entry has been waiting in a queue
      */
-    public int getWaitTime() {
+    public int getWaitSeconds() {
         return (int) ChronoUnit.SECONDS.between(timeJoined, Instant.now());
     }
 

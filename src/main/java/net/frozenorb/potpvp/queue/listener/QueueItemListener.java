@@ -18,43 +18,55 @@ import org.bukkit.entity.Player;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+// This class followes a different organizational style from other item listeners
+// because we need seperate listeners for ranked/unranked, we have methods which
+// we call which generate a Consumer<Player> designed for either ranked/unranked,
+// based on the argument passed. Returning Consumers makes this code slightly
+// harder to follow, but saves us from a lot of duplication
 public final class QueueItemListener extends ItemListener {
 
-    private final Function<KitType, CustomSelectKitTypeMenu.CustomKitTypeMeta> selectionMenuAddition = kitType -> {
-        QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-
-        int inFights = matchHandler.countPlayersPlayingMatches(m -> m.getKitType() == kitType);
-        int inQueue = queueHandler.countPlayersQueued(kitType);
-
-
-        return new CustomSelectKitTypeMenu.CustomKitTypeMeta(
-            // clamp value to >= 1 && <= 64
-            Math.max(1, Math.min(64, inFights + inQueue)),
-            ImmutableList.of(
-                ChatColor.GREEN + "In fights: " + ChatColor.WHITE + inFights,
-                ChatColor.GREEN + "In queue: " + ChatColor.WHITE + inQueue
-            )
-        );
-    };
+    private final Function<KitType, CustomSelectKitTypeMenu.CustomKitTypeMeta> selectionAdditionRanked = selectionMenuAddition(true);
+    private final Function<KitType, CustomSelectKitTypeMenu.CustomKitTypeMeta> selectionAdditionUnranked = selectionMenuAddition(false);
+    private final QueueHandler queueHandler;
 
     public QueueItemListener(QueueHandler queueHandler) {
-        addHandler(QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM, player -> {
-            // try to check validation issues in advance
-            // (will be called again in QueueHandler#joinQueue)
+        this.queueHandler = queueHandler;
+
+        addHandler(QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM, joinSoloConsumer(false));
+        addHandler(QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM, joinSoloConsumer(true));
+
+        addHandler(QueueItems.JOIN_PARTY_UNRANKED_QUEUE_ITEM, joinPartyConsumer(false));
+        addHandler(QueueItems.JOIN_PARTY_RANKED_QUEUE_ITEM, joinPartyConsumer(true));
+
+        addHandler(QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM, p -> queueHandler.leaveQueue(p, false));
+        addHandler(QueueItems.LEAVE_SOLO_RANKED_QUEUE_ITEM, p -> queueHandler.leaveQueue(p, false));
+
+        Consumer<Player> leavePartyConsumer = player -> {
+            Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
+
+            // don't message, players who aren't leader shouldn't even get this item
+            if (party != null && party.isLeader(player.getUniqueId())) {
+                queueHandler.leaveQueue(party, false);
+            }
+        };
+
+        addHandler(QueueItems.LEAVE_PARTY_UNRANKED_QUEUE_ITEM, leavePartyConsumer);
+        addHandler(QueueItems.LEAVE_PARTY_RANKED_QUEUE_ITEM, leavePartyConsumer);
+    }
+
+    private Consumer<Player> joinSoloConsumer(boolean ranked) {
+        return player -> {
             if (PotPvPValidation.canJoinQueue(player)) {
                 new CustomSelectKitTypeMenu(kitType -> {
-                    queueHandler.joinQueue(player, kitType, false);
+                    queueHandler.joinQueue(player, kitType, ranked);
                     player.closeInventory();
-                }, selectionMenuAddition).openMenu(player);
+                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked).openMenu(player);
             }
-        });
+        };
+    }
 
-        addHandler(QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM, player -> {
-            queueHandler.leaveQueue(player, false);
-        });
-
-        addHandler(QueueItems.JOIN_PARTY_UNRANKED_QUEUE_ITEM, player -> {
+    private Consumer<Player> joinPartyConsumer(boolean ranked) {
+        return player -> {
             Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
 
             // just fail silently, players who aren't a leader
@@ -67,27 +79,29 @@ public final class QueueItemListener extends ItemListener {
             // (will be called again in QueueHandler#joinQueue)
             if (PotPvPValidation.canJoinQueue(party)) {
                 new CustomSelectKitTypeMenu(kitType -> {
-                    queueHandler.joinQueue(party, kitType, false);
+                    queueHandler.joinQueue(party, kitType, ranked);
                     player.closeInventory();
-                }, selectionMenuAddition).openMenu(player);
+                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked).openMenu(player);
             }
-        });
+        };
+    }
 
-        addHandler(QueueItems.LEAVE_PARTY_UNRANKED_QUEUE_ITEM, player -> {
-            Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
+    private Function<KitType, CustomSelectKitTypeMenu.CustomKitTypeMeta> selectionMenuAddition(boolean ranked) {
+        return kitType -> {
+            MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
-            // just fail silently, players who aren't a leader
-            // of a party shouldn't even have this item
-            if (party != null && party.isLeader(player.getUniqueId())) {
-                queueHandler.leaveQueue(party, false);
-            }
-        });
+            int inFights = matchHandler.countPlayersPlayingMatches(m -> m.getKitType() == kitType);
+            int inQueue = queueHandler.countPlayersQueued(kitType, ranked);
 
-        Consumer<Player> messageRankedDisabled = p -> p.sendMessage(ChatColor.RED + "Ranked is currently disabled.");
-        addHandler(QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM, messageRankedDisabled);
-        addHandler(QueueItems.JOIN_PARTY_RANKED_QUEUE_ITEM, messageRankedDisabled);
-        addHandler(QueueItems.LEAVE_SOLO_RANKED_QUEUE_ITEM, messageRankedDisabled);
-        addHandler(QueueItems.LEAVE_PARTY_RANKED_QUEUE_ITEM, messageRankedDisabled);
+            return new CustomSelectKitTypeMenu.CustomKitTypeMeta(
+                // clamp value to >= 1 && <= 64
+                Math.max(1, Math.min(64, inFights + inQueue)),
+                ImmutableList.of(
+                    ChatColor.GREEN + "In fights: " + ChatColor.WHITE + inFights,
+                    ChatColor.GREEN + "In queue: " + ChatColor.WHITE + inQueue
+                )
+            );
+        };
     }
 
 }
