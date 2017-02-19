@@ -33,8 +33,11 @@ public final class PostMatchInvLang {
         TEAM_1_HEADER_COMPONENT.setColor(ChatColor.LIGHT_PURPLE);
         TEAM_2_HEADER_COMPONENT.setColor(ChatColor.AQUA);
         YOUR_TEAM_COMPONENT.setColor(ChatColor.GREEN);
+        YOUR_TEAM_COMPONENT.setBold(true);
         ENEMY_TEAM_COMPONENT.setColor(ChatColor.RED);
-        PARTICIPANTS_COMPONENT.setColor(ChatColor.YELLOW);
+        ENEMY_TEAM_COMPONENT.setBold(true);
+        PARTICIPANTS_COMPONENT.setColor(ChatColor.GREEN);
+        PARTICIPANTS_COMPONENT.setBold(true);
         LINE_COMPONENT.setColor(ChatColor.GRAY);
         LINE_COMPONENT.setStrikethrough(true);
         INVENTORY_HEADER_COMPONENT.setColor(ChatColor.GOLD);

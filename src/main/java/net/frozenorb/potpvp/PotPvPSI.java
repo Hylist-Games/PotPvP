@@ -38,7 +38,6 @@ import lombok.Getter;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-// TODO: Buttons to edit schematic properties
 // TODO: Restoring arenas after matches (?)
 public final class PotPvPSI extends JavaPlugin {
 
