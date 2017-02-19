@@ -150,6 +150,11 @@ public final class Match {
     }
 
     public void endMatch(MatchEndReason reason) {
+        // prevent duplicate endings
+        if (state == MatchState.ENDING || state == MatchState.TERMINATED) {
+            return;
+        }
+        
         state = MatchState.ENDING;
         endedAt = new Date();
         endReason = reason;
