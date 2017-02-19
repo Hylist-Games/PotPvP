@@ -9,7 +9,6 @@ import net.frozenorb.potpvp.elo.listener.EloUpdateListener;
 import net.frozenorb.potpvp.elo.repository.EloRepository;
 import net.frozenorb.potpvp.elo.repository.MongoEloRepository;
 import net.frozenorb.potpvp.kittype.KitType;
-import net.frozenorb.potpvp.party.Party;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

@@ -3,11 +3,6 @@ package net.frozenorb.potpvp.queue;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 
-import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.elo.EloHandler;
-
-import org.bukkit.Bukkit;
-
 import java.util.Set;
 import java.util.UUID;
 

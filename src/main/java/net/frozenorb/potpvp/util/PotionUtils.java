@@ -2,7 +2,6 @@ package net.frozenorb.potpvp.util;
 
 import com.google.common.collect.ImmutableSet;
 
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 import java.util.Set;

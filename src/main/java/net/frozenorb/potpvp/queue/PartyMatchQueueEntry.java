@@ -2,8 +2,6 @@ package net.frozenorb.potpvp.queue;
 
 import com.google.common.base.Preconditions;
 
-import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.elo.EloHandler;
 import net.frozenorb.potpvp.party.Party;
 
 import java.util.Set;
