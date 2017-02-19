@@ -20,7 +20,7 @@ public final class KitsMenu extends Menu {
     private final KitType kitType;
 
     public KitsMenu(KitType kitType) {
-        super("Viewing " + kitType.getName() + " kits");
+        super("Viewing " + kitType.getDisplayName() + " kits");
 
         setPlaceholder(true);
         setAutoUpdate(true);

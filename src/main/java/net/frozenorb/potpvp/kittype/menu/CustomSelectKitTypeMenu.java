@@ -47,7 +47,7 @@ public final class CustomSelectKitTypeMenu extends Menu {
         Map<Integer, Button> buttons = new HashMap<>();
         int index = 0;
 
-        for (KitType kitType : KitType.values()) {
+        for (KitType kitType : KitType.getAllTypes()) {
             CustomKitTypeMeta meta = metaFunc.apply(kitType);
             buttons.put(index++, new KitTypeButton(kitType, callback, meta.getDescription(), meta.getQuantity()));
         }

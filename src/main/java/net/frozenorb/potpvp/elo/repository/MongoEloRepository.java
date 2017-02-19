@@ -38,9 +38,11 @@ public final class MongoEloRepository implements EloRepository {
             Map<KitType, Integer> parsedElo = new HashMap<>();
 
             rawElo.forEach((kit, value) -> {
-                try {
-                    parsedElo.put(KitType.valueOf(kit), (Integer) value);
-                } catch (Exception ex) {
+                KitType parsed = KitType.byId(kit);
+
+                if (parsed != null) {
+                    parsedElo.put(parsed, (Integer) value);
+                } else {
                     PotPvPSI.getInstance().getLogger().info("Failed to load elo kit=" + kit + ", value=" + value + ".");
                 }
             });
@@ -54,7 +56,7 @@ public final class MongoEloRepository implements EloRepository {
     @Override
     public void saveElo(Set<UUID> playerUuids, Map<KitType, Integer> elo) throws IOException {
         Document document = new Document();
-        elo.forEach((kit, value) -> document.put(kit.name(), value));
+        elo.forEach((kit, value) -> document.put(kit.getId(), value));
 
         Document update = new Document("$set", new Document("elo", document));
 

@@ -41,7 +41,7 @@ public final class SelectKitTypeMenu extends Menu {
         Map<Integer, Button> buttons = new HashMap<>();
         int index = 0;
 
-        for (KitType kitType : KitType.values()) {
+        for (KitType kitType : KitType.getAllTypes()) {
             buttons.put(index++, new KitTypeButton(kitType, callback));
         }
 

@@ -28,7 +28,7 @@ public final class MatchSoupListener implements Listener {
         Player player = event.getPlayer();
         Match match = matchHandler.getMatchPlaying(player);
 
-        if (match == null || match.getKitType() != KitType.SOUP) {
+        if (match == null || !match.getKitType().getId().equals("SOUP")) {
             return;
         }
 
@@ -50,7 +50,7 @@ public final class MatchSoupListener implements Listener {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Match match = matchHandler.getMatchPlaying((Player) event.getEntity());
 
-        if (match != null && match.getKitType() == KitType.SOUP) {
+        if (match != null && match.getKitType().getId().equals("SOUP")) {
             event.setFoodLevel(20);
         }
     }

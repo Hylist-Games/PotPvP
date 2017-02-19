@@ -399,7 +399,7 @@ public final class Match {
         }
 
         String rankedStr = ranked ? "Ranked" : "Unranked";
-        return players + " (" + rankedStr + " " + kitType.getName() + ")";
+        return players + " (" + rankedStr + " " + kitType.getDisplayName() + ")";
     }
 
     /**

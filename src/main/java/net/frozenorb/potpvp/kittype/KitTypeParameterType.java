@@ -15,8 +15,8 @@ public final class KitTypeParameterType implements ParameterType<KitType> {
 
     @Override
     public KitType transform(CommandSender sender, String source) {
-        for (KitType kitType : KitType.values()) {
-            if (kitType.name().equalsIgnoreCase(source)) {
+        for (KitType kitType : KitType.getAllTypes()) {
+            if (kitType.getId().equalsIgnoreCase(source)) {
                 return kitType;
             }
         }
@@ -29,9 +29,9 @@ public final class KitTypeParameterType implements ParameterType<KitType> {
     public List<String> tabComplete(Player player, Set<String> flags, String source) {
         List<String> completions = new ArrayList<>();
 
-        for (KitType kitType : KitType.values()) {
-            if (StringUtils.startsWithIgnoreCase(kitType.name(), source)) {
-                completions.add(kitType.name());
+        for (KitType kitType : KitType.getAllTypes()) {
+            if (StringUtils.startsWithIgnoreCase(kitType.getId(), source)) {
+                completions.add(kitType.getId());
             }
         }
 

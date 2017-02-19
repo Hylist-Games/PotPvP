@@ -179,7 +179,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
     }
 
     private void renderSpectatorLines(List<String> scores, Match match, MatchTeam oldTeam) {
-        scores.add("&eKit: &f" + match.getKitType().getDisplayName());
+        scores.add("&eKit: &f" + match.getKitType().getColoredDisplayName());
 
         List<MatchTeam> teams = match.getTeams();
 

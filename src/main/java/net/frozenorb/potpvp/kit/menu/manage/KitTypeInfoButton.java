@@ -22,13 +22,13 @@ final class KitTypeInfoButton extends Button {
 
     @Override
     public String getName(Player player) {
-        return ChatColor.GREEN.toString() + ChatColor.BOLD + "Editing: " + ChatColor.AQUA + kit.getDisplayName();
+        return ChatColor.GREEN.toString() + ChatColor.BOLD + "Editing: " + ChatColor.AQUA + kit.getColoredDisplayName();
     }
 
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-                ChatColor.GRAY + "You are editing '" + kit.getDisplayName() + "'"
+                ChatColor.GRAY + "You are editing '" + kit.getColoredDisplayName() + "'"
         );
     }
 

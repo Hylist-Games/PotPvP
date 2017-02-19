@@ -18,7 +18,7 @@ public final class EloSetCommands {
     public static void eloSetSolo(Player sender, @Param(name="target") Player target, @Param(name="kit type") KitType kitType, @Param(name="new elo") int newElo) {
         EloHandler eloHandler = PotPvPSI.getInstance().getEloHandler();
         eloHandler.setElo(target, kitType, newElo);
-        sender.sendMessage(ChatColor.YELLOW + "Set " + target.getName() + "'s " + kitType.getName() + " elo to " + newElo + ".");
+        sender.sendMessage(ChatColor.YELLOW + "Set " + target.getName() + "'s " + kitType.getDisplayName() + " elo to " + newElo + ".");
     }
 
     @Command(names = {"elo setTeam"}, permission = "op")
@@ -34,7 +34,7 @@ public final class EloSetCommands {
         }
 
         eloHandler.setElo(targetParty.getMembers(), kitType, newElo);
-        sender.sendMessage(ChatColor.YELLOW + "Set " + kitType.getName() + " elo of " + UUIDUtils.name(targetParty.getLeader()) + "'s party to " + newElo + ".");
+        sender.sendMessage(ChatColor.YELLOW + "Set " + kitType.getDisplayName() + " elo of " + UUIDUtils.name(targetParty.getLeader()) + "'s party to " + newElo + ".");
     }
 
 }

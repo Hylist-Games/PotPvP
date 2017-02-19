@@ -132,7 +132,7 @@ public final class KitSelectionListener implements Listener {
         for (Kit kit : kitHandler.getKits(player.getUniqueId(), kitType)) {
             if (kit.isSelectionItem(clickedItem)) {
                 kit.apply(player);
-                player.sendMessage(ChatColor.YELLOW + "You equipped your \"" + kit.getName() + "\" " + kitType.getName() + " kit.");
+                player.sendMessage(ChatColor.YELLOW + "You equipped your \"" + kit.getName() + "\" " + kitType.getDisplayName() + " kit.");
                 return;
             }
         }
@@ -141,7 +141,7 @@ public final class KitSelectionListener implements Listener {
 
         if (defaultKit.isSelectionItem(clickedItem)) {
             defaultKit.apply(player);
-            player.sendMessage(ChatColor.YELLOW + "You equipped the default kit for " + kitType.getName() + ".");
+            player.sendMessage(ChatColor.YELLOW + "You equipped the default kit for " + kitType.getDisplayName() + ".");
         }
     }
 

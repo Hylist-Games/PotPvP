@@ -44,7 +44,7 @@ final class SpectateButton extends Button {
         }
 
         description.add("");
-        description.add(ChatColor.YELLOW + "Kit: " + ChatColor.WHITE + match.getKitType().getName());
+        description.add(ChatColor.YELLOW + "Kit: " + ChatColor.WHITE + match.getKitType().getDisplayName());
         description.add(ChatColor.YELLOW + "Arena: " + ChatColor.WHITE + match.getArena().getSchematic());
         description.add(ChatColor.YELLOW + "Spectators: " + ChatColor.WHITE + match.getSpectators().size());
 

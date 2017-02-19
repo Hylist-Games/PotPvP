@@ -20,7 +20,7 @@ public class ManageKitTypeMenu extends Menu {
     private KitType type;
 
     public ManageKitTypeMenu(KitType type) {
-        super("Editing: " + type.getDisplayName());
+        super("Editing: " + type.getColoredDisplayName());
 
         setNoncancellingInventory(true);
         setUpdateAfterClick(false);

@@ -30,8 +30,8 @@ final class LobbyLayoutProvider implements BiConsumer<Player, TabLayout> {
             int x = 0;
             int y = 4;
 
-            for (KitType kitType : KitType.values()) {
-                tabLayout.set(x++, y, ChatColor.GOLD + kitType.getName() + " - " + eloHandler.getElo(player, kitType));
+            for (KitType kitType : KitType.getAllTypes()) {
+                tabLayout.set(x++, y, ChatColor.GOLD + kitType.getDisplayName() + " - " + eloHandler.getElo(player, kitType));
 
                 if (x == 3) {
                     x = 0;

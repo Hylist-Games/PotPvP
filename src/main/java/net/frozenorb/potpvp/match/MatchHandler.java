@@ -104,7 +104,7 @@ public final class MatchHandler {
             matchSize <= schematic.getMaxPlayerCount() &&
             matchSize >= schematic.getMinPlayerCount() &&
             (!ranked || schematic.isSupportsRanked()) &&
-            (kitType == KitType.ARCHER || !schematic.isArcherOnly())
+            (kitType.getId().equals("ARCHER") || !schematic.isArcherOnly())
         );
 
         if (openArena == null) {
