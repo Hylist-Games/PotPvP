@@ -103,8 +103,8 @@ public final class MatchHandler {
             schematic.isEnabled() &&
             matchSize <= schematic.getMaxPlayerCount() &&
             matchSize >= schematic.getMinPlayerCount() &&
-            (!ranked || schematic.isSupportsRanked()) /*&&
-            (kitType == KitType.ARCHER || !schematic.isArcherOnly())*/
+            (!ranked || schematic.isSupportsRanked()) &&
+            (kitType == KitType.ARCHER || !schematic.isArcherOnly())
         );
 
         if (openArena == null) {
