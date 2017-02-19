@@ -2,6 +2,7 @@ package net.frozenorb.potpvp.tab;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.MatchHandler;
+import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.qlib.tab.LayoutProvider;
 import net.frozenorb.qlib.tab.TabLayout;
 import net.frozenorb.qlib.util.PlayerUtils;
@@ -25,12 +26,14 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         TabLayout tabLayout = TabLayout.create(player);
 
-        headerLayoutProvider.accept(player, tabLayout);
+        if (!PotPvPSI.getInstance().getSettingHandler().getSetting(player, Setting.LAG_TEST)) {
+            headerLayoutProvider.accept(player, tabLayout);
 
-        if (matchHandler.isPlayingOrSpectatingMatch(player)) {
-            matchLayoutProvider.accept(player, tabLayout);
-        } else {
-            lobbyLayoutProvider.accept(player, tabLayout);
+            if (matchHandler.isPlayingOrSpectatingMatch(player)) {
+                matchLayoutProvider.accept(player, tabLayout);
+            } else {
+                lobbyLayoutProvider.accept(player, tabLayout);
+            }
         }
 
         return tabLayout;

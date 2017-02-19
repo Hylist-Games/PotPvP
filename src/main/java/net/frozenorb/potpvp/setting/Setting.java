@@ -91,6 +91,15 @@ public enum Setting {
         ChatColor.YELLOW + "Hide other lightning",
         true,
         null // no permission required
+    ),
+    LAG_TEST(
+            ChatColor.GREEN + "lag test",
+            ImmutableList.of(),
+            Material.STONE,
+            ChatColor.YELLOW + "yes lag test",
+            ChatColor.YELLOW + "no lag test",
+            false,
+            "potpvp.lagTest"
     );
 
     /**
