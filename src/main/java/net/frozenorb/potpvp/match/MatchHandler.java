@@ -108,6 +108,7 @@ public final class MatchHandler {
         );
 
         if (openArena == null) {
+            PotPvPSI.getInstance().getLogger().warning("Failed to start match: No open arenas found");
             return null;
         }
 
