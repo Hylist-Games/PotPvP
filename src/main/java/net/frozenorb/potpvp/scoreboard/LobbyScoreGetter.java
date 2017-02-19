@@ -5,6 +5,7 @@ import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
+import net.frozenorb.potpvp.queue.MatchQueue;
 import net.frozenorb.potpvp.queue.MatchQueueEntry;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.qlib.util.TimeUtils;
@@ -49,10 +50,10 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
 
         if (entry != null) {
             String waitTimeFormatted = TimeUtils.formatIntoMMSS(entry.getWaitSeconds());
+            MatchQueue queue = entry.getQueue();
 
             scores.add("&b&7&m--------------------");
-            scores.add("&fQueued for &a" + entry.getQueue().getKitType().getName());
-            scores.add("&a" + (entry.getQueue().isRanked() ? "Ranked" : "Unranked"));
+            scores.add("&fQueued for &a" + (queue.isRanked() ? "Ranked" : "Unranked") + " " + queue.getKitType().getName());
             scores.add("&aTime: *&f" + waitTimeFormatted);
         }
     }
