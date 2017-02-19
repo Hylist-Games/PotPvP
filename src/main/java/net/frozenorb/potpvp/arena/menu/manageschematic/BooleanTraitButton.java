@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.arena.menu.manageschematic;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
+import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.ArenaSchematic;
 import net.frozenorb.qlib.menu.Button;
 
@@ -11,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -52,6 +54,12 @@ final class BooleanTraitButton extends Button {
     public void clicked(Player player, int slot, ClickType clickType) {
         boolean current = readFunction.apply(schematic);
         setFunction.accept(schematic, !current);
+
+        try {
+            PotPvPSI.getInstance().getArenaHandler().saveSchematics();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
 
         player.sendMessage(ChatColor.GREEN + "Set " + schematic.getName() + "'s " + trait + " trait to " + (current ? "off" : "on"));
     }
