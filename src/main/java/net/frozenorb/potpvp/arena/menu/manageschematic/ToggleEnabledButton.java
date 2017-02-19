@@ -37,15 +37,15 @@ final class ToggleEnabledButton extends Button {
         if (schematic.isEnabled()) {
             return ImmutableList.of(
                 "",
-                ChatColor.YELLOW + "Click to disable " + schematic.getName() + ", which",
-                ChatColor.YELLOW + "will prevent matches being scheduled on these arenas. Admin",
+                ChatColor.YELLOW + "Click to disable " + schematic.getName() + ", which will prevent matches",
+                ChatColor.YELLOW + "being scheduled on these arenas. Admin",
                 ChatColor.YELLOW + "commands will not be impacted."
             );
         } else {
             return ImmutableList.of(
                     "",
-                    ChatColor.YELLOW + "Click to enable " + schematic.getName() + ", which",
-                    ChatColor.YELLOW + "will allow matches to be scheduled on these arenas."
+                    ChatColor.YELLOW + "Click to enable " + schematic.getName() + ", which will allow matches",
+                    ChatColor.YELLOW + "to be scheduled on these arenas."
             );
         }
     }

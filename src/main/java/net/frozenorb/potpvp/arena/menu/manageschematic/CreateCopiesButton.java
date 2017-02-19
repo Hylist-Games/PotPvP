@@ -49,6 +49,11 @@ final class CreateCopiesButton extends Button {
         int create = clickType.isShiftClick() ? 10 : 1;
         int desired = existing + create;
 
+        if (arenaHandler.getGrid().isBusy()) {
+            player.sendMessage(ChatColor.RED + "Grid is busy.");
+            return;
+        }
+
         try {
             player.sendMessage(ChatColor.GREEN + "Starting...");
 

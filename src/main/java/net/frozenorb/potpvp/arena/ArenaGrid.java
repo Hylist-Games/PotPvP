@@ -92,13 +92,13 @@ public final class ArenaGrid {
                 Arena created = createArena(schematic, xStart, zStart, copy);
                 arenaHandler.registerArena(created);
 
-                if (i++ > currentCopies) {
+                if (i++ > toCreate) {
                     callback.run();
                     cancel();
                 }
             }
 
-        }.runTaskTimer(PotPvPSI.getInstance(), 10L, 10L);
+        }.runTaskTimer(PotPvPSI.getInstance(), 5L, 5L);
     }
 
     private void deleteArenas(ArenaSchematic schematic, int currentCopies, int toDelete, Runnable callback) {
@@ -113,8 +113,10 @@ public final class ArenaGrid {
                 int copy = currentCopies - i;
                 Arena existing = arenaHandler.getArena(schematic, copy);
 
-                WorldEditUtils.clear(existing.getBounds());
-                arenaHandler.unregisterArena(existing);
+                if (existing != null) {
+                    WorldEditUtils.clear(existing.getBounds());
+                    arenaHandler.unregisterArena(existing);
+                }
 
                 if (i++ >= toDelete) {
                     callback.run();

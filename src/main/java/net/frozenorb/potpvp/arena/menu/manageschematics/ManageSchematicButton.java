@@ -55,6 +55,12 @@ final class ManageSchematicButton extends Button {
     }
 
     @Override
+    public int getAmount(Player player) {
+        ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
+        return arenaHandler.getArenas(schematic).size();
+    }
+
+    @Override
     public Material getMaterial(Player player) {
         return schematic.isEnabled() ? Material.EMERALD_BLOCK : Material.REDSTONE_BLOCK;
     }
