@@ -25,6 +25,7 @@ public final class SpectatorItems {
     public static final ItemStack LEAVE_PARTY_ITEM = new ItemStack(Material.FIRE);
 
     static {
+        ItemUtils.setDisplayName(CARPET_ITEM, ChatColor.RED + " ");
         ItemUtils.setDisplayName(TOGGLE_SPECTATORS_ITEM, ChatColor.YELLOW + "Toggle spectator visibility");
         ItemUtils.setDisplayName(VIEW_INVENTORY_ITEM, ChatColor.YELLOW + "View player inventory");
 
