@@ -1,5 +1,7 @@
 package net.frozenorb.potpvp.kit;
 
+import com.google.common.collect.ImmutableList;
+
 import com.mongodb.client.MongoCollection;
 
 import net.frozenorb.potpvp.PotPvPSI;
@@ -32,11 +34,13 @@ public final class KitHandler {
     }
 
     public List<Kit> getKits(UUID playerUuid, KitType kitType) {
-        return kitStores.get(playerUuid).getKits(kitType);
+        PlayerKitStore kitStore = kitStores.get(playerUuid);
+        return kitStore != null ? kitStore.getKits(kitType) : ImmutableList.of();
     }
 
     public Kit getKit(UUID playerUuid, KitType kitType, int slot) {
-        return kitStores.get(playerUuid).getKit(kitType, slot);
+        PlayerKitStore kitStore = kitStores.get(playerUuid);
+        return kitStore != null ? kitStore.getKit(kitType, slot) : null;
     }
 
     public Kit saveDefaultKit(UUID playerUuid, KitType kitType, int slot) {

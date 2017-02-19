@@ -27,11 +27,11 @@ public enum KitType {
         ChatColor.GREEN,
         Material.DIAMOND_SWORD
     ),
-    /*ARCHER(
+    ARCHER(
         "Archer",
-        ChatColor.GRAY,
+        ChatColor.BLUE,
         Material.BOW
-    ),*/
+    ),
     AXE(
         "Axe",
         ChatColor.RED,
