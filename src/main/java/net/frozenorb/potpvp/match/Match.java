@@ -377,8 +377,9 @@ public final class Match {
         } else {
             String nameA = UUIDUtils.name(teamA.getAliveMembers().iterator().next());
             String nameB = UUIDUtils.name(teamB.getAliveMembers().iterator().next());
+            String rankedStr = ranked ? "Ranked" : "Unranked";
 
-            return nameA + " vs " + nameB + " (" + kitType.getName() + ")";
+            return nameA + " vs " + nameB + " (" + rankedStr + " " + kitType.getName() + ")";
         }
     }
 

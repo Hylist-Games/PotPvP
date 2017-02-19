@@ -54,7 +54,7 @@ public final class EloHandler {
     }
 
     public void setElo(Set<UUID> playerUuids, KitType kitType, int newElo) {
-        Map<KitType, Integer> partyElo = eloData.getOrDefault(playerUuids, ImmutableMap.of());
+        Map<KitType, Integer> partyElo = eloData.computeIfAbsent(playerUuids, i -> new ConcurrentHashMap<>());
         partyElo.put(kitType, newElo);
 
         Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {

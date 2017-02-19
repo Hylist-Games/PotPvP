@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public final class EloUpdateListener implements Listener {
 
-    private static final String ELO_CHANGE_MESSAGE = ChatColor.translateAlternateColorCodes('&', "&eElo: &a%s &e(+%i) &c%s &e(-%i)");
+    private static final String ELO_CHANGE_MESSAGE = ChatColor.translateAlternateColorCodes('&', "&eElo: &a%s &e(+%d) &c%s &e(-%d)");
 
     private final EloHandler eloHandler;
     private final EloCalculator eloCalculator;
@@ -69,8 +69,10 @@ public final class EloUpdateListener implements Listener {
             loserStr = Joiner.on(", ").join(loserNames);
         }
 
+        System.out.println(String.format(ELO_CHANGE_MESSAGE, winnerStr, result.getWinnerGain(), loserStr, -result.getLoserGain()));
         // we negate loser gain to convert negative gain to positive (which we prefix with - in the string)
         match.messageAll(String.format(ELO_CHANGE_MESSAGE, winnerStr, result.getWinnerGain(), loserStr, -result.getLoserGain()));
+        System.out.println("messaged all");
     }
 
 }

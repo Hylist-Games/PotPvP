@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.Set;
 import java.util.UUID;
 
+// TODO: Remove old data!
 public final class EloLoadListener implements Listener {
 
     private final EloHandler eloHandler;

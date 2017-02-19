@@ -39,21 +39,21 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
             scores.add("&6Following: *&f" + UUIDUtils.name(following));
         });
 
-        MatchQueueEntry matchQueueEntry;
+        MatchQueueEntry entry;
 
         if (party != null) {
-           matchQueueEntry = queueHandler.getQueueEntry(party);
+           entry = queueHandler.getQueueEntry(party);
         } else {
-            matchQueueEntry = queueHandler.getQueueEntry(player.getUniqueId());
+            entry = queueHandler.getQueueEntry(player.getUniqueId());
         }
 
-        if (matchQueueEntry != null) {
-            String queueTypeFormatted = matchQueueEntry.getQueue().getKitType().getDisplayName();
-            String waitTimeFormatted = TimeUtils.formatIntoMMSS(matchQueueEntry.getWaitSeconds());
+        if (entry != null) {
+            String waitTimeFormatted = TimeUtils.formatIntoMMSS(entry.getWaitSeconds());
 
             scores.add("&b&7&m--------------------");
-            scores.add("&cQueued: &f" + queueTypeFormatted);
-            scores.add("&bQueued for: *&f" + waitTimeFormatted);
+            scores.add("&fQueued for &a" + entry.getQueue().getKitType().getName());
+            scores.add("&a" + (entry.getQueue().isRanked() ? "Ranked" : "Unranked"));
+            scores.add("&aTime: *&f" + waitTimeFormatted);
         }
     }
 
