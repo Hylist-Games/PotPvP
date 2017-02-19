@@ -57,7 +57,6 @@ public final class Party {
      * active invitations from more than one party at a time. All targets
      * (but not senders) are guaranteed to be online.
      */
-    // TODO: Validate invitations are active (PartyInvite#isActive()) before returning them to clients.
     private final Set<PartyInvite> invites = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     /**
