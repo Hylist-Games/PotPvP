@@ -23,7 +23,7 @@ import lombok.Getter;
 
 public final class QueueHandler {
 
-    public static final double RANKED_WINDOW_GROWTH_PER_SECOND = 5;
+    public static final int RANKED_WINDOW_GROWTH_PER_SECOND = 3;
 
     private static final String JOIN_SOLO_MESSAGE = ChatColor.GREEN + "You are now queued for %s %s" + ChatColor.GREEN + ".";
     private static final String LEAVE_SOLO_MESSAGE = ChatColor.GREEN + "You are no longer queued for %s %s" + ChatColor.GREEN + ".";

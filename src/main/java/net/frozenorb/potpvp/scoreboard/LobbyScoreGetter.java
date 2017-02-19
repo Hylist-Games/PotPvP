@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.scoreboard;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.elo.EloHandler;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.party.Party;
@@ -25,6 +26,7 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
         QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
+        EloHandler eloHandler = PotPvPSI.getInstance().getEloHandler();
 
         Party party = partyHandler.getParty(player);
 
@@ -54,8 +56,15 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
 
             scores.add("&b&7&m--------------------");
             scores.add("&7Queued for");
-            scores.add("&a" + (queue.isRanked() ? "Ranked" : "Unranked") + " " + queue.getKitType().getName());
+            scores.add(queue.getKitType().getDisplayColor() + (queue.isRanked() ? "Ranked" : "Unranked") + " " + queue.getKitType().getName());
             scores.add("&aTime: *&7" + waitTimeFormatted);
+
+            if (queue.isRanked()) {
+                int elo = eloHandler.getElo(entry.getMembers(), queue.getKitType());
+                int window = entry.getWaitSeconds() * QueueHandler.RANKED_WINDOW_GROWTH_PER_SECOND;
+
+                scores.add("&aSearch range: *&7" + (elo - window) + " - " + (elo + window));
+            }
         }
     }
 

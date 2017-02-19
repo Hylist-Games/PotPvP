@@ -54,8 +54,8 @@ public final class MatchQueue {
                 int aElo = eloHandler.getElo(a.getMembers(), kitType);
                 int bElo = eloHandler.getElo(b.getMembers(), kitType);
 
-                double aEloWindow = a.getWaitSeconds() * QueueHandler.RANKED_WINDOW_GROWTH_PER_SECOND;
-                double bEloWindow = b.getWaitSeconds() * QueueHandler.RANKED_WINDOW_GROWTH_PER_SECOND;
+                int aEloWindow = a.getWaitSeconds() * QueueHandler.RANKED_WINDOW_GROWTH_PER_SECOND;
+                int bEloWindow = b.getWaitSeconds() * QueueHandler.RANKED_WINDOW_GROWTH_PER_SECOND;
 
                 if (Math.abs(aElo - bElo) > aEloWindow + bEloWindow) {
                     continue;
