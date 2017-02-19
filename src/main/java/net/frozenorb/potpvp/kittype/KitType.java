@@ -26,18 +26,18 @@ public enum KitType {
         "HCTeams",
         ChatColor.GREEN,
         Material.DIAMOND_SWORD
-    );
+    ),
     /*ARCHER(
         "Archer",
         ChatColor.GRAY,
         Material.BOW
-    ),
+    ),*/
     AXE(
         "Axe",
         ChatColor.RED,
         Material.IRON_AXE
     ),
-    NO_ENCHANTS(
+    /*NO_ENCHANTS(
         "No Enchants",
         ChatColor.AQUA,
         Material.ENCHANTMENT_TABLE
@@ -46,13 +46,13 @@ public enum KitType {
         "Gapple",
         ChatColor.GOLD,
         new MaterialData(Material.GOLDEN_APPLE, (byte) 1) // 1 = 'notch' apple
-    ),
+    ),*/
     SOUP(
         "Soup",
         ChatColor.DARK_AQUA,
         Material.MUSHROOM_SOUP
-    ),
-    VANILLA(
+    );
+    /*VANILLA(
         "Vanilla",
         ChatColor.WHITE,
         new MaterialData(Material.POTION, (byte) 8225) // 8225 = regen 2 potion
