@@ -89,8 +89,14 @@ public final class ArenaGrid {
                 int xStart = STARTING_POINT.getBlockX() + (GRID_SPACING_X * schematic.getGridIndex());
                 int zStart = STARTING_POINT.getBlockZ() + (GRID_SPACING_Z * copy);
 
-                Arena created = createArena(schematic, xStart, zStart, copy);
-                arenaHandler.registerArena(created);
+                try {
+                    Arena created = createArena(schematic, xStart, zStart, copy);
+                    arenaHandler.registerArena(created);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    callback.run();
+                    cancel();
+                }
 
                 if (i++ > toCreate) {
                     callback.run();
