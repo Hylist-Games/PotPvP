@@ -46,13 +46,17 @@ public final class LobbyUtils {
                 int partySize = party.getMembers().size();
 
                 if (partySize == 2) {
-                    if (!queueHandler.isQueued(party)) {
+                    if (!queueHandler.isQueuedUnranked(party)) {
                         inventory.setItem(1, QueueItems.JOIN_PARTY_UNRANKED_QUEUE_ITEM);
                     } else {
                         inventory.setItem(1, QueueItems.LEAVE_PARTY_UNRANKED_QUEUE_ITEM);
                     }
 
-                    inventory.setItem(2, QueueItems.JOIN_PARTY_RANKED_QUEUE_ITEM);
+                    if (!queueHandler.isQueuedRanked(party)) {
+                        inventory.setItem(2, QueueItems.JOIN_PARTY_RANKED_QUEUE_ITEM);
+                    } else {
+                        inventory.setItem(2, QueueItems.LEAVE_PARTY_RANKED_QUEUE_ITEM);
+                    }
                 } else if (partySize > 2) {
                     inventory.setItem(1, PartyItems.START_TEAM_SPLIT_ITEM);
                     inventory.setItem(2, PartyItems.START_FFA_ITEM);
@@ -91,13 +95,18 @@ public final class LobbyUtils {
 
                 inventory.setItem(1, LobbyItems.ENABLE_SPEC_MODE_ITEM);
 
-                if (!queueHandler.isQueued(player.getUniqueId())) {
+                if (!queueHandler.isQueuedUnranked(player.getUniqueId())) {
                     inventory.setItem(3, QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM);
                 } else {
                     inventory.setItem(3, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
                 }
 
-                inventory.setItem(4, QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM);
+                if (!queueHandler.isQueuedRanked(player.getUniqueId())) {
+                    inventory.setItem(4, QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM);
+                } else {
+                    inventory.setItem(4, QueueItems.LEAVE_SOLO_RANKED_QUEUE_ITEM);
+                }
+
                 inventory.setItem(6, LobbyItems.EVENTS_ITEM);
                 inventory.setItem(7, KitItems.OPEN_EDITOR_ITEM);
             }

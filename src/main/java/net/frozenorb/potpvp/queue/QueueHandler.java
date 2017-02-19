@@ -154,6 +154,16 @@ public final class QueueHandler {
         return soloQueueCache.containsKey(player);
     }
 
+    public boolean isQueuedRanked(UUID player) {
+        SoloMatchQueueEntry entry = getQueueEntry(player);
+        return entry != null && entry.getQueue().isRanked();
+    }
+
+    public boolean isQueuedUnranked(UUID player) {
+        SoloMatchQueueEntry entry = getQueueEntry(player);
+        return entry != null && !entry.getQueue().isRanked();
+    }
+
     public SoloMatchQueueEntry getQueueEntry(UUID player) {
         return soloQueueCache.get(player);
     }
@@ -161,6 +171,17 @@ public final class QueueHandler {
     public boolean isQueued(Party party) {
         return partyQueueCache.containsKey(party);
     }
+
+    public boolean isQueuedRanked(Party party) {
+        PartyMatchQueueEntry entry = getQueueEntry(party);
+        return entry != null && entry.getQueue().isRanked();
+    }
+
+    public boolean isQueuedUnranked(Party party) {
+        PartyMatchQueueEntry entry = getQueueEntry(party);
+        return entry != null && !entry.getQueue().isRanked();
+    }
+
 
     public PartyMatchQueueEntry getQueueEntry(Party party) {
         return partyQueueCache.get(party);
