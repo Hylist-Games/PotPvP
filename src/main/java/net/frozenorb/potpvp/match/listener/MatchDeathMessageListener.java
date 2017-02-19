@@ -27,7 +27,7 @@ import java.util.UUID;
 public final class MatchDeathMessageListener implements Listener {
 
     private static final String NO_KILLER_MESSAGE = ChatColor.translateAlternateColorCodes('&', "%s&7 died.");
-    private static final String KILLED_BY_OTHER_MESSAGE = ChatColor.translateAlternateColorCodes('&', "%s&7 killed %s&f.");
+    private static final String KILLED_BY_OTHER_MESSAGE = ChatColor.translateAlternateColorCodes('&', "%s&7 killed %s&7.");
 
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerDeath(PlayerDeathEvent event) {
