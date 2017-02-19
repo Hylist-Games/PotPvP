@@ -57,7 +57,7 @@ public final class MatchQueue {
                 int aEloWindow = a.getWaitSeconds() * QueueHandler.RANKED_WINDOW_GROWTH_PER_SECOND;
                 int bEloWindow = b.getWaitSeconds() * QueueHandler.RANKED_WINDOW_GROWTH_PER_SECOND;
 
-                if (Math.abs(aElo - bElo) > aEloWindow + bEloWindow) {
+                if (Math.abs(aElo - bElo) > Math.max(aEloWindow, bEloWindow)) {
                     continue;
                 }
             }
