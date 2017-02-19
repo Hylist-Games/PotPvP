@@ -47,6 +47,8 @@ public final class ArenaGrid {
             throw new IllegalStateException("ArenaGrid is busy!");
         }
 
+        busy = true;
+
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
         int currentCopies = arenaHandler.countArenas(schematic);
 
