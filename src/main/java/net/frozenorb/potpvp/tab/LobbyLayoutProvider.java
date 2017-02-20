@@ -45,6 +45,8 @@ final class LobbyLayoutProvider implements BiConsumer<Player, TabLayout> {
                 return;
             }
 
+            tabLayout.set(1, 7, ChatColor.BLUE.toString() + ChatColor.BOLD + "Your Party");
+
             int x = 0;
             int y = 8;
 
