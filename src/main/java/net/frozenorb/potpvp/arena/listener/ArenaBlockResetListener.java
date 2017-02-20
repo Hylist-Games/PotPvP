@@ -1,5 +1,7 @@
 package net.frozenorb.potpvp.arena.listener;
 
+import com.google.common.collect.Lists;
+
 import net.frozenorb.potpvp.arena.event.ArenaReleasedEvent;
 import net.frozenorb.qlib.cuboid.Cuboid;
 
@@ -12,7 +14,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,7 +24,7 @@ import java.util.Map;
  */
 public final class ArenaBlockResetListener implements Listener {
 
-    private final Map<Location, BlockState> originalStates = new HashMap<>();
+    private final Map<Location, List<BlockState>> originalStates = new HashMap<>();
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
@@ -33,10 +37,8 @@ public final class ArenaBlockResetListener implements Listener {
     }
 
     private void recordOriginalState(Block block) {
-        // we only putIfAbsent because there could be an earlier
-        // state we'd override by inserting its current state
-        // (think a player placing and breaking a block over and over)
-        originalStates.putIfAbsent(block.getLocation(), block.getState());
+        originalStates.computeIfAbsent(block.getLocation(), i -> new ArrayList<>());
+        originalStates.get(block.getLocation()).add(block.getState());
     }
 
     @EventHandler
@@ -45,7 +47,7 @@ public final class ArenaBlockResetListener implements Listener {
 
         originalStates.entrySet().removeIf(entry -> {
            if (bounds.contains(entry.getKey())) {
-               entry.getValue().update(true);
+               Lists.reverse(entry.getValue()).forEach(BlockState::update);
                return true;
            }
 
