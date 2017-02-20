@@ -120,6 +120,10 @@ public final class LobbyUtils {
 
                 inventory.setItem(6, LobbyItems.EVENTS_ITEM);
                 inventory.setItem(7, KitItems.OPEN_EDITOR_ITEM);
+
+                if (player.hasPermission("potpvp.admin")) {
+                    inventory.setItem(8, LobbyItems.MANAGE_ITEM);
+                }
             }
         }
 
