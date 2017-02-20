@@ -9,7 +9,6 @@ import net.frozenorb.qlib.qLib;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.libs.com.google.gson.annotations.JsonAdapter;
 import org.bukkit.craftbukkit.libs.com.google.gson.annotations.SerializedName;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -24,10 +23,11 @@ import lombok.Setter;
  * Denotes a type of Kit, under which players can queue, edit kits,
  * have elo, etc.
  */
-@JsonAdapter(KitTypeJsonAdapter.class)
+// This class purposely uses qLib Gson (as we want to actualy serialize
+// the fields within a KitType instead of pretending it's an enum) instead of ours.
 public final class KitType {
 
-    private static final String MONGO_COLLECTION_NAME = "kitTypeMeta";
+    private static final String MONGO_COLLECTION_NAME = "kitTypes";
     @Getter private static final List<KitType> allTypes = new ArrayList<>();
 
     static {
@@ -124,6 +124,11 @@ public final class KitType {
 
             collection.updateOne(query, kitUpdate, MongoUtils.UPSERT_OPTIONS);
         });
+    }
+
+    @Override
+    public String toString() {
+        return displayName;
     }
 
 }

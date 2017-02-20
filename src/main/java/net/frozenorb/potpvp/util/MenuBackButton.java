@@ -1,8 +1,8 @@
-package net.frozenorb.potpvp.kit.menu.kits;
+package net.frozenorb.potpvp.util;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
-import net.frozenorb.potpvp.kittype.menu.SelectKitTypeMenu;
 import net.frozenorb.qlib.menu.Button;
 
 import org.bukkit.ChatColor;
@@ -11,8 +11,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-final class KitBackButton extends Button {
+public final class MenuBackButton extends Button {
+
+    private final Consumer<Player> openPreviousMenuConsumer;
+
+    public MenuBackButton(Consumer<Player> openPreviousMenuConsumer) {
+        this.openPreviousMenuConsumer = Preconditions.checkNotNull(openPreviousMenuConsumer, "openPreviousMenuConsumer");
+    }
 
     @Override
     public String getName(Player player) {
@@ -22,9 +29,9 @@ final class KitBackButton extends Button {
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-            "",
-            ChatColor.RED + "Click here to return to the",
-            ChatColor.RED + "kit type selection menu."
+                "",
+                ChatColor.RED + "Click here to return to",
+                ChatColor.RED + "the previous menu."
         );
     }
 
@@ -36,10 +43,7 @@ final class KitBackButton extends Button {
     @Override
     public void clicked(Player player, int slot, ClickType clickType) {
         player.closeInventory();
-
-        new SelectKitTypeMenu(kitType -> {
-            new KitsMenu(kitType).openMenu(player);
-        }).openMenu(player);
+        openPreviousMenuConsumer.accept(player);
     }
 
 }

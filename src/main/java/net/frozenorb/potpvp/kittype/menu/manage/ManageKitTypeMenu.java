@@ -1,6 +1,8 @@
 package net.frozenorb.potpvp.kittype.menu.manage;
 
+import net.frozenorb.potpvp.command.ManageCommand;
 import net.frozenorb.potpvp.kittype.KitType;
+import net.frozenorb.potpvp.util.MenuBackButton;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;
 
@@ -49,6 +51,7 @@ public class ManageKitTypeMenu extends Menu {
         buttons.put(getSlot(0, 0), new KitTypeInfoButton(type));
         buttons.put(getSlot(1, 0), Button.placeholder(Material.OBSIDIAN));
         buttons.put(getSlot(2, 0), new SaveKitTypeButton(type));
+        buttons.put(getSlot(3, 0), new MenuBackButton(p -> new ManageCommand.ManageMenu().openMenu(p)));
         buttons.put(getSlot(8, 0), new ManageExitButton());
 
         for (ItemStack armorItem : type.getDefaultArmor()) {

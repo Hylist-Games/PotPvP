@@ -4,7 +4,9 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kit.Kit;
 import net.frozenorb.potpvp.kit.KitHandler;
 import net.frozenorb.potpvp.kittype.KitType;
+import net.frozenorb.potpvp.kittype.menu.SelectKitTypeMenu;
 import net.frozenorb.potpvp.util.InventoryUtils;
+import net.frozenorb.potpvp.util.MenuBackButton;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;
 
@@ -56,7 +58,12 @@ public final class KitsMenu extends Menu {
             }
         }
 
-        buttons.put(getSlot(0, 4), new KitBackButton());
+        buttons.put(getSlot(0, 4), new MenuBackButton(p -> {
+            new SelectKitTypeMenu(kitType -> {
+                new KitsMenu(kitType).openMenu(p);
+            }).openMenu(p);
+        }));
+
         return buttons;
     }
 

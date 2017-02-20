@@ -23,7 +23,7 @@ public final class MatchStatusCommand {
             return;
         }
 
-        for (String line : qLib.GSON.toJson(match).split("\n")) {
+        for (String line : PotPvPSI.getGson().toJson(match).split("\n")) {
             sender.sendMessage("  " + ChatColor.GRAY + line);
         }
     }

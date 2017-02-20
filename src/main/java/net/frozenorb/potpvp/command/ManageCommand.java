@@ -25,9 +25,9 @@ public final class ManageCommand {
         new ManageMenu().openMenu(sender);
     }
 
-    private static class ManageMenu extends Menu {
+    public static class ManageMenu extends Menu {
 
-        ManageMenu() {
+        public ManageMenu() {
             super("Admin Management Menu");
         }
 

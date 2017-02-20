@@ -10,6 +10,7 @@ import net.frozenorb.potpvp.elo.EloHandler;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.kit.KitHandler;
 import net.frozenorb.potpvp.kittype.KitType;
+import net.frozenorb.potpvp.kittype.KitTypeJsonAdapter;
 import net.frozenorb.potpvp.kittype.KitTypeParameterType;
 import net.frozenorb.potpvp.listener.BasicPreventionListener;
 import net.frozenorb.potpvp.listener.ChatListener;
@@ -28,11 +29,23 @@ import net.frozenorb.potpvp.tab.PotPvPLayoutProvider;
 import net.frozenorb.qlib.command.FrozenCommandHandler;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
 import net.frozenorb.qlib.scoreboard.FrozenScoreboardHandler;
+import net.frozenorb.qlib.serialization.BlockVectorAdapter;
+import net.frozenorb.qlib.serialization.ItemStackAdapter;
+import net.frozenorb.qlib.serialization.LocationAdapter;
+import net.frozenorb.qlib.serialization.PotionEffectAdapter;
+import net.frozenorb.qlib.serialization.VectorAdapter;
 import net.frozenorb.qlib.tab.FrozenTabHandler;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.util.BlockVector;
+import org.bukkit.util.Vector;
 
 import lombok.Getter;
 import redis.clients.jedis.JedisPool;
@@ -42,11 +55,18 @@ import redis.clients.jedis.JedisPoolConfig;
 public final class PotPvPSI extends JavaPlugin {
 
     @Getter private static PotPvPSI instance;
+    @Getter private static Gson gson = new GsonBuilder()
+        .registerTypeHierarchyAdapter(PotionEffect.class, new PotionEffectAdapter())
+        .registerTypeHierarchyAdapter(ItemStack.class, new ItemStackAdapter())
+        .registerTypeHierarchyAdapter(Location.class, new LocationAdapter())
+        .registerTypeHierarchyAdapter(Vector.class, new VectorAdapter())
+        .registerTypeAdapter(BlockVector.class, new BlockVectorAdapter())
+        .registerTypeHierarchyAdapter(KitType.class, new KitTypeJsonAdapter()) // custom KitType serializer
+        .serializeNulls()
+        .create();
 
     private MongoClient mongoClient;
     @Getter private MongoDatabase mongoDatabase;
-
-    @Getter private JedisPool redisConnection;
 
     @Getter private SettingHandler settingHandler;
     @Getter private DuelHandler duelHandler;
@@ -67,7 +87,6 @@ public final class PotPvPSI extends JavaPlugin {
         saveDefaultConfig();
 
         setupMongo();
-        setupRedis();
 
         for (World world : Bukkit.getWorlds()) {
             world.setGameRuleValue("doDaylightCycle", "false");
@@ -106,7 +125,6 @@ public final class PotPvPSI extends JavaPlugin {
         instance = null;
 
         mongoClient.close();
-        redisConnection.close();
     }
 
     private void setupMongo() {
@@ -117,19 +135,6 @@ public final class PotPvPSI extends JavaPlugin {
 
         String databaseId = getConfig().getString("Mongo.Database");
         mongoDatabase = mongoClient.getDatabase(databaseId);
-    }
-
-    private void setupRedis() {
-        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-
-        // Don't block any thread when pool is exhausted
-        jedisPoolConfig.setBlockWhenExhausted(false);
-
-        redisConnection = new JedisPool(
-            jedisPoolConfig,
-            getConfig().getString("Redis.Host"),
-            getConfig().getInt("Redis.Port")
-        );
     }
 
 }

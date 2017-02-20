@@ -63,7 +63,7 @@ public final class ArenaHandler {
             if (arenaInstancesFile.exists()) {
                 try (Reader arenaInstancesReader = Files.newReader(arenaInstancesFile, Charsets.UTF_8)) {
                     Type arenaListType = new TypeToken<List<Arena>>(){}.getType();
-                    List<Arena> arenaList = qLib.GSON.fromJson(arenaInstancesReader, arenaListType);
+                    List<Arena> arenaList = PotPvPSI.getGson().fromJson(arenaInstancesReader, arenaListType);
 
                     for (Arena arena : arenaList) {
                         // create inner Map for schematic if not present
@@ -79,7 +79,7 @@ public final class ArenaHandler {
             if (schematicsFile.exists()) {
                 try (Reader schematicsFileReader = Files.newReader(schematicsFile, Charsets.UTF_8)) {
                     Type schematicListType = new TypeToken<List<ArenaSchematic>>() {}.getType();
-                    List<ArenaSchematic> schematicList = qLib.GSON.fromJson(schematicsFileReader, schematicListType);
+                    List<ArenaSchematic> schematicList = PotPvPSI.getGson().fromJson(schematicsFileReader, schematicListType);
 
                     for (ArenaSchematic schematic : schematicList) {
                         this.schematics.put(schematic.getName(), schematic);
@@ -94,7 +94,7 @@ public final class ArenaHandler {
 
     public void saveSchematics() throws IOException {
         Files.write(
-            qLib.GSON.toJson(schematics.values()),
+            PotPvPSI.getGson().toJson(schematics.values()),
             new File(getArenaWorld().getWorldFolder(), SCHEMATICS_FILE_NAME),
             Charsets.UTF_8
         );
@@ -108,7 +108,7 @@ public final class ArenaHandler {
         });
 
         Files.write(
-            qLib.GSON.toJson(allArenas),
+            PotPvPSI.getGson().toJson(allArenas),
             new File(getArenaWorld().getWorldFolder(), ARENA_INSTANCES_FILE_NAME),
             Charsets.UTF_8
         );

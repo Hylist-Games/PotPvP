@@ -2,7 +2,9 @@ package net.frozenorb.potpvp.kit;
 
 import com.google.common.collect.ImmutableList;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.util.JSON;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kit.listener.KitEditorListener;
@@ -28,7 +30,7 @@ import java.util.stream.Collectors;
 
 public final class KitHandler {
 
-    public static final String MONGO_COLLECTION_NAME = "kits";
+    public static final String MONGO_COLLECTION_NAME = "playerKits";
     public static final int KITS_PER_TYPE = 4;
 
     private final Map<UUID, List<Kit>> kitData = new ConcurrentHashMap<>();
@@ -74,7 +76,7 @@ public final class KitHandler {
     public void saveKitsAsync(Player player) {
         Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
             MongoCollection<Document> collection = MongoUtils.getCollection(MONGO_COLLECTION_NAME);
-            String kitJson = qLib.PLAIN_GSON.toJson(kitData.getOrDefault(player.getUniqueId(), ImmutableList.of()));
+            List kitJson = (List) JSON.parse(PotPvPSI.getGson().toJson(kitData.getOrDefault(player.getUniqueId(), ImmutableList.of())));
 
             Document query = new Document("_id", player.getUniqueId().toString());
             Document kitUpdate = new Document("$set", new Document("kits", kitJson));
@@ -88,10 +90,10 @@ public final class KitHandler {
         Document playerKits = collection.find(new Document("_id", playerUuid.toString())).first();
 
         if (playerKits != null) {
-            String kitJson = playerKits.get("kits", Document.class).toJson();
+            List kits = playerKits.get("kits", List.class);
             Type listKit = new TypeToken<List<Kit>>() {}.getType();
 
-            kitData.put(playerUuid, qLib.PLAIN_GSON.fromJson(kitJson, listKit));
+            kitData.put(playerUuid, PotPvPSI.getGson().fromJson(JSON.serialize(kits), listKit));
         }
     }
 

@@ -202,7 +202,7 @@ public final class Match {
 
         // we have to make a few edits to the document so we use Gson (which has adapters
         // for things like Locations) and then parse it
-        Document document = Document.parse(qLib.PLAIN_GSON.toJson(this));
+        Document document = Document.parse(PotPvPSI.getGson().toJson(this));
 
         document.put("winner", teams.indexOf(winner)); // replace the full team with their index in the full list
         document.put("arena", arena.getSchematic()); // replace the full arena with its schematic (website doesn't care which copy we used)

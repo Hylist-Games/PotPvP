@@ -6,6 +6,8 @@ import org.bukkit.craftbukkit.libs.com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
 
+// this adapter makes gson pretend that KitType is an enum (and just writes the id)
+// instead of all fields
 public final class KitTypeJsonAdapter extends TypeAdapter<KitType> {
 
     @Override
