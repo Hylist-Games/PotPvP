@@ -1,9 +1,9 @@
 package net.frozenorb.potpvp.postmatchinv.menu;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import net.frozenorb.qlib.menu.Button;
+import net.frozenorb.qlib.util.UUIDUtils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -11,14 +11,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.UUID;
 
 final class PostMatchPotionsLeftButton extends Button {
 
     private final String playerName;
     private final int potionsRemaining;
 
-    PostMatchPotionsLeftButton(String playerName, int potionsRemaining) {
-        this.playerName = Preconditions.checkNotNull(playerName, "playerName");
+    PostMatchPotionsLeftButton(UUID player, int potionsRemaining) {
+        this.playerName = UUIDUtils.name(player);
         this.potionsRemaining = potionsRemaining;
     }
 

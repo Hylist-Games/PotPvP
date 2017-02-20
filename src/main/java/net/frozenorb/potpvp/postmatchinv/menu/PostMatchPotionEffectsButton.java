@@ -30,17 +30,24 @@ final class PostMatchPotionEffectsButton extends Button {
 
     @Override
     public List<String> getDescription(Player player) {
-        return effects.stream()
-            .map(effect ->
-                ChatColor.AQUA +
-                formatEffectType(effect.getType()) +
-                " " +
-                (effect.getAmplifier() + 1) + // 0-indexed to 1-indexed
-                ChatColor.GRAY +
-                " - " +
-                TimeUtils.formatIntoMMSS(effect.getDuration() / 20) // / 20 to convert ticks to seconds
-            )
-            .collect(Collectors.toList());
+        if (!effects.isEmpty()) {
+            return effects.stream()
+                .map(effect ->
+                    ChatColor.AQUA +
+                    formatEffectType(effect.getType()) +
+                    " " +
+                    (effect.getAmplifier() + 1) + // 0-indexed to 1-indexed
+                    ChatColor.GRAY +
+                    " - " +
+                    TimeUtils.formatIntoMMSS(effect.getDuration() / 20) // / 20 to convert ticks to seconds
+                )
+                .collect(Collectors.toList());
+        } else {
+            return ImmutableList.of(
+            "",
+            ChatColor.GRAY + "No potion effects."
+            );
+        }
     }
 
     @Override

@@ -15,6 +15,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +38,14 @@ public final class PostMatchMenu extends Menu {
         int x = 0;
         int y = 0;
 
+        List<ItemStack> targetInv = new ArrayList<>(Arrays.asList(target.getInventory()));
+
+        // we want the hotbar (the first 9 items) to be at the bottom (end),
+        // not the top (start) of the list, so we rotate them.
+        for (int i = 0; i < 9; i++) {
+            targetInv.add(targetInv.remove(0));
+        }
+
         for (ItemStack inventoryItem : target.getInventory()) {
             buttons.put(getSlot(x, y), Button.fromItem(inventoryItem));
 
@@ -55,19 +65,10 @@ public final class PostMatchMenu extends Menu {
 
         buttons.put(getSlot(0, y), new PostMatchHealthButton(target.getHealth()));
         buttons.put(getSlot(1, y), new PostMatchFoodLevelButton(target.getHunger()));
-
-        List<PotionEffect> potionEffects = target.getPotionEffects();
-
-        if (!potionEffects.isEmpty()) {
-            buttons.put(getSlot(2, y), new PostMatchPotionEffectsButton(potionEffects));
-        }
+        buttons.put(getSlot(2, y), new PostMatchPotionEffectsButton(target.getPotionEffects()));
 
         int healthPotsRemaining = ItemUtils.countAmountMatching(target.getInventory(), ItemUtils.INSTANT_HEAL_POTION_PREDICATE);
-
-        if (healthPotsRemaining > 0) {
-            String playerName = UUIDUtils.name(target.getPlayerUuid());
-            buttons.put(getSlot(3, y), new PostMatchPotionsLeftButton(playerName, healthPotsRemaining));
-        }
+        buttons.put(getSlot(3, y), new PostMatchPotionsLeftButton(target.getPlayerUuid(), healthPotsRemaining));
 
         // swap to other player button (for 1v1s)
         PostMatchInvHandler postMatchInvHandler = PotPvPSI.getInstance().getPostMatchInvHandler();
@@ -82,7 +83,6 @@ public final class PostMatchMenu extends Menu {
                 }
             }
 
-            // will never be null (as we checked size earlier)
             buttons.put(getSlot(8, y), new PostMatchSwapTargetButton(otherPlayer));
         }
 
