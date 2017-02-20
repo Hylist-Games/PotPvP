@@ -51,7 +51,6 @@ public final class Match {
 
     private static final int MATCH_END_DELAY_SECONDS = 2;
 
-    @Getter @SerializedName("_id") private final String id; // @SerializedName for mongo
     @Getter private final KitType kitType;
     @Getter private final Arena arena;
     @Getter private final List<MatchTeam> teams; // immutable so @Getter is ok
@@ -75,7 +74,6 @@ public final class Match {
     @Getter private transient boolean allowRematches;
 
     public Match(KitType kitType, Arena arena, List<MatchTeam> teams, boolean ranked, boolean allowRematches) {
-        this.id = UUID.randomUUID().toString();
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
         this.arena = Preconditions.checkNotNull(arena, "arena");
         this.teams = ImmutableList.copyOf(teams);
@@ -470,16 +468,6 @@ public final class Match {
         for (MatchTeam team : teams) {
             team.playSoundAlive(sound, pitch);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof Match && ((Match) o).id.equals(id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id.hashCode();
     }
 
 }
