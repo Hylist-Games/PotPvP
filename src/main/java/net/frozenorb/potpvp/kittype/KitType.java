@@ -10,12 +10,11 @@ import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.libs.com.google.gson.annotations.JsonAdapter;
 import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import lombok.Getter;
 
@@ -23,22 +22,23 @@ import lombok.Getter;
  * Denotes a type of Kit, under which players can queue, edit kits,
  * have elo, etc.
  */
+@JsonAdapter(KitTypeJsonAdapter.class)
 public final class KitType {
+
+    private static final String MONGO_COLLECTION_NAME = "kitTypeMeta";
+    @Getter private static final List<KitType> allTypes = new ArrayList<>();
 
     static {
         new KitType("HCTEAMS", "HCTeams", ChatColor.GREEN, Material.DIAMOND_SWORD);
         new KitType("ARCHER", "Archer", ChatColor.BLUE, Material.BOW);
-        new KitType("SOUP", "Soup", ChatColor.RED, Material.MUSHROOM_SOUP);
+        new KitType("SOUP", "Soup", ChatColor.DARK_AQUA, Material.MUSHROOM_SOUP);
         new KitType("AXE", "Axe", ChatColor.RED, Material.IRON_AXE);
-        new KitType("NO_ENCHANTS", "No Enchants", ChatColor.AQUA, Material.ENCHANTMENT_TABLE);
-        new KitType("GAPPLE", "Gappe", ChatColor.GOLD, Material.GOLDEN_APPLE, 1);
+        new KitType("NO_ENCHANTS", "No Ench", ChatColor.AQUA, Material.ENCHANTMENT_TABLE);
+        new KitType("GAPPLE", "Gapple", ChatColor.GOLD, Material.GOLDEN_APPLE, 1);
         new KitType("VANILLA", "Vanilla", ChatColor.WHITE, Material.POTION, 8225); // 8225 = regen 2 potion
         new KitType("CLASSIC", "Classic", ChatColor.AQUA, Material.DIAMOND_CHESTPLATE);
         new KitType("WIZARD", "Wizard", ChatColor.DARK_PURPLE, Material.BLAZE_POWDER);
     }
-
-    private static final String MONGO_COLLECTION_NAME = "kitTypeMeta";
-    @Getter private static final List<KitType> allTypes = new ArrayList<>();
 
     @Getter private final String id;
     @Getter private final String displayName;
