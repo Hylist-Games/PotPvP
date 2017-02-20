@@ -14,11 +14,13 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 public final class MatchWizardListener implements Listener {
 
@@ -45,8 +47,8 @@ public final class MatchWizardListener implements Listener {
             .with(FireworkEffect.Type.BALL_LARGE)
             .build();
 
-        Arrow arrow = player.launchProjectile(Arrow.class);
-        arrow.setVelocity(arrow.getVelocity().multiply(2));
+        Snowball snowball = player.launchProjectile(Snowball.class);
+        snowball.setVelocity(snowball.getVelocity().multiply(2));
 
         new BukkitRunnable() {
 
@@ -59,20 +61,20 @@ public final class MatchWizardListener implements Listener {
                     return;
                 }
 
-                if (arrow.isDead() || arrow.isOnGround()) {
-                    for (Entity entity : arrow.getNearbyEntities(4, 4, 4)) {
+                if (snowball.isDead() || snowball.isOnGround()) {
+                    for (Entity entity : snowball.getNearbyEntities(4, 4, 4)) {
                         MatchTeam entityTeam = match.getTeam(entity.getUniqueId());
 
                         if (entityTeam != null && !entityTeam.getAllMembers().contains(player.getUniqueId())) {
-                            entity.setVelocity(entity.getLocation().toVector().subtract(arrow.getLocation().toVector()));
+                            entity.setVelocity(entity.getLocation().toVector().subtract(snowball.getLocation().toVector()).normalize().add(new Vector(0, 0.7, 0.0)));
                         }
                     }
 
-                    arrow.remove();
+                    snowball.remove();
                     cancel();
                 } else {
                     try {
-                        fireworkEffectPlayer.playFirework(arrow.getWorld(), arrow.getLocation(), effect);
+                        fireworkEffectPlayer.playFirework(snowball.getWorld(), snowball.getLocation(), effect);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
