@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * Remove dropped items when {@link net.frozenorb.potpvp.arena.Arena}s are released.
  */
-public final class ArenaClearListener implements Listener {
+public final class ArenaItemResetListener implements Listener {
 
     @EventHandler
     public void onArenaReleased(ArenaReleasedEvent event) {

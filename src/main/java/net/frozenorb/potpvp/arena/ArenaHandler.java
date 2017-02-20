@@ -10,7 +10,8 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.event.ArenaAllocatedEvent;
 import net.frozenorb.potpvp.arena.event.ArenaReleasedEvent;
-import net.frozenorb.potpvp.arena.listener.ArenaClearListener;
+import net.frozenorb.potpvp.arena.listener.ArenaBlockResetListener;
+import net.frozenorb.potpvp.arena.listener.ArenaItemResetListener;
 import net.frozenorb.qlib.qLib;
 
 import org.bukkit.Bukkit;
@@ -49,7 +50,9 @@ public final class ArenaHandler {
     @Getter private final ArenaGrid grid = new ArenaGrid();
 
     public ArenaHandler() {
-        Bukkit.getPluginManager().registerEvents(new ArenaClearListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new ArenaItemResetListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new ArenaBlockResetListener(), PotPvPSI.getInstance());
+
         File worldFolder = getArenaWorld().getWorldFolder();
 
         File arenaInstancesFile = new File(worldFolder, ARENA_INSTANCES_FILE_NAME);
