@@ -33,7 +33,10 @@ final class RemoveCopiesButton extends Button {
         return ImmutableList.of(
             "",
             ChatColor.RED.toString() + ChatColor.BOLD + "CLICK " + ChatColor.RED + "to remove 1 copy",
-            ChatColor.RED.toString() + ChatColor.BOLD + "SHIFT-CLICK " + ChatColor.RED + "to remove 10 copies"
+            ChatColor.RED.toString() + ChatColor.BOLD + "SHIFT-CLICK " + ChatColor.RED + "to remove 10 copies",
+            "",
+            ChatColor.AQUA + "Scale directly to a desired quantity",
+            ChatColor.AQUA + "with /arena scale " + schematic.getName() + " <count>"
         );
     }
 

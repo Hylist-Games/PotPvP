@@ -44,7 +44,7 @@ public final class ArenaGrid {
 
     public void scaleCopies(ArenaSchematic schematic, int desiredCopies, Runnable callback) {
         if (busy) {
-            throw new IllegalStateException("ArenaGrid is busy!");
+            throw new IllegalStateException("Grid is busy!");
         }
 
         busy = true;
@@ -68,8 +68,6 @@ public final class ArenaGrid {
         } else if (currentCopies < desiredCopies) {
             createArenas(schematic, currentCopies, desiredCopies - currentCopies, saveWrapper);
         } else {
-            // if we're not actually changing anything return
-            // early to avoid unneeded arena save (see below)
             saveWrapper.run();
         }
     }
@@ -79,13 +77,11 @@ public final class ArenaGrid {
 
         new BukkitRunnable() {
 
-            // start at 1 and use >= so (currentCopies + i)
-            // is the copy of the new arena
-            int i = 1;
+            int created = 0;
 
             @Override
             public void run() {
-                int copy = currentCopies + i;
+                int copy = currentCopies + created + 1; // arenas are 1-indexed, not 0
                 int xStart = STARTING_POINT.getBlockX() + (GRID_SPACING_X * schematic.getGridIndex());
                 int zStart = STARTING_POINT.getBlockZ() + (GRID_SPACING_Z * copy);
 
@@ -98,13 +94,15 @@ public final class ArenaGrid {
                     cancel();
                 }
 
-                if (i++ > toCreate) {
+                created++;
+
+                if (created == toCreate) {
                     callback.run();
                     cancel();
                 }
             }
 
-        }.runTaskTimer(PotPvPSI.getInstance(), 5L, 5L);
+        }.runTaskTimer(PotPvPSI.getInstance(), 8L, 8L);
     }
 
     private void deleteArenas(ArenaSchematic schematic, int currentCopies, int toDelete, Runnable callback) {
@@ -112,11 +110,11 @@ public final class ArenaGrid {
 
         new BukkitRunnable() {
 
-            int i = 0;
+            int deleted = 0;
 
             @Override
             public void run() {
-                int copy = currentCopies - i;
+                int copy = currentCopies - deleted;
                 Arena existing = arenaHandler.getArena(schematic, copy);
 
                 if (existing != null) {
@@ -124,13 +122,15 @@ public final class ArenaGrid {
                     arenaHandler.unregisterArena(existing);
                 }
 
-                if (i++ >= toDelete) {
+                deleted++;
+
+                if (deleted == toDelete) {
                     callback.run();
                     cancel();
                 }
             }
 
-        }.runTaskTimer(PotPvPSI.getInstance(), 5L, 5L);
+        }.runTaskTimer(PotPvPSI.getInstance(), 8L, 8L);
     }
 
     private Arena createArena(ArenaSchematic schematic, int xStart, int zStart, int copy) {

@@ -33,7 +33,10 @@ final class CreateCopiesButton extends Button {
         return ImmutableList.of(
             "",
             ChatColor.GREEN.toString() + ChatColor.BOLD + "CLICK " + ChatColor.GREEN + "to create 1 new copy",
-            ChatColor.GREEN.toString() + ChatColor.BOLD + "SHIFT-CLICK " + ChatColor.GREEN + "to create 10 new copies"
+            ChatColor.GREEN.toString() + ChatColor.BOLD + "SHIFT-CLICK " + ChatColor.GREEN + "to create 10 new copies",
+            "",
+            ChatColor.AQUA + "Scale directly to a desired quantity",
+            ChatColor.AQUA + "with /arena scale " + schematic.getName() + " <count>"
         );
     }
 
@@ -58,7 +61,7 @@ final class CreateCopiesButton extends Button {
             player.sendMessage(ChatColor.GREEN + "Starting...");
 
             arenaHandler.getGrid().scaleCopies(schematic, desired, () -> {
-                player.sendMessage(ChatColor.GREEN + "Scaled " + schematic.getName() + " to " + desired + "...");
+                player.sendMessage(ChatColor.GREEN + "Scaled " + schematic.getName() + " to " + desired + ".");
             });
         } catch (Exception ex) {
             player.sendMessage(ChatColor.RED + "Failed to paste " + schematic.getName() + ": " + ex.getMessage());
