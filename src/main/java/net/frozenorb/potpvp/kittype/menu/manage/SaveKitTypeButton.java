@@ -1,4 +1,4 @@
-package net.frozenorb.potpvp.kit.menu.manage;
+package net.frozenorb.potpvp.kittype.menu.manage;
 
 import com.google.common.collect.ImmutableList;
 
@@ -14,10 +14,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-class SaveKitTypeButton extends Button {
+final class SaveKitTypeButton extends Button {
+
     private final KitType type;
 
-    public SaveKitTypeButton(KitType type) {
+    SaveKitTypeButton(KitType type) {
         this.type = type;
     }
 
@@ -56,8 +57,9 @@ class SaveKitTypeButton extends Button {
             }
         }
 
-        type.getMeta().setEditorItems(kitInventory);
+        type.setEditorItems(kitInventory);
+        type.saveAsync();
+
         player.closeInventory();
-        type.saveMetaAsync();
     }
 }

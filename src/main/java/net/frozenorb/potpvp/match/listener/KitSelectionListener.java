@@ -40,11 +40,8 @@ public final class KitSelectionListener implements Listener {
                 continue;
             }
 
-            int slot = 2; // start in 3rd slot
-
-            for (Kit kit : kitHandler.getKits(player.getUniqueId(), kitType)) {
-                player.getInventory().setItem(slot, kit.createSelectionItem());
-                slot += 2;
+            for (Kit kit : kitHandler.getKits(player, kitType)) {
+                player.getInventory().setItem(kit.getSlot() * 2, kit.createSelectionItem());
             }
 
             player.getInventory().setItem(0, Kit.ofDefaultKit(kitType).createSelectionItem());
@@ -66,10 +63,9 @@ public final class KitSelectionListener implements Listener {
 
         KitHandler kitHandler = PotPvPSI.getInstance().getKitHandler();
         ItemStack droppedItem = event.getItemDrop().getItemStack();
-        UUID playerUuid = event.getPlayer().getUniqueId();
         KitType kitType = match.getKitType();
 
-        for (Kit kit : kitHandler.getKits(playerUuid, kitType)) {
+        for (Kit kit : kitHandler.getKits(event.getPlayer(), kitType)) {
             if (kit.isSelectionItem(droppedItem)) {
                 event.setCancelled(true);
                 return;
@@ -96,10 +92,9 @@ public final class KitSelectionListener implements Listener {
         }
 
         KitHandler kitHandler = PotPvPSI.getInstance().getKitHandler();
-        UUID playerUuid = event.getEntity().getUniqueId();
         KitType kitType = match.getKitType();
 
-        for (Kit kit : kitHandler.getKits(playerUuid, kitType)) {
+        for (Kit kit : kitHandler.getKits(event.getEntity(), kitType)) {
             event.getDrops().remove(kit.createSelectionItem());
         }
 
@@ -129,7 +124,7 @@ public final class KitSelectionListener implements Listener {
         KitType kitType = match.getKitType();
         Player player = event.getPlayer();
 
-        for (Kit kit : kitHandler.getKits(player.getUniqueId(), kitType)) {
+        for (Kit kit : kitHandler.getKits(player, kitType)) {
             if (kit.isSelectionItem(clickedItem)) {
                 kit.apply(player);
                 player.sendMessage(ChatColor.YELLOW + "You equipped your \"" + kit.getName() + "\" " + kitType.getDisplayName() + " kit.");

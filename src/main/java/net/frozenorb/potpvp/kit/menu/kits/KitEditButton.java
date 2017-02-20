@@ -16,15 +16,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 import java.util.List;
+import java.util.Optional;
 
 final class KitEditButton extends Button {
 
-    private final Kit kit;
+    private final Optional<Kit> kitOpt;
     private final KitType kitType;
     private final int slot;
 
-    KitEditButton(Kit kit, KitType kitType, int slot) {
-        this.kit = kit;
+    KitEditButton(Optional<Kit> kitOpt, KitType kitType, int slot) {
+        this.kitOpt = Preconditions.checkNotNull(kitOpt, "kitOpt");
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
         this.slot = slot;
     }
@@ -49,14 +50,12 @@ final class KitEditButton extends Button {
 
     @Override
     public void clicked(Player player, int slot, ClickType clickType) {
-        Kit kit = this.kit;
-
-        if (kit == null) {
+        Kit resolvedKit = kitOpt.orElseGet(() -> {
             KitHandler kitHandler = PotPvPSI.getInstance().getKitHandler();
-            kit = kitHandler.saveDefaultKit(player.getUniqueId(), kitType, this.slot);
-        }
+            return kitHandler.saveDefaultKit(player, kitType, this.slot);
+        });
 
-        new EditKitMenu(kit).openMenu(player);
+        new EditKitMenu(resolvedKit).openMenu(player);
     }
 
 }

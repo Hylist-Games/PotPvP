@@ -1,4 +1,4 @@
-package net.frozenorb.potpvp.kit.menu.manage;
+package net.frozenorb.potpvp.kittype.menu.manage;
 
 import com.google.common.collect.ImmutableList;
 
@@ -12,7 +12,8 @@ import org.bukkit.event.inventory.ClickType;
 
 import java.util.List;
 
-class ManageExitButton extends Button {
+final class ManageExitButton extends Button {
+
     @Override
     public String getName(Player player) {
         return ChatColor.RED.toString() + ChatColor.BOLD + "Cancel";
@@ -22,8 +23,7 @@ class ManageExitButton extends Button {
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
                 "",
-                ChatColor.YELLOW + "Click this to abort editing your kit,",
-                ChatColor.YELLOW + "and return to the kit menu."
+                ChatColor.YELLOW + "Click this to abort editing this kit type."
         );
     }
 

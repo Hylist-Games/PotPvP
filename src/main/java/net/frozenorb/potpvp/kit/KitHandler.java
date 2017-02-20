@@ -14,18 +14,24 @@ import net.frozenorb.qlib.qLib;
 
 import org.bson.Document;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.libs.com.google.gson.reflect.TypeToken;
+import org.bukkit.entity.Player;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public final class KitHandler {
 
-    public static final String MONGO_COLLECTION_NAME = "playerKits";
+    public static final String MONGO_COLLECTION_NAME = "kits";
     public static final int KITS_PER_TYPE = 4;
 
-    private final Map<UUID, PlayerKitStore> kitStores = new ConcurrentHashMap<>();
+    private final Map<UUID, List<Kit>> kitData = new ConcurrentHashMap<>();
 
     public KitHandler() {
         Bukkit.getPluginManager().registerEvents(new KitEditorListener(), PotPvPSI.getInstance());
@@ -33,57 +39,64 @@ public final class KitHandler {
         Bukkit.getPluginManager().registerEvents(new KitLoadListener(), PotPvPSI.getInstance());
     }
 
-    public List<Kit> getKits(UUID playerUuid, KitType kitType) {
-        PlayerKitStore kitStore = kitStores.get(playerUuid);
-        return kitStore != null ? kitStore.getKits(kitType) : ImmutableList.of();
+    public List<Kit> getKits(Player player, KitType kitType) {
+        return kitData.getOrDefault(player.getUniqueId(), ImmutableList.of())
+            .stream()
+            .filter(k -> k.getType() == kitType)
+            .collect(Collectors.toList());
     }
 
-    public Kit getKit(UUID playerUuid, KitType kitType, int slot) {
-        PlayerKitStore kitStore = kitStores.get(playerUuid);
-        return kitStore != null ? kitStore.getKit(kitType, slot) : null;
+    public Optional<Kit> getKit(Player player, KitType kitType, int slot) {
+        return kitData.getOrDefault(player.getUniqueId(), ImmutableList.of())
+            .stream()
+            .filter(k -> k.getType() == kitType && k.getSlot() == slot)
+            .findFirst();
     }
 
-    public Kit saveDefaultKit(UUID playerUuid, KitType kitType, int slot) {
-        return kitStores.get(playerUuid).saveDefaultKit(kitType, slot);
+    public Kit saveDefaultKit(Player player, KitType kitType, int slot) {
+        Kit created = Kit.ofDefaultKit(kitType, "Kit " + slot, slot);
+
+        kitData.computeIfAbsent(player.getUniqueId(), i -> new ArrayList<>()).add(created);
+        saveKitsAsync(player);
+
+        return created;
     }
 
-    public void removeKit(UUID playerUuid, KitType kitType, int slot) {
-        kitStores.get(playerUuid).removeKit(kitType, slot);
+    public void removeKit(Player player, KitType kitType, int slot) {
+        boolean removed = kitData.computeIfAbsent(player.getUniqueId(), i -> new ArrayList<>())
+                .removeIf(k -> k.getType() == kitType && k.getSlot() == slot);
+
+        if (removed) {
+            saveKitsAsync(player);
+        }
     }
 
-    /* Deprecated because kit handling / saving should be entirely contained in `PlayerKitStore`s,
-       however since `Kit`s are mutable we allow this method to trigger a save (since changes to `Kit`s
-       can't be detected by `PlayerKitStore`s. Solutions to this include, but are not limited to,
-        * Making `Kit`s immutable
-        * Having `Kit`s hold a reference to their PlayerKitStore so they can trigger a save independently
-          however when we make a Kit and build it manually (ex PlayerKitStore::setDefaultKit) we have to
-          disable such functionality.
-     */
-    @Deprecated
-    public void saveKitsAsync(UUID playerUuid) {
+    public void saveKitsAsync(Player player) {
         Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
             MongoCollection<Document> collection = MongoUtils.getCollection(MONGO_COLLECTION_NAME);
-            Document playerKits = Document.parse(qLib.PLAIN_GSON.toJson(kitStores.get(playerUuid)));
-            playerKits.remove("player");
+            String kitJson = qLib.PLAIN_GSON.toJson(kitData.getOrDefault(player.getUniqueId(), ImmutableList.of()));
 
-            collection.updateOne(new Document("player", playerUuid.toString()), new Document("$set", playerKits), MongoUtils.UPSERT_OPTIONS);
+            Document query = new Document("_id", player.getUniqueId().toString());
+            Document kitUpdate = new Document("$set", new Document("kits", kitJson));
+
+            collection.updateOne(query, kitUpdate, MongoUtils.UPSERT_OPTIONS);
         });
     }
 
     public void loadKits(UUID playerUuid) {
         MongoCollection<Document> collection = MongoUtils.getCollection(MONGO_COLLECTION_NAME);
-        Document playerKits = collection.find(new Document("player", playerUuid.toString())).first();
+        Document playerKits = collection.find(new Document("_id", playerUuid.toString())).first();
 
         if (playerKits != null) {
-            PlayerKitStore playerKitStore = qLib.PLAIN_GSON.fromJson(playerKits.toJson(), PlayerKitStore.class);
-            kitStores.put(playerUuid, playerKitStore);
-        } else {
-            kitStores.put(playerUuid, new PlayerKitStore(playerUuid));
+            String kitJson = playerKits.get("kits", Document.class).toJson();
+            Type listKit = new TypeToken<List<Kit>>() {}.getType();
+
+            kitData.put(playerUuid, qLib.PLAIN_GSON.fromJson(kitJson, listKit));
         }
     }
 
-    public void unloadKits(UUID playerUuid) {
-        kitStores.remove(playerUuid);
+    public void unloadKits(Player player) {
+        kitData.remove(player.getUniqueId());
     }
 
 }

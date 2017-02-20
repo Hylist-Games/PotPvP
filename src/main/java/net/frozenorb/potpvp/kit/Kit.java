@@ -18,19 +18,21 @@ import lombok.Setter;
 public final class Kit {
 
     @Getter @Setter private String name;
+    @Getter @Setter private int slot;
     @Getter @Setter private KitType type;
     @Getter @Setter private ItemStack[] inventoryContents;
 
     public static Kit ofDefaultKit(KitType kitType) {
-        return ofDefaultKit(kitType, "Default Kit");
+        return ofDefaultKit(kitType, "Default Kit", 0);
     }
 
-    public static Kit ofDefaultKit(KitType kitType, String name) {
+    public static Kit ofDefaultKit(KitType kitType, String name, int slot) {
         Kit kit = new Kit();
 
         kit.setName(name);
         kit.setType(kitType);
-        kit.setInventoryContents(kitType.getMeta().getDefaultInventory());
+        kit.setSlot(slot);
+        kit.setInventoryContents(kitType.getDefaultInventory());
 
         return kit;
     }
@@ -39,7 +41,7 @@ public final class Kit {
         PatchedPlayerUtils.resetInventory(player);
 
         // we don't let players actually customize their armor, we just apply default
-        player.getInventory().setArmorContents(type.getMeta().getDefaultArmor());
+        player.getInventory().setArmorContents(type.getDefaultArmor());
         player.getInventory().setContents(inventoryContents);
 
         Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), player::updateInventory, 1L);

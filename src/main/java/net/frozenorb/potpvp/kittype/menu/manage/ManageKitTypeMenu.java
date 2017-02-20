@@ -1,4 +1,4 @@
-package net.frozenorb.potpvp.kit.menu.manage;
+package net.frozenorb.potpvp.kittype.menu.manage;
 
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.qlib.menu.Button;
@@ -51,7 +51,7 @@ public class ManageKitTypeMenu extends Menu {
         buttons.put(getSlot(2, 0), new SaveKitTypeButton(type));
         buttons.put(getSlot(8, 0), new ManageExitButton());
 
-        for (ItemStack armorItem : type.getMeta().getDefaultArmor()) {
+        for (ItemStack armorItem : type.getDefaultArmor()) {
             int armorYOffset = 2;
             int armorSlot = -1;
 
@@ -68,7 +68,7 @@ public class ManageKitTypeMenu extends Menu {
             buttons.put(getSlot(0, armorSlot + armorYOffset), Button.fromItem(armorItem));
         }
 
-        ItemStack[] kit = type.getMeta().getEditorItems();
+        ItemStack[] kit = type.getEditorItems();
         int x = 0;
         int y = 0;
 

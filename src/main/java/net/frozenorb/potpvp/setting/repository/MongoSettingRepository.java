@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public final class MongoSettingRepository implements SettingRepository {
 
-    private static final String MONGO_COLLECTION_NAME = "playerSettings";
+    private static final String MONGO_COLLECTION_NAME = "settings";
 
     @Override
     public Map<Setting, Boolean> loadSettings(UUID playerUuid) throws IOException {

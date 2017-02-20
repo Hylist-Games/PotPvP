@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kit.Kit;
-import net.frozenorb.potpvp.kittype.KitTypeMeta;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;
@@ -73,9 +72,7 @@ public final class EditKitMenu extends Menu {
         buttons.put(getSlot(7, 0), new ClearInventoryButton());
         buttons.put(getSlot(8, 0), new CancelKitEditButton(kit.getType()));
 
-        KitTypeMeta kitTypeMeta = kit.getType().getMeta();
-
-        for (ItemStack armorItem : kitTypeMeta.getDefaultArmor()) {
+        for (ItemStack armorItem : kit.getType().getDefaultArmor()) {
             int armorYOffset = 2;
             int armorSlot = -1;
 
@@ -92,12 +89,12 @@ public final class EditKitMenu extends Menu {
             buttons.put(getSlot(0, armorSlot + armorYOffset), new ArmorButton(armorItem));
         }
 
-        if (kitTypeMeta.isEditorSpawnAllowed()) {
+        if (kit.getType().isEditorSpawnAllowed()) {
             short splashHealPotionDura = -1;
             int x = 0;
             int y = 0;
 
-            for (ItemStack editorItem : kitTypeMeta.getEditorItems()) {
+            for (ItemStack editorItem : kit.getType().getEditorItems()) {
                 if (editorItem != null) {
                     if (editorItem.getType() == Material.POTION) {
                         Potion potion = Potion.fromItemStack(editorItem);

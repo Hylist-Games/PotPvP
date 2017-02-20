@@ -55,7 +55,7 @@ final class LoadDefaultKitButton extends Button {
          * Otherwise they can duplicate items infinitely. This exploits kits like archer and axe pvp. */
         player.setItemOnCursor(new ItemStack(Material.AIR));
 
-        player.getInventory().setContents(kitType.getMeta().getDefaultInventory());
+        player.getInventory().setContents(kitType.getDefaultInventory());
 
         Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), player::updateInventory, 1L);
     }

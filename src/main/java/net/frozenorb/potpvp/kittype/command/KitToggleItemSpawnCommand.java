@@ -11,10 +11,10 @@ public final class KitToggleItemSpawnCommand {
 
     @Command(names = "kit toggleItemSpawn", permission = "op")
     public static void kitToggleItemSpawn(Player sender, @Param(name="kit type") KitType kitType, @Param(name="allowed") boolean allowed) {
-        kitType.getMeta().setEditorSpawnAllowed(allowed);
-        kitType.saveMetaAsync();
+        kitType.setEditorSpawnAllowed(allowed);
+        kitType.saveAsync();
 
-        sender.sendMessage(ChatColor.YELLOW + "Kit editor item spawns are now " + (allowed ? "allowed" : "disallowed"));
+        sender.sendMessage(ChatColor.YELLOW + "Kit editor item spawning is now " + (allowed ? "enabled" : "disabled") + ".");
     }
 
 }

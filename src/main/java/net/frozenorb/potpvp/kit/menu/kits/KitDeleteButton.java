@@ -54,7 +54,7 @@ final class KitDeleteButton extends Button {
     @Override
     public void clicked(Player player, int slot, ClickType clickType) {
         KitHandler kitHandler = PotPvPSI.getInstance().getKitHandler();
-        kitHandler.removeKit(player.getUniqueId(), kitType, this.slot);
+        kitHandler.removeKit(player, kitType, this.slot);
     }
 
 }

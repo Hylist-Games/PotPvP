@@ -53,7 +53,7 @@ final class SaveButton extends Button {
     @Override
     public void clicked(Player player, int slot, ClickType clickType) {
         kit.setInventoryContents(player.getInventory().getContents());
-        PotPvPSI.getInstance().getKitHandler().saveKitsAsync(player.getUniqueId());
+        PotPvPSI.getInstance().getKitHandler().saveKitsAsync(player);
 
         player.setItemOnCursor(new ItemStack(Material.AIR));
 
@@ -62,7 +62,7 @@ final class SaveButton extends Button {
 
         new KitsMenu(kit.getType()).openMenu(player);
 
-        ItemStack[] defaultInventory = kit.getType().getMeta().getDefaultInventory();
+        ItemStack[] defaultInventory = kit.getType().getDefaultInventory();
         int foodInDefault = ItemUtils.countAmountMatching(defaultInventory, v -> v.getType().isEdible());
         int pearlsInDefault = ItemUtils.countAmountMatching(defaultInventory, v -> v.getType() == Material.ENDER_PEARL);
 

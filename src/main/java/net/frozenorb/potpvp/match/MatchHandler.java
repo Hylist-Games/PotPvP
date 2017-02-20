@@ -34,7 +34,7 @@ import lombok.Setter;
 
 public final class MatchHandler {
 
-    public static final String MONGO_COLLECTION_NAME = "endedMatches";
+    public static final String MONGO_COLLECTION_NAME = "matches";
 
     private final Set<Match> hostedMatches = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
