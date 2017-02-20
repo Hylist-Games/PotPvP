@@ -36,16 +36,6 @@ public final class KitType {
         collection.find().iterator().forEachRemaining(doc -> {
             allTypes.add(qLib.PLAIN_GSON.fromJson(doc.toJson(), KitType.class));
         });
-
-        /*new KitType("HCTEAMS", "HCTeams", ChatColor.GREEN, Material.DIAMOND_SWORD);
-        new KitType("ARCHER", "Archer", ChatColor.BLUE, Material.BOW);
-        new KitType("SOUP", "Soup", ChatColor.DARK_AQUA, Material.MUSHROOM_SOUP);
-        new KitType("AXE", "Axe", ChatColor.RED, Material.IRON_AXE);
-        new KitType("NO_ENCHANTS", "No Ench", ChatColor.AQUA, Material.ENCHANTMENT_TABLE);
-        new KitType("GAPPLE", "Gapple", ChatColor.GOLD, Material.GOLDEN_APPLE, 1);
-        new KitType("VANILLA", "Vanilla", ChatColor.WHITE, Material.POTION, 8225); // 8225 = regen 2 potion
-        new KitType("CLASSIC", "Classic", ChatColor.AQUA, Material.DIAMOND_CHESTPLATE);
-        new KitType("WIZARD", "Wizard", ChatColor.DARK_PURPLE, Material.BLAZE_POWDER);*/
     }
 
     /**
@@ -98,6 +88,11 @@ public final class KitType {
      * whereas some kit types (ex HCTeams and soup) allow spawning in items as well.
      */
     @Getter @Setter private boolean editorSpawnAllowed = true;
+
+    /**
+     * Determines if normal, non-admin players should be able to see this KitType.
+     */
+    @Getter @Setter private boolean hidden = false;
 
     public static KitType byId(String id) {
         for (KitType kitType : allTypes) {

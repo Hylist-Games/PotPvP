@@ -48,6 +48,10 @@ public final class CustomSelectKitTypeMenu extends Menu {
         int index = 0;
 
         for (KitType kitType : KitType.getAllTypes()) {
+            if (!player.isOp() && kitType.isHidden()) {
+                continue;
+            }
+
             CustomKitTypeMeta meta = metaFunc.apply(kitType);
             buttons.put(index++, new KitTypeButton(kitType, callback, meta.getDescription(), meta.getQuantity()));
         }

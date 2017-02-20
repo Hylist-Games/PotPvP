@@ -16,6 +16,10 @@ public final class KitTypeParameterType implements ParameterType<KitType> {
     @Override
     public KitType transform(CommandSender sender, String source) {
         for (KitType kitType : KitType.getAllTypes()) {
+            if (!sender.isOp() && kitType.isHidden()) {
+                continue;
+            }
+
             if (kitType.getId().equalsIgnoreCase(source)) {
                 return kitType;
             }
@@ -30,6 +34,10 @@ public final class KitTypeParameterType implements ParameterType<KitType> {
         List<String> completions = new ArrayList<>();
 
         for (KitType kitType : KitType.getAllTypes()) {
+            if (!player.isOp() && kitType.isHidden()) {
+                continue;
+            }
+
             if (StringUtils.startsWithIgnoreCase(kitType.getId(), source)) {
                 completions.add(kitType.getId());
             }

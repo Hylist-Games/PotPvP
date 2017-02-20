@@ -42,6 +42,10 @@ public final class SelectKitTypeMenu extends Menu {
         int index = 0;
 
         for (KitType kitType : KitType.getAllTypes()) {
+            if (!player.isOp() && kitType.isHidden()) {
+                continue;
+            }
+
             buttons.put(index++, new KitTypeButton(kitType, callback));
         }
 
