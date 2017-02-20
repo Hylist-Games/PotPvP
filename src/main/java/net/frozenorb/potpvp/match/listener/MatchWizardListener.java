@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.match.listener;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
+import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.util.FireworkEffectPlayer;
 import net.frozenorb.qlib.qLib;
 
@@ -60,7 +61,9 @@ public final class MatchWizardListener implements Listener {
 
                 if (arrow.isDead() || arrow.isOnGround()) {
                     for (Entity entity : arrow.getNearbyEntities(4, 4, 4)) {
-                        if (match.getTeam(entity.getUniqueId()) != null) {
+                        MatchTeam entityTeam = match.getTeam(entity.getUniqueId());
+
+                        if (entityTeam != null && !entityTeam.getAllMembers().contains(player.getUniqueId())) {
                             entity.setVelocity(entity.getLocation().toVector().subtract(arrow.getLocation().toVector()));
                         }
                     }
