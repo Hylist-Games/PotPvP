@@ -34,42 +34,20 @@ public class ManageKitTypeMenu extends Menu {
     public Map<Integer, Button> getButtons(Player player) {
         Map<Integer, Button> buttons = new HashMap<>();
 
-        // The vertical row
-        for (int i = 0; i <= 5; i++) {
+        // Vertical row
+        for (int i = 1; i <= 5; i++) {
             buttons.put(getSlot(1, i), Button.placeholder(Material.OBSIDIAN));
         }
 
-        // The horizontal row
-        for (int i = 0; i <= 8; i++) {
+        // Horizontal row
+        for (int i = 1; i <= 8; i++) {
             buttons.put(getSlot(i, 1), Button.placeholder(Material.OBSIDIAN));
-
-            if (i >= 3) {
-                buttons.put(getSlot(i, 0), Button.placeholder(Material.OBSIDIAN));
-            }
         }
 
-        buttons.put(getSlot(0, 0), new KitTypeInfoButton(type));
-        buttons.put(getSlot(1, 0), Button.placeholder(Material.OBSIDIAN));
-        buttons.put(getSlot(2, 0), new SaveKitTypeButton(type));
-        buttons.put(getSlot(3, 0), new MenuBackButton(p -> new ManageCommand.ManageMenu().openMenu(p)));
+        buttons.put(getSlot(1, 0), new SaveKitTypeButton(type));
+
+        buttons.put(getSlot(7, 0), new MenuBackButton(p -> new ManageCommand.ManageMenu().openMenu(p)));
         buttons.put(getSlot(8, 0), new ManageExitButton());
-
-        for (ItemStack armorItem : type.getDefaultArmor()) {
-            int armorYOffset = 2;
-            int armorSlot = -1;
-
-            if (armorItem.getType().name().contains("HELMET")) {
-                armorSlot = 0;
-            } else if (armorItem.getType().name().contains("CHESTPLATE")) {
-                armorSlot = 1;
-            } else if (armorItem.getType().name().contains("LEGGINGS")) {
-                armorSlot = 2;
-            } else if (armorItem.getType().name().contains("BOOTS")) {
-                armorSlot = 3;
-            }
-
-            buttons.put(getSlot(0, armorSlot + armorYOffset), Button.fromItem(armorItem));
-        }
 
         ItemStack[] kit = type.getEditorItems();
         int x = 0;
