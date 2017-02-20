@@ -13,6 +13,7 @@ import net.frozenorb.potpvp.match.listener.MatchDurationLimitListener;
 import net.frozenorb.potpvp.match.listener.MatchGeneralListener;
 import net.frozenorb.potpvp.match.listener.MatchPartySpectateListener;
 import net.frozenorb.potpvp.match.listener.MatchSoupListener;
+import net.frozenorb.potpvp.match.listener.MatchWizardListener;
 import net.frozenorb.potpvp.match.listener.SpectatorItemListener;
 import net.frozenorb.potpvp.match.listener.SpectatorPreventionListener;
 import net.frozenorb.qlib.util.UUIDUtils;
@@ -57,6 +58,7 @@ public final class MatchHandler {
         Bukkit.getPluginManager().registerEvents(new MatchGeneralListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new MatchPartySpectateListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new MatchSoupListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MatchWizardListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new SpectatorItemListener(this), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new SpectatorPreventionListener(), PotPvPSI.getInstance());
     }
