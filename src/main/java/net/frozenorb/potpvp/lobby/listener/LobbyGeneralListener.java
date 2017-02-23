@@ -92,12 +92,11 @@ public final class LobbyGeneralListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Player player = event.getPlayer();
+        GameMode gameMode = player.getGameMode();
 
-        if (matchHandler.isPlayingOrSpectatingMatch(player) && player.getGameMode() == GameMode.SURVIVAL) {
-            return;
+        if (!matchHandler.isPlayingOrSpectatingMatch(player) && gameMode != GameMode.CREATIVE) {
+            event.setCancelled(true);
         }
-
-        event.setCancelled(true);
     }
 
 }

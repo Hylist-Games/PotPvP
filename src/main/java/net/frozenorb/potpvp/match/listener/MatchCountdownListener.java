@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 
 // the name of this listener is definitely kind of iffy (as it's really any non-IN_PROGRESS match),
@@ -39,16 +40,21 @@ public final class MatchCountdownListener implements Listener {
      */
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Match match = matchHandler.getMatchPlaying(event.getPlayer().getUniqueId());
-
-        if (match == null || match.getState() == MatchState.IN_PROGRESS || !event.hasItem()) {
+        if (!event.hasItem() || !event.getAction().name().contains("RIGHT_")) {
             return;
         }
 
-        if ((event.getItem().getType() == Material.POTION && Potion.fromItemStack(event.getItem()).isSplash()) || event.getItem().getType() == Material.ENDER_PEARL) {
-            event.setCancelled(true);
-            event.getPlayer().updateInventory();
+        ItemStack item = event.getItem();
+        Material type = item.getType();
+
+        if ((type == Material.POTION && Potion.fromItemStack(item).isSplash()) || type == Material.ENDER_PEARL) {
+            MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+            Match match = matchHandler.getMatchPlaying(event.getPlayer());
+
+            if (match != null && match.getState() != MatchState.IN_PROGRESS) {
+                event.setCancelled(true);
+                event.getPlayer().updateInventory();
+            }
         }
     }
 
