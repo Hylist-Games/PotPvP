@@ -89,7 +89,7 @@ public final class MatchHandler {
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
         long matchSize = teams.stream()
             .mapToInt(t -> t.getAllMembers().size())
-            .count();
+            .sum();
 
         // the archer only logic here was often a source of confusion while
         // this code was being written. below is a table of the desired
