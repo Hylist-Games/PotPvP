@@ -7,6 +7,7 @@ import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchState;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.nametag.PotPvPNametagProvider;
+import net.frozenorb.qlib.cuboid.Cuboid;
 import net.frozenorb.qlib.util.PlayerUtils;
 
 import org.bukkit.Bukkit;
@@ -120,8 +121,12 @@ public final class MatchGeneralListener implements Listener {
         }
 
         Arena arena = match.getArena();
+        Cuboid bounds = arena.getBounds();
 
-        if (!arena.getBounds().contains(to)) {
+        // pretend the vertical bounds of the arena are 2 blocks lower than they
+        // are to avoid issues with players hitting their heads on the glass (Jon said to do this)
+        // looks kind of funny but in a high frequency event this is by far the fastest
+        if (!bounds.contains(to) || !bounds.contains(to.getBlockX(), to.getBlockY() + 2, to.getBlockZ())) {
             // spectators get a nice message, players just get cancelled
             if (match.isSpectator(player.getUniqueId())) {
                 player.teleport(arena.getSpectatorSpawn());
