@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
-final class MatchLayoutProvider implements BiConsumer<Player, TabLayout> {
+final class MatchSpectatorLayoutProvider implements BiConsumer<Player, TabLayout> {
 
     private static final List<String> TEAM_COLOR_PREFIXES;
 
@@ -52,143 +52,8 @@ final class MatchLayoutProvider implements BiConsumer<Player, TabLayout> {
 
     @Override
     public void accept(Player player, TabLayout tabLayout) {
-        Match match = PotPvPSI.getInstance().getMatchHandler().getMatchPlayingOrSpectating(player);
-
-        boolean isParticipant = match.getTeam(player.getUniqueId()) != null;
-
-        if (isParticipant) {
-            renderParticipantEntries(tabLayout, match, player);
-        } else {
-            MatchTeam previousTeam = match.getPreviousTeam(player.getUniqueId());
-            renderSpectatorEntries(tabLayout, match, previousTeam);
-        }
-    }
-
-    private void renderParticipantEntries(TabLayout layout, Match match, Player player) {
-        List<MatchTeam> teams = match.getTeams();
-
-        // if it's one team versus another
-        if (teams.size() == 2) {
-            // this method won't be called if the player isn't a participant
-            MatchTeam ourTeam = match.getTeam(player.getUniqueId());
-            MatchTeam otherTeam = teams.get(0) == ourTeam ? teams.get(1) : teams.get(0);
-
-            boolean duel = ourTeam.getAllMembers().size() == 1 && otherTeam.getAllMembers().size() == 1;
-
-            {
-                // Column 1
-                // we handle duels a bit differently
-                if (!duel) {
-                    layout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "Team " + ChatColor.GREEN + "(" + ourTeam.getAliveMembers().size() + "/" + ourTeam.getAllMembers().size() + ")");
-                } else {
-                    layout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "You");
-                }
-                renderTeamMemberOverviewEntries(layout, ourTeam, 0, 4, ChatColor.GREEN);
-            }
-
-            {
-                // Column 3
-                // we handle duels a bit differently
-                if (!duel) {
-                    layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemies " + ChatColor.RED + "(" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
-                } else {
-                    layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Opponent");
-                }
-                renderTeamMemberOverviewEntries(layout, otherTeam, 2, 4, ChatColor.RED);
-            }
-        } else { // it's an FFA or something else like that
-            layout.set(1, 3, ChatColor.BLUE + ChatColor.BOLD.toString() + "Party FFA");
-
-            int x = 0;
-            int y = 4;
-
-            Map<String, Integer> entries = new LinkedHashMap<>();
-
-            MatchTeam ourTeam = match.getTeam(player.getUniqueId());
-
-            {
-                // this is where we'll be adding our team members
-
-                Map<String, Integer> aliveLines = new LinkedHashMap<>();
-                Map<String, Integer> deadLines = new LinkedHashMap<>();
-
-                // separate lists to sort alive players before dead
-                // + color differently
-                for (UUID teamMember : ourTeam.getAllMembers()) {
-                    if (ourTeam.isAlive(teamMember)) {
-                        aliveLines.put(ChatColor.GREEN + FrozenUUIDCache.name(teamMember),  PotPvPLayoutProvider.getPingOrDefault(teamMember));
-                    } else {
-                        deadLines.put("&7&m" + FrozenUUIDCache.name(teamMember), PotPvPLayoutProvider.getPingOrDefault(teamMember));
-                    }
-                }
-
-                entries.putAll(aliveLines);
-                entries.putAll(deadLines);
-            }
-
-            {
-                // this is where we'll be adding everyone else
-                Map<String, Integer> deadLines = new LinkedHashMap<>();
-
-                for (MatchTeam otherTeam : match.getTeams()) {
-                    if (otherTeam == ourTeam) {
-                        continue;
-                    }
-
-                    // separate lists to sort alive players before dead
-                    // + color differently
-                    for (UUID enemy : otherTeam.getAllMembers()) {
-                        if (otherTeam.isAlive(enemy)) {
-                            entries.put(ChatColor.RED + FrozenUUIDCache.name(enemy), PotPvPLayoutProvider.getPingOrDefault(enemy));
-                        } else {
-                            deadLines.put("&7&m" + FrozenUUIDCache.name(enemy), PotPvPLayoutProvider.getPingOrDefault(enemy));
-                        }
-                    }
-                }
-
-                entries.putAll(deadLines);
-            }
-
-            List<Map.Entry<String, Integer>> result = new ArrayList<>(entries.entrySet());
-
-            // actually display our entries
-            for (int index = 0; index < result.size(); index++) {
-                Map.Entry<String, Integer> entry = result.get(index);
-
-                layout.set(x++, y, entry.getKey(), entry.getValue());
-
-                if (x == 3 && y == PotPvPLayoutProvider.MAX_TAB_Y) {
-                    // if we're at the last slot, we want to see if we still have alive players to show
-                    int aliveLeft = 0;
-
-                    for (int i = index; i < result.size(); i++) {
-                        String currentEntry = result.get(i).getKey();
-                        boolean dead = ChatColor.getLastColors(currentEntry).equals(ChatColor.GRAY + ChatColor.STRIKETHROUGH.toString());
-
-                        if (!dead) {
-                            aliveLeft++;
-                        }
-                    }
-
-                    if (aliveLeft != 0 && aliveLeft != 1) {
-                        // if there are players we weren't able to show and if it's more than one
-                        // (if it's only one they'll be shown as the last entry [see 17 lines above]), display the number
-                        // of alive players we weren't able to show instead.
-                        layout.set(x, y, ChatColor.GREEN + "+" + aliveLeft);
-                    }
-
-                    break;
-                }
-
-                if (x == 3) {
-                    x = 0;
-                    y++;
-                }
-            }
-        }
-    }
-
-    private void renderSpectatorEntries(TabLayout layout, Match match, MatchTeam oldTeam) {
+        Match match = PotPvPSI.getInstance().getMatchHandler().getMatchSpectating(player);
+        MatchTeam oldTeam = match.getTeam(player.getUniqueId());
         List<MatchTeam> teams = match.getTeams();
 
         // if it's one team versus another
@@ -207,21 +72,21 @@ final class MatchLayoutProvider implements BiConsumer<Player, TabLayout> {
                 {
                     // Column 1
                     if (!duel) {
-                        layout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "Team " + ChatColor.GREEN + "(" + ourTeam.getAliveMembers().size() + "/" + ourTeam.getAllMembers().size() + ")");
+                        tabLayout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "Team " + ChatColor.GREEN + "(" + ourTeam.getAliveMembers().size() + "/" + ourTeam.getAllMembers().size() + ")");
                     } else {
-                        layout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "You");
+                        tabLayout.set(0, 3, ChatColor.GREEN + ChatColor.BOLD.toString() + "You");
                     }
-                    renderTeamMemberOverviewEntries(layout, ourTeam, 0, 4, ChatColor.GREEN);
+                    renderTeamMemberOverviewEntries(tabLayout, ourTeam, 0, 4, ChatColor.GREEN);
                 }
 
                 {
                     // Column 3
                     if (!duel) {
-                        layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemies " + ChatColor.RED + "(" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
+                        tabLayout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Enemies " + ChatColor.RED + "(" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size() + ")");
                     } else {
-                        layout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Opponent");
+                        tabLayout.set(2, 3, ChatColor.RED + ChatColor.BOLD.toString() + "Opponent");
                     }
-                    renderTeamMemberOverviewEntries(layout, otherTeam, 2, 4, ChatColor.RED);
+                    renderTeamMemberOverviewEntries(tabLayout, otherTeam, 2, 4, ChatColor.RED);
                 }
 
             } else {
@@ -230,27 +95,27 @@ final class MatchLayoutProvider implements BiConsumer<Player, TabLayout> {
                     // Column 1
                     // we handle duels a bit differently
                     if (!duel) {
-                        layout.set(0, 3, ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Team One (" + teamOne.getAliveMembers().size() + "/" + teamOne.getAllMembers().size() + ")");
+                        tabLayout.set(0, 3, ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Team One (" + teamOne.getAliveMembers().size() + "/" + teamOne.getAllMembers().size() + ")");
                     } else {
-                        layout.set(0, 3, ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Player One");
+                        tabLayout.set(0, 3, ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Player One");
                     }
-                    renderTeamMemberOverviewEntries(layout, teamOne, 0, 4, ChatColor.LIGHT_PURPLE);
+                    renderTeamMemberOverviewEntries(tabLayout, teamOne, 0, 4, ChatColor.LIGHT_PURPLE);
                 }
 
                 {
                     // Column 3
                     // we handle duels a bit differently
                     if (!duel) {
-                        layout.set(2, 3, ChatColor.AQUA + ChatColor.BOLD.toString() + "Team Two (" + teamTwo.getAliveMembers().size() + "/" + teamTwo.getAllMembers().size() + ")");
+                        tabLayout.set(2, 3, ChatColor.AQUA + ChatColor.BOLD.toString() + "Team Two (" + teamTwo.getAliveMembers().size() + "/" + teamTwo.getAllMembers().size() + ")");
                     } else {
-                        layout.set(2, 3, ChatColor.AQUA + ChatColor.BOLD.toString() + "Player Two");
+                        tabLayout.set(2, 3, ChatColor.AQUA + ChatColor.BOLD.toString() + "Player Two");
                     }
-                    renderTeamMemberOverviewEntries(layout, teamTwo, 2, 4, ChatColor.AQUA);
+                    renderTeamMemberOverviewEntries(tabLayout, teamTwo, 2, 4, ChatColor.AQUA);
                 }
 
             }
         } else { // it's an FFA or something else like that
-            layout.set(1, 3, ChatColor.BLUE + ChatColor.BOLD.toString() + "Party FFA");
+            tabLayout.set(1, 3, ChatColor.BLUE + ChatColor.BOLD.toString() + "Party FFA");
 
             int x = 0;
             int y = 4;
@@ -309,7 +174,7 @@ final class MatchLayoutProvider implements BiConsumer<Player, TabLayout> {
             for (int index = 0; index < result.size(); index++) {
                 Map.Entry<String, Integer> entry = result.get(index);
 
-                layout.set(x++, y, entry.getKey(), entry.getValue());
+                tabLayout.set(x++, y, entry.getKey(), entry.getValue());
 
                 if (x == 3 && y == PotPvPLayoutProvider.MAX_TAB_Y) {
                     // if we're at the last slot, we want to see if we still have alive players to show
@@ -328,7 +193,7 @@ final class MatchLayoutProvider implements BiConsumer<Player, TabLayout> {
                         // if there are players we weren't able to show and if it's more than one
                         // (if it's only one they'll be shown as the last entry [see 17 lines above]), display the number
                         // of alive players we weren't able to show instead.
-                        layout.set(x, y, ChatColor.GREEN + "+" + aliveLeft);
+                        tabLayout.set(x, y, ChatColor.GREEN + "+" + aliveLeft);
                     }
 
                     break;

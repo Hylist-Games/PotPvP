@@ -1,8 +1,7 @@
 package net.frozenorb.potpvp.tab;
 
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.match.MatchHandler;
-import net.frozenorb.potpvp.setting.Setting;
+import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.qlib.tab.LayoutProvider;
 import net.frozenorb.qlib.tab.TabLayout;
 import net.frozenorb.qlib.util.PlayerUtils;
@@ -19,21 +18,24 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
 
     private final BiConsumer<Player, TabLayout> headerLayoutProvider = new HeaderLayoutProvider();
     private final BiConsumer<Player, TabLayout> lobbyLayoutProvider = new LobbyLayoutProvider();
-    private final BiConsumer<Player, TabLayout> matchLayoutProvider = new MatchLayoutProvider();
+    private final BiConsumer<Player, TabLayout> matchSpectatorLayoutProvider = new MatchSpectatorLayoutProvider();
+    private final BiConsumer<Player, TabLayout> matchParticipantLayoutProvider = new MatchParticipantLayoutProvider();
 
     @Override
     public TabLayout provide(Player player) {
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        Match match = PotPvPSI.getInstance().getMatchHandler().getMatchPlayingOrSpectating(player);
         TabLayout tabLayout = TabLayout.create(player);
 
-        if (!PotPvPSI.getInstance().getSettingHandler().getSetting(player, Setting.LAG_TEST)) {
-            headerLayoutProvider.accept(player, tabLayout);
+        headerLayoutProvider.accept(player, tabLayout);
 
-            if (matchHandler.isPlayingOrSpectatingMatch(player)) {
-                matchLayoutProvider.accept(player, tabLayout);
+        if (match != null) {
+            if (match.isSpectator(player.getUniqueId())) {
+                matchSpectatorLayoutProvider.accept(player, tabLayout);
             } else {
-                lobbyLayoutProvider.accept(player, tabLayout);
+                matchParticipantLayoutProvider.accept(player, tabLayout);
             }
+        } else {
+            lobbyLayoutProvider.accept(player, tabLayout);
         }
 
         return tabLayout;
