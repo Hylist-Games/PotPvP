@@ -4,17 +4,14 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchState;
-
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.potion.Potion;
 
 // the name of this listener is definitely kind of iffy (as it's really any non-IN_PROGRESS match),
 // but any other ideas I had were even less descriptive
@@ -38,35 +35,25 @@ public final class MatchCountdownListener implements Listener {
     }
 
     /**
-     * Prevents launching projects in non IN_PROGRESS matches
-     * Attempts to return enderpearls to their thrower
+     * Prevents throwing potions and enderpearls in non IN_PROGRESS matches
      */
     @EventHandler
-    public void onProjectileLaunch(ProjectileLaunchEvent event) {
-        ProjectileSource shooter = event.getEntity().getShooter();
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        Match match = matchHandler.getMatchPlaying(event.getPlayer().getUniqueId());
 
-        if (!(shooter instanceof Player)) {
+        if (match == null || match.getState() == MatchState.IN_PROGRESS || !event.hasItem()) {
             return;
         }
 
-        Player shooterPlayer = (Player) shooter;
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Match match = matchHandler.getMatchPlaying(shooterPlayer);
-
-        if (match != null && match.getState() != MatchState.IN_PROGRESS) {
+        if ((event.getItem().getType() == Material.POTION && Potion.fromItemStack(event.getItem()).isSplash()) || event.getItem().getType() == Material.ENDER_PEARL) {
             event.setCancelled(true);
-
-            // for enderpearls only we give back the pearl
-            // as cancelling the event won't do that for us
-            if (event.getEntityType() == EntityType.ENDER_PEARL) {
-                shooterPlayer.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
-                shooterPlayer.updateInventory();
-            }
+            event.getPlayer().updateInventory();
         }
     }
 
     /**
-     * Lock player healh in place while their match isn't in progress
+     * Lock player health in place while their match isn't in progress
      * This primarily exists to prevent healing in the ENDING state
      */
     @EventHandler
