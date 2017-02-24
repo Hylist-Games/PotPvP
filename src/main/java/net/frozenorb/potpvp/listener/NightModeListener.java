@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public final class NightModeListener implements Listener {
 
-    public static final int NIGHT_TIME = 12_000;
+    public static final int NIGHT_TIME = 18_000;
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
