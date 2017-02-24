@@ -47,61 +47,84 @@ public final class PostMatchInvHandler {
     }
 
     private void messagePlayers(Match match) {
-        Map<UUID, TextComponent[][]> messages = new HashMap<>();
-        List<MatchTeam> teams = match.getTeams();
+        Map<UUID, Object[]> messages = new HashMap<>();
 
-        // matches with 2 teams get relational sections,
-        // any other match just gets a big 'participants' section
-        if (teams.size() == 2) {
-            MatchTeam team1 = teams.get(0);
-            MatchTeam team2 = teams.get(1);
-
-            TextComponent[][] team1Messages = PostMatchInvLang.teamMessages(team1, team2);
-            TextComponent[][] team2Messages = PostMatchInvLang.teamMessages(team2, team1);
-            TextComponent[][] spectatorMessages = PostMatchInvLang.spectatorMessages(team1, team2);
-
-            // we specifically call spectators first so anyone who was in a team
-            // gets their messages overriden by their relational messages.
-            // we have to have the if + use getAllMembers() to ensure all members get
-            // their messagtes overriden, not just those alive at the end of the match
-            for (UUID spectator : match.getSpectators()) {
-                messages.put(spectator, spectatorMessages);
-            }
-
-            for (UUID member : team1.getAllMembers()) {
-                if (messages.containsKey(member) || team1.isAlive(member)) {
-                    messages.put(member, team1Messages);
-                }
-            }
-
-            for (UUID member : team2.getAllMembers()) {
-                if (messages.containsKey(member) || team2.isAlive(member)) {
-                    messages.put(member, team2Messages);
-                }
-            }
-        } else {
-            TextComponent[][] generic = PostMatchInvLang.genericMessages(teams);
-
-            for (UUID spectator : match.getSpectators()) {
-                messages.put(spectator, generic);
-            }
-
-            for (MatchTeam team : teams) {
-                for (UUID member : team.getAliveMembers()) {
-                    messages.put(member, generic);
-                }
-            }
-        }
+        createMessages(match, messages);
 
         messages.forEach((uuid, lines) -> {
             Player player = Bukkit.getPlayer(uuid);
 
-            if (player != null) {
-                for (TextComponent[] line : lines) {
-                    player.spigot().sendMessage(line);
+            if (player == null) {
+                return;
+            }
+
+            for (Object line : lines) {
+                if (line instanceof TextComponent[]) {
+                    player.spigot().sendMessage((TextComponent[]) line);
+                } else if (line instanceof TextComponent) {
+                    player.spigot().sendMessage((TextComponent) line);
+                } else if (line instanceof String) {
+                    player.sendMessage((String) line);
                 }
             }
         });
+    }
+
+    private void createMessages(Match match, Map<UUID, Object[]> messages) {
+        List<MatchTeam> teams = match.getTeams();
+
+        if (teams.size() != 2) {
+            // matches without 2 teams just get big 'participants' sections
+            Object[] generic = PostMatchInvLang.genGenericMessages(teams);
+
+            writeSpecMessages(match, messages, generic);
+            writeTeamMessages(teams, messages, generic);
+            return;
+        }
+
+        MatchTeam team1 = teams.get(0);
+        MatchTeam team2 = teams.get(1);
+
+        if (team1.getAllMembers().size() == 1 && team2.getAllMembers().size() == 1) {
+            // 1v1 messages
+            UUID player1 = team1.getAliveMembers().iterator().next();
+            UUID player2 = team2.getAliveMembers().iterator().next();
+
+            writeSpecMessages(match, messages, PostMatchInvLang.genGenericMessages(teams));
+            writeTeamMessages(team1, messages, PostMatchInvLang.gen1v1PlayerMessages(player1, player2));
+            writeTeamMessages(team2, messages, PostMatchInvLang.gen1v1PlayerMessages(player2, player1));
+        } else {
+            // normal 2 team messages
+            writeSpecMessages(match, messages, PostMatchInvLang.genSpectatorMessages(team1, team2));
+            writeTeamMessages(team1, messages, PostMatchInvLang.genTeamMessages(team1, team2));
+            writeTeamMessages(team2, messages, PostMatchInvLang.genTeamMessages(team2, team1));
+        }
+    }
+
+    private void writeTeamMessages(Iterable<MatchTeam> teams, Map<UUID, Object[]> messageMap, Object[] messages) {
+        for (MatchTeam team : teams) {
+            writeTeamMessages(team, messageMap, messages);
+        }
+    }
+
+    private void writeTeamMessages(MatchTeam team, Map<UUID, Object[]> messageMap, Object[] messages) {
+        for (UUID member : team.getAllMembers()) {
+            // on this containsKey check:
+            // we only want to send messages to players who are alive or were on this team in the match
+            // we always add messages from the least specific (ex generic for spectators)
+            // to most specific (ex per team messages), so checking if they're already added is a good
+            // way to check if they're going to get a message.
+            // we can't just use getAllMembers because players could've left and started a new fight
+            if (messageMap.containsKey(member) || team.isAlive(member)) {
+                messageMap.put(member, messages);
+            }
+        }
+    }
+
+    private void writeSpecMessages(Match match, Map<UUID, Object[]> messageMap, Object[] messages) {
+        for (UUID spectator : match.getSpectators()) {
+            messageMap.put(spectator, messages);
+        }
     }
 
     public Map<UUID, PostMatchPlayer> getPostMatchData(UUID forWhom) {

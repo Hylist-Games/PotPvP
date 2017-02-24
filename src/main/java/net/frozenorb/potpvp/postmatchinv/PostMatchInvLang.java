@@ -20,88 +20,92 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class PostMatchInvLang {
 
-    private static final TextComponent TEAM_1_HEADER_COMPONENT = new TextComponent("Team 1: ");
-    private static final TextComponent TEAM_2_HEADER_COMPONENT = new TextComponent("Team 2: ");
-    private static final TextComponent YOUR_TEAM_COMPONENT = new TextComponent("Your team: ");
-    private static final TextComponent ENEMY_TEAM_COMPONENT = new TextComponent("Enemy team: ");
-    private static final TextComponent PARTICIPANTS_COMPONENT = new TextComponent("Participants: ");
-    private static final TextComponent LINE_COMPONENT = new TextComponent("-----------------------------------------------------");
-    private static final TextComponent INVENTORY_HEADER_COMPONENT = new TextComponent("Post-Match Inventories ");
+    private static final String TEAM_1 = ChatColor.LIGHT_PURPLE + "Team 1:";
+    private static final String TEAM_2 = ChatColor.AQUA + "Team 2:";
+    private static final String YOUR_TEAM = ChatColor.GREEN.toString() + ChatColor.BOLD + "Your team:";
+    private static final String ENEMY_TEAM = ChatColor.RED.toString() + ChatColor.BOLD + "Enemy team:";
+    private static final String PARTICIPANTS = ChatColor.GREEN + "Participants:";
+    private static final String LINE = ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "-----------------------------------------------------";
+    private static final String INVENTORY_HEADER = ChatColor.GOLD + "Post-Match Inventories " + ChatColor.GRAY + "(click name to view)";
+
     private static final TextComponent COMMA_COMPONENT = new TextComponent(", ");
 
     static {
-        TEAM_1_HEADER_COMPONENT.setColor(ChatColor.LIGHT_PURPLE);
-        TEAM_2_HEADER_COMPONENT.setColor(ChatColor.AQUA);
-        YOUR_TEAM_COMPONENT.setColor(ChatColor.GREEN);
-        YOUR_TEAM_COMPONENT.setBold(true);
-        ENEMY_TEAM_COMPONENT.setColor(ChatColor.RED);
-        ENEMY_TEAM_COMPONENT.setBold(true);
-        PARTICIPANTS_COMPONENT.setColor(ChatColor.GREEN);
-        PARTICIPANTS_COMPONENT.setBold(true);
-        LINE_COMPONENT.setColor(ChatColor.GRAY);
-        LINE_COMPONENT.setStrikethrough(true);
-        INVENTORY_HEADER_COMPONENT.setColor(ChatColor.GOLD);
         COMMA_COMPONENT.setColor(ChatColor.YELLOW);
+    }
 
-        TextComponent clickToView = new TextComponent("(click name to view)");
-        clickToView.setColor(ChatColor.GRAY);
-        INVENTORY_HEADER_COMPONENT.addExtra(clickToView);
+    static Object[] gen1v1PlayerMessages(UUID you, UUID enemy) {
+        return new Object[] {
+            LINE,
+            INVENTORY_HEADER,
+            new TextComponent[] {
+                new TextComponent(ChatColor.GREEN + "You: "),
+                clickToViewLine(you),
+                new TextComponent(ChatColor.GRAY + " - " + ChatColor.RED + "Enemy: "),
+                clickToViewLine(enemy)
+            },
+            LINE
+        };
     }
 
     // when viewing a 2 team match as a spectator
-    public static TextComponent[][] spectatorMessages(MatchTeam team1, MatchTeam team2) {
-        return new TextComponent[][] {
-            { LINE_COMPONENT },
-            { INVENTORY_HEADER_COMPONENT },
-            { TEAM_1_HEADER_COMPONENT },
+    static Object[] genSpectatorMessages(MatchTeam team1, MatchTeam team2) {
+        return new Object[] {
+            LINE,
+            INVENTORY_HEADER,
+            TEAM_1,
             clickToViewLine(team1.getAllMembers()),
-            { TEAM_2_HEADER_COMPONENT },
+            TEAM_2,
             clickToViewLine(team2.getAllMembers()),
-            { LINE_COMPONENT }
+            LINE
         };
     }
 
     // when viewing a 2 team match as a participant
-    public static TextComponent[][] teamMessages(MatchTeam yourTeam, MatchTeam enemyTeam) {
-        return new TextComponent[][] {
-            { LINE_COMPONENT },
-            { INVENTORY_HEADER_COMPONENT },
-            { YOUR_TEAM_COMPONENT },
+    static Object[] genTeamMessages(MatchTeam yourTeam, MatchTeam enemyTeam) {
+        return new Object[] {
+            LINE,
+            INVENTORY_HEADER,
+            YOUR_TEAM,
             clickToViewLine(yourTeam.getAllMembers()),
-            { ENEMY_TEAM_COMPONENT },
+            ENEMY_TEAM,
             clickToViewLine(enemyTeam.getAllMembers()),
-            { LINE_COMPONENT }
+            LINE
         };
     }
 
     // when viewing a non-2 team match from any perspective
-    public static TextComponent[][] genericMessages(Collection<MatchTeam> teams) {
+    static Object[] genGenericMessages(Collection<MatchTeam> teams) {
         Set<UUID> members = teams.stream()
             .flatMap(t -> t.getAllMembers().stream())
             .collect(Collectors.toSet());
 
-        return new TextComponent[][] {
-            { LINE_COMPONENT },
-            { INVENTORY_HEADER_COMPONENT },
-            { PARTICIPANTS_COMPONENT },
+        return new Object[] {
+            LINE,
+            INVENTORY_HEADER,
+            PARTICIPANTS,
             clickToViewLine(members),
-            { LINE_COMPONENT }
+            LINE
         };
+    }
+
+    private static TextComponent clickToViewLine(UUID member) {
+        String memberName = UUIDUtils.name(member);
+        TextComponent component = new TextComponent();
+
+        component.setText(memberName);
+        component.setColor(ChatColor.YELLOW);
+        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.GREEN + "Click to view inventory of " + ChatColor.GOLD + memberName).create()));
+        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/_ " + memberName));
+
+        return component;
     }
 
     private static TextComponent[] clickToViewLine(Set<UUID> members) {
         List<TextComponent> components = new ArrayList<>();
 
         for (UUID member : members) {
-            String memberName = UUIDUtils.name(member);
-            TextComponent component = new TextComponent();
-
-            component.setText(memberName);
-            component.setColor(ChatColor.YELLOW);
-            component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.GREEN + "Click to view inventory of " + ChatColor.GOLD + memberName).create()));
-            component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/_ " + memberName));
-
-            components.add(component);
+            components.add(clickToViewLine(member));
             components.add(COMMA_COMPONENT);
         }
 
