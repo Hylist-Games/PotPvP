@@ -76,6 +76,7 @@ public final class LobbyItemListener extends ItemListener {
 
                 Match target = matches.get(qLib.RANDOM.nextInt(matches.size()));
                 target.addSpectator(player, null);
+                canUseRandomSpecItem.put(player.getUniqueId(), System.currentTimeMillis() + 3_000L);
             }
         });
     }
