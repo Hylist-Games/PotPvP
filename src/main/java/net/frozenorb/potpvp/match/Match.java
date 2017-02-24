@@ -59,7 +59,7 @@ public final class Match {
 
     @Getter private MatchTeam winner;
     @Getter private MatchEndReason endReason;
-    @Getter private transient MatchState state; // transient: no need to store
+    @Getter private MatchState state;
     @Getter private Date startedAt;
     @Getter private Date endedAt;
     @Getter private boolean ranked;
@@ -70,8 +70,7 @@ public final class Match {
     // sitting out) would get treated as a 1v1 when calculating rematches.
     // https://github.com/FrozenOrb/PotPvP-SI/issues/19
     // this will also be set to false for ranked matches (which don't allow rematches)
-    // transient: no need to store
-    @Getter private transient boolean allowRematches;
+    @Getter private boolean allowRematches;
 
     public Match(KitType kitType, Arena arena, List<MatchTeam> teams, boolean ranked, boolean allowRematches) {
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
