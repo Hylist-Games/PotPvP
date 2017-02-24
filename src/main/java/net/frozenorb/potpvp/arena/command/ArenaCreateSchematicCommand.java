@@ -9,6 +9,8 @@ import net.frozenorb.qlib.command.Param;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.io.File;
+
 public final class ArenaCreateSchematicCommand {
 
     @Command(names = { "arena createSchematic" }, permission = "op")
@@ -21,6 +23,13 @@ public final class ArenaCreateSchematicCommand {
         }
 
         ArenaSchematic schematic = new ArenaSchematic(schematicName);
+        File schemFile = schematic.getSchematicFile();
+
+        if (!schemFile.exists()) {
+            sender.sendMessage(ChatColor.RED + "No file for " + schematicName + " found. (" + schemFile.getPath() + ")");
+            return;
+        }
+
         arenaHandler.registerSchematic(schematic);
 
         try {
