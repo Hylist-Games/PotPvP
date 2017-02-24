@@ -14,6 +14,7 @@ import net.frozenorb.potpvp.kittype.KitTypeJsonAdapter;
 import net.frozenorb.potpvp.kittype.KitTypeParameterType;
 import net.frozenorb.potpvp.listener.BasicPreventionListener;
 import net.frozenorb.potpvp.listener.ChatListener;
+import net.frozenorb.potpvp.listener.NightModeListener;
 import net.frozenorb.potpvp.listener.PearlCooldownListener;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
@@ -91,7 +92,7 @@ public final class PotPvPSI extends JavaPlugin {
         for (World world : Bukkit.getWorlds()) {
             world.setGameRuleValue("doDaylightCycle", "false");
             world.setGameRuleValue("doMobSpawning", "false");
-            world.setTime(12_000L);
+            world.setTime(6_000L);
         }
 
         settingHandler = new SettingHandler();
@@ -109,6 +110,7 @@ public final class PotPvPSI extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new BasicPreventionListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
+        getServer().getPluginManager().registerEvents(new NightModeListener(), this);
         getServer().getPluginManager().registerEvents(new PearlCooldownListener(), this);
 
         ProtocolLibrary.getProtocolManager().addPacketListener(new DisableSpectatorSoundAdapter());

@@ -84,7 +84,7 @@ public enum Setting {
             ChatColor.BLUE + "If enabled, lightning will be visible",
             ChatColor.BLUE + "when other players die.",
             "",
-            ChatColor.BLUE + "Disable to hide others lightning"
+            ChatColor.BLUE + "Disable to hide others lightning."
         ),
         Material.REDSTONE_TORCH_ON,
         ChatColor.YELLOW + "Show other lightning",
@@ -92,14 +92,19 @@ public enum Setting {
         true,
         null // no permission required
     ),
-    LAG_TEST(
-            ChatColor.GREEN + "lag test",
-            ImmutableList.of(),
-            Material.STONE,
-            ChatColor.YELLOW + "yes lag test",
-            ChatColor.YELLOW + "no lag test",
-            false,
-            "potpvp.lagTest"
+    NIGHT_MODE(
+        ChatColor.GRAY + "Night Mode",
+        ImmutableList.of(
+            ChatColor.BLUE + "If enabled, your player time will be",
+            ChatColor.BLUE + "changed to night time.",
+            "",
+            ChatColor.BLUE + "Disable to play in day time."
+        ),
+        Material.GLOWSTONE,
+        ChatColor.YELLOW + "Time is set to night",
+        ChatColor.YELLOW + "Time is set to day",
+        false,
+        null // no permission required
     );
 
     /**
