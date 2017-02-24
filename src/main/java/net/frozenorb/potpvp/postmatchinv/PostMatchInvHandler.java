@@ -87,8 +87,8 @@ public final class PostMatchInvHandler {
 
         if (team1.getAllMembers().size() == 1 && team2.getAllMembers().size() == 1) {
             // 1v1 messages
-            UUID player1 = team1.getAliveMembers().iterator().next();
-            UUID player2 = team2.getAliveMembers().iterator().next();
+            UUID player1 = team1.getAllMembers().iterator().next();
+            UUID player2 = team2.getAllMembers().iterator().next();
 
             writeSpecMessages(match, messages, PostMatchInvLang.genGenericMessages(teams));
             writeTeamMessages(team1, messages, PostMatchInvLang.gen1v1PlayerMessages(player1, player2));
