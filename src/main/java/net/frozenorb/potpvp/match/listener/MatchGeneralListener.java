@@ -199,9 +199,9 @@ public final class MatchGeneralListener implements Listener {
             event.setCancelled(true);
         }
 
-        // glass bottles are removed from inventories but
+        // glass bottles and bowls are removed from inventories but
         // don't spawn items on the ground
-        if (itemType == Material.GLASS_BOTTLE) {
+        if (itemType == Material.GLASS_BOTTLE || itemType == Material.BOWL) {
             event.getItemDrop().remove();
         }
     }
