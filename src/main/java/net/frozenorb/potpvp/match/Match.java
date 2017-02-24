@@ -240,6 +240,10 @@ public final class Match {
     }
 
     private void checkEnded() {
+        if (state == MatchState.ENDING || state == MatchState.TERMINATED) {
+            return;
+        }
+
         List<MatchTeam> teamsAlive = new ArrayList<>();
 
         for (MatchTeam team : teams) {

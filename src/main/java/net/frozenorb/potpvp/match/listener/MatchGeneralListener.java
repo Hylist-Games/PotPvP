@@ -77,9 +77,10 @@ public final class MatchGeneralListener implements Listener {
 
                 player.sendMessage(playerFormatted + ChatColor.YELLOW + " disconnected from the match.");
             }
-            
-            match.markDead(player);
         }
+
+        // run this regardless of match state
+        match.markDead(player);
     }
 
     // "natural" teleports (like enderpearls) are forward down and
