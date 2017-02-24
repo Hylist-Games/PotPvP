@@ -16,6 +16,7 @@ import net.frozenorb.potpvp.rematch.RematchItems;
 import net.frozenorb.qlib.menu.Menu;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -74,7 +75,7 @@ public final class LobbyUtils {
             inventory.setItem(7, KitItems.OPEN_EDITOR_ITEM);
             inventory.setItem(8, PartyItems.LEAVE_PARTY_ITEM);
         } else {
-            player.setAllowFlight(specMode);
+            player.setAllowFlight(player.getGameMode() == GameMode.CREATIVE || specMode);
 
             if (specMode) {
                 inventory.setItem(1, LobbyItems.DISABLE_SPEC_MODE_ITEM);
