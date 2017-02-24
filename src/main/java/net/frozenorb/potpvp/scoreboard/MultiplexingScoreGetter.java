@@ -30,16 +30,13 @@ final class MultiplexingScoreGetter implements ScoreGetter {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
         List<String> scores = new ArrayList<>();
+        scores.add("&a&7&m--------------------");
 
-        if (!settingHandler.getSetting(player, Setting.LAG_TEST)) {
-            scores.add("&a&7&m--------------------");
-
-            if (settingHandler.getSetting(player, Setting.SHOW_SCOREBOARD)) {
-                if (matchHandler.isPlayingOrSpectatingMatch(player)) {
-                    matchScoreGetter.accept(player, scores);
-                } else {
-                    lobbyScoreGetter.accept(player, scores);
-                }
+        if (settingHandler.getSetting(player, Setting.SHOW_SCOREBOARD)) {
+            if (matchHandler.isPlayingOrSpectatingMatch(player)) {
+                matchScoreGetter.accept(player, scores);
+            } else {
+                lobbyScoreGetter.accept(player, scores);
             }
         }
 
