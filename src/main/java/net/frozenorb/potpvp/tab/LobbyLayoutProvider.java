@@ -49,10 +49,10 @@ final class LobbyLayoutProvider implements BiConsumer<Player, TabLayout> {
                 return;
             }
 
-            tabLayout.set(1, 7, ChatColor.BLUE.toString() + ChatColor.BOLD + "Your Party");
+            tabLayout.set(1, 8, ChatColor.BLUE.toString() + ChatColor.BOLD + "Your Party");
 
             int x = 0;
-            int y = 8;
+            int y = 9;
 
             for (UUID member : getOrderedMembers(player, party)) {
                 int ping = PotPvPLayoutProvider.getPingOrDefault(member);
