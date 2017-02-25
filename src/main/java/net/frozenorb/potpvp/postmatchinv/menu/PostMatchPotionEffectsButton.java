@@ -59,6 +59,7 @@ final class PostMatchPotionEffectsButton extends Button {
         switch (type.getName().toLowerCase()) {
             case "fire_resistance": return "Fire Resistance";
             case "increase_damage": return "Strength";
+            case "damage_resistance": return "Resistance";
             default: return StringUtils.capitalize(type.getName().toLowerCase());
         }
     }
