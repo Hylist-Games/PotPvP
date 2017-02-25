@@ -7,7 +7,7 @@ import net.frozenorb.potpvp.duel.DuelInvite;
 import net.frozenorb.potpvp.duel.PartyDuelInvite;
 import net.frozenorb.potpvp.duel.PlayerDuelInvite;
 import net.frozenorb.potpvp.kittype.KitType;
-import net.frozenorb.potpvp.kittype.menu.SelectKitTypeMenu;
+import net.frozenorb.potpvp.kittype.menu.select.SelectKitTypeMenu;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
@@ -150,7 +150,7 @@ public final class DuelCommand {
     }
 
     private static TextComponent createInviteNotification(String sender) {
-        TextComponent button = new TextComponent(ChatColor.GOLD + "Click here or type /accept to accept the invite");
+        TextComponent button = new TextComponent(ChatColor.GOLD + "Click here or type /accept " + sender + " to accept the invite");
 
         ClickEvent.Action runCommand = ClickEvent.Action.RUN_COMMAND;
         HoverEvent.Action showText = HoverEvent.Action.SHOW_TEXT;
