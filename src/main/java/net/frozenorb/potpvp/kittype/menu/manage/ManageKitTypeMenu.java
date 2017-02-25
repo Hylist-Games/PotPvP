@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.kittype.menu.manage;
 import net.frozenorb.potpvp.command.ManageCommand;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.util.MenuBackButton;
+import net.frozenorb.potpvp.util.menu.BooleanTraitButton;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;
 
@@ -44,6 +45,9 @@ public class ManageKitTypeMenu extends Menu {
         for (int i = 1; i <= 8; i++) {
             buttons.put(getSlot(i, 1), Button.placeholder(Material.OBSIDIAN));
         }
+
+        buttons.put(getSlot(0, 1), new BooleanTraitButton<>(type, "Hidden", KitType::setHidden, KitType::isHidden, KitType::saveAsync));
+        buttons.put(getSlot(0, 2), new BooleanTraitButton<>(type, "Editor Item Spawn", KitType::setEditorSpawnAllowed, KitType::isEditorSpawnAllowed, KitType::saveAsync));
 
         buttons.put(getSlot(1, 0), new SaveKitTypeButton(type));
         buttons.put(getSlot(2, 0), new CancelKitTypeEditButton());

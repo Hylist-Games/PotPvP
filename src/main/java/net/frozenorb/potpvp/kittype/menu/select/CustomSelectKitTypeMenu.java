@@ -1,4 +1,4 @@
-package net.frozenorb.potpvp.kittype.menu;
+package net.frozenorb.potpvp.kittype.menu.select;
 
 import com.google.common.base.Preconditions;
 

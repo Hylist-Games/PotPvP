@@ -30,8 +30,8 @@ final class SaveKitTypeButton extends Button {
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-                "",
-                ChatColor.YELLOW + "Click this to save the kit type."
+            "",
+            ChatColor.YELLOW + "Click this to save the kit type."
         );
     }
 

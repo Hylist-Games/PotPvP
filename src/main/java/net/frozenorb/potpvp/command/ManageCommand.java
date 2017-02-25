@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableMap;
 
 import net.frozenorb.potpvp.arena.menu.manageschematics.ManageSchematicsMenu;
 import net.frozenorb.potpvp.kittype.menu.manage.ManageKitTypeMenu;
-import net.frozenorb.potpvp.kittype.menu.SelectKitTypeMenu;
+import net.frozenorb.potpvp.kittype.menu.select.SelectKitTypeMenu;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;

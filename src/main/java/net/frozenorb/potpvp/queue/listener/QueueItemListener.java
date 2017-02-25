@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kittype.KitType;
-import net.frozenorb.potpvp.kittype.menu.CustomSelectKitTypeMenu;
+import net.frozenorb.potpvp.kittype.menu.select.CustomSelectKitTypeMenu;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.queue.QueueHandler;
