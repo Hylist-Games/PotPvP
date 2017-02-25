@@ -94,10 +94,12 @@ public final class KitHandler {
         MongoCollection<Document> collection = MongoUtils.getCollection(MONGO_COLLECTION_NAME);
         Document typeQuery = new Document("type", kitType.getId());
 
-        return (int) collection.updateMany(
+        collection.updateMany(
             new Document("kits", new Document("$elemMatch", typeQuery)),
             new Document("$pull", new Document("kits", typeQuery))
-        ).getModifiedCount();
+        );
+
+        return -1;
     }
 
     public void loadKits(UUID playerUuid) {

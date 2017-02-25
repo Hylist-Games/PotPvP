@@ -14,6 +14,7 @@ public final class KitWipeKitsCommand {
     public static void kitWipeKits(Player sender, @Param(name="kit type") KitType kitType) {
         int modified = PotPvPSI.getInstance().getKitHandler().wipeKitsWithType(kitType);
         sender.sendMessage(ChatColor.YELLOW + "Wiped " + modified + " " + kitType.getDisplayName() + " kits.");
+        sender.sendMessage(ChatColor.GRAY + "^ We would have a proper count here if we ran recent versions of MongoDB");
     }
 
 }

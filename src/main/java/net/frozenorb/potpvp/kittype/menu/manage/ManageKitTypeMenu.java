@@ -1,5 +1,7 @@
 package net.frozenorb.potpvp.kittype.menu.manage;
 
+import com.google.common.collect.ImmutableList;
+
 import net.frozenorb.potpvp.command.ManageCommand;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.util.MenuBackButton;
@@ -7,6 +9,7 @@ import net.frozenorb.potpvp.util.menu.BooleanTraitButton;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -48,6 +51,31 @@ public class ManageKitTypeMenu extends Menu {
 
         buttons.put(getSlot(0, 1), new BooleanTraitButton<>(type, "Hidden", KitType::setHidden, KitType::isHidden, KitType::saveAsync));
         buttons.put(getSlot(0, 2), new BooleanTraitButton<>(type, "Editor Item Spawn", KitType::setEditorSpawnAllowed, KitType::isEditorSpawnAllowed, KitType::saveAsync));
+        buttons.put(getSlot(0, 3), new Button() {
+
+            @Override
+            public String getName(Player player) {
+                return ChatColor.RED.toString() + ChatColor.BOLD + "Wipe existing kits";
+            }
+
+            @Override
+            public List<String> getDescription(Player player) {
+                return ImmutableList.of(
+                    "",
+                    ChatColor.RED + "Removes all saved " + type.getDisplayName() + " kits",
+                    ChatColor.RED + "(includes online and offline players)",
+                    "",
+                    ChatColor.RED + "For safety reasons this button is disabled,",
+                    ChatColor.RED + "use /kit wipekits " + type.getId().toLowerCase()
+                );
+            }
+
+            @Override
+            public Material getMaterial(Player player) {
+                return Material.TNT;
+            }
+
+        });
 
         buttons.put(getSlot(1, 0), new SaveKitTypeButton(type));
         buttons.put(getSlot(2, 0), new CancelKitTypeEditButton());
