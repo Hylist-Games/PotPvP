@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import lombok.Getter;
@@ -36,6 +37,8 @@ public final class KitType {
         collection.find().iterator().forEachRemaining(doc -> {
             allTypes.add(qLib.PLAIN_GSON.fromJson(doc.toJson(), KitType.class));
         });
+
+        allTypes.sort(Comparator.comparing(KitType::getSort));
     }
 
     /**
@@ -93,6 +96,8 @@ public final class KitType {
      * Determines if normal, non-admin players should be able to see this KitType.
      */
     @Getter @Setter private boolean hidden = false;
+
+    @Getter @Setter private int sort = 0;
 
     public static KitType byId(String id) {
         for (KitType kitType : allTypes) {
