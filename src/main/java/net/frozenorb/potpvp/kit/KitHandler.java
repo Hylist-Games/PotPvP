@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.DeleteOptions;
 import com.mongodb.util.JSON;
 
 import net.frozenorb.potpvp.PotPvPSI;
@@ -83,6 +84,23 @@ public final class KitHandler {
 
             collection.updateOne(query, kitUpdate, MongoUtils.UPSERT_OPTIONS);
         });
+    }
+
+    public int wipeKitsWithType(KitType kitType) {
+        // remove kits for online players
+        for (List<Kit> playerKits : kitData.values()) {
+            playerKits.removeIf(k -> k.getType() == kitType);
+        }
+
+        // then the DB query
+        // ref: https://docs.mongodb.com/manual/reference/operator/update/pull/
+        MongoCollection<Document> collection = MongoUtils.getCollection(MONGO_COLLECTION_NAME);
+        Document typeQuery = new Document("type", kitType.getId());
+
+        return (int) collection.updateMany(
+            new Document("kits", new Document("$elemMatch", typeQuery)),
+            new Document("$pull", new Document("kits", typeQuery))
+        ).getModifiedCount();
     }
 
     public void loadKits(UUID playerUuid) {
