@@ -43,25 +43,30 @@ final class OtherPartyButton extends Button {
         }
 
         description.add("");
-        description.add(ChatColor.GREEN + "Click to duel");
+        description.add(ChatColor.GREEN + "» Click to duel «");
 
         return description;
     }
 
     @Override
     public Material getMaterial(Player player) {
-        return Material.NETHER_STAR;
+        return Material.SKULL_ITEM;
+    }
+
+    @Override
+    public byte getDamageValue(Player player) {
+        return (byte) 3; // player head
     }
 
     @Override
     public void clicked(Player player, int slot, ClickType clickType) {
-        Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
+        Party senderParty = PotPvPSI.getInstance().getPartyHandler().getParty(player);
 
-        if (party == null) {
+        if (senderParty == null) {
             return;
         }
 
-        if (party.isLeader(player.getUniqueId())) {
+        if (senderParty.isLeader(player.getUniqueId())) {
             DuelCommand.duel(player, Bukkit.getPlayer(party.getLeader()));
         } else {
             player.sendMessage(ChatColor.RED + "Only the leader can duel other parties!");
