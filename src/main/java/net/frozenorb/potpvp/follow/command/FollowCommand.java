@@ -34,8 +34,12 @@ public final class FollowCommand {
             sender.sendMessage(ChatColor.RED + "No, you can't follow yourself.");
             return;
         } else if (!settingHandler.getSetting(target, Setting.ALLOW_SPECTATORS)) {
-            sender.sendMessage(ChatColor.RED + target.getName() + " doesn't allow spectators at the moment.");
-            return;
+            if (sender.isOp()) {
+                sender.sendMessage(ChatColor.RED + "Bypassing " + target.getName() + "'s no spectators preference...");
+            } else {
+                sender.sendMessage(ChatColor.RED + target.getName() + " doesn't allow spectators at the moment.");
+                return;
+            }
         }
 
         followHandler.startFollowing(sender, target);

@@ -32,8 +32,12 @@ public final class SpectateCommand {
         }
 
         if (!settingHandler.getSetting(target, Setting.ALLOW_SPECTATORS)) {
-            sender.sendMessage(ChatColor.RED + target.getName() + " doesn't allow spectators at the moment.");
-            return;
+            if (sender.isOp()) {
+                sender.sendMessage(ChatColor.RED + "Bypassing " + target.getName() + "'s no spectators preference...");
+            } else {
+                sender.sendMessage(ChatColor.RED + target.getName() + " doesn't allow spectators at the moment.");
+                return;
+            }
         }
 
         Player teleportTo = null;
