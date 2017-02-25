@@ -28,7 +28,8 @@ public final class LobbyUtils {
     public static void resetInventory(Player player) {
         // prevents players with the kit editor from having their
         // inventory updated (kit items go into their inventory)
-        if (Menu.currentlyOpenedMenus.get(player.getName()) instanceof EditKitMenu) {
+        // also, admins in GM don't get invs updated (to prevent annoying those editing kits)
+        if (Menu.currentlyOpenedMenus.get(player.getName()) instanceof EditKitMenu || player.getGameMode() == GameMode.CREATIVE) {
             return;
         }
 
