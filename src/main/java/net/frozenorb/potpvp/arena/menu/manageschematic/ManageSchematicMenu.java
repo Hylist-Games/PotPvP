@@ -3,8 +3,9 @@ package net.frozenorb.potpvp.arena.menu.manageschematic;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.ArenaSchematic;
 import net.frozenorb.potpvp.arena.menu.manageschematics.ManageSchematicsMenu;
-import net.frozenorb.potpvp.command.ManageCommand;
 import net.frozenorb.potpvp.util.MenuBackButton;
+import net.frozenorb.potpvp.util.menu.BooleanTraitButton;
+import net.frozenorb.potpvp.util.menu.IntegerTraitButton;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;
 
@@ -15,6 +16,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public final class ManageSchematicMenu extends Menu {
 
@@ -49,10 +51,18 @@ public final class ManageSchematicMenu extends Menu {
 
         buttons.put(9, new MenuBackButton(p -> new ManageSchematicsMenu().openMenu(p)));
 
-        buttons.put(12, new IntegerTraitButton(schematic, "Max Player Count", ArenaSchematic::setMaxPlayerCount, ArenaSchematic::getMaxPlayerCount));
-        buttons.put(13, new IntegerTraitButton(schematic, "Min Player Count", ArenaSchematic::setMinPlayerCount, ArenaSchematic::getMinPlayerCount));
-        buttons.put(14, new BooleanTraitButton(schematic, "Supports Ranked", ArenaSchematic::setSupportsRanked, ArenaSchematic::isSupportsRanked));
-        buttons.put(15, new BooleanTraitButton(schematic, "Archer Only", ArenaSchematic::setArcherOnly, ArenaSchematic::isArcherOnly));
+        Consumer<ArenaSchematic> save = schematic -> {
+            try {
+                PotPvPSI.getInstance().getArenaHandler().saveSchematics();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        };
+
+        buttons.put(12, new IntegerTraitButton<>(schematic, "Max Player Count", ArenaSchematic::setMaxPlayerCount, ArenaSchematic::getMaxPlayerCount, save));
+        buttons.put(13, new IntegerTraitButton<>(schematic, "Min Player Count", ArenaSchematic::setMinPlayerCount, ArenaSchematic::getMinPlayerCount, save));
+        buttons.put(14, new BooleanTraitButton<>(schematic, "Supports Ranked", ArenaSchematic::setSupportsRanked, ArenaSchematic::isSupportsRanked, save));
+        buttons.put(15, new BooleanTraitButton<>(schematic, "Archer Only", ArenaSchematic::setArcherOnly, ArenaSchematic::isArcherOnly, save));
 
         return buttons;
     }

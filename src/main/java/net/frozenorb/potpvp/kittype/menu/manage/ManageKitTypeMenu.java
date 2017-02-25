@@ -19,10 +19,11 @@ import java.util.Map;
  * @author Mazen Kotb
  */
 public class ManageKitTypeMenu extends Menu {
-    private KitType type;
+
+    private final KitType type;
 
     public ManageKitTypeMenu(KitType type) {
-        super("Editing: " + type.getColoredDisplayName());
+        super("Editing " + type.getDisplayName());
 
         setNoncancellingInventory(true);
         setUpdateAfterClick(false);
@@ -45,9 +46,9 @@ public class ManageKitTypeMenu extends Menu {
         }
 
         buttons.put(getSlot(1, 0), new SaveKitTypeButton(type));
+        buttons.put(getSlot(2, 0), new CancelKitTypeEditButton());
 
-        buttons.put(getSlot(7, 0), new MenuBackButton(p -> new ManageCommand.ManageMenu().openMenu(p)));
-        buttons.put(getSlot(8, 0), new ManageExitButton());
+        buttons.put(getSlot(8, 0), new MenuBackButton(p -> new ManageCommand.ManageMenu().openMenu(p)));
 
         ItemStack[] kit = type.getEditorItems();
         int x = 0;

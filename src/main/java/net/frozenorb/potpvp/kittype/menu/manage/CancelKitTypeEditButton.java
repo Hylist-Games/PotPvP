@@ -12,7 +12,7 @@ import org.bukkit.event.inventory.ClickType;
 
 import java.util.List;
 
-final class ManageExitButton extends Button {
+final class CancelKitTypeEditButton extends Button {
 
     @Override
     public String getName(Player player) {
@@ -22,8 +22,8 @@ final class ManageExitButton extends Button {
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-                "",
-                ChatColor.YELLOW + "Click this to abort editing this kit type."
+            "",
+            ChatColor.YELLOW + "Click this to abort editing this kit type."
         );
     }
 
