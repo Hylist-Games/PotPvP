@@ -25,6 +25,11 @@ public final class ItemUtils {
     };
 
     /**
+     * Checks if a {@link ItemStack} is a bowl of mushroom soup (if its type is {@link Material#MUSHROOM_SOUP})
+     */
+    public static final Predicate<ItemStack> SOUP_PREDICATE = item -> item.getType() == Material.MUSHROOM_SOUP;
+
+    /**
      * Checks if a {@link ItemStack} is a debuff (if its type is contained in {@link PotionUtils#DEBUFF_POTION_TYPES})
      */
     public static final Predicate<ItemStack> DEBUFF_POTION_PREDICATE = item -> {

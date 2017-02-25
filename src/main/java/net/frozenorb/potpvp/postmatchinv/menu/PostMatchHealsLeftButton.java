@@ -13,43 +13,49 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.UUID;
 
-final class PostMatchPotionsLeftButton extends Button {
+final class PostMatchHealsLeftButton extends Button {
 
     private final String playerName;
-    private final int potionsRemaining;
+    private final int healsRemaining;
+    private final boolean pots;
 
-    PostMatchPotionsLeftButton(UUID player, int potionsRemaining) {
+    PostMatchHealsLeftButton(UUID player, int healsRemaining, boolean pots) {
         this.playerName = UUIDUtils.name(player);
-        this.potionsRemaining = potionsRemaining;
+        this.healsRemaining = healsRemaining;
+        this.pots = pots;
     }
 
     @Override
     public String getName(Player player) {
-        return ChatColor.GREEN.toString() + potionsRemaining + " Health Pots";
+        return ChatColor.GREEN.toString() + healsRemaining + " " + (pots ? "Health Pots" : "Soup");
     }
 
     @Override
     public ItemStack getButtonItem(Player player) {
         ItemStack item = super.getButtonItem(player);
-        item.setDurability((short) 16421);
+
+        if (pots) {
+            item.setDurability((short) 16421);
+        }
+
         return item;
     }
 
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-            ChatColor.YELLOW + playerName + " had " + potionsRemaining + " health potion" + (potionsRemaining == 1 ? "" : "s") + " left."
+            ChatColor.YELLOW + playerName + " had " + healsRemaining + " " + (pots ? "health potion" : "soup") + (healsRemaining == 1 ? "" : "s") + " left."
         );
     }
 
     @Override
     public Material getMaterial(Player player) {
-        return Material.POTION;
+        return pots ? Material.POTION : Material.MUSHROOM_SOUP;
     }
 
     @Override
     public int getAmount(Player player) {
-        return potionsRemaining;
+        return healsRemaining;
     }
 
 }
