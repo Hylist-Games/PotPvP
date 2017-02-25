@@ -90,15 +90,23 @@ public final class QueueItemListener extends ItemListener {
         return kitType -> {
             MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
-            int inFights = matchHandler.countPlayersPlayingMatches(m -> m.getKitType() == kitType);
-            int inQueue = queueHandler.countPlayersQueued(kitType, ranked);
+            int inFightsRanked = matchHandler.countPlayersPlayingMatches(m -> m.getKitType() == kitType && m.isRanked());
+            int inQueueRanked = queueHandler.countPlayersQueued(kitType, true);
+
+            int inFightsUnranked = matchHandler.countPlayersPlayingMatches(m -> m.getKitType() == kitType && !m.isRanked());
+            int inQueueUnranked = queueHandler.countPlayersQueued(kitType, false);
 
             return new CustomSelectKitTypeMenu.CustomKitTypeMeta(
                 // clamp value to >= 1 && <= 64
-                Math.max(1, Math.min(64, inFights + inQueue)),
+                Math.max(1, Math.min(64, ranked ? inFightsRanked + inQueueRanked : inFightsUnranked + inQueueUnranked)),
                 ImmutableList.of(
-                    ChatColor.GREEN + "In fights: " + ChatColor.WHITE + inFights,
-                    ChatColor.GREEN + "In queue: " + ChatColor.WHITE + inQueue
+                    ChatColor.AQUA.toString() + ChatColor.BOLD + "Ranked:",
+                    ChatColor.GREEN + "   In fights: " + ChatColor.WHITE + inFightsRanked,
+                    ChatColor.GREEN + "   In queue: " + ChatColor.WHITE + inQueueRanked,
+                    "",
+                    ChatColor.AQUA.toString() + ChatColor.BOLD + "Unranked:",
+                    ChatColor.GREEN + "   In fights: " + ChatColor.WHITE + inFightsUnranked,
+                    ChatColor.GREEN + "   In queue: " + ChatColor.WHITE + inQueueUnranked
                 )
             );
         };
