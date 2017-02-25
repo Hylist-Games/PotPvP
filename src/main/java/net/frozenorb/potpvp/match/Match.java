@@ -49,7 +49,7 @@ import lombok.Getter;
 
 public final class Match {
 
-    private static final int MATCH_END_DELAY_SECONDS = 2;
+    private static final int MATCH_END_DELAY_SECONDS = 3;
 
     @Getter private final KitType kitType;
     @Getter private final Arena arena;
