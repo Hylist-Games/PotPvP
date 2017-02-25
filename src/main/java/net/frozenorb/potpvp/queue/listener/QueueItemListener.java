@@ -100,11 +100,11 @@ public final class QueueItemListener extends ItemListener {
                 // clamp value to >= 1 && <= 64
                 Math.max(1, Math.min(64, ranked ? inFightsRanked + inQueueRanked : inFightsUnranked + inQueueUnranked)),
                 ImmutableList.of(
-                    ChatColor.AQUA.toString() + ChatColor.BOLD + "Ranked:",
+                    ChatColor.AQUA.toString() + ChatColor.BOLD + (ranked ? ChatColor.UNDERLINE.toString() : "") + "Ranked:",
                     ChatColor.GREEN + "   In fights: " + ChatColor.WHITE + inFightsRanked,
                     ChatColor.GREEN + "   In queue: " + ChatColor.WHITE + inQueueRanked,
                     "",
-                    ChatColor.AQUA.toString() + ChatColor.BOLD + "Unranked:",
+                    ChatColor.AQUA.toString() + ChatColor.BOLD + (!ranked ? ChatColor.UNDERLINE.toString() : "") + "Unranked:",
                     ChatColor.GREEN + "   In fights: " + ChatColor.WHITE + inFightsUnranked,
                     ChatColor.GREEN + "   In queue: " + ChatColor.WHITE + inQueueUnranked
                 )
