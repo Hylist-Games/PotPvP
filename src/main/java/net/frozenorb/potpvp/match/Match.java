@@ -19,6 +19,7 @@ import net.frozenorb.potpvp.postmatchinv.PostMatchPlayer;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.potpvp.util.InventoryUtils;
+import net.frozenorb.potpvp.util.ItemListener;
 import net.frozenorb.potpvp.util.MongoUtils;
 import net.frozenorb.potpvp.util.PatchedPlayerUtils;
 import net.frozenorb.potpvp.util.VisibilityUtils;
@@ -298,6 +299,7 @@ public final class Match {
         InventoryUtils.resetInventoryDelayed(player);
         player.setAllowFlight(true);
         player.setFlying(true); // called after PlayerUtils reset, make sure they don't fall out of the sky
+        ItemListener.addButtonCooldown(player, 1_500);
 
         Bukkit.getPluginManager().callEvent(new MatchSpectatorJoinEvent(player, this));
     }

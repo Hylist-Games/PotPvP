@@ -30,6 +30,10 @@ public abstract class ItemListener implements Listener {
         this.preProcessPredicate = preProcessPredicate;
     }
 
+    public static void addButtonCooldown(Player player, int ms) {
+        canUseButton.put(player.getUniqueId(), System.currentTimeMillis() + ms);
+    }
+
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!event.hasItem() || !event.getAction().name().contains("RIGHT_")) {
