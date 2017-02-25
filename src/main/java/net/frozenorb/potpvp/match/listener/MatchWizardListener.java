@@ -38,7 +38,7 @@ public final class MatchWizardListener implements Listener {
         Player player = event.getPlayer();
         Match match = matchHandler.getMatchPlaying(player);
 
-        if (match == null || !match.getKitType().getId().equals("WIZARD")) {
+        if (match == null || !match.getKitType().getId().contains("WIZARD")) {
             return;
         }
 
