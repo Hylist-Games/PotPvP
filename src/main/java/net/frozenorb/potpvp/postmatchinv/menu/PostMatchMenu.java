@@ -13,7 +13,6 @@ import net.frozenorb.qlib.util.UUIDUtils;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
 import java.util.Arrays;

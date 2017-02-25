@@ -24,7 +24,6 @@ import net.frozenorb.potpvp.util.MongoUtils;
 import net.frozenorb.potpvp.util.PatchedPlayerUtils;
 import net.frozenorb.potpvp.util.VisibilityUtils;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
-import net.frozenorb.qlib.qLib;
 import net.frozenorb.qlib.util.UUIDUtils;
 
 import org.bson.Document;
@@ -33,7 +32,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.libs.com.google.gson.annotations.SerializedName;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 

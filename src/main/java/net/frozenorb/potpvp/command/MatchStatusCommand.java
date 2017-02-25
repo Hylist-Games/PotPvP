@@ -5,7 +5,6 @@ import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
-import net.frozenorb.qlib.qLib;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

@@ -49,8 +49,6 @@ import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
 import lombok.Getter;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 
 // TODO: Restoring arenas after matches (?)
 public final class PotPvPSI extends JavaPlugin {

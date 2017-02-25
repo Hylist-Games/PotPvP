@@ -20,8 +20,6 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.UUID;
-
 public final class KitSelectionListener implements Listener {
 
     /**

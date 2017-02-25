@@ -2,9 +2,7 @@ package net.frozenorb.potpvp.kit;
 
 import com.google.common.collect.ImmutableList;
 
-import com.mongodb.BasicDBList;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.DeleteOptions;
 import com.mongodb.util.JSON;
 
 import net.frozenorb.potpvp.PotPvPSI;
@@ -13,7 +11,6 @@ import net.frozenorb.potpvp.kit.listener.KitItemListener;
 import net.frozenorb.potpvp.kit.listener.KitLoadListener;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.util.MongoUtils;
-import net.frozenorb.qlib.qLib;
 
 import org.bson.Document;
 import org.bukkit.Bukkit;
