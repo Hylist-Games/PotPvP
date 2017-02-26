@@ -48,7 +48,13 @@ public final class SpectateCommand {
             teleportTo = target;
         }
 
-        if (PotPvPValidation.canUseSpectateItem(sender)) {
+        if (PotPvPValidation.canUseSpectateItemIgnoreMatchSpectating(sender)) {
+            Match currentlySpectating = matchHandler.getMatchSpectating(sender);
+
+            if (currentlySpectating != null) {
+                currentlySpectating.removeSpectator(sender);
+            }
+
             targetMatch.addSpectator(sender, teleportTo);
         }
     }
