@@ -142,7 +142,7 @@ public final class Party {
         PartyInvite invite = new PartyInvite(this, target.getUniqueId());
 
         target.spigot().sendMessage(PartyLang.inviteAcceptPrompt(this));
-        message(ChatColor.YELLOW + target.getName() + ChatColor.AQUA + " has been invited to join your party.");
+        message(ChatColor.DARK_GRAY + target.getName() + ChatColor.GREEN + " has been invited to join your party.");
 
         invites.add(invite);
         Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), () -> invites.remove(invite), PartyHandler.INVITE_EXPIRATION_SECONDS * 20);
@@ -166,7 +166,7 @@ public final class Party {
         Player leaderBukkit = Bukkit.getPlayer(leader);
         player.sendMessage(ChatColor.YELLOW + "You have joined " + ChatColor.AQUA + leaderBukkit.getName() + ChatColor.YELLOW + "'s party.");
 
-        message(ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " has joined your party.");
+        message(ChatColor.DARK_GREEN + player.getName() + ChatColor.GREEN + " has joined your party.");
 
         members.add(player.getUniqueId());
         PotPvPSI.getInstance().getPartyHandler().updatePartyCache(player.getUniqueId(), this);
@@ -199,7 +199,7 @@ public final class Party {
         }
 
         player.sendMessage(ChatColor.YELLOW + "You have left your party.");
-        message(ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " has left your party.");
+        message(ChatColor.DARK_RED + player.getName() + ChatColor.RED + " has left your party.");
 
         VisibilityUtils.updateVisibility(player);
         forEachOnline(VisibilityUtils::updateVisibility);
@@ -226,7 +226,7 @@ public final class Party {
             PotPvPSI.getInstance().getPartyHandler().updatePartyCache(player.getUniqueId(), null);
         });
 
-        message(ChatColor.YELLOW + "Your party has been disbanded.");
+        message(ChatColor.RED + "Your party has been disbanded.");
         resetInventoriesDelayed();
     }
 
@@ -238,7 +238,7 @@ public final class Party {
         PotPvPSI.getInstance().getPartyHandler().updatePartyCache(player.getUniqueId(), null);
 
         player.sendMessage(ChatColor.YELLOW + "You have been kicked from your party.");
-        message(ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " has been kicked from your party.");
+        message(ChatColor.DARK_RED + player.getName() + ChatColor.RED + " has been kicked from your party.");
 
         VisibilityUtils.updateVisibility(player);
         forEachOnline(VisibilityUtils::updateVisibility);
