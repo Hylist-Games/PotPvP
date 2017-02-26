@@ -83,6 +83,13 @@ public final class KitHandler {
         });
     }
 
+    public void wipeKitsForPlayer(UUID target) {
+        kitData.remove(target);
+
+        MongoCollection<Document> collection = MongoUtils.getCollection(MONGO_COLLECTION_NAME);
+        collection.deleteOne(new Document("_id", target.toString()));
+    }
+
     public int wipeKitsWithType(KitType kitType) {
         // remove kits for online players
         for (List<Kit> playerKits : kitData.values()) {

@@ -66,7 +66,7 @@ public class ManageKitTypeMenu extends Menu {
                     ChatColor.RED + "(includes online and offline players)",
                     "",
                     ChatColor.RED + "For safety reasons this button is disabled,",
-                    ChatColor.RED + "use /kit wipekits " + type.getId().toLowerCase()
+                    ChatColor.RED + "use /kit wipekits type " + type.getId().toLowerCase()
                 );
             }
 
