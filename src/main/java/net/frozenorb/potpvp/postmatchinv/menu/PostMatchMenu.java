@@ -26,11 +26,11 @@ public final class PostMatchMenu extends Menu {
     private final PostMatchPlayer target;
     private final boolean pots;
 
-    public PostMatchMenu(PostMatchPlayer target, boolean pots) {
+    public PostMatchMenu(PostMatchPlayer target) {
         super("Inventory of " + UUIDUtils.name(target.getPlayerUuid()));
 
         this.target = Preconditions.checkNotNull(target, "target");
-        this.pots = pots;
+        this.pots = target.getKitType().getId().contains("SOUP"); // TODO: WTF IS THIS NO
     }
 
     @Override
