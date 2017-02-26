@@ -58,7 +58,7 @@ public enum Setting {
                     "",
                     ChatColor.BLUE + "Disable to disallow match spectators."
             ),
-            Material.GLASS,
+            Material.REDSTONE_TORCH_ON,
             ChatColor.YELLOW + "Let players spectate your matches",
             ChatColor.YELLOW + "Don't let players spectate your matches",
             true,
@@ -86,7 +86,7 @@ public enum Setting {
             "",
             ChatColor.BLUE + "Disable to hide others lightning."
         ),
-        Material.REDSTONE_TORCH_ON,
+        Material.TORCH,
         ChatColor.YELLOW + "Show other lightning",
         ChatColor.YELLOW + "Hide other lightning",
         true,
