@@ -7,6 +7,7 @@ import net.frozenorb.potpvp.match.MatchState;
 
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -29,7 +30,7 @@ public final class MatchCountdownListener implements Listener {
         }
 
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Match match = matchHandler.getMatchPlaying(event.getEntity().getUniqueId());
+        Match match = matchHandler.getMatchPlaying((Player) event.getEntity());
 
         if (match != null && match.getState() != MatchState.IN_PROGRESS) {
             event.setCancelled(true);
@@ -70,7 +71,7 @@ public final class MatchCountdownListener implements Listener {
         }
 
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Match match = matchHandler.getMatchPlaying(event.getEntity().getUniqueId());
+        Match match = matchHandler.getMatchPlaying((Player) event.getEntity());
 
         if (match != null && match.getState() != MatchState.IN_PROGRESS) {
             event.setCancelled(true);

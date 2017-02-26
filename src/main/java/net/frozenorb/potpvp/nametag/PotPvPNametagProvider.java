@@ -30,9 +30,9 @@ public final class PotPvPNametagProvider extends NametagProvider {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Match toRefreshMatch = matchHandler.getMatchPlayingOrSpectating(toRefresh);
 
-        // they're not in a match with us, so visibility code should
-        // prevent us from ever seeing them, but when something
-        // breaks we should see other players as dark gray
+        // they're not in a match with us, so (in theory) the only way
+        // we can see them is if they're in a party with them.
+        // TODO: Make this better
         if (toRefreshMatch == null) {
             return ChatColor.BLUE;
         }

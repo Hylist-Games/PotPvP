@@ -35,7 +35,6 @@ public final class LobbyItemListener extends ItemListener {
                 ManageCommand.manage(p);
             }
         });
-        addHandler(LobbyItems.EVENTS_ITEM, p -> p.sendMessage(ChatColor.RED + "Events are not yet completed! They will be done soon!"));
         addHandler(LobbyItems.DISABLE_SPEC_MODE_ITEM, p -> lobbyHandler.setSpectatorMode(p, false));
 
         addHandler(LobbyItems.SPECTATE_MENU_ITEM, player -> {

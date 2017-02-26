@@ -2,6 +2,7 @@ package net.frozenorb.potpvp.lobby;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.duel.DuelHandler;
+import net.frozenorb.potpvp.event.EventItems;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.kit.KitItems;
 import net.frozenorb.potpvp.kit.menu.editkit.EditKitMenu;
@@ -120,7 +121,7 @@ public final class LobbyUtils {
                     }
                 }
 
-                inventory.setItem(6, LobbyItems.EVENTS_ITEM);
+                inventory.setItem(6, EventItems.EVENTS_ITEM);
                 inventory.setItem(7, KitItems.OPEN_EDITOR_ITEM);
 
                 if (player.hasPermission("potpvp.admin")) {
