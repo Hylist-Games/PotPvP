@@ -396,7 +396,7 @@ public final class Match {
                 numTotalPlayers += team.getAliveMembers().size();
             }
 
-            players = numTotalPlayers + " player FFA";
+            players = numTotalPlayers + " player fight";
         }
 
         String rankedStr = ranked ? "Ranked" : "Unranked";
