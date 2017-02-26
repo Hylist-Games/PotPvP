@@ -21,35 +21,6 @@ import java.util.function.BiConsumer;
 
 final class MatchSpectatorLayoutProvider implements BiConsumer<Player, TabLayout> {
 
-    private static final List<String> TEAM_COLOR_PREFIXES;
-
-    static {
-        List<String> teamColors = new ArrayList<>();
-
-        List<ChatColor> colors = new ArrayList<>();
-        List<ChatColor> formats = new ArrayList<>();
-
-        for (ChatColor color : ChatColor.values()) {
-            if (color.isFormat() && color != ChatColor.MAGIC && color != ChatColor.STRIKETHROUGH) {
-                formats.add(color);
-            } else if (color.isColor() && color != ChatColor.BLACK) {
-                colors.add(color);
-            }
-        }
-
-        for (ChatColor color : colors) {
-            teamColors.add(color.toString());
-        }
-
-        for (ChatColor color : colors) {
-            for (ChatColor format : formats) {
-                teamColors.add(color + format.toString());
-            }
-        }
-
-        TEAM_COLOR_PREFIXES = ImmutableList.copyOf(teamColors);
-    }
-
     @Override
     public void accept(Player player, TabLayout tabLayout) {
         Match match = PotPvPSI.getInstance().getMatchHandler().getMatchSpectating(player);
@@ -152,13 +123,10 @@ final class MatchSpectatorLayoutProvider implements BiConsumer<Player, TabLayout
                 // if they're just a random spectator, we'll pick different colors for each team.
                 Map<String, Integer> deadLines = new LinkedHashMap<>();
 
-                for (int index = 0; index < match.getTeams().size(); index++) {
-                    MatchTeam team = match.getTeams().get(index);
-                    String color = TEAM_COLOR_PREFIXES.get(index);
-
+                for (MatchTeam team : match.getTeams()) {
                     for (UUID enemy : team.getAllMembers()) {
                         if (team.isAlive(enemy)) {
-                            entries.put(color + FrozenUUIDCache.name(enemy), PotPvPLayoutProvider.getPingOrDefault(enemy));
+                            entries.put("&c" + FrozenUUIDCache.name(enemy), PotPvPLayoutProvider.getPingOrDefault(enemy));
                         } else {
                             deadLines.put("&7&m" + FrozenUUIDCache.name(enemy), PotPvPLayoutProvider.getPingOrDefault(enemy));
                         }
