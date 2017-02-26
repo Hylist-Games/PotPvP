@@ -30,7 +30,7 @@ public final class PostMatchMenu extends Menu {
         super("Inventory of " + UUIDUtils.name(target.getPlayerUuid()));
 
         this.target = Preconditions.checkNotNull(target, "target");
-        this.pots = target.getKitType().getId().contains("SOUP"); // TODO: WTF IS THIS NO
+        this.pots = !target.getKitType().getId().contains("SOUP"); // TODO: WTF IS THIS NO
     }
 
     @Override
