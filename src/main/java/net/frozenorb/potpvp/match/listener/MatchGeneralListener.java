@@ -83,7 +83,7 @@ public final class MatchGeneralListener implements Listener {
         match.markDead(player);
     }
 
-    // "natural" teleports (like enderpearls) are forward down and
+    // "natural" teleports (like enderpearls) are forwarded down and
     // treated as a move event, plugin teleports (specifically
     // those originating in this plugin) are ignored.
     @EventHandler
