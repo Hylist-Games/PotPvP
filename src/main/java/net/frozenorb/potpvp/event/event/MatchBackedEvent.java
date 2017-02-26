@@ -4,26 +4,28 @@ import net.frozenorb.potpvp.event.Event;
 import net.frozenorb.potpvp.event.EventType;
 import net.frozenorb.potpvp.match.Match;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public abstract class MatchBackedEvent extends Event {
 
     protected Match match;
 
-    protected MatchBackedEvent(EventType type) {
+    MatchBackedEvent(EventType type) {
         super(type);
     }
 
     @Override
     public Set<UUID> getParticipants() {
-
+        return match.getTeams().stream()
+            .flatMap(t -> t.getAliveMembers().stream())
+            .collect(Collectors.toSet());
     }
 
     @Override
-    public List<String> getLiveStatus() {
-
+    public boolean isParticipant(UUID player) {
+        return match.getTeam(player) != null;
     }
 
 }

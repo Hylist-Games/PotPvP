@@ -42,7 +42,7 @@ final class PostMatchSwapTargetButton extends Button {
 
     @Override
     public void clicked(Player player, int i, ClickType clickType) {
-        new PostMatchMenu(newTarget, true).openMenu(player);
+        new PostMatchMenu(newTarget).openMenu(player);
     }
 
 }

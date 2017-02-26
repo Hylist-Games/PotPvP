@@ -8,6 +8,8 @@ import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.duel.DuelHandler;
 import net.frozenorb.potpvp.elo.EloHandler;
 import net.frozenorb.potpvp.event.EventHandler;
+import net.frozenorb.potpvp.event.EventType;
+import net.frozenorb.potpvp.event.EventTypeParameterType;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.kit.KitHandler;
 import net.frozenorb.potpvp.kittype.KitType;
@@ -117,6 +119,7 @@ public final class PotPvPSI extends JavaPlugin {
         ProtocolLibrary.getProtocolManager().addPacketListener(new DisableSpectatorSoundAdapter());
 
         FrozenCommandHandler.registerAll(this);
+        FrozenCommandHandler.registerParameterType(EventType.class, new EventTypeParameterType());
         FrozenCommandHandler.registerParameterType(KitType.class, new KitTypeParameterType());
         FrozenTabHandler.setLayoutProvider(new PotPvPLayoutProvider());
         FrozenNametagHandler.registerProvider(new PotPvPNametagProvider());

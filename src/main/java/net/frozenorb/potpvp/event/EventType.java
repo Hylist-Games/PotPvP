@@ -14,19 +14,17 @@ public enum EventType {
     LAST_MAN_STANDING(
         "Last Man Standing",
         new String[] {
-            "LMS 1",
-            "LMS 2"
+            "Description"
         },
         5,
         100,
-        new MaterialData(Material.WOOD_SWORD),
+        new MaterialData(Material.GLASS_BOTTLE),
         LastManStandingEvent.class
     ),
     KOTH(
         "KOTH",
         new String[] {
-            "KOTH 1",
-            "KOTH 2"
+            "Description"
         },
         5,
         100,
@@ -36,8 +34,7 @@ public enum EventType {
     EVOLUTION(
         "Evolution",
         new String[] {
-            "EVO 1",
-            "EVO 2"
+            "Description"
         },
         5,
         20,

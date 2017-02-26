@@ -1,12 +1,7 @@
 package net.frozenorb.potpvp.event.menu;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-
 import net.frozenorb.potpvp.event.Event;
-import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.qlib.menu.Button;
-import net.frozenorb.qlib.util.Callback;
 import net.frozenorb.qlib.util.TimeUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
 
@@ -30,20 +25,22 @@ final class EventButton extends Button {
 
     @Override
     public String getName(Player player) {
-        return ChatColor.AQUA.toString() + ChatColor.BOLD + event.getType().getName();
+        return ChatColor.GREEN.toString() + ChatColor.BOLD + event.getType().getName();
     }
 
     @Override
     public List<String> getDescription(Player player) {
         List<String> description = new ArrayList<>();
+        description.add("");
 
         String hostStr = event.getHost() == null ? "server" : UUIDUtils.name(event.getHost());
-        description.add("Hosted by " + ChatColor.GOLD + hostStr);
+        description.add(ChatColor.WHITE + "Hosted by " + ChatColor.GOLD + hostStr);
 
         if (event.isActive()) {
-            description.add("Started " + ChatColor.AQUA + TimeUtils.formatIntoMMSS((int) ChronoUnit.SECONDS.between(Instant.now(), event.getStarted())) + ChatColor.WHITE + " ago");
+            description.add(ChatColor.WHITE + "Started " + ChatColor.AQUA + TimeUtils.formatIntoMMSS((int) ChronoUnit.SECONDS.between(event.getStarted(), Instant.now())) + ChatColor.WHITE + " ago");
         } else {
-            description.add("Starts in " + ChatColor.AQUA + TimeUtils.formatIntoMMSS(event.getCountdown()));
+            description.add(ChatColor.WHITE + "Starts in " + ChatColor.AQUA + TimeUtils.formatIntoMMSS(event.getCountdown()));
+            description.add(ChatColor.AQUA.toString() + event.getQueued().size() + ChatColor.WHITE + " players (max " + event.getType().getMaxPlayers() + ")");
         }
 
         description.add("");
@@ -56,8 +53,9 @@ final class EventButton extends Button {
 
         if (event.isActive()) {
             description.addAll(event.getLiveStatus());
+        } else if (event.isRestricted()) {
+            description.add(ChatColor.RED + "» Event is restricted «");
         } else {
-            description.add(ChatColor.AQUA.toString() + event.getPlayers().size() + ChatColor.WHITE + " players (max " + event.getType().getMaxPlayers() + ")");
             description.add(ChatColor.GREEN + "» Click to queue «");
         }
 
@@ -75,15 +73,17 @@ final class EventButton extends Button {
     }
 
     @Override
-    public int getAmount(Player player) {
-        return event.getPlayers().size();
-    }
-
-    @Override
     public void clicked(Player player, int slot, ClickType clickType) {
-        if (!event.isActive()) {
-            player.sendMessage(ChatColor.GREEN + "Joining!!!");
+        if (event.isActive()) {
+            return;
         }
+
+        if (event.isRestricted()) {
+            player.sendMessage(ChatColor.RED + "You cannot join restricted events.");
+            return;
+        }
+
+        player.sendMessage(ChatColor.GREEN + "Joining!!!");
     }
 
 }

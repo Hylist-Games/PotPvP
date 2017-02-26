@@ -2,6 +2,8 @@ package net.frozenorb.potpvp.scoreboard;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.elo.EloHandler;
+import net.frozenorb.potpvp.event.Event;
+import net.frozenorb.potpvp.event.EventHandler;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.party.Party;
@@ -13,6 +15,7 @@ import net.frozenorb.qlib.util.TimeUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -26,6 +29,7 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
         QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
+        EventHandler eventHandler = PotPvPSI.getInstance().getEventHandler();
         EloHandler eloHandler = PotPvPSI.getInstance().getEloHandler();
 
         Party party = partyHandler.getParty(player);
@@ -64,6 +68,15 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
 
                 scores.add("&eSearch range: *&f" + Math.max(0, elo - window) + " - " + (elo + window));
             }
+        }
+
+        Event nearest = eventHandler.getNearestEvent();
+
+        if (nearest != null) {
+            scores.add("&l&7&m--------------------");
+            scores.add("&b&l" + nearest.getType().getName());
+            scores.add("&f  Starts in &b&l" + TimeUtils.formatIntoMMSS(nearest.getCountdown()));
+            scores.add("&f  Join via emerald in hotbar");
         }
     }
 

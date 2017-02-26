@@ -1,12 +1,18 @@
 package net.frozenorb.potpvp.event.event;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
 import net.frozenorb.potpvp.event.Event;
 import net.frozenorb.potpvp.event.EventType;
 
+import org.bukkit.ChatColor;
+
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public final class EvolutionEvent extends Event {
+public final class EvolutionEvent extends MatchBackedEvent {
 
     public EvolutionEvent() {
         super(EventType.EVOLUTION);
@@ -15,6 +21,16 @@ public final class EvolutionEvent extends Event {
     @Override
     public void startEvent(Set<UUID> queued) {
 
+    }
+
+    @Override
+    public List<String> getLiveStatus() {
+        return ImmutableList.of(
+            ChatColor.WHITE + "Top 3:",
+            ChatColor.WHITE + "  5 " + ChatColor.YELLOW + "Stimpay",
+            ChatColor.WHITE + "  5 " + ChatColor.YELLOW + "itsjhalt",
+            ChatColor.WHITE + "  4 " + ChatColor.YELLOW + "macguy8"
+        );
     }
 
 }

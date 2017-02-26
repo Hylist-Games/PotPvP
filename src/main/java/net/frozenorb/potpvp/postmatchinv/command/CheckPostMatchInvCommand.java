@@ -22,7 +22,7 @@ public final class CheckPostMatchInvCommand {
         Map<UUID, PostMatchPlayer> players = postMatchInvHandler.getPostMatchData(sender.getUniqueId());
 
         if (players.containsKey(target)) {
-            new PostMatchMenu(players.get(target), true).openMenu(sender);
+            new PostMatchMenu(players.get(target)).openMenu(sender);
         } else {
             sender.sendMessage(ChatColor.RED + "Data for " + UUIDUtils.name(target) + " not found.");
         }
