@@ -14,7 +14,9 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,6 +29,7 @@ public final class LobbyHandler {
      * certain clickable items - but that's just a UX decision)
      */
     private final Set<UUID> spectatorMode = new HashSet<>();
+    private final Map<UUID, Long> returnedToLobby = new HashMap<>();
 
     public LobbyHandler() {
         Bukkit.getPluginManager().registerEvents(new LobbyGeneralListener(), PotPvPSI.getInstance());
@@ -54,6 +57,12 @@ public final class LobbyHandler {
         VisibilityUtils.updateVisibility(player);
         PatchedPlayerUtils.resetInventory(player, GameMode.SURVIVAL);
         InventoryUtils.resetInventoryDelayed(player);
+
+        returnedToLobby.put(player.getUniqueId(), System.currentTimeMillis());
+    }
+
+    public long getLastLobbyTime(Player player) {
+        return returnedToLobby.getOrDefault(player.getUniqueId(), 0L);
     }
 
     public boolean isInSpectatorMode(Player player) {

@@ -8,6 +8,7 @@ import net.frozenorb.potpvp.duel.PartyDuelInvite;
 import net.frozenorb.potpvp.duel.PlayerDuelInvite;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.kittype.menu.select.SelectKitTypeMenu;
+import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
@@ -33,6 +34,7 @@ public final class DuelCommand {
         }
 
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
+        LobbyHandler lobbyHandler = PotPvPSI.getInstance().getLobbyHandler();
 
         Party senderParty = partyHandler.getParty(sender);
         Party targetParty = partyHandler.getParty(target);
@@ -40,6 +42,11 @@ public final class DuelCommand {
         if (senderParty != null && targetParty != null) {
             // party dueling party (legal)
             if (!PotPvPValidation.canSendDuel(senderParty, targetParty, sender)) {
+                return;
+            }
+
+            if (target.hasPermission("potpvp.famous") && System.currentTimeMillis() - lobbyHandler.getLastLobbyTime(target) < 3_000) {
+                sender.sendMessage(ChatColor.RED + target.getName() + " just returned to the lobby, please wait a moment.");
                 return;
             }
 
