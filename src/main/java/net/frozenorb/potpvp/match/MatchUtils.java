@@ -49,15 +49,19 @@ public final class MatchUtils {
             player.getInventory().setItem(2, SpectatorItems.VIEW_INVENTORY_ITEM);
         }
 
-        // this bit is correct; see SpectatorItems file for more
-        if (partyHandler.hasParty(player)) {
-            player.getInventory().setItem(8, SpectatorItems.LEAVE_PARTY_ITEM);
-        } else {
-            player.getInventory().setItem(8, SpectatorItems.RETURN_TO_LOBBY_ITEM);
+        // don't give players who die (and cause the match to end)
+        // a fire item, they'll be sent back to the lobby in a few seconds anyway
+        if (match.getState() != MatchState.ENDING) {
+            // this bit is correct; see SpectatorItems file for more
+            if (partyHandler.hasParty(player)) {
+                player.getInventory().setItem(8, SpectatorItems.LEAVE_PARTY_ITEM);
+            } else {
+                player.getInventory().setItem(8, SpectatorItems.RETURN_TO_LOBBY_ITEM);
 
-            if (!followHandler.getFollowing(player).isPresent()) {
-                player.getInventory().setItem(4, LobbyItems.SPECTATE_RANDOM_ITEM);
-                player.getInventory().setItem(5, LobbyItems.SPECTATE_MENU_ITEM);
+                if (!followHandler.getFollowing(player).isPresent()) {
+                    player.getInventory().setItem(4, LobbyItems.SPECTATE_RANDOM_ITEM);
+                    player.getInventory().setItem(5, LobbyItems.SPECTATE_MENU_ITEM);
+                }
             }
         }
 
