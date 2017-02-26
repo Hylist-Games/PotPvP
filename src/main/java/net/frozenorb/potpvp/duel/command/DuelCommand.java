@@ -157,7 +157,8 @@ public final class DuelCommand {
     }
 
     private static TextComponent createInviteNotification(String sender) {
-        TextComponent button = new TextComponent(ChatColor.GOLD + "Click here or type /accept " + sender + " to accept the invite");
+        TextComponent button = new TextComponent("Click here or type /accept " + sender + " to accept the invite");
+        button.setColor(net.md_5.bungee.api.ChatColor.GOLD);
 
         ClickEvent.Action runCommand = ClickEvent.Action.RUN_COMMAND;
         HoverEvent.Action showText = HoverEvent.Action.SHOW_TEXT;
