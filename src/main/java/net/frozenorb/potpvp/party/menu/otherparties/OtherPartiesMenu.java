@@ -12,7 +12,10 @@ import net.frozenorb.qlib.menu.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class OtherPartiesMenu extends Menu {
@@ -30,9 +33,12 @@ public final class OtherPartiesMenu extends Menu {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
         Map<Integer, Button> buttons = new HashMap<>();
+        List<Party> parties = new ArrayList<>(partyHandler.getParties());
         int index = 0;
 
-        for (Party party : partyHandler.getParties()) {
+        parties.sort(Comparator.comparing(p -> p.getMembers().size()));
+
+        for (Party party : parties) {
             if (party.isMember(player.getUniqueId())) {
                 continue;
             }

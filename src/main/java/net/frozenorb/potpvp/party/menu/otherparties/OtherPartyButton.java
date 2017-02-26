@@ -59,6 +59,11 @@ final class OtherPartyButton extends Button {
     }
 
     @Override
+    public int getAmount(Player player) {
+        return party.getMembers().size();
+    }
+
+    @Override
     public void clicked(Player player, int slot, ClickType clickType) {
         Party senderParty = PotPvPSI.getInstance().getPartyHandler().getParty(player);
 
