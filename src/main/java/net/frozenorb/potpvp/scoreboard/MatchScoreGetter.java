@@ -65,6 +65,10 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         }
 
         renderMetaLines(scores, match, isParticipant);
+
+        if (!isParticipant && player.hasMetadata("ModMode")) {
+            scores.add(ChatColor.GRAY.toString() + ChatColor.BOLD + "In silent mode");
+        }
     }
 
     private void renderParticipantLines(List<String> scores, Match match, Player player) {

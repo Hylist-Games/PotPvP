@@ -13,6 +13,7 @@ import net.frozenorb.qlib.util.TimeUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -64,6 +65,10 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
 
                 scores.add("&eSearch range: *&f" + Math.max(0, elo - window) + " - " + (elo + window));
             }
+        }
+
+        if (player.hasMetadata("ModMode")) {
+            scores.add(ChatColor.GRAY.toString() + ChatColor.BOLD + "In silent mode");
         }
     }
 
