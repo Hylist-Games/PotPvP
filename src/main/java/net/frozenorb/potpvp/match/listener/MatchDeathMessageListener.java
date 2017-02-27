@@ -3,14 +3,13 @@ package net.frozenorb.potpvp.match.listener;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
-
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.nametag.PotPvPNametagProvider;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
-
+import net.frozenorb.qlib.qLib;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -43,6 +42,9 @@ public final class MatchDeathMessageListener implements Listener {
         Player killer = killed.getKiller();
         PacketContainer lightningPacket = createLightningPacket(killed.getLocation());
 
+        float thunderSoundPitch = 0.8F + qLib.RANDOM.nextFloat() * 0.2F;
+        float explodeSoundPitch = 0.5F + qLib.RANDOM.nextFloat() * 0.2F;
+
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             UUID onlinePlayerUuid = onlinePlayer.getUniqueId();
 
@@ -67,7 +69,9 @@ public final class MatchDeathMessageListener implements Listener {
             }
 
             if (settingHandler.getSetting(onlinePlayer, Setting.VIEW_OTHERS_LIGHTNING)) {
-                onlinePlayer.playSound(killed.getLocation(), Sound.AMBIENCE_THUNDER, 10000F, 0.8F);
+                onlinePlayer.playSound(killed.getLocation(), Sound.AMBIENCE_THUNDER, 10000F, thunderSoundPitch);
+                onlinePlayer.playSound(killed.getLocation(), Sound.EXPLODE, 2.0F, explodeSoundPitch);
+
                 sendLightningPacket(onlinePlayer, lightningPacket);
             }
         }
