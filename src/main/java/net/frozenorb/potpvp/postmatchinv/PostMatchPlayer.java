@@ -29,7 +29,7 @@ public final class PostMatchPlayer {
         this.inventory = player.getInventory().getContents();
         this.potionEffects = ImmutableList.copyOf(player.getActivePotionEffects());
         this.hunger = player.getFoodLevel();
-        this.health = Math.round(player.getHealth()) / 2D;
+        this.health = Math.ceil(player.getHealth()) / 2D;
         this.kitType = kitType;
     }
 
