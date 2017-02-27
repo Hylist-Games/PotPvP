@@ -105,11 +105,12 @@ public final class PartyLang {
     // this method is probably named badly;
     // it puts min(partySize, 6) member display names into a set,
     // with a String indicating how many more members are present (if there are any)
-    private static Set<String> getMemberPreviewNames(Party party) {
+    private static List<String> getMemberPreviewNames(Party party) {
         List<UUID> members = new ArrayList<>(party.getMembers());
-        Set<String> displayNames = new HashSet<>();
+        int partySize = members.size();
+        List<String> displayNames = new ArrayList<>();
 
-        for (int i = 0; i < Math.min(members.size(), 6); i++) {
+        for (int i = 0; i < Math.min(partySize, 6); i++) {
             UUID member = members.remove(0);
             String suffix = party.isLeader(member) ? "*" : "";
 
