@@ -82,22 +82,22 @@ public final class PostMatchInvHandler {
             return;
         }
 
-        MatchTeam team1 = teams.get(0);
-        MatchTeam team2 = teams.get(1);
+        MatchTeam winnerTeam = match.getWinner();
+        MatchTeam loserTeam = teams.get(0) == winnerTeam ? teams.get(1) : teams.get(0);
 
-        if (team1.getAllMembers().size() == 1 && team2.getAllMembers().size() == 1) {
+        if (winnerTeam.getAllMembers().size() == 1 && loserTeam.getAllMembers().size() == 1) {
             // 1v1 messages
-            UUID player1 = team1.getAllMembers().iterator().next();
-            UUID player2 = team2.getAllMembers().iterator().next();
+            UUID winnerPlayer = winnerTeam.getAllMembers().iterator().next();
+            UUID loserPlayer = loserTeam.getAllMembers().iterator().next();
+            Object[] generic = PostMatchInvLang.gen1v1PlayerMessages(winnerPlayer, loserPlayer);
 
-            writeSpecMessages(match, messages, PostMatchInvLang.genGenericMessages(teams));
-            writeTeamMessages(team1, messages, PostMatchInvLang.gen1v1PlayerMessages(player1, player2));
-            writeTeamMessages(team2, messages, PostMatchInvLang.gen1v1PlayerMessages(player2, player1));
+            writeSpecMessages(match, messages, generic);
+            writeTeamMessages(teams, messages, generic);
         } else {
             // normal 2 team messages
-            writeSpecMessages(match, messages, PostMatchInvLang.genSpectatorMessages(team1, team2));
-            writeTeamMessages(team1, messages, PostMatchInvLang.genTeamMessages(team1, team2));
-            writeTeamMessages(team2, messages, PostMatchInvLang.genTeamMessages(team2, team1));
+            writeSpecMessages(match, messages, PostMatchInvLang.genSpectatorMessages(winnerTeam, loserTeam));
+            writeTeamMessages(winnerTeam, messages, PostMatchInvLang.genTeamMessages(winnerTeam, winnerTeam, loserTeam));
+            writeTeamMessages(loserTeam, messages, PostMatchInvLang.genTeamMessages(loserTeam, winnerTeam, loserTeam));
         }
     }
 

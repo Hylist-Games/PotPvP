@@ -20,11 +20,10 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class PostMatchInvLang {
 
-    private static final String TEAM_1 = ChatColor.LIGHT_PURPLE + "Team 1:";
-    private static final String TEAM_2 = ChatColor.AQUA + "Team 2:";
-    private static final String YOUR_TEAM = ChatColor.GREEN.toString() + ChatColor.BOLD + "Your team:";
-    private static final String ENEMY_TEAM = ChatColor.RED.toString() + ChatColor.BOLD + "Enemy team:";
+    private static final String WINNER = ChatColor.LIGHT_PURPLE + "Winner:" + ChatColor.GRAY;
+    private static final String LOSER = ChatColor.AQUA + "Loser:" + ChatColor.GRAY;
     private static final String PARTICIPANTS = ChatColor.GREEN + "Participants:";
+
     private static final String LINE = ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "-----------------------------------------------------";
     private static final String INVENTORY_HEADER = ChatColor.GOLD + "Post-Match Inventories " + ChatColor.GRAY + "(click name to view)";
 
@@ -34,42 +33,42 @@ public final class PostMatchInvLang {
         COMMA_COMPONENT.setColor(ChatColor.YELLOW);
     }
 
-    static Object[] gen1v1PlayerMessages(UUID you, UUID enemy) {
+    static Object[] gen1v1PlayerMessages(UUID winner, UUID loser) {
         return new Object[] {
             LINE,
             INVENTORY_HEADER,
             new TextComponent[] {
-                new TextComponent(ChatColor.GREEN + "You: "),
-                clickToViewLine(you),
-                new TextComponent(ChatColor.GRAY + " - " + ChatColor.RED + "Enemy: "),
-                clickToViewLine(enemy)
+                new TextComponent(ChatColor.GREEN + "Winner: "),
+                clickToViewLine(winner),
+                new TextComponent(ChatColor.GRAY + " - " + ChatColor.RED + "Loser: "),
+                clickToViewLine(loser)
             },
             LINE
         };
     }
 
     // when viewing a 2 team match as a spectator
-    static Object[] genSpectatorMessages(MatchTeam team1, MatchTeam team2) {
+    static Object[] genSpectatorMessages(MatchTeam winner, MatchTeam loser) {
         return new Object[] {
             LINE,
             INVENTORY_HEADER,
-            TEAM_1,
-            clickToViewLine(team1.getAllMembers()),
-            TEAM_2,
-            clickToViewLine(team2.getAllMembers()),
+            WINNER,
+            clickToViewLine(winner.getAllMembers()),
+            LOSER,
+            clickToViewLine(loser.getAllMembers()),
             LINE
         };
     }
 
     // when viewing a 2 team match as a participant
-    static Object[] genTeamMessages(MatchTeam yourTeam, MatchTeam enemyTeam) {
+    static Object[] genTeamMessages(MatchTeam viewer, MatchTeam winner, MatchTeam loser) {
         return new Object[] {
             LINE,
             INVENTORY_HEADER,
-            YOUR_TEAM,
-            clickToViewLine(yourTeam.getAllMembers()),
-            ENEMY_TEAM,
-            clickToViewLine(enemyTeam.getAllMembers()),
+            WINNER + (viewer == winner ? " (Your team)" : " (Enemy team)"),
+            clickToViewLine(winner.getAllMembers()),
+            LOSER + (viewer == loser ? " (Your team)" : " (Enemy team)"),
+            clickToViewLine(loser.getAllMembers()),
             LINE
         };
     }
