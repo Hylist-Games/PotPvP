@@ -53,7 +53,7 @@ public final class VisibilityUtils {
             boolean viewerSpecSetting = settingHandler.getSetting(viewer, Setting.VIEW_OTHER_SPECTATORS);
             boolean viewerIsSpectator = matchHandler.isSpectatingMatch(viewer.getUniqueId());
 
-            return !targetIsSpectator || (viewerSpecSetting && viewerIsSpectator);
+            return !targetIsSpectator || (viewerSpecSetting && viewerIsSpectator && !target.hasMetadata("ModMode"));
         }
     }
 

@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.command;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.util.VisibilityUtils;
 import net.frozenorb.qlib.command.Command;
 
 import org.bukkit.ChatColor;
@@ -18,6 +19,8 @@ public final class SilentCommand {
             sender.setMetadata("ModMode", new FixedMetadataValue(PotPvPSI.getInstance(), true));
             sender.sendMessage(ChatColor.GREEN + "Silent mode enabled.");
         }
+
+        VisibilityUtils.updateVisibility(sender);
     }
 
 }

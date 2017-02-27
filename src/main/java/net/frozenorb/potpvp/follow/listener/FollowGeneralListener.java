@@ -63,7 +63,13 @@ public final class FollowGeneralListener implements Listener {
 
         // can't follow a player who doesn't allow spectators
         for (UUID follower : followHandler.getFollowers(event.getPlayer())) {
-            followHandler.stopFollowing(Bukkit.getPlayer(follower));
+            Player followerPlayer = Bukkit.getPlayer(follower);
+
+            if (followerPlayer.isOp() || followerPlayer.hasMetadata("ModMode")) {
+                continue;
+            }
+
+            followHandler.stopFollowing(followerPlayer);
         }
     }
 
