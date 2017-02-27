@@ -33,15 +33,12 @@ public final class PartyLang {
         INVITED_YOU_TO_JOIN.setColor(ChatColor.YELLOW);
 
         HoverEvent.Action showText = HoverEvent.Action.SHOW_TEXT; // readability
-
         BaseComponent[] acceptTooltip = new ComponentBuilder("Click to join party").color(ChatColor.GREEN).create();
-        BaseComponent[] infoTooltip = new ComponentBuilder("Click to show party info").color(ChatColor.YELLOW).create();
 
         ACCEPT_BUTTON.setColor(ChatColor.GREEN);
         ACCEPT_BUTTON.setHoverEvent(new HoverEvent(showText, acceptTooltip));
 
         INFO_BUTTON.setColor(ChatColor.AQUA);
-        INFO_BUTTON.setHoverEvent(new HoverEvent(showText, infoTooltip));
     }
 
     public static TextComponent inviteAcceptPrompt(Party party) {
@@ -53,6 +50,8 @@ public final class PartyLang {
         TextComponent infoButton = new TextComponent(INFO_BUTTON);
 
         acceptButton.setClickEvent(new ClickEvent(runCommand, "/p join " + partyLeader));
+
+        infoButton.setHoverEvent(hoverablePreviewTooltip(party));
         infoButton.setClickEvent(new ClickEvent(runCommand, "/p info " + partyLeader));
 
         TextComponent builder = new TextComponent("");
