@@ -16,6 +16,7 @@ import net.frozenorb.potpvp.listener.BasicPreventionListener;
 import net.frozenorb.potpvp.listener.ChatListener;
 import net.frozenorb.potpvp.listener.NightModeListener;
 import net.frozenorb.potpvp.listener.PearlCooldownListener;
+import net.frozenorb.potpvp.listener.TabCompleteListener;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.nametag.PotPvPNametagProvider;
@@ -110,6 +111,7 @@ public final class PotPvPSI extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
         getServer().getPluginManager().registerEvents(new NightModeListener(), this);
         getServer().getPluginManager().registerEvents(new PearlCooldownListener(), this);
+        getServer().getPluginManager().registerEvents(new TabCompleteListener(), this);
 
         ProtocolLibrary.getProtocolManager().addPacketListener(new DisableSpectatorSoundAdapter());
 
