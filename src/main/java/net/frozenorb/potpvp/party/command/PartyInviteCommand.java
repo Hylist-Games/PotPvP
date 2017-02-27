@@ -61,11 +61,6 @@ public final class PartyInviteCommand {
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
         Party party = partyHandler.getOrCreateParty(sender);
 
-        if (!party.isLeader(sender.getUniqueId())) {
-            sender.sendMessage(PotPvPLang.NOT_LEADER_OF_PARTY);
-            return;
-        }
-
         int sent = 0;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
