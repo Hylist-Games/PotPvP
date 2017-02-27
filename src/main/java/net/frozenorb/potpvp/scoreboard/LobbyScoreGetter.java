@@ -9,6 +9,7 @@ import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.queue.MatchQueue;
 import net.frozenorb.potpvp.queue.MatchQueueEntry;
 import net.frozenorb.potpvp.queue.QueueHandler;
+import net.frozenorb.qlib.autoreboot.AutoRebootHandler;
 import net.frozenorb.qlib.util.TimeUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
 
@@ -65,6 +66,11 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
 
                 scores.add("&eSearch range: *&f" + Math.max(0, elo - window) + " - " + (elo + window));
             }
+        }
+
+        if (AutoRebootHandler.isRebooting()) {
+            String secondsStr = TimeUtils.formatIntoMMSS(AutoRebootHandler.getRebootSecondsRemaining());
+            scores.add("&c&lRebooting: &c" + secondsStr);
         }
 
         if (player.hasMetadata("ModMode")) {
