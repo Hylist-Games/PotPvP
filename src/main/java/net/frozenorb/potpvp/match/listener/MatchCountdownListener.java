@@ -15,7 +15,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 
-// the name of this listener is definitely kind of iffy (as it's really any non-IN_PROGRESS match),
+// the name of this listener is definitely kind of iffy (as it's really also non-IN_PROGRESS match),
 // but any other ideas I had were even less descriptive
 public final class MatchCountdownListener implements Listener {
 
@@ -37,7 +37,7 @@ public final class MatchCountdownListener implements Listener {
     }
 
     /**
-     * Prevents throwing potions and enderpearls in non IN_PROGRESS matches
+     * Prevents throwing potions and enderpearls in in-COUNTDOWN matches
      */
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -52,28 +52,10 @@ public final class MatchCountdownListener implements Listener {
             MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
             Match match = matchHandler.getMatchPlaying(event.getPlayer());
 
-            if (match != null && match.getState() != MatchState.IN_PROGRESS) {
+            if (match != null && match.getState() == MatchState.COUNTDOWN) {
                 event.setCancelled(true);
                 event.getPlayer().updateInventory();
             }
-        }
-    }
-
-    /**
-     * Lock player health in place while their match isn't in progress
-     * This primarily exists to prevent healing in the ENDING state
-     */
-    @EventHandler
-    public void onEntityRegainHealth(EntityRegainHealthEvent event) {
-        if (event.getEntityType() != EntityType.PLAYER) {
-            return;
-        }
-
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Match match = matchHandler.getMatchPlaying(event.getEntity().getUniqueId());
-
-        if (match != null && match.getState() != MatchState.IN_PROGRESS) {
-            event.setCancelled(true);
         }
     }
 
