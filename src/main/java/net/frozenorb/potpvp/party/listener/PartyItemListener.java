@@ -36,12 +36,18 @@ public final class PartyItemListener extends ItemListener {
             return;
         }
 
-        Player player = event.getPlayer();
-        Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
+        boolean permitted = canUseButton.getOrDefault(event.getPlayer().getUniqueId(), 0L) < System.currentTimeMillis();
 
-        if (party != null && PartyItems.icon(party).isSimilar(event.getItem())) {
-            event.setCancelled(true);
-            PartyInfoCommand.partyInfo(player, player);
+        if (permitted) {
+            Player player = event.getPlayer();
+            Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
+
+            if (party != null && PartyItems.icon(party).isSimilar(event.getItem())) {
+                event.setCancelled(true);
+                PartyInfoCommand.partyInfo(player, player);
+            }
+
+            canUseButton.put(player.getUniqueId(), System.currentTimeMillis() + 500);
         }
     }
 
