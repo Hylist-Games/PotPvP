@@ -2,6 +2,7 @@ package net.frozenorb.potpvp.lobby.listener;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.command.ManageCommand;
+import net.frozenorb.potpvp.follow.command.UnfollowCommand;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.lobby.LobbyItems;
 import net.frozenorb.potpvp.lobby.menu.SpectateMenu;
@@ -79,6 +80,8 @@ public final class LobbyItemListener extends ItemListener {
                 canUseRandomSpecItem.put(player.getUniqueId(), System.currentTimeMillis() + 3_000L);
             }
         });
+
+        addHandler(LobbyItems.UNFOLLOW_ITEM, UnfollowCommand::unfollow);
     }
 
     @EventHandler

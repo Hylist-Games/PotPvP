@@ -78,46 +78,48 @@ public final class LobbyUtils {
         } else {
             player.setAllowFlight(player.getGameMode() == GameMode.CREATIVE || specMode);
 
-            if (specMode) {
+            if (specMode || followingSomeone) {
                 inventory.setItem(1, LobbyItems.DISABLE_SPEC_MODE_ITEM);
                 inventory.setItem(3, LobbyItems.SPECTATE_RANDOM_ITEM);
                 inventory.setItem(4, LobbyItems.SPECTATE_MENU_ITEM);
+
+                if (followingSomeone) {
+                    inventory.setItem(8, LobbyItems.UNFOLLOW_ITEM);
+                }
             } else {
-                if (!followingSomeone) {
-                    RematchData rematchData = rematchHandler.getRematchData(player);
+                RematchData rematchData = rematchHandler.getRematchData(player);
 
-                    if (rematchData != null) {
-                        Player target = Bukkit.getPlayer(rematchData.getTarget());
+                if (rematchData != null) {
+                    Player target = Bukkit.getPlayer(rematchData.getTarget());
 
-                        if (target != null) {
-                            if (duelHandler.findInvite(player, target) != null) {
-                                // if we've sent an invite to them
-                                inventory.setItem(0, RematchItems.SENT_REMATCH_ITEM);
-                            } else if (duelHandler.findInvite(target, player) != null) {
-                                // if they've sent us an invite
-                                inventory.setItem(0, RematchItems.ACCEPT_REMATCH_ITEM);
-                            } else {
-                                // if no one has sent an invite
-                                inventory.setItem(0, RematchItems.REQUEST_REMATCH_ITEM);
-                            }
+                    if (target != null) {
+                        if (duelHandler.findInvite(player, target) != null) {
+                            // if we've sent an invite to them
+                            inventory.setItem(0, RematchItems.SENT_REMATCH_ITEM);
+                        } else if (duelHandler.findInvite(target, player) != null) {
+                            // if they've sent us an invite
+                            inventory.setItem(0, RematchItems.ACCEPT_REMATCH_ITEM);
+                        } else {
+                            // if no one has sent an invite
+                            inventory.setItem(0, RematchItems.REQUEST_REMATCH_ITEM);
                         }
                     }
+                }
 
-                    if (!queueHandler.isQueued(player.getUniqueId())) {
-                        inventory.setItem(1, LobbyItems.ENABLE_SPEC_MODE_ITEM);
-                    }
+                if (!queueHandler.isQueued(player.getUniqueId())) {
+                    inventory.setItem(1, LobbyItems.ENABLE_SPEC_MODE_ITEM);
+                }
 
-                    if (!queueHandler.isQueuedUnranked(player.getUniqueId())) {
-                        inventory.setItem(3, QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM);
-                    } else {
-                        inventory.setItem(3, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
-                    }
+                if (!queueHandler.isQueuedUnranked(player.getUniqueId())) {
+                    inventory.setItem(3, QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM);
+                } else {
+                    inventory.setItem(3, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
+                }
 
-                    if (!queueHandler.isQueuedRanked(player.getUniqueId())) {
-                        inventory.setItem(4, QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM);
-                    } else {
-                        inventory.setItem(4, QueueItems.LEAVE_SOLO_RANKED_QUEUE_ITEM);
-                    }
+                if (!queueHandler.isQueuedRanked(player.getUniqueId())) {
+                    inventory.setItem(4, QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM);
+                } else {
+                    inventory.setItem(4, QueueItems.LEAVE_SOLO_RANKED_QUEUE_ITEM);
                 }
 
                 inventory.setItem(6, LobbyItems.EVENTS_ITEM);
