@@ -268,6 +268,13 @@ public final class Match {
     // fromMatch indicates if they were a player immediately before spectating.
     // we use this for things like teleporting and messages
     public void addSpectator(Player player, Player target, boolean fromMatch) {
+        if (!fromMatch) {
+            if (state == MatchState.ENDING || state == MatchState.TERMINATED) {
+                player.sendMessage(ChatColor.RED + "This match is no longer available for spectating.");
+                return;
+            }
+        }
+
         Map<UUID, Match> spectateCache = PotPvPSI.getInstance().getMatchHandler().getSpectatingMatchCache();
 
         spectateCache.put(player.getUniqueId(), this);

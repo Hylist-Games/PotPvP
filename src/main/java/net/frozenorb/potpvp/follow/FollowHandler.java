@@ -4,6 +4,7 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.follow.listener.FollowGeneralListener;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
+import net.frozenorb.potpvp.match.MatchState;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
 
@@ -38,7 +39,7 @@ public final class FollowHandler {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Match playing = matchHandler.getMatchPlaying(target);
 
-        if (playing != null) {
+        if (playing != null && (playing.getState() != MatchState.ENDING && playing.getState() != MatchState.TERMINATED)) {
             playing.addSpectator(player, target);
         } else {
             InventoryUtils.resetInventoryDelayed(player);
