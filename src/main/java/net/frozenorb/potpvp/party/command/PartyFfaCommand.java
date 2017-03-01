@@ -52,7 +52,7 @@ public final class PartyFfaCommand {
                 }
 
                 matchHandler.startMatch(teams, kitType, false, false);
-            }, "Start Party FFA...").openMenu(sender);
+            }, "Start a Party FFA...").openMenu(sender);
         }
     }
 

@@ -11,10 +11,12 @@ import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.potpvp.queue.QueueItems;
 import net.frozenorb.potpvp.util.ItemListener;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
+import net.frozenorb.qlib.autoreboot.AutoRebootHandler;
 import net.md_5.bungee.api.ChatColor;
 
 import org.bukkit.entity.Player;
 
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -56,11 +58,16 @@ public final class QueueItemListener extends ItemListener {
 
     private Consumer<Player> joinSoloConsumer(boolean ranked) {
         return player -> {
+            if (ranked && AutoRebootHandler.getRebootSecondsRemaining() <= TimeUnit.SECONDS.toMinutes(5)) {
+                player.sendMessage(org.bukkit.ChatColor.RED + "You can't join ranked queues with a reboot scheduled.");
+                return;
+            }
+
             if (PotPvPValidation.canJoinQueue(player)) {
                 new CustomSelectKitTypeMenu(kitType -> {
                     queueHandler.joinQueue(player, kitType, ranked);
                     player.closeInventory();
-                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked, "Join " + (ranked ? "ranked" : "unranked") + " queue...").openMenu(player);
+                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked, "Join " + (ranked ? "Ranked" : "Unranked") + " Queue...").openMenu(player);
             }
         };
     }
@@ -75,13 +82,18 @@ public final class QueueItemListener extends ItemListener {
                 return;
             }
 
+            if (ranked && AutoRebootHandler.getRebootSecondsRemaining() <= TimeUnit.SECONDS.toMinutes(5)) {
+                player.sendMessage(org.bukkit.ChatColor.RED + "You can't join ranked queues with a reboot scheduled.");
+                return;
+            }
+
             // try to check validation issues in advance
             // (will be called again in QueueHandler#joinQueue)
             if (PotPvPValidation.canJoinQueue(party)) {
                 new CustomSelectKitTypeMenu(kitType -> {
                     queueHandler.joinQueue(party, kitType, ranked);
                     player.closeInventory();
-                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked, "Join " + (ranked ? "ranked" : "unranked") + " queue...").openMenu(player);
+                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked, "Join " + (ranked ? "Ranked" : "Unranked") + " queue...").openMenu(player);
             }
         };
     }
