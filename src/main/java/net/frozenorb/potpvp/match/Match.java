@@ -294,7 +294,9 @@ public final class Match {
         }
 
         // so players don't accidentally click the item to stop spectating
-        player.getInventory().setHeldItemSlot(0);
+        if (!PotPvPSI.getInstance().getLobbyHandler().isInSpectatorMode(player)) {
+            player.getInventory().setHeldItemSlot(0);
+        }
 
         FrozenNametagHandler.reloadPlayer(player);
         FrozenNametagHandler.reloadOthersFor(player);
