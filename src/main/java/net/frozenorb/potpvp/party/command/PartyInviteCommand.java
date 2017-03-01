@@ -1,6 +1,5 @@
 package net.frozenorb.potpvp.party.command;
 
-import net.frozenorb.potpvp.PotPvPLang;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;

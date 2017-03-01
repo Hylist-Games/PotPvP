@@ -1,7 +1,5 @@
 package net.frozenorb.potpvp.tab;
 
-import com.google.common.collect.ImmutableList;
-
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;

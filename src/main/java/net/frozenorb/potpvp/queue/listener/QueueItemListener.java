@@ -58,8 +58,8 @@ public final class QueueItemListener extends ItemListener {
 
     private Consumer<Player> joinSoloConsumer(boolean ranked) {
         return player -> {
-            if (ranked && AutoRebootHandler.getRebootSecondsRemaining() <= TimeUnit.SECONDS.toMinutes(5)) {
-                player.sendMessage(org.bukkit.ChatColor.RED + "You can't join ranked queues with a reboot scheduled.");
+            if (ranked && rebootSoon()) {
+                player.sendMessage(org.bukkit.ChatColor.RED + "You can't join ranked queues with a reboot soon.");
                 return;
             }
 
@@ -82,8 +82,8 @@ public final class QueueItemListener extends ItemListener {
                 return;
             }
 
-            if (ranked && AutoRebootHandler.getRebootSecondsRemaining() <= TimeUnit.SECONDS.toMinutes(5)) {
-                player.sendMessage(org.bukkit.ChatColor.RED + "You can't join ranked queues with a reboot scheduled.");
+            if (ranked && rebootSoon()) {
+                player.sendMessage(org.bukkit.ChatColor.RED + "You can't join ranked queues with a reboot scheduled soon.");
                 return;
             }
 
@@ -122,6 +122,10 @@ public final class QueueItemListener extends ItemListener {
                 )
             );
         };
+    }
+
+    private boolean rebootSoon() {
+        return AutoRebootHandler.isRebooting() && AutoRebootHandler.getRebootSecondsRemaining() <= TimeUnit.SECONDS.toMinutes(5);
     }
 
 }

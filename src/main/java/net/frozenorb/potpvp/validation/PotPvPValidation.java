@@ -1,6 +1,5 @@
 package net.frozenorb.potpvp.validation;
 
-import lombok.experimental.UtilityClass;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
@@ -9,9 +8,12 @@ import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public final class PotPvPValidation {
@@ -31,7 +33,7 @@ public final class PotPvPValidation {
     private static final String TARGET_PARTY_HAS_DUELS_DISABLED = ChatColor.RED + "The party has duels disabled!";
 
     public static boolean canSendDuel(Player sender, Player target) {
-        if (sender.hasMetadata("ModMode")) {
+        if (isInSilentMode(sender)) {
             sender.sendMessage(CANNOT_DO_THIS_IN_SILENT_MODE);
             return false;
         }
@@ -66,7 +68,7 @@ public final class PotPvPValidation {
 
     // sender = the one who typed /accept
     public static boolean canAcceptDuel(Player sender, Player duelSentBy) {
-        if (sender.hasMetadata("ModMode")) {
+        if (isInSilentMode(sender)) {
             sender.sendMessage(CANNOT_DO_THIS_IN_SILENT_MODE);
             return false;
         }
@@ -204,7 +206,7 @@ public final class PotPvPValidation {
     }
 
     public static boolean canJoinQueue(Player player) {
-        if (player.hasMetadata("ModMode")) {
+        if (isInSilentMode(player)) {
             player.sendMessage(CANNOT_DO_THIS_IN_SILENT_MODE);
             return false;
         }
@@ -306,6 +308,10 @@ public final class PotPvPValidation {
     private boolean isFollowingSomeone(Player player) {
         FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
         return followHandler.getFollowing(player).isPresent();
+    }
+
+    private boolean isInSilentMode(Player player) {
+        return player.hasMetadata("ModMode");
     }
 
 }

@@ -8,10 +8,9 @@ import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import java.util.UUID;
 
 public final class FollowCommand {
 
@@ -25,8 +24,6 @@ public final class FollowCommand {
         SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
-        UUID alreadyFollowing = followHandler.getFollowing(sender).orElse(null);
-
         if (sender == target) {
             sender.sendMessage(ChatColor.RED + "No, you can't follow yourself.");
             return;
@@ -39,10 +36,10 @@ public final class FollowCommand {
             }
         }
 
-        if (alreadyFollowing != null) {
-            UnfollowCommand.unfollow(sender);
-        } else if (matchHandler.getMatchPlayingOrSpectating(sender) != null) {
-            matchHandler.getMatchPlayingOrSpectating(sender).removeSpectator(sender);
+        followHandler.getFollowing(sender).ifPresent(fo -> UnfollowCommand.unfollow(sender));
+
+        if (matchHandler.isSpectatingMatch(sender)) {
+            matchHandler.getMatchSpectating(sender).removeSpectator(sender);
         }
 
         followHandler.startFollowing(sender, target);

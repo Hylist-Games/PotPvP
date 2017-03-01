@@ -39,7 +39,7 @@ public final class FollowHandler {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Match playing = matchHandler.getMatchPlaying(target);
 
-        if (playing != null && (playing.getState() != MatchState.ENDING && playing.getState() != MatchState.TERMINATED)) {
+        if (playing != null && playing.getState() != MatchState.ENDING) {
             playing.addSpectator(player, target);
         } else {
             InventoryUtils.resetInventoryDelayed(player);

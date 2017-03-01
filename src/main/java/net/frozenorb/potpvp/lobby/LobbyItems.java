@@ -2,8 +2,6 @@ package net.frozenorb.potpvp.lobby;
 
 import net.frozenorb.qlib.util.ItemUtils;
 
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

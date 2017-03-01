@@ -4,10 +4,12 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.lobby.LobbyItems;
 import net.frozenorb.potpvp.party.PartyHandler;
-
 import net.frozenorb.potpvp.setting.Setting;
+import net.frozenorb.potpvp.setting.SettingHandler;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.PlayerInventory;
 
 import lombok.experimental.UtilityClass;
 
@@ -15,6 +17,7 @@ import lombok.experimental.UtilityClass;
 public final class MatchUtils {
 
     public static void resetInventory(Player player) {
+        SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
         FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
@@ -25,8 +28,10 @@ public final class MatchUtils {
             return;
         }
 
-        player.getInventory().clear();
-        player.getInventory().setArmorContents(null);
+        PlayerInventory inventory = player.getInventory();
+
+        inventory.clear();
+        inventory.setArmorContents(null);
 
         // if they've been on any team or are staff they'll be able to
         // use this item on at least 1 player. if they can't use it all
@@ -43,15 +48,16 @@ public final class MatchUtils {
         }
 
         // fill inventory with spectator items
-        player.getInventory().setItem(0, SpectatorItems.CARPET_ITEM);
-        if (PotPvPSI.getInstance().getSettingHandler().getSetting(player, Setting.VIEW_OTHER_SPECTATORS)) {
-            player.getInventory().setItem(1, SpectatorItems.HIDE_SPECTATORS_ITEM);
+        inventory.setItem(0, SpectatorItems.CARPET_ITEM);
+
+        if (settingHandler.getSetting(player, Setting.VIEW_OTHER_SPECTATORS)) {
+            inventory.setItem(1, SpectatorItems.HIDE_SPECTATORS_ITEM);
         } else {
-            player.getInventory().setItem(1, SpectatorItems.SHOW_SPECTATORS_ITEM);
+            inventory.setItem(1, SpectatorItems.SHOW_SPECTATORS_ITEM);
         }
 
         if (canViewInventories) {
-            player.getInventory().setItem(2, SpectatorItems.VIEW_INVENTORY_ITEM);
+            inventory.setItem(2, SpectatorItems.VIEW_INVENTORY_ITEM);
         }
 
         // don't give players who die (and cause the match to end)
@@ -59,13 +65,13 @@ public final class MatchUtils {
         if (match.getState() != MatchState.ENDING) {
             // this bit is correct; see SpectatorItems file for more
             if (partyHandler.hasParty(player)) {
-                player.getInventory().setItem(8, SpectatorItems.LEAVE_PARTY_ITEM);
+                inventory.setItem(8, SpectatorItems.LEAVE_PARTY_ITEM);
             } else {
-                player.getInventory().setItem(8, SpectatorItems.RETURN_TO_LOBBY_ITEM);
+                inventory.setItem(8, SpectatorItems.RETURN_TO_LOBBY_ITEM);
 
                 if (!followHandler.getFollowing(player).isPresent()) {
-                    player.getInventory().setItem(4, LobbyItems.SPECTATE_RANDOM_ITEM);
-                    player.getInventory().setItem(5, LobbyItems.SPECTATE_MENU_ITEM);
+                    inventory.setItem(4, LobbyItems.SPECTATE_RANDOM_ITEM);
+                    inventory.setItem(5, LobbyItems.SPECTATE_MENU_ITEM);
                 }
             }
         }

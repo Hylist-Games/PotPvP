@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.scoreboard;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchTeam;
@@ -56,25 +57,16 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
             return;
         }
 
-        boolean isParticipant = match.getTeam(player.getUniqueId()) != null;
+        boolean participant = match.getTeam(player.getUniqueId()) != null;
 
-        if (isParticipant) {
+        if (participant) {
             renderParticipantLines(scores, match, player);
         } else {
             MatchTeam previousTeam = match.getPreviousTeam(player.getUniqueId());
-            renderSpectatorLines(scores, match, previousTeam);
-            if (PotPvPSI.getInstance().getFollowHandler().getFollowing(player).isPresent()) {
-                UUID following = PotPvPSI.getInstance().getFollowHandler().getFollowing(player).get();
-
-                scores.add("&6Following: &f" + UUIDUtils.name(following));
-            }
+            renderSpectatorLines(scores, match, previousTeam, player);
         }
 
-        renderMetaLines(scores, match, isParticipant);
-
-        if (!isParticipant && player.hasMetadata("ModMode")) {
-            scores.add(ChatColor.GRAY.toString() + ChatColor.BOLD + "In silent mode");
-        }
+        renderMetaLines(scores, match, participant);
     }
 
     private void renderParticipantLines(List<String> scores, Match match, Player player) {
@@ -188,10 +180,11 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         scores.add("&c&lOpponents: &f" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size());
     }
 
-    private void renderSpectatorLines(List<String> scores, Match match, MatchTeam oldTeam) {
+    private void renderSpectatorLines(List<String> scores, Match match, MatchTeam oldTeam, Player player) {
         scores.add("&eKit: &f" + match.getKitType().getColoredDisplayName());
 
         List<MatchTeam> teams = match.getTeams();
+        FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
 
         // only render team overview if we have two teams
         if (teams.size() == 2) {
@@ -214,6 +207,14 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
                 scores.add("&aTeam: &f" + oldTeam.getAliveMembers().size() + "/" + oldTeam.getAllMembers().size());
                 scores.add("&cOpponents: &f" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size());
             }
+        }
+
+        followHandler.getFollowing(player).ifPresent(following -> {
+            scores.add("&6Following: *&f" + UUIDUtils.name(following));
+        });
+
+        if (player.hasMetadata("ModMode")) {
+            scores.add(ChatColor.GRAY.toString() + ChatColor.BOLD + "In silent mode");
         }
     }
 

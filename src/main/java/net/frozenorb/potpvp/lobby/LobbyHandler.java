@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.lobby;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.follow.command.UnfollowCommand;
 import net.frozenorb.potpvp.lobby.listener.LobbyGeneralListener;
 import net.frozenorb.potpvp.lobby.listener.LobbyItemListener;
@@ -86,9 +87,8 @@ public final class LobbyHandler {
                 returnToLobbySkipItemSlot(player);
             }
 
-            if (PotPvPSI.getInstance().getFollowHandler().getFollowing(player).isPresent()) {
-                UnfollowCommand.unfollow(player);
-            }
+            FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
+            followHandler.getFollowing(player).ifPresent(i -> UnfollowCommand.unfollow(player));
         }
     }
 

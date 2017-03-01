@@ -24,6 +24,7 @@ import org.bukkit.entity.Player;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -101,7 +102,7 @@ public final class MatchHandler {
         //
         // the left side of the or statement covers the top row, and the
         // right side covers the right side
-        Arena openArena = arenaHandler.allocateUnusedArena(schematic ->
+        Optional<Arena> openArenaOpt = arenaHandler.allocateUnusedArena(schematic ->
             schematic.isEnabled() &&
             matchSize <= schematic.getMaxPlayerCount() &&
             matchSize >= schematic.getMinPlayerCount() &&
@@ -109,12 +110,12 @@ public final class MatchHandler {
             (kitType.getId().equals("ARCHER") || !schematic.isArcherOnly())
         );
 
-        if (openArena == null) {
+        if (!openArenaOpt.isPresent()) {
             PotPvPSI.getInstance().getLogger().warning("Failed to start match: No open arenas found");
             return null;
         }
 
-        Match match = new Match(kitType, openArena, teams, ranked, allowRematches);
+        Match match = new Match(kitType, openArenaOpt.get(), teams, ranked, allowRematches);
 
         hostedMatches.add(match);
         match.startCountdown();

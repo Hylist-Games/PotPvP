@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Predicate;
@@ -220,7 +221,7 @@ public final class ArenaHandler {
      *                                     is eligible for use.
      * @return The arena which has been allocated for use, or null, if one was not found.
      */
-    public Arena allocateUnusedArena(Predicate<ArenaSchematic> acceptableSchematicPredicate) {
+    public Optional<Arena> allocateUnusedArena(Predicate<ArenaSchematic> acceptableSchematicPredicate) {
         List<Arena> acceptableArenas = new ArrayList<>();
 
         for (ArenaSchematic schematic : schematics.values()) {
@@ -240,7 +241,7 @@ public final class ArenaHandler {
         }
 
         if (acceptableArenas.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
 
         Arena selected = acceptableArenas.get(qLib.RANDOM.nextInt(acceptableArenas.size()));
@@ -248,7 +249,7 @@ public final class ArenaHandler {
         selected.setInUse(true);
         Bukkit.getPluginManager().callEvent(new ArenaAllocatedEvent(selected));
 
-        return selected;
+        return Optional.of(selected);
     }
 
     /**
