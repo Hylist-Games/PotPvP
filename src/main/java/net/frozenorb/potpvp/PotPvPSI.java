@@ -39,6 +39,7 @@ import net.frozenorb.qlib.serialization.VectorAdapter;
 import net.frozenorb.qlib.tab.FrozenTabHandler;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
@@ -120,6 +121,8 @@ public final class PotPvPSI extends JavaPlugin {
         FrozenTabHandler.setLayoutProvider(new PotPvPLayoutProvider());
         FrozenNametagHandler.registerProvider(new PotPvPNametagProvider());
         FrozenScoreboardHandler.setConfiguration(PotPvPScoreboardConfiguration.create());
+
+        Bukkit.getScheduler().runTaskTimer(this, () -> Bukkit.broadcastMessage(ChatColor.GOLD + "TIP: " + ChatColor.GRAY + "Pots too slow? Learn to pot or disconnect!"), 5 * 60 * 20L, 5 * 60 * 20L);
     }
 
     @Override
