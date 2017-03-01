@@ -61,7 +61,7 @@ public final class KitsMenu extends Menu {
         buttons.put(getSlot(0, 4), new MenuBackButton(p -> {
             new SelectKitTypeMenu(kitType -> {
                 new KitsMenu(kitType).openMenu(p);
-            }).openMenu(p);
+            }, "Select a kit type...").openMenu(p);
         }));
 
         return buttons;

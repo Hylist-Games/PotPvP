@@ -8,6 +8,7 @@ import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;
 import net.frozenorb.qlib.util.Callback;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -28,8 +29,8 @@ public final class CustomSelectKitTypeMenu extends Menu {
     private final Callback<KitType> callback;
     private final Function<KitType, CustomKitTypeMeta> metaFunc;
 
-    public CustomSelectKitTypeMenu(Callback<KitType> callback, Function<KitType, CustomKitTypeMeta> metaFunc) {
-        super("Select a kit type...");
+    public CustomSelectKitTypeMenu(Callback<KitType> callback, Function<KitType, CustomKitTypeMeta> metaFunc, String title) {
+        super(ChatColor.BLUE.toString() + ChatColor.BOLD + title);
 
         setAutoUpdate(true);
 

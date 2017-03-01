@@ -60,7 +60,7 @@ public final class DuelCommand {
                         sender.sendMessage(PotPvPLang.NOT_LEADER_OF_PARTY);
                     }
                 }
-            }).openMenu(sender);
+            }, "Select a kit type...").openMenu(sender);
         } else if (senderParty == null && targetParty == null) {
             // player dueling player (legal)
             if (!PotPvPValidation.canSendDuel(sender, target)) {
@@ -75,7 +75,7 @@ public final class DuelCommand {
             new SelectKitTypeMenu(kitType -> {
                 sender.closeInventory();
                 duel(sender, target, kitType);
-            }).openMenu(sender);
+            }, "Select a kit type...").openMenu(sender);
         } else if (senderParty == null) {
             // player dueling party (illegal)
             sender.sendMessage(ChatColor.RED + "You must create a party to duel " + target.getName() + "'s party.");

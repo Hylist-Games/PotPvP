@@ -65,7 +65,7 @@ public final class ManageCommand {
             new SelectKitTypeMenu((kitType) -> {
                 player.closeInventory();
                 new ManageKitTypeMenu(kitType).openMenu(player);
-            }, false).openMenu(player);
+            }, false, "Manage Kit Type...").openMenu(player);
         }
 
     }

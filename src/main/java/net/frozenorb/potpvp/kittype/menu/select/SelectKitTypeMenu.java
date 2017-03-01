@@ -8,6 +8,7 @@ import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;
 import net.frozenorb.qlib.util.Callback;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -18,12 +19,12 @@ public final class SelectKitTypeMenu extends Menu {
     private final boolean reset;
     private final Callback<KitType> callback;
 
-    public SelectKitTypeMenu(Callback<KitType> callback) {
-        this(callback, true);
+    public SelectKitTypeMenu(Callback<KitType> callback, String title) {
+        this(callback, true, title);
     }
 
-    public SelectKitTypeMenu(Callback<KitType> callback, boolean reset) {
-        super("Select a kit type...");
+    public SelectKitTypeMenu(Callback<KitType> callback, boolean reset, String title) {
+        super(ChatColor.BLUE.toString() + ChatColor.BOLD + title);
 
         this.callback = Preconditions.checkNotNull(callback, "callback");
         this.reset = reset;

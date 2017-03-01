@@ -11,7 +11,7 @@ public final class KitItemListener extends ItemListener {
         addHandler(KitItems.OPEN_EDITOR_ITEM, player -> {
             new SelectKitTypeMenu(kitType -> {
                 new KitsMenu(kitType).openMenu(player);
-            }).openMenu(player);
+            }, "Select a kit to edit...").openMenu(player);
         });
     }
 

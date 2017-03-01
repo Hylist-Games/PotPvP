@@ -52,7 +52,7 @@ public final class PartyFfaCommand {
                 }
 
                 matchHandler.startMatch(teams, kitType, false, false);
-            }).openMenu(sender);
+            }, "Start Party FFA...").openMenu(sender);
         }
     }
 
@@ -101,7 +101,7 @@ public final class PartyFfaCommand {
                         match.addSpectator(Bukkit.getPlayer(leftOut), null);
                     }
                 }
-            }).openMenu(sender);
+            }, "Start Dev Party FFA...").openMenu(sender);
         }
     }
 

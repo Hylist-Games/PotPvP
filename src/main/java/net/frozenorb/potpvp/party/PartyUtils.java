@@ -43,7 +43,7 @@ public final class PartyUtils {
                     startTeamSplit(party, initiator, kitType, oddManOut);
                 }).openMenu(initiator);
             }
-        }).openMenu(initiator);
+        }, "Start a Team Split...").openMenu(initiator);
     }
 
     public static void startTeamSplit(Party party, Player initiator, KitType kitType, boolean oddManOut) {

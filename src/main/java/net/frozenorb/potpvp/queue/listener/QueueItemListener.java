@@ -60,7 +60,7 @@ public final class QueueItemListener extends ItemListener {
                 new CustomSelectKitTypeMenu(kitType -> {
                     queueHandler.joinQueue(player, kitType, ranked);
                     player.closeInventory();
-                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked).openMenu(player);
+                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked, "Join " + (ranked ? "ranked" : "unranked") + " queue...").openMenu(player);
             }
         };
     }
@@ -81,7 +81,7 @@ public final class QueueItemListener extends ItemListener {
                 new CustomSelectKitTypeMenu(kitType -> {
                     queueHandler.joinQueue(party, kitType, ranked);
                     player.closeInventory();
-                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked).openMenu(player);
+                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked, "Join " + (ranked ? "ranked" : "unranked") + " queue...").openMenu(player);
             }
         };
     }
