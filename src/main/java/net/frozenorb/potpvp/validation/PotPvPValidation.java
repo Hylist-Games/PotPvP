@@ -186,7 +186,7 @@ public final class PotPvPValidation {
             return false;
         }
 
-        if (isInOrSpectatingMatch(player)) {
+        if (isInMatch(player)) {
             player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
             return false;
         }

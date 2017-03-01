@@ -7,8 +7,6 @@ import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
-import net.frozenorb.qlib.util.UUIDUtils;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -32,6 +30,8 @@ public final class FollowCommand {
         } else if (sender == target) {
             sender.sendMessage(ChatColor.RED + "No, you can't follow yourself.");
             return;
+        } else if (PotPvPSI.getInstance().getMatchHandler().getMatchPlayingOrSpectating(sender) != null) {
+            PotPvPSI.getInstance().getMatchHandler().getMatchPlayingOrSpectating(sender).removeSpectator(sender);
         } else if (!settingHandler.getSetting(target, Setting.ALLOW_SPECTATORS)) {
             if (sender.isOp()) {
                 sender.sendMessage(ChatColor.RED + "Bypassing " + target.getName() + "'s no spectators preference...");
