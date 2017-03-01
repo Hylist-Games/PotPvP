@@ -29,6 +29,11 @@ public final class PartyInviteCommand {
             return;
         }
 
+        if (sender.hasMetadata("ModMode")) {
+            sender.sendMessage(ChatColor.RED + "You cannot do this while in silent mode!");
+            return;
+        }
+
         if (party != null) {
             if (party.isMember(target.getUniqueId())) {
                 sender.sendMessage(ChatColor.RED + target.getName() + " is already in your party.");
@@ -60,6 +65,11 @@ public final class PartyInviteCommand {
     public static void partyInviteAll(Player sender) {
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
         Party party = partyHandler.getOrCreateParty(sender);
+
+        if (sender.hasMetadata("ModMode")) {
+            sender.sendMessage(ChatColor.RED + "You cannot do this while in silent mode!");
+            return;
+        }
 
         int sent = 0;
 
