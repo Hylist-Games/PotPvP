@@ -5,6 +5,7 @@ import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.qlib.util.TimeUtils;
+import net.frozenorb.qlib.util.UUIDUtils;
 import net.frozenorb.qlib.uuid.FrozenUUIDCache;
 
 import org.bukkit.Bukkit;
@@ -62,6 +63,11 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         } else {
             MatchTeam previousTeam = match.getPreviousTeam(player.getUniqueId());
             renderSpectatorLines(scores, match, previousTeam);
+            if (PotPvPSI.getInstance().getFollowHandler().getFollowing(player).isPresent()) {
+                UUID following = PotPvPSI.getInstance().getFollowHandler().getFollowing(player).get();
+
+                scores.add("&6Following: &f" + UUIDUtils.name(following));
+            }
         }
 
         renderMetaLines(scores, match, isParticipant);
