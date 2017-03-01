@@ -5,6 +5,7 @@ import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.lobby.LobbyItems;
 import net.frozenorb.potpvp.party.PartyHandler;
 
+import net.frozenorb.potpvp.setting.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -43,7 +44,11 @@ public final class MatchUtils {
 
         // fill inventory with spectator items
         player.getInventory().setItem(0, SpectatorItems.CARPET_ITEM);
-        player.getInventory().setItem(1, SpectatorItems.TOGGLE_SPECTATORS_ITEM);
+        if (PotPvPSI.getInstance().getSettingHandler().getSetting(player, Setting.VIEW_OTHER_SPECTATORS)) {
+            player.getInventory().setItem(1, SpectatorItems.HIDE_SPECTATORS_ITEM);
+        } else {
+            player.getInventory().setItem(1, SpectatorItems.SHOW_SPECTATORS_ITEM);
+        }
 
         if (canViewInventories) {
             player.getInventory().setItem(2, SpectatorItems.VIEW_INVENTORY_ITEM);

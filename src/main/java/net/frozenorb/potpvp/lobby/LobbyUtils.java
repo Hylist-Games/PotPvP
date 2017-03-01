@@ -79,9 +79,9 @@ public final class LobbyUtils {
             player.setAllowFlight(player.getGameMode() == GameMode.CREATIVE || specMode);
 
             if (specMode || followingSomeone) {
-                inventory.setItem(1, LobbyItems.DISABLE_SPEC_MODE_ITEM);
-                inventory.setItem(3, LobbyItems.SPECTATE_RANDOM_ITEM);
-                inventory.setItem(4, LobbyItems.SPECTATE_MENU_ITEM);
+                inventory.setItem(5, LobbyItems.DISABLE_SPEC_MODE_ITEM);
+                inventory.setItem(4, LobbyItems.SPECTATE_RANDOM_ITEM);
+                inventory.setItem(3, LobbyItems.SPECTATE_MENU_ITEM);
 
                 if (followingSomeone) {
                     inventory.setItem(8, LobbyItems.UNFOLLOW_ITEM);
@@ -107,19 +107,19 @@ public final class LobbyUtils {
                 }
 
                 if (!queueHandler.isQueued(player.getUniqueId())) {
-                    inventory.setItem(1, LobbyItems.ENABLE_SPEC_MODE_ITEM);
+                    inventory.setItem(5, LobbyItems.ENABLE_SPEC_MODE_ITEM);
                 }
 
                 if (!queueHandler.isQueuedUnranked(player.getUniqueId())) {
-                    inventory.setItem(3, QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM);
+                    inventory.setItem(1, QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM);
                 } else {
-                    inventory.setItem(3, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
+                    inventory.setItem(1, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
                 }
 
                 if (!queueHandler.isQueuedRanked(player.getUniqueId())) {
-                    inventory.setItem(4, QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM);
+                    inventory.setItem(2, QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM);
                 } else {
-                    inventory.setItem(4, QueueItems.LEAVE_SOLO_RANKED_QUEUE_ITEM);
+                    inventory.setItem(2, QueueItems.LEAVE_SOLO_RANKED_QUEUE_ITEM);
                 }
 
                 inventory.setItem(6, LobbyItems.EVENTS_ITEM);

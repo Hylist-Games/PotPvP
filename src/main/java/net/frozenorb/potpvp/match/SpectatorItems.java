@@ -13,7 +13,10 @@ import lombok.experimental.UtilityClass;
 public final class SpectatorItems {
 
     public static final ItemStack CARPET_ITEM = new ItemStack(Material.CARPET, 1, DyeColor.RED.getWoolData());
-    public static final ItemStack TOGGLE_SPECTATORS_ITEM = new ItemStack(Material.EMERALD);
+
+    public static final ItemStack SHOW_SPECTATORS_ITEM = new ItemStack(Material.EMERALD, 1, DyeColor.GRAY.getDyeData());
+    public static final ItemStack HIDE_SPECTATORS_ITEM = new ItemStack(Material.INK_SACK, 1, DyeColor.GREEN.getDyeData());
+
     public static final ItemStack VIEW_INVENTORY_ITEM = new ItemStack(Material.BOOK);
 
     // these items both do the same thing but we change the name if
@@ -26,7 +29,10 @@ public final class SpectatorItems {
 
     static {
         ItemUtils.setDisplayName(CARPET_ITEM, ChatColor.RED + " ");
-        ItemUtils.setDisplayName(TOGGLE_SPECTATORS_ITEM, ChatColor.YELLOW + "Toggle spectator visibility");
+
+        ItemUtils.setDisplayName(SHOW_SPECTATORS_ITEM, ChatColor.YELLOW + "Show spectators");
+        ItemUtils.setDisplayName(HIDE_SPECTATORS_ITEM, ChatColor.YELLOW + "Hide spectators");
+
         ItemUtils.setDisplayName(VIEW_INVENTORY_ITEM, ChatColor.YELLOW + "View player inventory");
 
         ItemUtils.setDisplayName(RETURN_TO_LOBBY_ITEM, ChatColor.YELLOW + "Return to lobby");

@@ -1,10 +1,7 @@
 package net.frozenorb.potpvp.match.listener;
 
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.match.Match;
-import net.frozenorb.potpvp.match.MatchHandler;
-import net.frozenorb.potpvp.match.MatchTeam;
-import net.frozenorb.potpvp.match.SpectatorItems;
+import net.frozenorb.potpvp.match.*;
 import net.frozenorb.potpvp.match.command.LeaveCommand;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
@@ -31,7 +28,8 @@ public final class SpectatorItemListener extends ItemListener {
         setPreProcessPredicate(matchHandler::isSpectatingMatch);
         addHandler(SpectatorItems.RETURN_TO_LOBBY_ITEM, LeaveCommand::leave);
         addHandler(SpectatorItems.LEAVE_PARTY_ITEM, LeaveCommand::leave);
-        addHandler(SpectatorItems.TOGGLE_SPECTATORS_ITEM, player -> {
+
+        addHandler(SpectatorItems.SHOW_SPECTATORS_ITEM, player -> {
             SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
             UUID playerUuid = player.getUniqueId();
             boolean togglePermitted = toggleVisiblityUsable.getOrDefault(playerUuid, 0L) < System.currentTimeMillis();
@@ -41,14 +39,26 @@ public final class SpectatorItemListener extends ItemListener {
                 return;
             }
 
-            boolean enabled = !settingHandler.getSetting(player, Setting.VIEW_OTHER_SPECTATORS);
-            settingHandler.updateSetting(player, Setting.VIEW_OTHER_SPECTATORS, enabled);
+            settingHandler.updateSetting(player, Setting.VIEW_OTHER_SPECTATORS, true);
+            player.sendMessage(ChatColor.GREEN + "Now showing other spectators.");
+            MatchUtils.resetInventory(player);
 
-            if (enabled) {
-                player.sendMessage(ChatColor.GREEN + "Now showing other spectators.");
-            } else {
-                player.sendMessage(ChatColor.RED + "Now hiding other spectators.");
+            toggleVisiblityUsable.put(playerUuid, System.currentTimeMillis() + TOGGLE_SPECTATORS_COOLDOWN_MILLIS);
+        });
+
+        addHandler(SpectatorItems.HIDE_SPECTATORS_ITEM, player -> {
+            SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
+            UUID playerUuid = player.getUniqueId();
+            boolean togglePermitted = toggleVisiblityUsable.getOrDefault(playerUuid, 0L) < System.currentTimeMillis();
+
+            if (!togglePermitted) {
+                player.sendMessage(ChatColor.RED + "Please wait before doing this again!");
+                return;
             }
+
+            settingHandler.updateSetting(player, Setting.VIEW_OTHER_SPECTATORS, false);
+            player.sendMessage(ChatColor.RED + "Now hiding other spectators.");
+            MatchUtils.resetInventory(player);
 
             toggleVisiblityUsable.put(playerUuid, System.currentTimeMillis() + TOGGLE_SPECTATORS_COOLDOWN_MILLIS);
         });
