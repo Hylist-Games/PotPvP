@@ -42,6 +42,10 @@ public final class MatchGeneralListener implements Listener {
             return;
         }
 
+        if (match.getTeam(player.getUniqueId()).getAliveMembers().size() == 1) {
+            event.getDrops().removeIf(item -> item.getType() == Material.POTION);
+        }
+
         // creates 'proper' player death animation (of the player falling over)
         // which we don't get due to our immediate respawn
         PlayerUtils.animateDeath(player);

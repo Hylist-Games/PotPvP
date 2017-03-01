@@ -74,8 +74,6 @@ public final class MatchDeathMessageListener implements Listener {
                 sendLightningPacket(onlinePlayer, lightningPacket);
             }
         }
-
-        event.getDrops().removeIf(item -> item.getType() == Material.POTION);
     }
 
     private PacketContainer createLightningPacket(Location location) {
