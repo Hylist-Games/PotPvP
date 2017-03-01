@@ -2,6 +2,7 @@ package net.frozenorb.potpvp.follow.command;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.follow.FollowHandler;
+import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
@@ -22,16 +23,13 @@ public final class FollowCommand {
 
         FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
         SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
         UUID alreadyFollowing = followHandler.getFollowing(sender).orElse(null);
 
-        if (alreadyFollowing != null) {
-            UnfollowCommand.unfollow(sender);
-        } else if (sender == target) {
+        if (sender == target) {
             sender.sendMessage(ChatColor.RED + "No, you can't follow yourself.");
             return;
-        } else if (PotPvPSI.getInstance().getMatchHandler().getMatchPlayingOrSpectating(sender) != null) {
-            PotPvPSI.getInstance().getMatchHandler().getMatchPlayingOrSpectating(sender).removeSpectator(sender);
         } else if (!settingHandler.getSetting(target, Setting.ALLOW_SPECTATORS)) {
             if (sender.isOp()) {
                 sender.sendMessage(ChatColor.RED + "Bypassing " + target.getName() + "'s no spectators preference...");
@@ -39,6 +37,12 @@ public final class FollowCommand {
                 sender.sendMessage(ChatColor.RED + target.getName() + " doesn't allow spectators at the moment.");
                 return;
             }
+        }
+
+        if (alreadyFollowing != null) {
+            UnfollowCommand.unfollow(sender);
+        } else if (matchHandler.getMatchPlayingOrSpectating(sender) != null) {
+            matchHandler.getMatchPlayingOrSpectating(sender).removeSpectator(sender);
         }
 
         followHandler.startFollowing(sender, target);
