@@ -1,5 +1,6 @@
 package net.frozenorb.potpvp.validation;
 
+import lombok.experimental.UtilityClass;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
@@ -8,12 +9,9 @@ import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public final class PotPvPValidation {
@@ -24,6 +22,7 @@ public final class PotPvPValidation {
     private static final String CANNOT_DO_THIS_WHILE_QUEUED = ChatColor.RED + "You can't do this while queued!";
     private static final String CANNOT_DO_THIS_WHILE_IN_MATCH = ChatColor.RED + "You can't do this while participating in or spectating a match!";
     private static final String CANNOT_DO_THIS_WHILE_FOLLOWING = ChatColor.RED + "You cannot do this while following someone! Type /unfollow to exit.";
+    private static final String CANNOT_DO_THIS_IN_SILENT_MODE = ChatColor.RED + "You cannot do this while in silent mode!";
 
     private static final String TARGET_PLAYER_IN_MATCH = ChatColor.RED + "That player is participating in or spectating a match!";
     private static final String TARGET_PLAYER_HAS_DUELS_DISABLED = ChatColor.RED + "The player has duels disabled!";
@@ -32,6 +31,11 @@ public final class PotPvPValidation {
     private static final String TARGET_PARTY_HAS_DUELS_DISABLED = ChatColor.RED + "The party has duels disabled!";
 
     public static boolean canSendDuel(Player sender, Player target) {
+        if (sender.hasMetadata("ModMode")) {
+            sender.sendMessage(CANNOT_DO_THIS_IN_SILENT_MODE);
+            return false;
+        }
+
         if (sender == target) {
             sender.sendMessage(CANNOT_DUEL_SELF);
             return false;
@@ -62,6 +66,11 @@ public final class PotPvPValidation {
 
     // sender = the one who typed /accept
     public static boolean canAcceptDuel(Player sender, Player duelSentBy) {
+        if (sender.hasMetadata("ModMode")) {
+            sender.sendMessage(CANNOT_DO_THIS_IN_SILENT_MODE);
+            return false;
+        }
+
         if (isInOrSpectatingMatch(sender)) {
             sender.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
             return false;
@@ -195,6 +204,11 @@ public final class PotPvPValidation {
     }
 
     public static boolean canJoinQueue(Player player) {
+        if (player.hasMetadata("ModMode")) {
+            player.sendMessage(CANNOT_DO_THIS_IN_SILENT_MODE);
+            return false;
+        }
+
         if (isInParty(player)) {
             player.sendMessage(CANNOT_DO_THIS_IN_PARTY);
             return false;
