@@ -28,8 +28,7 @@ public final class FollowCommand {
         UUID alreadyFollowing = followHandler.getFollowing(sender).orElse(null);
 
         if (alreadyFollowing != null) {
-            sender.sendMessage(ChatColor.BLUE + "You're already following " + ChatColor.YELLOW + UUIDUtils.name(alreadyFollowing) + ChatColor.BLUE + "!");
-            return;
+            UnfollowCommand.unfollow(sender);
         } else if (sender == target) {
             sender.sendMessage(ChatColor.RED + "No, you can't follow yourself.");
             return;
