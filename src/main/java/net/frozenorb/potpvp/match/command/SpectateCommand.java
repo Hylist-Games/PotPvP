@@ -14,16 +14,27 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public final class SpectateCommand {
+
+    private static final int SPECTATE_COOLDOWN_SECONDS = 2;
+    private static final Map<UUID, Long> cooldowns = new HashMap<>();
 
     @Command(names = {"spectate", "spec"}, permission = "")
     public static void spectate(Player sender, @Param(name = "target") Player target) {
         if (sender == target) {
             sender.sendMessage(ChatColor.RED + "You cannot spectate yourself.");
             return;
+        } else if (cooldowns.containsKey(sender.getUniqueId()) && cooldowns.get(sender.getUniqueId()) > System.currentTimeMillis()) {
+            sender.sendMessage(ChatColor.RED + "Please wait before using this command again.");
+            return;
         }
+
+        cooldowns.put(sender.getUniqueId(), System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(SPECTATE_COOLDOWN_SECONDS));
 
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
@@ -75,6 +86,11 @@ public final class SpectateCommand {
             Match currentlySpectating = matchHandler.getMatchSpectating(sender);
 
             if (currentlySpectating != null) {
+                if (currentlySpectating.equals(targetMatch)) {
+                    sender.sendMessage(ChatColor.RED + "You're already spectating this match.");
+                    return;
+                }
+
                 currentlySpectating.removeSpectator(sender);
             }
 
