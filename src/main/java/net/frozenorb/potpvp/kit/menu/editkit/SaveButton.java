@@ -63,8 +63,8 @@ final class SaveButton extends Button {
         new KitsMenu(kit.getType()).openMenu(player);
 
         ItemStack[] defaultInventory = kit.getType().getDefaultInventory();
-        int foodInDefault = ItemUtils.countAmountMatching(defaultInventory, v -> v.getType().isEdible());
-        int pearlsInDefault = ItemUtils.countAmountMatching(defaultInventory, v -> v.getType() == Material.ENDER_PEARL);
+        int foodInDefault = ItemUtils.countStacksMatching(defaultInventory, v -> v.getType().isEdible());
+        int pearlsInDefault = ItemUtils.countStacksMatching(defaultInventory, v -> v.getType() == Material.ENDER_PEARL);
 
         if (foodInDefault > 0 && kit.countFood() == 0) {
             player.sendMessage(ChatColor.RED + "Your saved kit is missing food.");

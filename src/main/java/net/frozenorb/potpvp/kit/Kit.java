@@ -48,19 +48,19 @@ public final class Kit {
     }
 
     public int countHeals() {
-        return ItemUtils.countAmountMatching(inventoryContents, ItemUtils.INSTANT_HEAL_POTION_PREDICATE);
+        return ItemUtils.countStacksMatching(inventoryContents, ItemUtils.INSTANT_HEAL_POTION_PREDICATE);
     }
 
     public int countDebuffs() {
-        return ItemUtils.countAmountMatching(inventoryContents, ItemUtils.DEBUFF_POTION_PREDICATE);
+        return ItemUtils.countStacksMatching(inventoryContents, ItemUtils.DEBUFF_POTION_PREDICATE);
     }
 
     public int countFood() {
-        return ItemUtils.countAmountMatching(inventoryContents, ItemUtils.EDIBLE_PREDICATE);
+        return ItemUtils.countStacksMatching(inventoryContents, ItemUtils.EDIBLE_PREDICATE);
     }
 
     public int countPearls() {
-        return ItemUtils.countAmountMatching(inventoryContents, v -> v.getType() == Material.ENDER_PEARL);
+        return ItemUtils.countStacksMatching(inventoryContents, v -> v.getType() == Material.ENDER_PEARL);
     }
 
     // we use this method instead of .toSelectableBook().isSimilar()

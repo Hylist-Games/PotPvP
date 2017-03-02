@@ -47,14 +47,13 @@ public final class ItemUtils {
     public static final Predicate<ItemStack> EDIBLE_PREDICATE = item -> item.getType().isEdible();
 
     /**
-     * Returns the total amount of items matching the predicate provided. It should be noted
-     * that for each match the return value is increment by each ItemStack's amount, NOT 1.
+     * Returns the number of stacks of items matching the predicate provided.
      *
      * @param items ItemStack array to scan
      * @param predicate The predicate which will be applied to each non-null temStack.
-     * @return The summed amount of all items which matched the predicate, or 0 if {@code items} was null.
+     * @return The amount of ItemStacks which matched the predicate, or 0 if {@code items} was null.
      */
-    public static int countAmountMatching(ItemStack[] items, Predicate<ItemStack> predicate) {
+    public static int countStacksMatching(ItemStack[] items, Predicate<ItemStack> predicate) {
         if (items == null) {
             return 0;
         }
@@ -63,7 +62,7 @@ public final class ItemUtils {
 
         for (ItemStack item : items) {
             if (item != null && predicate.test(item)) {
-                amountMatching += item.getAmount();
+                amountMatching++;
             }
         }
 

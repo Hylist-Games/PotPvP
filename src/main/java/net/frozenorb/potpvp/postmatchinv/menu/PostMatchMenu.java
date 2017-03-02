@@ -68,7 +68,7 @@ public final class PostMatchMenu extends Menu {
         buttons.put(getSlot(1, y), new PostMatchFoodLevelButton(target.getHunger()));
         buttons.put(getSlot(2, y), new PostMatchPotionEffectsButton(target.getPotionEffects()));
 
-        int healsRemaining = ItemUtils.countAmountMatching(target.getInventory(), pots ? ItemUtils.INSTANT_HEAL_POTION_PREDICATE : ItemUtils.SOUP_PREDICATE);
+        int healsRemaining = ItemUtils.countStacksMatching(target.getInventory(), pots ? ItemUtils.INSTANT_HEAL_POTION_PREDICATE : ItemUtils.SOUP_PREDICATE);
         buttons.put(getSlot(3, y), new PostMatchHealsLeftButton(target.getPlayerUuid(), healsRemaining, pots));
 
         // swap to other player button (for 1v1s)
