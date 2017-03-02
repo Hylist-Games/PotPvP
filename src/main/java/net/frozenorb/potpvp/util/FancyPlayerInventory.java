@@ -243,8 +243,9 @@ public class FancyPlayerInventory extends PlayerInventory {
             case 2:
                 return 1;
             case 3:
-            default:
                 return 0;
+            default:
+                return i;
         }
     }
 
