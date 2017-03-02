@@ -14,7 +14,7 @@ public final class SpectatorItems {
 
     public static final ItemStack CARPET_ITEM = new ItemStack(Material.CARPET, 1, DyeColor.RED.getWoolData());
 
-    public static final ItemStack SHOW_SPECTATORS_ITEM = new ItemStack(Material.EMERALD, 1, DyeColor.GRAY.getDyeData());
+    public static final ItemStack SHOW_SPECTATORS_ITEM = new ItemStack(Material.INK_SACK, 1, DyeColor.GRAY.getDyeData());
     public static final ItemStack HIDE_SPECTATORS_ITEM = new ItemStack(Material.INK_SACK, 1, DyeColor.GREEN.getDyeData());
 
     public static final ItemStack VIEW_INVENTORY_ITEM = new ItemStack(Material.BOOK);
