@@ -120,13 +120,15 @@ public final class PotPvPValidation {
         return true;
     }
 
+    // target is the initiator's party, sender is the party who dueled the target.
+    // (the target would be the one typing /accept here)
     public static boolean canAcceptDuel(Party target, Party sender, Player initiator) {
         if (isInOrSpectatingMatch(initiator)) {
             initiator.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
             return false;
         }
 
-        if (isInOrSpectatingMatch(Bukkit.getPlayer(target.getLeader()))) {
+        if (isInOrSpectatingMatch(Bukkit.getPlayer(sender.getLeader()))) {
             initiator.sendMessage(TARGET_PARTY_IN_MATCH);
             return false;
         }
