@@ -9,7 +9,6 @@ import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.nametag.PotPvPNametagProvider;
 import net.frozenorb.qlib.cuboid.Cuboid;
 import net.frozenorb.qlib.util.PlayerUtils;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -208,6 +207,19 @@ public final class MatchGeneralListener implements Listener {
         // don't spawn items on the ground
         if (itemType == Material.GLASS_BOTTLE || itemType == Material.BOWL) {
             event.getItemDrop().remove();
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onProjectileLaunch(PlayerTeleportEvent event) {
+        if (event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+
+        if (!PotPvPSI.getInstance().getMatchHandler().isPlayingMatch(player)) {
+            event.setCancelled(true);
         }
     }
 
