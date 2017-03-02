@@ -13,7 +13,7 @@ import lombok.experimental.UtilityClass;
 public final class SpectatorItems {
 
     public static final ItemStack SHOW_SPECTATORS_ITEM = new ItemStack(Material.INK_SACK, 1, DyeColor.GRAY.getDyeData());
-    public static final ItemStack HIDE_SPECTATORS_ITEM = new ItemStack(Material.INK_SACK, 1, DyeColor.GREEN.getDyeData());
+    public static final ItemStack HIDE_SPECTATORS_ITEM = new ItemStack(Material.INK_SACK, 1, DyeColor.LIME.getDyeData());
 
     public static final ItemStack VIEW_INVENTORY_ITEM = new ItemStack(Material.BOOK);
 
