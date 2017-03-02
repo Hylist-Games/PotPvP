@@ -12,8 +12,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class SpectatorItems {
 
-    public static final ItemStack CARPET_ITEM = new ItemStack(Material.CARPET, 1, DyeColor.RED.getWoolData());
-
     public static final ItemStack SHOW_SPECTATORS_ITEM = new ItemStack(Material.INK_SACK, 1, DyeColor.GRAY.getDyeData());
     public static final ItemStack HIDE_SPECTATORS_ITEM = new ItemStack(Material.INK_SACK, 1, DyeColor.GREEN.getDyeData());
 
@@ -28,8 +26,6 @@ public final class SpectatorItems {
     public static final ItemStack LEAVE_PARTY_ITEM = new ItemStack(Material.FIRE);
 
     static {
-        ItemUtils.setDisplayName(CARPET_ITEM, ChatColor.RED + " ");
-
         ItemUtils.setDisplayName(SHOW_SPECTATORS_ITEM, ChatColor.YELLOW + "Show spectators");
         ItemUtils.setDisplayName(HIDE_SPECTATORS_ITEM, ChatColor.YELLOW + "Hide spectators");
 
