@@ -210,17 +210,4 @@ public final class MatchGeneralListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onProjectileLaunch(PlayerTeleportEvent event) {
-        if (event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
-            return;
-        }
-
-        Player player = event.getPlayer();
-
-        if (!PotPvPSI.getInstance().getMatchHandler().isPlayingMatch(player)) {
-            event.setCancelled(true);
-        }
-    }
-
 }

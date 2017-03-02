@@ -13,10 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.*;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import java.util.UUID;
@@ -95,6 +92,19 @@ public final class LobbyGeneralListener implements Listener {
         GameMode gameMode = player.getGameMode();
 
         if (!matchHandler.isPlayingOrSpectatingMatch(player) && gameMode != GameMode.CREATIVE) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+        if (event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+
+        if (!PotPvPSI.getInstance().getMatchHandler().isPlayingMatch(player)) {
             event.setCancelled(true);
         }
     }
