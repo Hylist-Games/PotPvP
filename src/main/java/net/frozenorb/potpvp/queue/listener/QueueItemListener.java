@@ -125,7 +125,7 @@ public final class QueueItemListener extends ItemListener {
     }
 
     private boolean rebootSoon() {
-        return AutoRebootHandler.isRebooting() && AutoRebootHandler.getRebootSecondsRemaining() <= TimeUnit.SECONDS.toMinutes(5);
+        return AutoRebootHandler.isRebooting() && AutoRebootHandler.getRebootSecondsRemaining() <= TimeUnit.MINUTES.toSeconds(5);
     }
 
 }
