@@ -37,17 +37,22 @@ public final class LobbyItemListener extends ItemListener {
             }
         });
         addHandler(LobbyItems.EVENTS_ITEM, p -> p.sendMessage(ChatColor.RED + "Events are not yet completed! They will be done soon!"));
-        addHandler(LobbyItems.DISABLE_SPEC_MODE_ITEM, p -> lobbyHandler.setSpectatorMode(p, false));
 
-        addHandler(LobbyItems.SPECTATE_MENU_ITEM, player -> {
-            if (PotPvPValidation.canUseSpectateItemIgnoreMatchSpectating(player)) {
-                new SpectateMenu().openMenu(player);
+        addHandler(LobbyItems.DISABLE_SPEC_MODE_ITEM, player -> {
+            if (!PotPvPSI.getInstance().getMatchHandler().isPlayingOrSpectatingMatch(player)) {
+                lobbyHandler.setSpectatorMode(player, false);
             }
         });
 
         addHandler(LobbyItems.ENABLE_SPEC_MODE_ITEM, player -> {
-            if (PotPvPValidation.canUseSpectateItem(player)) {
+            if (!PotPvPSI.getInstance().getMatchHandler().isPlayingOrSpectatingMatch(player) && PotPvPValidation.canUseSpectateItem(player)) {
                 lobbyHandler.setSpectatorMode(player, true);
+            }
+        });
+
+        addHandler(LobbyItems.SPECTATE_MENU_ITEM, player -> {
+            if (PotPvPValidation.canUseSpectateItemIgnoreMatchSpectating(player)) {
+                new SpectateMenu().openMenu(player);
             }
         });
 

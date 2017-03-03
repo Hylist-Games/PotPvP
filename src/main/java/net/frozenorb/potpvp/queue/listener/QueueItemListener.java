@@ -43,7 +43,7 @@ public final class QueueItemListener extends ItemListener {
         addHandler(QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM, p -> queueHandler.leaveQueue(p, false));
         addHandler(QueueItems.LEAVE_SOLO_RANKED_QUEUE_ITEM, p -> queueHandler.leaveQueue(p, false));
 
-        Consumer<Player> leavePartyConsumer = player -> {
+        Consumer<Player> leaveQueuePartyConsumer = player -> {
             Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
 
             // don't message, players who aren't leader shouldn't even get this item
@@ -52,8 +52,8 @@ public final class QueueItemListener extends ItemListener {
             }
         };
 
-        addHandler(QueueItems.LEAVE_PARTY_UNRANKED_QUEUE_ITEM, leavePartyConsumer);
-        addHandler(QueueItems.LEAVE_PARTY_RANKED_QUEUE_ITEM, leavePartyConsumer);
+        addHandler(QueueItems.LEAVE_PARTY_UNRANKED_QUEUE_ITEM, leaveQueuePartyConsumer);
+        addHandler(QueueItems.LEAVE_PARTY_RANKED_QUEUE_ITEM, leaveQueuePartyConsumer);
     }
 
     private Consumer<Player> joinSoloConsumer(boolean ranked) {
