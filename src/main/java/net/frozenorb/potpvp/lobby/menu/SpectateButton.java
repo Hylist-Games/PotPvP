@@ -50,7 +50,7 @@ final class SpectateButton extends Button {
 
         List<UUID> spectators = new ArrayList<>(match.getSpectators());
         // don't count actual players and players in silent mode.
-        spectators.removeIf(uuid -> Bukkit.getPlayer(uuid) != null && Bukkit.getPlayer(uuid).hasMetadata("ModMode") || match.getTeam(uuid) != null);
+        spectators.removeIf(uuid -> Bukkit.getPlayer(uuid) != null && Bukkit.getPlayer(uuid).hasMetadata("ModMode") || match.getPreviousTeam(uuid) != null);
 
         description.add(ChatColor.YELLOW + "Spectators: " + ChatColor.WHITE + spectators.size());
 
