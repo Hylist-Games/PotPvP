@@ -88,7 +88,7 @@ final class SpectateButton extends Button {
         Match currentlySpectating = PotPvPSI.getInstance().getMatchHandler().getMatchSpectating(player);
 
         if (currentlySpectating != null) {
-            currentlySpectating.removeSpectator(player);
+            currentlySpectating.removeSpectator(player, false);
         }
 
         match.addSpectator(player, null);
