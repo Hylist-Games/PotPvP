@@ -310,7 +310,7 @@ public final class Match {
     }
 
     public void removeSpectator(Player player) {
-        removeSpectator(player, false);
+        removeSpectator(player, true);
     }
 
     public void removeSpectator(Player player, boolean returnToLobby) {
