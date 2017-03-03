@@ -98,9 +98,7 @@ public final class LobbyGeneralListener implements Listener {
             return;
         }
 
-        Player player = event.getPlayer();
-
-        if (!PotPvPSI.getInstance().getMatchHandler().isPlayingMatch(player)) {
+        if (lobbyHandler.isInLobby(event.getPlayer())) {
             event.setCancelled(true);
         }
     }

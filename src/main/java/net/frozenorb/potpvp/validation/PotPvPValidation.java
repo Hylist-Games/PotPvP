@@ -205,7 +205,6 @@ public final class PotPvPValidation {
             return false;
         }
 
-        asdhjdsadhjk
         if (isInMatch(player)) {
             player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
             return false;

@@ -36,16 +36,15 @@ public final class LobbyItemListener extends ItemListener {
                 ManageCommand.manage(p);
             }
         });
-        addHandler(LobbyItems.EVENTS_ITEM, p -> p.sendMessage(ChatColor.RED + "Events are not yet completed! They will be done soon!"));
 
         addHandler(LobbyItems.DISABLE_SPEC_MODE_ITEM, player -> {
-            if (!PotPvPSI.getInstance().getMatchHandler().isPlayingOrSpectatingMatch(player)) {
+            if (lobbyHandler.isInLobby(player)) {
                 lobbyHandler.setSpectatorMode(player, false);
             }
         });
 
         addHandler(LobbyItems.ENABLE_SPEC_MODE_ITEM, player -> {
-            if (!PotPvPSI.getInstance().getMatchHandler().isPlayingOrSpectatingMatch(player) && PotPvPValidation.canUseSpectateItem(player)) {
+            if (lobbyHandler.isInLobby(player) && PotPvPValidation.canUseSpectateItem(player)) {
                 lobbyHandler.setSpectatorMode(player, true);
             }
         });
