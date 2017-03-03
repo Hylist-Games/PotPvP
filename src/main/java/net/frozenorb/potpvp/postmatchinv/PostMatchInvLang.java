@@ -20,12 +20,13 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class PostMatchInvLang {
 
-    private static final String WINNER = ChatColor.LIGHT_PURPLE + "Winner:" + ChatColor.GRAY;
-    private static final String LOSER = ChatColor.AQUA + "Loser:" + ChatColor.GRAY;
-    private static final String PARTICIPANTS = ChatColor.GREEN + "Participants:";
+    static final String LINE = ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "-----------------------------------------------------";
+    static final String INVENTORY_HEADER = ChatColor.GOLD + "Post-Match Inventories " + ChatColor.GRAY + "(click name to view)";
+    static final String SPECTATORS_FORMATTED = ChatColor.AQUA + "Spectators (%d): " + ChatColor.GRAY + "%s";
 
-    private static final String LINE = ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "-----------------------------------------------------";
-    private static final String INVENTORY_HEADER = ChatColor.GOLD + "Post-Match Inventories " + ChatColor.GRAY + "(click name to view)";
+    private static final String WINNER = ChatColor.GREEN + "Winner:" + ChatColor.GRAY;
+    private static final String LOSER = ChatColor.RED + "Loser:" + ChatColor.GRAY;
+    private static final String PARTICIPANTS = ChatColor.GREEN + "Participants:";
 
     private static final TextComponent COMMA_COMPONENT = new TextComponent(", ");
 
@@ -33,58 +34,46 @@ public final class PostMatchInvLang {
         COMMA_COMPONENT.setColor(ChatColor.YELLOW);
     }
 
-    static Object[] gen1v1PlayerMessages(UUID winner, UUID loser) {
+    static Object[] gen1v1PlayerInvs(UUID winner, UUID loser) {
         return new Object[] {
-            LINE,
-            INVENTORY_HEADER,
             new TextComponent[] {
                 new TextComponent(ChatColor.GREEN + "Winner: "),
                 clickToViewLine(winner),
                 new TextComponent(ChatColor.GRAY + " - " + ChatColor.RED + "Loser: "),
                 clickToViewLine(loser)
-            },
-            LINE
+            }
         };
     }
 
     // when viewing a 2 team match as a spectator
-    static Object[] genSpectatorMessages(MatchTeam winner, MatchTeam loser) {
+    static Object[] genSpectatorInvs(MatchTeam winner, MatchTeam loser) {
         return new Object[] {
-            LINE,
-            INVENTORY_HEADER,
             WINNER,
             clickToViewLine(winner.getAllMembers()),
             LOSER,
             clickToViewLine(loser.getAllMembers()),
-            LINE
         };
     }
 
     // when viewing a 2 team match as a participant
-    static Object[] genTeamMessages(MatchTeam viewer, MatchTeam winner, MatchTeam loser) {
+    static Object[] genTeamInvs(MatchTeam viewer, MatchTeam winner, MatchTeam loser) {
         return new Object[] {
-            LINE,
-            INVENTORY_HEADER,
             WINNER + (viewer == winner ? " (Your team)" : " (Enemy team)"),
             clickToViewLine(winner.getAllMembers()),
             LOSER + (viewer == loser ? " (Your team)" : " (Enemy team)"),
             clickToViewLine(loser.getAllMembers()),
-            LINE
         };
     }
 
     // when viewing a non-2 team match from any perspective
-    static Object[] genGenericMessages(Collection<MatchTeam> teams) {
+    static Object[] genGenericInvs(Collection<MatchTeam> teams) {
         Set<UUID> members = teams.stream()
             .flatMap(t -> t.getAllMembers().stream())
             .collect(Collectors.toSet());
 
         return new Object[] {
-            LINE,
-            INVENTORY_HEADER,
             PARTICIPANTS,
             clickToViewLine(members),
-            LINE
         };
     }
 

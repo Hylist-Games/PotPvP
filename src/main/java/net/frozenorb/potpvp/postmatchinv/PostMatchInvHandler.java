@@ -1,21 +1,25 @@
 package net.frozenorb.potpvp.postmatchinv;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.postmatchinv.listener.PostMatchInvGeneralListener;
+import net.frozenorb.qlib.util.UUIDUtils;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public final class PostMatchInvHandler {
 
@@ -47,16 +51,41 @@ public final class PostMatchInvHandler {
     }
 
     private void messagePlayers(Match match) {
-        Map<UUID, Object[]> messages = new HashMap<>();
+        Map<UUID, Object[]> invMessages = new HashMap<>();
 
-        createMessages(match, messages);
+        String spectatorLine;
+        List<UUID> spectators = new ArrayList<>(match.getSpectators());
 
-        messages.forEach((uuid, lines) -> {
+        if (spectators.size() >= 2) {
+            String spectatorNames = Joiner.on(", ").join(
+                spectators.subList(0, Math.min(spectators.size(), 4))
+                .stream()
+                .map(UUIDUtils::name)
+                .collect(Collectors.toSet())
+            );
+
+            if (spectators.size() > 4) {
+                spectatorNames += " (+" + (spectators.size() - 4) + " more)";
+            }
+
+            spectatorLine = String.format(PostMatchInvLang.SPECTATORS_FORMATTED, spectators.size(), spectatorNames);
+        } else {
+            // this is dumb but it lets us make the variable effectively final
+            // (and avoid a working variable)
+            spectatorLine = null;
+        }
+
+        createInvMessages(match, invMessages);
+
+        invMessages.forEach((uuid, lines) -> {
             Player player = Bukkit.getPlayer(uuid);
 
             if (player == null) {
                 return;
             }
+
+            player.sendMessage(PostMatchInvLang.LINE);
+            player.sendMessage(PostMatchInvLang.INVENTORY_HEADER);
 
             for (Object line : lines) {
                 if (line instanceof TextComponent[]) {
@@ -67,18 +96,24 @@ public final class PostMatchInvHandler {
                     player.sendMessage((String) line);
                 }
             }
+
+            if (spectatorLine != null) {
+                player.sendMessage(spectatorLine);
+            }
+
+            player.sendMessage(PostMatchInvLang.LINE);
         });
     }
 
-    private void createMessages(Match match, Map<UUID, Object[]> messages) {
+    private void createInvMessages(Match match, Map<UUID, Object[]> invMessages) {
         List<MatchTeam> teams = match.getTeams();
 
         if (teams.size() != 2) {
             // matches without 2 teams just get big 'participants' sections
-            Object[] generic = PostMatchInvLang.genGenericMessages(teams);
+            Object[] generic = PostMatchInvLang.genGenericInvs(teams);
 
-            writeSpecMessages(match, messages, generic);
-            writeTeamMessages(teams, messages, generic);
+            writeSpecInvMessages(match, invMessages, generic);
+            writeTeamInvMessages(teams, invMessages, generic);
             return;
         }
 
@@ -89,25 +124,25 @@ public final class PostMatchInvHandler {
             // 1v1 messages
             UUID winnerPlayer = winnerTeam.getAllMembers().iterator().next();
             UUID loserPlayer = loserTeam.getAllMembers().iterator().next();
-            Object[] generic = PostMatchInvLang.gen1v1PlayerMessages(winnerPlayer, loserPlayer);
+            Object[] generic = PostMatchInvLang.gen1v1PlayerInvs(winnerPlayer, loserPlayer);
 
-            writeSpecMessages(match, messages, generic);
-            writeTeamMessages(teams, messages, generic);
+            writeSpecInvMessages(match, invMessages, generic);
+            writeTeamInvMessages(teams, invMessages, generic);
         } else {
             // normal 2 team messages
-            writeSpecMessages(match, messages, PostMatchInvLang.genSpectatorMessages(winnerTeam, loserTeam));
-            writeTeamMessages(winnerTeam, messages, PostMatchInvLang.genTeamMessages(winnerTeam, winnerTeam, loserTeam));
-            writeTeamMessages(loserTeam, messages, PostMatchInvLang.genTeamMessages(loserTeam, winnerTeam, loserTeam));
+            writeSpecInvMessages(match, invMessages, PostMatchInvLang.genSpectatorInvs(winnerTeam, loserTeam));
+            writeTeamInvMessages(winnerTeam, invMessages, PostMatchInvLang.genTeamInvs(winnerTeam, winnerTeam, loserTeam));
+            writeTeamInvMessages(loserTeam, invMessages, PostMatchInvLang.genTeamInvs(loserTeam, winnerTeam, loserTeam));
         }
     }
 
-    private void writeTeamMessages(Iterable<MatchTeam> teams, Map<UUID, Object[]> messageMap, Object[] messages) {
+    private void writeTeamInvMessages(Iterable<MatchTeam> teams, Map<UUID, Object[]> messageMap, Object[] messages) {
         for (MatchTeam team : teams) {
-            writeTeamMessages(team, messageMap, messages);
+            writeTeamInvMessages(team, messageMap, messages);
         }
     }
 
-    private void writeTeamMessages(MatchTeam team, Map<UUID, Object[]> messageMap, Object[] messages) {
+    private void writeTeamInvMessages(MatchTeam team, Map<UUID, Object[]> messageMap, Object[] messages) {
         for (UUID member : team.getAllMembers()) {
             // on this containsKey check:
             // we only want to send messages to players who are alive or were on this team in the match
@@ -121,7 +156,7 @@ public final class PostMatchInvHandler {
         }
     }
 
-    private void writeSpecMessages(Match match, Map<UUID, Object[]> messageMap, Object[] messages) {
+    private void writeSpecInvMessages(Match match, Map<UUID, Object[]> messageMap, Object[] messages) {
         for (UUID spectator : match.getSpectators()) {
             messageMap.put(spectator, messages);
         }
