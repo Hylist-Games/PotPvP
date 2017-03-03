@@ -3,7 +3,8 @@ package net.frozenorb.potpvp;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
-
+import lombok.Getter;
+import mkremins.fanciful.FancyMessage;
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.duel.DuelHandler;
 import net.frozenorb.potpvp.elo.EloHandler;
@@ -15,11 +16,7 @@ import net.frozenorb.potpvp.kit.KitHandler;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.kittype.KitTypeJsonAdapter;
 import net.frozenorb.potpvp.kittype.KitTypeParameterType;
-import net.frozenorb.potpvp.listener.BasicPreventionListener;
-import net.frozenorb.potpvp.listener.ChatListener;
-import net.frozenorb.potpvp.listener.NightModeListener;
-import net.frozenorb.potpvp.listener.PearlCooldownListener;
-import net.frozenorb.potpvp.listener.TabCompleteListener;
+import net.frozenorb.potpvp.listener.*;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.nametag.PotPvPNametagProvider;
@@ -34,26 +31,22 @@ import net.frozenorb.potpvp.tab.PotPvPLayoutProvider;
 import net.frozenorb.qlib.command.FrozenCommandHandler;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
 import net.frozenorb.qlib.scoreboard.FrozenScoreboardHandler;
-import net.frozenorb.qlib.serialization.BlockVectorAdapter;
-import net.frozenorb.qlib.serialization.ItemStackAdapter;
-import net.frozenorb.qlib.serialization.LocationAdapter;
-import net.frozenorb.qlib.serialization.PotionEffectAdapter;
-import net.frozenorb.qlib.serialization.VectorAdapter;
+import net.frozenorb.qlib.serialization.*;
 import net.frozenorb.qlib.tab.FrozenTabHandler;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
 import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
-import lombok.Getter;
+import java.util.concurrent.atomic.AtomicInteger;
 
 // TODO: Restoring arenas after matches (?)
 public final class PotPvPSI extends JavaPlugin {
@@ -128,7 +121,25 @@ public final class PotPvPSI extends JavaPlugin {
         FrozenNametagHandler.registerProvider(new PotPvPNametagProvider());
         FrozenScoreboardHandler.setConfiguration(PotPvPScoreboardConfiguration.create());
 
-        Bukkit.getScheduler().runTaskTimer(this, () -> Bukkit.broadcastMessage(ChatColor.GOLD + "TIP: " + ChatColor.GRAY + "Pots too slow? Learn to pot or disconnect!"), 5 * 60 * 20L, 5 * 60 * 20L);
+        AtomicInteger index = new AtomicInteger(0);
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            FancyMessage message = new FancyMessage("TIP: ").color(ChatColor.GOLD);
+
+            if (index.get() == 0) {
+                message.then("Don't like the server? Knockback sucks? ").color(ChatColor.GRAY)
+                        .then("[Click Here]").color(ChatColor.GREEN).command("/showmethedoor").tooltip(ChatColor.GREEN + ":)");
+
+                index.set(0);
+            } else {
+                message.then("Pots too slow? Learn to pot or disconnect!").color(ChatColor.GRAY);
+
+                index.incrementAndGet();
+            }
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                message.send(player);
+            }
+        }, 5 * 60 * 20L, 5 * 60 * 20L);
     }
 
     @Override
