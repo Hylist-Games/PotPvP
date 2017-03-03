@@ -1,9 +1,7 @@
 package net.frozenorb.potpvp.event.event;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
-import net.frozenorb.potpvp.event.Event;
 import net.frozenorb.potpvp.event.EventType;
 
 import org.bukkit.ChatColor;

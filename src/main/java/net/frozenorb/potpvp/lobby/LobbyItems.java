@@ -14,9 +14,8 @@ import static org.bukkit.ChatColor.AQUA;
 import static org.bukkit.ChatColor.BOLD;
 import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.GREEN;
-import static org.bukkit.ChatColor.LIGHT_PURPLE;
-import static org.bukkit.ChatColor.YELLOW;
 import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.YELLOW;
 
 @UtilityClass
 public final class LobbyItems {

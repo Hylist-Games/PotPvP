@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.listener;
 
 import net.frozenorb.potpvp.util.FancyPlayerInventory;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;

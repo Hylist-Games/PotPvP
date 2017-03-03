@@ -4,6 +4,7 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.minecraft.server.v1_7_R4.EntityHuman;
 import net.minecraft.server.v1_7_R4.ItemStack;
 import net.minecraft.server.v1_7_R4.PlayerInventory;
+
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
@@ -11,7 +12,11 @@ import org.bukkit.craftbukkit.v1_7_R4.inventory.CraftInventory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class FancyPlayerInventory extends PlayerInventory {
 

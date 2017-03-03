@@ -1,12 +1,17 @@
 package net.frozenorb.potpvp.match.listener;
 
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.match.*;
+import net.frozenorb.potpvp.match.Match;
+import net.frozenorb.potpvp.match.MatchHandler;
+import net.frozenorb.potpvp.match.MatchTeam;
+import net.frozenorb.potpvp.match.MatchUtils;
+import net.frozenorb.potpvp.match.SpectatorItems;
 import net.frozenorb.potpvp.match.command.LeaveCommand;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.potpvp.util.FancyPlayerInventory;
 import net.frozenorb.potpvp.util.ItemListener;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

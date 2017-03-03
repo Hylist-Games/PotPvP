@@ -2,7 +2,6 @@ package net.frozenorb.potpvp.party.menu.otherparties;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
-import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.setting.Setting;

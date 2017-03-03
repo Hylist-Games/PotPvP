@@ -27,8 +27,6 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.InventoryHolder;
 
-import java.util.UUID;
-
 public final class SpectatorPreventionListener implements Listener {
 
     @EventHandler

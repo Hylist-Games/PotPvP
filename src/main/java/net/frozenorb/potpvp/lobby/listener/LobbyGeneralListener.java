@@ -1,8 +1,6 @@
 package net.frozenorb.potpvp.lobby.listener;
 
-import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
-import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.qlib.menu.Menu;
 
 import org.bukkit.GameMode;
@@ -13,10 +11,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
-
-import java.util.UUID;
 
 public final class LobbyGeneralListener implements Listener {
 

@@ -5,7 +5,6 @@ import net.frozenorb.potpvp.kit.KitItems;
 import net.frozenorb.potpvp.kit.menu.kits.KitsMenu;
 import net.frozenorb.potpvp.kittype.menu.select.SelectKitTypeMenu;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
-import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.util.ItemListener;
 
 public final class KitItemListener extends ItemListener {
