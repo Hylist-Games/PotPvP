@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,7 +54,7 @@ public final class SettingHandler {
      * @param enabled If the setting should be enabled
      */
     public void updateSetting(Player player, Setting setting, boolean enabled) {
-        Map<Setting, Boolean> playerSettings = settingsData.get(player.getUniqueId());
+        Map<Setting, Boolean> playerSettings = settingsData.computeIfAbsent(player.getUniqueId(), i -> new HashMap<>());
         playerSettings.put(setting, enabled);
 
         Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
