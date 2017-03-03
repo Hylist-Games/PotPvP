@@ -76,7 +76,7 @@ public final class LobbyItemListener extends ItemListener {
                 Match currentlySpectating = matchHandler.getMatchSpectating(player);
 
                 if (currentlySpectating != null) {
-                    currentlySpectating.removeSpectator(player);
+                    currentlySpectating.removeSpectator(player, false);
                 }
 
                 Match target = matches.get(qLib.RANDOM.nextInt(matches.size()));

@@ -310,6 +310,10 @@ public final class Match {
     }
 
     public void removeSpectator(Player player) {
+        removeSpectator(player, false);
+    }
+
+    public void removeSpectator(Player player, boolean returnToLobby) {
         Map<UUID, Match> spectateCache = PotPvPSI.getInstance().getMatchHandler().getSpectatingMatchCache();
 
         spectateCache.remove(player.getUniqueId());
@@ -317,7 +321,9 @@ public final class Match {
 
         sendSpectatorMessage(player, ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " is no longer spectating.");
 
-        PotPvPSI.getInstance().getLobbyHandler().returnToLobby(player);
+        if (returnToLobby) {
+            PotPvPSI.getInstance().getLobbyHandler().returnToLobby(player);
+        }
         Bukkit.getPluginManager().callEvent(new MatchSpectatorLeaveEvent(player, this));
     }
 
