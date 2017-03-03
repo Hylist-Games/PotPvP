@@ -2,7 +2,6 @@ package net.frozenorb.potpvp.lobby.listener;
 
 import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.qlib.menu.Menu;
-
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -11,11 +10,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.inventory.InventoryHolder;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 public final class LobbyGeneralListener implements Listener {
@@ -79,6 +78,40 @@ public final class LobbyGeneralListener implements Listener {
         if (openMenu != null && openMenu.isNoncancellingInventory()) {
             event.getItemDrop().remove();
         } else {
+            event.setCancelled(true);
+        }
+    }
+
+    // cancel inventory interaction in the lobby except for menus
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (!lobbyHandler.isInLobby((Player) event.getWhoClicked()) || Menu.currentlyOpenedMenus.containsKey(event.getWhoClicked().getName())) {
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent event) {
+        if (!lobbyHandler.isInLobby((Player) event.getWhoClicked()) || Menu.currentlyOpenedMenus.containsKey(event.getWhoClicked().getName())) {
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onInventoryMove(InventoryMoveItemEvent event) {
+        InventoryHolder inventoryHolder = event.getSource().getHolder();
+
+        if (inventoryHolder instanceof Player) {
+            Player player = (Player) inventoryHolder;
+
+            if (!lobbyHandler.isInLobby(player) || Menu.currentlyOpenedMenus.containsKey(player.getName())) {
+                return;
+            }
+
             event.setCancelled(true);
         }
     }
