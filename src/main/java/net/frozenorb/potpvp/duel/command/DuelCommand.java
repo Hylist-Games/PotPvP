@@ -149,7 +149,7 @@ public final class DuelCommand {
             }
         }
 
-        targetParty.message(ChatColor.AQUA + sender.getName() + "'s party (" + senderParty.getMembers().size() + ")" + ChatColor.YELLOW + " has sent you a " + kitType.getColoredDisplayName() + ChatColor.YELLOW + " duel.");
+        targetParty.message(ChatColor.AQUA + sender.getName() + "'s Party (" + senderParty.getMembers().size() + ")" + ChatColor.YELLOW + " has sent you a " + kitType.getColoredDisplayName() + ChatColor.YELLOW + " duel.");
         Bukkit.getPlayer(targetParty.getLeader()).spigot().sendMessage(createInviteNotification(sender.getName()));
 
         sender.sendMessage(ChatColor.YELLOW + "Successfully sent a " + kitType.getColoredDisplayName() + ChatColor.YELLOW + " duel invite to " + ChatColor.AQUA + targetPartyLeader + "'s party" + ChatColor.YELLOW + ".");
@@ -157,16 +157,27 @@ public final class DuelCommand {
     }
 
     private static TextComponent createInviteNotification(String sender) {
-        TextComponent button = new TextComponent("Click here or type /accept " + sender + " to accept the invite");
-        button.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+        TextComponent firstPart = new TextComponent("Click here or type");
+        TextComponent commandPart = new TextComponent("/accept " + sender);
+        TextComponent secondPart = new TextComponent(" to accept the invite");
+
+        firstPart.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+        commandPart.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+        secondPart.setColor(net.md_5.bungee.api.ChatColor.GOLD);
 
         ClickEvent.Action runCommand = ClickEvent.Action.RUN_COMMAND;
         HoverEvent.Action showText = HoverEvent.Action.SHOW_TEXT;
 
-        button.setClickEvent(new ClickEvent(runCommand, "/accept " + sender));
-        button.setHoverEvent(new HoverEvent(showText, new BaseComponent[] { new TextComponent(ChatColor.GREEN + "Click here to accept") }));
+        firstPart.setClickEvent(new ClickEvent(runCommand, "/accept " + sender));
+        firstPart.setHoverEvent(new HoverEvent(showText, new BaseComponent[] { new TextComponent(ChatColor.GREEN + "Click here to accept") }));
 
-        return button;
+        commandPart.setClickEvent(new ClickEvent(runCommand, "/accept " + sender));
+        commandPart.setHoverEvent(new HoverEvent(showText, new BaseComponent[] { new TextComponent(ChatColor.GREEN + "Click here to accept") }));
+
+        secondPart.setClickEvent(new ClickEvent(runCommand, "/accept " + sender));
+        secondPart.setHoverEvent(new HoverEvent(showText, new BaseComponent[] { new TextComponent(ChatColor.GREEN + "Click here to accept") }));
+
+        return firstPart;
     }
 
 }

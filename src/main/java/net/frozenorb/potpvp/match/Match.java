@@ -292,7 +292,7 @@ public final class Match {
         }
 
         // so players don't accidentally click the item to stop spectating
-        if (!PotPvPSI.getInstance().getLobbyHandler().isInSpectatorMode(player)) {
+        if (fromMatch) {
             player.getInventory().setHeldItemSlot(0);
         }
 
@@ -310,6 +310,10 @@ public final class Match {
     }
 
     public void removeSpectator(Player player) {
+        removeSpectator(player, true);
+    }
+
+    public void removeSpectator(Player player, boolean returnToLobby) {
         Map<UUID, Match> spectateCache = PotPvPSI.getInstance().getMatchHandler().getSpectatingMatchCache();
 
         spectateCache.remove(player.getUniqueId());
@@ -317,7 +321,9 @@ public final class Match {
 
         sendSpectatorMessage(player, ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " is no longer spectating.");
 
-        PotPvPSI.getInstance().getLobbyHandler().returnToLobby(player);
+        if (returnToLobby) {
+            PotPvPSI.getInstance().getLobbyHandler().returnToLobby(player);
+        }
         Bukkit.getPluginManager().callEvent(new MatchSpectatorLeaveEvent(player, this));
     }
 

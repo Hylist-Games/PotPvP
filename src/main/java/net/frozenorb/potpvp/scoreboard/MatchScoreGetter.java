@@ -5,6 +5,7 @@ import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchTeam;
+import net.frozenorb.potpvp.util.ItemUtils;
 import net.frozenorb.qlib.util.TimeUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
 import net.frozenorb.qlib.uuid.FrozenUUIDCache;
@@ -86,10 +87,12 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         int ourTeamSize = ourTeam.getAllMembers().size();
         int otherTeamSize = otherTeam.getAllMembers().size();
 
+        boolean pots = !match.getKitType().getId().contains("SOUP"); // TODO: WTF IS THIS NO
+
         if (ourTeamSize == 1 && otherTeamSize == 1) {
             render1v1MatchLines(scores, otherTeam);
         } else if (ourTeamSize <= 2 && otherTeamSize <= 2) {
-            render2v2MatchLines(scores, ourTeam, otherTeam, player);
+            render2v2MatchLines(scores, ourTeam, otherTeam, player, pots);
         } else if (ourTeamSize <= 4 && otherTeamSize <= 4) {
             render4v4MatchLines(scores, ourTeam, otherTeam);
         } else if (ourTeam.getAllMembers().size() <= 9) {
@@ -104,7 +107,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         scores.add("&c&lOpponent: &f" + FrozenUUIDCache.name(opponent));
     }
 
-    private void render2v2MatchLines(List<String> scores, MatchTeam ourTeam, MatchTeam otherTeam, Player player) {
+    private void render2v2MatchLines(List<String> scores, MatchTeam ourTeam, MatchTeam otherTeam, Player player, boolean pots) {
         // 2v2, but potentially 1v2 / 1v1 if players have died
         UUID partnerUuid = null;
 
@@ -119,6 +122,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
             String namePrefix;
             String healthStr;
 
+            int heals = 0;
             if (ourTeam.isAlive(partnerUuid)) {
                 Player partnerPlayer = Bukkit.getPlayer(partnerUuid); // will never be null (or isAlive would've returned false)
                 double health = Math.round(partnerPlayer.getHealth()) / 2D;
@@ -141,6 +145,8 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
                 // flicker. reads its documentation on the qLib wiki to understand the
                 // usage of the *s
                 healthStr = healthColor.toString() + health + " *❤*" + ChatColor.RESET;
+
+                heals = ItemUtils.countStacksMatching(partnerPlayer.getInventory().getContents(), pots ? ItemUtils.INSTANT_HEAL_POTION_PREDICATE : ItemUtils.SOUP_PREDICATE);
             } else {
                 namePrefix = "&7&m";
                 healthStr = "&4RIP";
@@ -148,6 +154,11 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
 
             scores.add(namePrefix + FrozenUUIDCache.name(partnerUuid));
             scores.add(healthStr);
+
+            if (heals != 0) {
+                scores.add(ChatColor.GREEN + (pots ? heals + " Pots" : " Soups"));
+            }
+
             scores.add("&b");
         }
 
