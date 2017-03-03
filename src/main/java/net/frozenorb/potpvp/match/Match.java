@@ -292,7 +292,7 @@ public final class Match {
         }
 
         // so players don't accidentally click the item to stop spectating
-        if (!PotPvPSI.getInstance().getLobbyHandler().isInSpectatorMode(player)) {
+        if (fromMatch) {
             player.getInventory().setHeldItemSlot(0);
         }
 
