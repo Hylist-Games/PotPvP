@@ -2,6 +2,7 @@ package net.frozenorb.potpvp.lobby;
 
 import net.frozenorb.qlib.util.ItemUtils;
 
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,7 +16,7 @@ import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.LIGHT_PURPLE;
 import static org.bukkit.ChatColor.YELLOW;
-import static org.bukkit.DyeColor.RED;
+import static org.bukkit.ChatColor.RED;
 
 @UtilityClass
 public final class LobbyItems {
@@ -26,7 +27,7 @@ public final class LobbyItems {
     public static final ItemStack ENABLE_SPEC_MODE_ITEM = new ItemStack(Material.REDSTONE_TORCH_ON);
     public static final ItemStack DISABLE_SPEC_MODE_ITEM = new ItemStack(Material.LEVER);
     public static final ItemStack MANAGE_ITEM = new ItemStack(Material.ANVIL);
-    public static final ItemStack UNFOLLOW_ITEM = new ItemStack(Material.INK_SACK, 1, RED.getDyeData());
+    public static final ItemStack UNFOLLOW_ITEM = new ItemStack(Material.INK_SACK, 1, DyeColor.RED.getDyeData());
 
     static {
         ItemUtils.setDisplayName(EVENTS_ITEM, LEFT_ARROW + LIGHT_PURPLE.toString() + BOLD + "Events" + RIGHT_ARROW);
