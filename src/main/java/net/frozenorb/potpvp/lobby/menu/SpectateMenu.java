@@ -68,4 +68,13 @@ public final class SpectateMenu extends PaginatedMenu {
         return buttons;
     }
 
+    // we lock the size of this inventory at full, otherwise we'll have
+    // issues if it 'grows' into the next line while it's open (say we open
+    // the menu with 8 entries, then it grows to 11 [and onto the second row]
+    // - this breaks things)
+    @Override
+    public int size(Player player) {
+        return 9 * 6;
+    }
+
 }
