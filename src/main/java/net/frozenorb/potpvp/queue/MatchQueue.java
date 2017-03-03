@@ -1,5 +1,6 @@
 package net.frozenorb.potpvp.queue;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
@@ -9,11 +10,15 @@ import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchTeam;
+import net.frozenorb.qlib.util.UUIDUtils;
+
+import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 
@@ -84,15 +89,15 @@ public final class MatchQueue {
         entries.remove(entry);
     }
 
-    private void createMatchAndRemoveEntries(MatchQueueEntry a, MatchQueueEntry b) {
+    private void createMatchAndRemoveEntries(MatchQueueEntry entryA, MatchQueueEntry entryB) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
 
+        MatchTeam teamA = new MatchTeam(entryA.getMembers());
+        MatchTeam teamB = new MatchTeam(entryB.getMembers());
+
         Match match = matchHandler.startMatch(
-            ImmutableList.of(
-                new MatchTeam(a.getMembers()),
-                new MatchTeam(b.getMembers())
-            ),
+            ImmutableList.of(teamA, teamB),
             kitType,
             ranked,
             !ranked // allowRematches is the inverse of ranked
@@ -100,11 +105,28 @@ public final class MatchQueue {
 
         // only remove entries if match creation was successfull
         if (match != null) {
-            queueHandler.removeFromQueueCache(a);
-            queueHandler.removeFromQueueCache(b);
+            queueHandler.removeFromQueueCache(entryA);
+            queueHandler.removeFromQueueCache(entryB);
 
-            entries.remove(a);
-            entries.remove(b);
+            if (ranked) {
+                EloHandler eloHandler = PotPvPSI.getInstance().getEloHandler();
+                int aElo = eloHandler.getElo(teamA.getAliveMembers(), kitType);
+                int bElo = eloHandler.getElo(teamB.getAliveMembers(), kitType);
+                String prefix = ChatColor.YELLOW.toString() + ChatColor.BOLD + "Match found!" + ChatColor.YELLOW + " Opponent: " + ChatColor.AQUA;
+
+                teamA.messageAlive(prefix + Joiner.on(", ").join(teamB.getAliveMembers().stream()
+                    .map(UUIDUtils::name)
+                    .collect(Collectors.toSet())
+                ) + " (" + bElo + " Elo)");
+
+                teamB.messageAlive(prefix + Joiner.on(", ").join(teamA.getAliveMembers().stream()
+                        .map(UUIDUtils::name)
+                        .collect(Collectors.toSet())
+                ) + " (" + aElo + " Elo)");
+            }
+            
+            entries.remove(entryA);
+            entries.remove(entryB);
         }
     }
 
