@@ -56,6 +56,8 @@ public final class PostMatchInvHandler {
         String spectatorLine;
         List<UUID> spectators = new ArrayList<>(match.getSpectators());
 
+        spectators.removeIf(uuid -> match.getTeam(uuid) != null);
+
         if (spectators.size() >= 2) {
             String spectatorNames = Joiner.on(", ").join(
                 spectators.subList(0, Math.min(spectators.size(), 4))
