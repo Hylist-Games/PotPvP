@@ -19,7 +19,7 @@ public final class EventHandler {
     @Getter private final Set<Event> activeEvents = new HashSet<>();
 
     public EventHandler() {
-        Bukkit.getPluginManager().registerEvents(new EventItemListener(), PotPvPSI.getInstance());
+        /*Bukkit.getPluginManager().registerEvents(new EventItemListener(), PotPvPSI.getInstance());*/
     }
 
     public Event beginEvent(EventType type, UUID host, int countdown, boolean restricted) {

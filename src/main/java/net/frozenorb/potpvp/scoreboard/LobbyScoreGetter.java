@@ -80,14 +80,14 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
             scores.add(ChatColor.GRAY.toString() + ChatColor.BOLD + "In silent mode");
         }
 
-        Event nearest = eventHandler.getNearestEvent();
+        /*Event nearest = eventHandler.getNearestEvent();
 
         if (nearest != null) {
             scores.add("&l&7&m--------------------");
             scores.add("&b&l" + nearest.getType().getName());
             scores.add("&f  Starts in &b&l" + TimeUtils.formatIntoMMSS(nearest.getCountdown()));
             scores.add("&f  Join via emerald in hotbar");
-        }
+        }*/
     }
 
 }

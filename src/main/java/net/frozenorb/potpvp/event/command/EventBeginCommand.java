@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 
 public final class EventBeginCommand {
 
-    @Command(names = {"event begin"}, permission = "")
+    /*@Command(names = {"event begin"}, permission = "")
     public static void eventBegin(Player sender, @Param(name = "type") EventType type, @Param(name="countdown") int countdown, @Param(name="restricted") boolean restricted) {
         EventHandler eventHandler = PotPvPSI.getInstance().getEventHandler();
         eventHandler.beginEvent(type, sender.getUniqueId(), countdown, restricted);
@@ -26,6 +26,6 @@ public final class EventBeginCommand {
 
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', message1));
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', message2));
-    }
+    }*/
 
 }

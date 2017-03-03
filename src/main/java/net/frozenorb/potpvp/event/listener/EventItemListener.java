@@ -12,13 +12,15 @@ public final class EventItemListener extends ItemListener {
 
     public EventItemListener() {
         addHandler(EventItems.EVENTS_ITEM, player -> {
-            EventHandler eventHandler = PotPvPSI.getInstance().getEventHandler();
+            player.sendMessage(ChatColor.RED + "Events are not yet completed. They will be done soon!");
+
+            /*EventHandler eventHandler = PotPvPSI.getInstance().getEventHandler();
 
             if (eventHandler.getActiveEvents().isEmpty()) {
                 player.sendMessage(ChatColor.RED + "There are no active events.");
             } else {
                 new EventsMenu().openMenu(player);
-            }
+            }*/
         });
     }
 
