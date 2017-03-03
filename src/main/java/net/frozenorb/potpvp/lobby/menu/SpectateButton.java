@@ -9,6 +9,7 @@ import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.util.UUIDUtils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -46,7 +47,12 @@ final class SpectateButton extends Button {
         description.add("");
         description.add(ChatColor.YELLOW + "Kit: " + ChatColor.WHITE + match.getKitType().getDisplayName());
         description.add(ChatColor.YELLOW + "Arena: " + ChatColor.WHITE + match.getArena().getSchematic());
-        description.add(ChatColor.YELLOW + "Spectators: " + ChatColor.WHITE + match.getSpectators().size());
+
+        List<UUID> spectators = new ArrayList<>(match.getSpectators());
+        // don't count actual players and players in silent mode.
+        spectators.removeIf(uuid -> Bukkit.getPlayer(uuid) != null && Bukkit.getPlayer(uuid).hasMetadata("ModMode") || match.getTeam(uuid) != null);
+
+        description.add(ChatColor.YELLOW + "Spectators: " + ChatColor.WHITE + spectators.size());
 
         if (teamA.getAliveMembers().size() != 1 || teamB.getAliveMembers().size() != 1) {
             description.add("");

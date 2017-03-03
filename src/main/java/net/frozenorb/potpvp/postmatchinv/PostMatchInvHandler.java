@@ -56,7 +56,8 @@ public final class PostMatchInvHandler {
         String spectatorLine;
         List<UUID> spectators = new ArrayList<>(match.getSpectators());
 
-        spectators.removeIf(uuid -> match.getTeam(uuid) != null);
+        // don't count actual players and players in silent mode.
+        spectators.removeIf(uuid -> Bukkit.getPlayer(uuid) != null && Bukkit.getPlayer(uuid).hasMetadata("ModMode") || match.getTeam(uuid) != null);
 
         if (spectators.size() >= 2) {
             String spectatorNames = Joiner.on(", ").join(
