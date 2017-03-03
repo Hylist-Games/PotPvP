@@ -79,9 +79,9 @@ public final class LobbyUtils {
             player.setAllowFlight(player.getGameMode() == GameMode.CREATIVE || specMode);
 
             if (specMode || followingSomeone) {
-                inventory.setItem(5, LobbyItems.DISABLE_SPEC_MODE_ITEM);
-                inventory.setItem(4, LobbyItems.SPECTATE_RANDOM_ITEM);
-                inventory.setItem(3, LobbyItems.SPECTATE_MENU_ITEM);
+                inventory.setItem(4, LobbyItems.DISABLE_SPEC_MODE_ITEM);
+                inventory.setItem(3, LobbyItems.SPECTATE_RANDOM_ITEM);
+                inventory.setItem(2, LobbyItems.SPECTATE_MENU_ITEM);
 
                 if (followingSomeone) {
                     inventory.setItem(8, LobbyItems.UNFOLLOW_ITEM);
@@ -107,7 +107,7 @@ public final class LobbyUtils {
                 }
 
                 if (!queueHandler.isQueued(player.getUniqueId())) {
-                    inventory.setItem(5, LobbyItems.ENABLE_SPEC_MODE_ITEM);
+                    inventory.setItem(4, LobbyItems.ENABLE_SPEC_MODE_ITEM);
                 }
 
                 if (!queueHandler.isQueuedUnranked(player.getUniqueId())) {

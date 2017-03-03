@@ -77,6 +77,9 @@ public final class LobbyHandler {
         if (mode) {
             changed = spectatorMode.add(player.getUniqueId());
         } else {
+            FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
+            followHandler.getFollowing(player).ifPresent(i -> UnfollowCommand.unfollow(player));
+
             changed = spectatorMode.remove(player.getUniqueId());
         }
 
@@ -86,9 +89,6 @@ public final class LobbyHandler {
             if (!mode) {
                 returnToLobbySkipItemSlot(player);
             }
-
-            FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
-            followHandler.getFollowing(player).ifPresent(i -> UnfollowCommand.unfollow(player));
         }
     }
 
