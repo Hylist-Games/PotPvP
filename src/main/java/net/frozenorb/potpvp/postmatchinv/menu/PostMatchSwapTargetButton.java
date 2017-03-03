@@ -30,8 +30,8 @@ final class PostMatchSwapTargetButton extends Button {
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-                "",
-                ChatColor.YELLOW + "Swap your view to " + UUIDUtils.name(newTarget.getPlayerUuid()) + "'s inventory"
+            "",
+            ChatColor.YELLOW + "Swap your view to " + UUIDUtils.name(newTarget.getPlayerUuid()) + "'s inventory"
         );
     }
 

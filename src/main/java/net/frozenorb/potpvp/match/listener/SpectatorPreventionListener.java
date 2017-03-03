@@ -47,9 +47,8 @@ public final class SpectatorPreventionListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDeath(PlayerDeathEvent event) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Match match = matchHandler.getMatchSpectating(event.getEntity());
 
-        if (match != null) {
+        if (matchHandler.isSpectatingMatch(event.getEntity())) {
             event.setKeepInventory(true);
         }
     }
@@ -115,7 +114,7 @@ public final class SpectatorPreventionListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
-        if (matchHandler.isSpectatingMatch(event.getWhoClicked().getUniqueId())) {
+        if (matchHandler.isSpectatingMatch((Player) event.getWhoClicked())) {
             event.setCancelled(true);
         }
     }
@@ -124,7 +123,7 @@ public final class SpectatorPreventionListener implements Listener {
     public void onInventoryDrag(InventoryDragEvent event) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
-        if (matchHandler.isSpectatingMatch(event.getWhoClicked().getUniqueId())) {
+        if (matchHandler.isSpectatingMatch((Player) event.getWhoClicked())) {
             event.setCancelled(true);
         }
     }
@@ -135,9 +134,8 @@ public final class SpectatorPreventionListener implements Listener {
 
         if (inventoryHolder instanceof Player) {
             MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-            UUID playerUuid = ((Player) inventoryHolder).getUniqueId();
 
-            if (matchHandler.isSpectatingMatch(playerUuid)) {
+            if (matchHandler.isSpectatingMatch((Player) inventoryHolder)) {
                 event.setCancelled(true);
             }
         }
@@ -157,7 +155,7 @@ public final class SpectatorPreventionListener implements Listener {
         if (shooter instanceof Player) {
             MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
-            if (matchHandler.isSpectatingMatch(shooter.getUniqueId())) {
+            if (matchHandler.isSpectatingMatch((Player) shooter)) {
                 event.setCancelled(true);
             }
         }
@@ -171,7 +169,7 @@ public final class SpectatorPreventionListener implements Listener {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
         for (LivingEntity entity : event.getAffectedEntities()) {
-            if (entity instanceof Player && matchHandler.isSpectatingMatch(entity.getUniqueId())) {
+            if (entity instanceof Player && matchHandler.isSpectatingMatch((Player) entity)) {
                 event.setIntensity(entity, 0F);
             }
         }

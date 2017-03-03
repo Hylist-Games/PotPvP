@@ -34,7 +34,7 @@ public final class LobbyHandler {
     private final Map<UUID, Long> returnedToLobby = new HashMap<>();
 
     public LobbyHandler() {
-        Bukkit.getPluginManager().registerEvents(new LobbyGeneralListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new LobbyGeneralListener(this), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new LobbyItemListener(this), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new LobbySpecModeListener(), PotPvPSI.getInstance());
     }
@@ -65,6 +65,10 @@ public final class LobbyHandler {
 
     public long getLastLobbyTime(Player player) {
         return returnedToLobby.getOrDefault(player.getUniqueId(), 0L);
+    }
+
+    public boolean isInLobby(Player player) {
+        return !PotPvPSI.getInstance().getMatchHandler().isPlayingOrSpectatingMatch(player);
     }
 
     public boolean isInSpectatorMode(Player player) {

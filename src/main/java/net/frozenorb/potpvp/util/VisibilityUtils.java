@@ -51,7 +51,7 @@ public final class VisibilityUtils {
             // we're in a match so we only hide other spectators (if our settings say so)
             boolean targetIsSpectator = targetMatch.isSpectator(target.getUniqueId());
             boolean viewerSpecSetting = settingHandler.getSetting(viewer, Setting.VIEW_OTHER_SPECTATORS);
-            boolean viewerIsSpectator = matchHandler.isSpectatingMatch(viewer.getUniqueId());
+            boolean viewerIsSpectator = matchHandler.isSpectatingMatch(viewer);
 
             return !targetIsSpectator || (viewerSpecSetting && viewerIsSpectator && !target.hasMetadata("ModMode"));
         }

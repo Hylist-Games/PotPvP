@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.party.menu.otherparties;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
@@ -30,7 +31,7 @@ public final class OtherPartiesMenu extends Menu {
     public Map<Integer, Button> getButtons(Player player) {
         SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        LobbyHandler lobbyHandler = PotPvPSI.getInstance().getLobbyHandler();
 
         Map<Integer, Button> buttons = new HashMap<>();
         List<Party> parties = new ArrayList<>(partyHandler.getParties());
@@ -43,7 +44,7 @@ public final class OtherPartiesMenu extends Menu {
                 continue;
             }
 
-            if (matchHandler.isPlayingOrSpectatingMatch(party.getLeader())) {
+            if (!lobbyHandler.isInLobby(Bukkit.getPlayer(party.getLeader()))) {
                 continue;
             }
 

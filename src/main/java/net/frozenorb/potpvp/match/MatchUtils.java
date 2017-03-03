@@ -22,9 +22,11 @@ public final class MatchUtils {
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
-        Match match = matchHandler.getMatchSpectating(player.getUniqueId());
+        Match match = matchHandler.getMatchSpectating(player);
 
-        if (match == null || !match.isSpectator(player.getUniqueId())) {
+        // because we lookup their match with getMatchSpectating this will also
+        // return for players fighting in matches
+        if (match == null) {
             return;
         }
 

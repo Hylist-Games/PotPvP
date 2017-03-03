@@ -69,11 +69,13 @@ public final class MatchHandler {
 
         for (MatchTeam team : teams) {
             for (UUID member : team.getAllMembers()) {
-                if (!anyOps && Bukkit.getPlayer(member).isOp()) {
+                Player memberPlayer = Bukkit.getPlayer(member);
+
+                if (!anyOps && memberPlayer.isOp()) {
                     anyOps = true;
                 }
 
-                if (isPlayingOrSpectatingMatch(member)) {
+                if (isPlayingOrSpectatingMatch(memberPlayer)) {
                     throw new IllegalArgumentException(UUIDUtils.name(member) + " is already in a match!");
                 }
             }
@@ -172,7 +174,7 @@ public final class MatchHandler {
      * @return the match being played by the provided player
      */
     public Match getMatchPlaying(Player player) {
-        return getMatchPlaying(player.getUniqueId());
+        return playingMatchCache.get(player.getUniqueId());
     }
 
     /**
@@ -184,126 +186,58 @@ public final class MatchHandler {
      * @return the match being spectated by the provided player
      */
     public Match getMatchSpectating(Player player) {
-        return getMatchSpectating(player.getUniqueId());
+        return spectatingMatchCache.get(player.getUniqueId());
     }
 
     /**
      * Gets the match currently being spectated or played by the player provided.
-     * This method acts as a combination of {@link MatchHandler#getMatchPlaying(UUID)}
-     * and {@link MatchHandler#getMatchSpectating(UUID)}.
+     * This method acts as a combination of {@link MatchHandler#getMatchPlaying(Player)}
+     * and {@link MatchHandler#getMatchSpectating(Player)}.
      *
      * @param player player to look up match for
      * @return the match being played or spectated by the provided player
      */
     public Match getMatchPlayingOrSpectating(Player player) {
-        return getMatchPlayingOrSpectating(player.getUniqueId());
-    }
-
-    /**
-     * Gets the match currently being played by the player provided.
-     * In this context, played means a player who alive and fighting on a team
-     *
-     * @param playerUuid player to look up match for
-     * @return the match being played by the provided player
-     */
-    public Match getMatchPlaying(UUID playerUuid) {
-        return playingMatchCache.get(playerUuid);
-    }
-
-    /**
-     * Gets the match currently being spectated by the player provided.
-     * In this context, spectated includes both players who died while
-     * fighting who have not left and players who joined via /spectate.
-     *
-     * @param playerUuid player to look up match for
-     * @return the match being spectated by the provided player
-     */
-    public Match getMatchSpectating(UUID playerUuid) {
-        return spectatingMatchCache.get(playerUuid);
-    }
-
-    /**
-     * Gets the match currently being spectated or played by the player provided.
-     * This method acts as a combination of {@link MatchHandler#getMatchPlaying(UUID)}
-     * and {@link MatchHandler#getMatchSpectating(UUID)}.
-     *
-     * @param playerUuid player to look up match for
-     * @return the match being played or spectated by the provided player
-     */
-    public Match getMatchPlayingOrSpectating(UUID playerUuid) {
-        Match playing = playingMatchCache.get(playerUuid);
+        Match playing = playingMatchCache.get(player.getUniqueId());
 
         if (playing != null) {
             return playing;
         } else {
-            return spectatingMatchCache.get(playerUuid);
+            return spectatingMatchCache.get(player.getUniqueId());
         }
     }
 
     /**
      * Checks if the player specified is playing a match.
-     * See {@link MatchHandler#getMatchPlaying(UUID)} for a definition
+     * See {@link MatchHandler#getMatchPlaying(Player)} for a definition
      * of the term playing.
      * @param player player to look up match for
      * @return if a match is being played by the provided player
      */
     public boolean isPlayingMatch(Player player) {
-        return isPlayingMatch(player.getUniqueId());
+        return playingMatchCache.containsKey(player.getUniqueId());
     }
 
     /**
      * Checks if the player specified is spectating a match.
-     * See {@link MatchHandler#getMatchSpectating(UUID)} (UUID)} for a
+     * See {@link MatchHandler#getMatchSpectating(Player)} (UUID)} for a
      * definition of the term spectating.
      * @param player player to look up match for
      * @return if a match is being spectated by the provided player
      */
     public boolean isSpectatingMatch(Player player) {
-        return isSpectatingMatch(player.getUniqueId());
+        return spectatingMatchCache.containsKey(player.getUniqueId());
     }
 
     /**
      * Checks if the player specified is playing or spectating a match.
-     * See {@link MatchHandler#getMatchPlayingOrSpectating(UUID)} (UUID)} for a definition
+     * See {@link MatchHandler#getMatchPlayingOrSpectating(Player)} for a definition
      * of the term playing or spectating.
      * @param player player to look up match for
      * @return if a match is being played or spectated by the provided player
      */
     public boolean isPlayingOrSpectatingMatch(Player player) {
-        return isPlayingOrSpectatingMatch(player.getUniqueId());
-    }
-
-    /**
-     * Checks if the player specified is playing a match.
-     * See {@link MatchHandler#getMatchPlaying(UUID)} for a definition
-     * of the term playing.
-     * @param playerUuid player to look up match for
-     * @return if a match is being played by the provided player
-     */
-    public boolean isPlayingMatch(UUID playerUuid) {
-        return playingMatchCache.containsKey(playerUuid);
-    }
-
-    /**
-     * Checks if the player specified is spectating a match.
-     * See {@link MatchHandler#getMatchSpectating(UUID)} (UUID)} for a
-     * definition of the term spectating.
-     * @param playerUuid player to look up match for
-     * @return if a match is being spectated by the provided player
-     */
-    public boolean isSpectatingMatch(UUID playerUuid) {
-        return spectatingMatchCache.containsKey(playerUuid);
-    }
-
-    /**
-     * Checks if the player specified is playing or spectating a match.
-     * See {@link MatchHandler#getMatchPlayingOrSpectating(UUID)} (UUID)} for a definition
-     * of the term playing or spectating.
-     * @param playerUuid player to look up match for
-     * @return if a match is being played or spectated by the provided player
-     */
-    public boolean isPlayingOrSpectatingMatch(UUID playerUuid) {
-        return playingMatchCache.containsKey(playerUuid) || spectatingMatchCache.containsKey(playerUuid);
+        return playingMatchCache.containsKey(player.getUniqueId()) || spectatingMatchCache.containsKey(player.getUniqueId());
     }
 
 }

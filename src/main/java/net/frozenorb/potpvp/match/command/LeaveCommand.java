@@ -13,14 +13,15 @@ public final class LeaveCommand {
     @Command(names = { "spawn", "leave" }, permission = "")
     public static void leave(Player sender) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Match spectating = matchHandler.getMatchSpectating(sender);
 
         if (matchHandler.isPlayingMatch(sender)) {
-            sender.sendMessage(ChatColor.RED + "You cannot do this while in a match.");
+            sender.sendMessage(ChatColor.RED + "You cannot do this while playing in a match.");
             return;
         }
 
         sender.sendMessage(ChatColor.YELLOW + "Teleporting you to spawn...");
+
+        Match spectating = matchHandler.getMatchSpectating(sender);
 
         if (spectating == null) {
             PotPvPSI.getInstance().getLobbyHandler().returnToLobby(sender);

@@ -21,7 +21,6 @@ import static org.bukkit.ChatColor.RED;
 @UtilityClass
 public final class LobbyItems {
 
-    public static final ItemStack EVENTS_ITEM = new ItemStack(Material.EMERALD);
     public static final ItemStack SPECTATE_RANDOM_ITEM = new ItemStack(Material.COMPASS);
     public static final ItemStack SPECTATE_MENU_ITEM = new ItemStack(Material.PAPER);
     public static final ItemStack ENABLE_SPEC_MODE_ITEM = new ItemStack(Material.REDSTONE_TORCH_ON);
@@ -30,7 +29,6 @@ public final class LobbyItems {
     public static final ItemStack UNFOLLOW_ITEM = new ItemStack(Material.INK_SACK, 1, DyeColor.RED.getDyeData());
 
     static {
-        ItemUtils.setDisplayName(EVENTS_ITEM, LEFT_ARROW + LIGHT_PURPLE.toString() + BOLD + "Events" + RIGHT_ARROW);
         ItemUtils.setDisplayName(SPECTATE_RANDOM_ITEM, LEFT_ARROW + YELLOW.toString() + BOLD + "Spectate Random Match" + RIGHT_ARROW);
         ItemUtils.setDisplayName(SPECTATE_MENU_ITEM, LEFT_ARROW + GREEN.toString() + BOLD + "Spectate Menu" + RIGHT_ARROW);
         ItemUtils.setDisplayName(ENABLE_SPEC_MODE_ITEM, LEFT_ARROW + AQUA.toString() + BOLD + "Enable Spectator Mode" + RIGHT_ARROW);

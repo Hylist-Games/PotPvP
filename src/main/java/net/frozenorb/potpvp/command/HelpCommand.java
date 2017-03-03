@@ -57,11 +57,10 @@ public final class HelpCommand {
     @Command(names = {"help", "?", "halp", "helpme"}, permission = "")
     public static void help(Player sender) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        boolean inMatch = matchHandler.isPlayingOrSpectatingMatch(sender);
 
         HELP_MESSAGE_HEADER.forEach(sender::sendMessage);
 
-        if (inMatch) {
+        if (matchHandler.isPlayingOrSpectatingMatch(sender)) {
             HELP_MESSAGE_MATCH.forEach(sender::sendMessage);
         } else {
             HELP_MESSAGE_LOBBY.forEach(sender::sendMessage);

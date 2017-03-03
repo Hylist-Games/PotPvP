@@ -20,27 +20,33 @@ import java.util.UUID;
 
 public final class LobbyGeneralListener implements Listener {
 
+    private final LobbyHandler lobbyHandler;
+
+    public LobbyGeneralListener(LobbyHandler lobbyHandler) {
+        this.lobbyHandler = lobbyHandler;
+    }
+
     @EventHandler
     public void onPlayerSpawnLocation(PlayerSpawnLocationEvent event) {
-        LobbyHandler lobbyHandler = PotPvPSI.getInstance().getLobbyHandler();
         event.setSpawnLocation(lobbyHandler.getLobbyLocation());
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        PotPvPSI.getInstance().getLobbyHandler().returnToLobby(event.getPlayer());
+        lobbyHandler.returnToLobby(event.getPlayer());
     }
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        UUID entityUuid = event.getEntity().getUniqueId();
+        if (event.getEntityType() != EntityType.PLAYER) {
+            return;
+        }
 
-        if (!matchHandler.isPlayingOrSpectatingMatch(entityUuid)) {
-            // return players who fell off the map to spawn.
-            if (event.getEntityType() == EntityType.PLAYER && event.getCause() == EntityDamageEvent.DamageCause.VOID) {
-                Player player = (Player) event.getEntity();
-                PotPvPSI.getInstance().getLobbyHandler().returnToLobby(player);
+        Player player = (Player) event.getEntity();
+
+        if (lobbyHandler.isInLobby(player)) {
+            if (event.getCause() == EntityDamageEvent.DamageCause.VOID) {
+                lobbyHandler.returnToLobby(player);
             }
 
             event.setCancelled(true);
@@ -49,33 +55,25 @@ public final class LobbyGeneralListener implements Listener {
 
     @EventHandler
     public void onFoodLevelChange(FoodLevelChangeEvent event) {
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        UUID entityUuid = event.getEntity().getUniqueId();
-
-        if (!matchHandler.isPlayingOrSpectatingMatch(entityUuid)) {
+        if (lobbyHandler.isInLobby((Player) event.getEntity())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-
-        if (!matchHandler.isPlayingOrSpectatingMatch(event.getPlayer())) {
+        if (lobbyHandler.isInLobby(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Player player = event.getPlayer();
-
-        if (matchHandler.isPlayingOrSpectatingMatch(player)) {
+        if (!lobbyHandler.isInLobby(event.getPlayer())) {
             return;
         }
 
-        Menu openMenu = Menu.currentlyOpenedMenus.get(player.getName());
+        Menu openMenu = Menu.currentlyOpenedMenus.get(event.getPlayer().getName());
 
         // just remove the item for players in these menus, so they can 'drop' items to remove them
         if (openMenu != null && openMenu.isNoncancellingInventory()) {
@@ -87,11 +85,9 @@ public final class LobbyGeneralListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Player player = event.getPlayer();
-        GameMode gameMode = player.getGameMode();
+        GameMode gameMode = event.getPlayer().getGameMode();
 
-        if (!matchHandler.isPlayingOrSpectatingMatch(player) && gameMode != GameMode.CREATIVE) {
+        if (lobbyHandler.isInLobby(event.getPlayer()) && gameMode != GameMode.CREATIVE) {
             event.setCancelled(true);
         }
     }

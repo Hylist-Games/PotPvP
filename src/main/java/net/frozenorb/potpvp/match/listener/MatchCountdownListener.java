@@ -7,14 +7,16 @@ import net.frozenorb.potpvp.match.MatchState;
 
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 
-// the name of this listener is definitely kind of iffy (as it's really also non-IN_PROGRESS match),
+// the name of this listener is definitely kind of iffy (as it's really any non-IN_PROGRESS match),
 // but any other ideas I had were even less descriptive
 public final class MatchCountdownListener implements Listener {
 
@@ -28,7 +30,7 @@ public final class MatchCountdownListener implements Listener {
         }
 
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Match match = matchHandler.getMatchPlaying(event.getEntity().getUniqueId());
+        Match match = matchHandler.getMatchPlaying((Player) event.getEntity());
 
         if (match != null && match.getState() != MatchState.IN_PROGRESS) {
             event.setCancelled(true);
