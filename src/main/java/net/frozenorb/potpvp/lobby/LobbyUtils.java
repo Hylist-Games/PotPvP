@@ -1,5 +1,6 @@
 package net.frozenorb.potpvp.lobby;
 
+import lombok.experimental.UtilityClass;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.duel.DuelHandler;
 import net.frozenorb.potpvp.event.EventItems;
@@ -15,13 +16,10 @@ import net.frozenorb.potpvp.rematch.RematchData;
 import net.frozenorb.potpvp.rematch.RematchHandler;
 import net.frozenorb.potpvp.rematch.RematchItems;
 import net.frozenorb.qlib.menu.Menu;
-
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
-
-import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public final class LobbyUtils {
@@ -107,27 +105,22 @@ public final class LobbyUtils {
                     }
                 }
 
-                if (!queueHandler.isQueued(player.getUniqueId())) {
-                    inventory.setItem(4, LobbyItems.ENABLE_SPEC_MODE_ITEM);
-                }
-
-                if (!queueHandler.isQueuedUnranked(player.getUniqueId())) {
+                if (queueHandler.isQueuedRanked(player.getUniqueId())) {
+                    inventory.setItem(8, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
+                } else if (queueHandler.isQueuedUnranked(player.getUniqueId())) {
+                    inventory.setItem(8, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
+                } else {
                     inventory.setItem(1, QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM);
-                } else {
-                    inventory.setItem(1, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
-                }
-
-                if (!queueHandler.isQueuedRanked(player.getUniqueId())) {
                     inventory.setItem(2, QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM);
-                } else {
-                    inventory.setItem(2, QueueItems.LEAVE_SOLO_RANKED_QUEUE_ITEM);
-                }
 
-                inventory.setItem(6, EventItems.EVENTS_ITEM);
-                inventory.setItem(7, KitItems.OPEN_EDITOR_ITEM);
+                    inventory.setItem(4, LobbyItems.ENABLE_SPEC_MODE_ITEM);
 
-                if (player.hasPermission("potpvp.admin")) {
-                    inventory.setItem(8, LobbyItems.MANAGE_ITEM);
+                    inventory.setItem(6, EventItems.EVENTS_ITEM);
+                    inventory.setItem(7, KitItems.OPEN_EDITOR_ITEM);
+
+                    if (player.hasPermission("potpvp.admin")) {
+                        inventory.setItem(8, LobbyItems.MANAGE_ITEM);
+                    }
                 }
             }
         }
