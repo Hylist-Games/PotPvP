@@ -289,10 +289,8 @@ public final class Match {
             player.teleport(tpTo);
             player.sendMessage(ChatColor.YELLOW + "Now spectating " + ChatColor.AQUA + getSimpleDescription() + ChatColor.YELLOW + "...");
             sendSpectatorMessage(player, ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " is now spectating.");
-        }
-
-        // so players don't accidentally click the item to stop spectating
-        if (fromMatch) {
+        } else {
+            // so players don't accidentally click the item to stop spectating
             player.getInventory().setHeldItemSlot(0);
         }
 
@@ -318,6 +316,7 @@ public final class Match {
 
         spectateCache.remove(player.getUniqueId());
         spectators.remove(player.getUniqueId());
+        ItemListener.addButtonCooldown(player, 1_500);
 
         sendSpectatorMessage(player, ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " is no longer spectating.");
 

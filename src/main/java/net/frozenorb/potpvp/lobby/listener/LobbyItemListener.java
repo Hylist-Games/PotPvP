@@ -74,13 +74,13 @@ public final class LobbyItemListener extends ItemListener {
                 player.sendMessage(ChatColor.RED + "There are no matches available to spectate.");
             } else {
                 Match currentlySpectating = matchHandler.getMatchSpectating(player);
+                Match newSpectating = matches.get(qLib.RANDOM.nextInt(matches.size()));
 
                 if (currentlySpectating != null) {
                     currentlySpectating.removeSpectator(player, false);
                 }
 
-                Match target = matches.get(qLib.RANDOM.nextInt(matches.size()));
-                target.addSpectator(player, null);
+                newSpectating.addSpectator(player, null);
                 canUseRandomSpecItem.put(player.getUniqueId(), System.currentTimeMillis() + 3_000L);
             }
         });

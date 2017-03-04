@@ -156,7 +156,7 @@ public final class DuelCommand {
         duelHandler.insertInvite(new PartyDuelInvite(senderParty, targetParty, kitType));
     }
 
-    private static TextComponent createInviteNotification(String sender) {
+    private static TextComponent[] createInviteNotification(String sender) {
         TextComponent firstPart = new TextComponent("Click here or type");
         TextComponent commandPart = new TextComponent("/accept " + sender);
         TextComponent secondPart = new TextComponent(" to accept the invite");
@@ -177,7 +177,7 @@ public final class DuelCommand {
         secondPart.setClickEvent(new ClickEvent(runCommand, "/accept " + sender));
         secondPart.setHoverEvent(new HoverEvent(showText, new BaseComponent[] { new TextComponent(ChatColor.GREEN + "Click here to accept") }));
 
-        return firstPart;
+        return new TextComponent[] { firstPart, commandPart, secondPart };
     }
 
 }

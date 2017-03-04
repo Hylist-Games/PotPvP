@@ -29,9 +29,9 @@ public final class MenuBackButton extends Button {
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-                "",
-                ChatColor.RED + "Click here to return to",
-                ChatColor.RED + "the previous menu."
+            "",
+            ChatColor.RED + "Click here to return to",
+            ChatColor.RED + "the previous menu."
         );
     }
 
