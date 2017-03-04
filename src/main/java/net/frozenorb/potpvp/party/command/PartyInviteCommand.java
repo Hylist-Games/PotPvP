@@ -10,7 +10,6 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -52,6 +51,11 @@ public final class PartyInviteCommand {
 
         // only create party if validations succeed
         party = partyHandler.getOrCreateParty(sender);
+
+        if (party.getMembers().size() >= Party.MAX_SIZE && !sender.isOp()) { // I got the permission from "/party invite **" below
+            sender.sendMessage(ChatColor.RED + "Your party has reached the " + Party.MAX_SIZE + " player limit.");
+            return;
+        }
 
         if (party.isLeader(sender.getUniqueId())) {
             party.invite(target);

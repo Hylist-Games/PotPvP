@@ -1,5 +1,6 @@
 package net.frozenorb.potpvp.validation;
 
+import lombok.experimental.UtilityClass;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
@@ -9,12 +10,9 @@ import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public final class PotPvPValidation {
@@ -34,6 +32,7 @@ public final class PotPvPValidation {
     private static final String TARGET_PLAYER_FOLLOWING_SOMEONE = ChatColor.RED + "That player is currently following someone!";
     private static final String TARGET_PLAYER_HAS_DUELS_DISABLED = ChatColor.RED + "The player has duels disabled!";
     private static final String TARGET_PARTY_HAS_DUELS_DISABLED = ChatColor.RED + "The party has duels disabled!";
+    private static final String TARGET_PARTY_REACHED_MAXIMUM_SIZE = ChatColor.RED + "The party has reached the maximum player amount.";
 
     public static boolean canSendDuel(Player sender, Player target) {
         if (isInSilentMode(sender)) {
@@ -155,6 +154,11 @@ public final class PotPvPValidation {
 
         if (isFollowingSomeone(player)) {
             player.sendMessage(CANNOT_DO_THIS_WHILE_FOLLOWING);
+            return false;
+        }
+
+        if (party.getMembers().size() >= Party.MAX_SIZE && !Bukkit.getPlayer(party.getLeader()).isOp()) {
+            player.sendMessage(TARGET_PARTY_REACHED_MAXIMUM_SIZE);
             return false;
         }
 

@@ -38,6 +38,9 @@ import lombok.Setter;
  */
 public final class Party {
 
+    // the maximum party size for non-op leaders
+    public static final int MAX_SIZE = 30;
+
     /**
      * Leader of the party, given permission to perform
      * administrative commands (and perform actions like queueing)
