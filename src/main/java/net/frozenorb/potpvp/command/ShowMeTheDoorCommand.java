@@ -3,6 +3,8 @@ package net.frozenorb.potpvp.command;
 import com.google.common.collect.ImmutableList;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.qLib;
+
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public final class ShowMeTheDoorCommand {
     @Command(names = {"showmethedoor"}, permission = "")
     public static void showmethedoor(Player sender) {
         String reason = reasons.get(qLib.RANDOM.nextInt(reasons.size()));
-        sender.kickPlayer(reason);
+        sender.kickPlayer(ChatColor.YELLOW + reason);
     }
 
 }

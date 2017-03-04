@@ -298,7 +298,7 @@ public final class Match {
         FrozenNametagHandler.reloadOthersFor(player);
 
         VisibilityUtils.updateVisibility(player);
-        PatchedPlayerUtils.resetInventory(player, GameMode.CREATIVE);
+        PatchedPlayerUtils.resetInventory(player, GameMode.CREATIVE, false); // because we're about to reset their inv on a timer
         InventoryUtils.resetInventoryDelayed(player);
         player.setAllowFlight(true);
         player.setFlying(true); // called after PlayerUtils reset, make sure they don't fall out of the sky
@@ -323,6 +323,7 @@ public final class Match {
         if (returnToLobby) {
             PotPvPSI.getInstance().getLobbyHandler().returnToLobby(player);
         }
+
         Bukkit.getPluginManager().callEvent(new MatchSpectatorLeaveEvent(player, this));
     }
 
