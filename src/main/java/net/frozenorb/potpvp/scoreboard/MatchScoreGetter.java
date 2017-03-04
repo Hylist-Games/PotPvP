@@ -5,11 +5,9 @@ import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchTeam;
-import net.frozenorb.potpvp.util.ItemUtils;
 import net.frozenorb.qlib.util.TimeUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
 import net.frozenorb.qlib.uuid.FrozenUUIDCache;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -202,21 +200,18 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
             MatchTeam teamOne = teams.get(0);
             MatchTeam teamTwo = teams.get(1);
 
-            // only for 1v1s we don't show this
-            if (teamOne.getAllMembers().size() == 1 && teamTwo.getAllMembers().size() == 1) {
-                return;
-            }
+            if (teamOne.getAllMembers().size() != 1 && teamTwo.getAllMembers().size() != 1) {
+                // spectators who were on a team see teams as they releate
+                // to them, not just one/two.
+                if (oldTeam == null) {
+                    scores.add("&dTeam One: &f" + teamOne.getAliveMembers().size() + "/" + teamOne.getAllMembers().size());
+                    scores.add("&bTeam Two: &f" + teamTwo.getAliveMembers().size() + "/" + teamTwo.getAllMembers().size());
+                } else {
+                    MatchTeam otherTeam = oldTeam == teamOne ? teamTwo : teamOne;
 
-            // spectators who were on a team see teams as they releate
-            // to them, not just one/two.
-            if (oldTeam == null) {
-                scores.add("&dTeam One: &f" + teamOne.getAliveMembers().size() + "/" + teamOne.getAllMembers().size());
-                scores.add("&bTeam Two: &f" + teamTwo.getAliveMembers().size() + "/" + teamTwo.getAllMembers().size());
-            } else {
-                MatchTeam otherTeam = oldTeam == teamOne ? teamTwo : teamOne;
-
-                scores.add("&aTeam: &f" + oldTeam.getAliveMembers().size() + "/" + oldTeam.getAllMembers().size());
-                scores.add("&cOpponents: &f" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size());
+                    scores.add("&aTeam: &f" + oldTeam.getAliveMembers().size() + "/" + oldTeam.getAllMembers().size());
+                    scores.add("&cOpponents: &f" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size());
+                }
             }
         }
 
