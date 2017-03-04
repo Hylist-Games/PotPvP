@@ -73,7 +73,7 @@ public final class SpectateMenu extends PaginatedMenu {
     // the menu with 8 entries, then it grows to 11 [and onto the second row]
     // - this breaks things)
     @Override
-    public int getMaxItemsPerPage(Player player) {
+    public int size(Map<Integer, Button> buttons) {
         return 9 * 6;
     }
 

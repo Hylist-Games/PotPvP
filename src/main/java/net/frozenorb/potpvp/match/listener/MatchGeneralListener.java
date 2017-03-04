@@ -79,7 +79,7 @@ public final class MatchGeneralListener implements Listener {
                 ChatColor playerColor = PotPvPNametagProvider.getNameColor(player, onlinePlayer);
                 String playerFormatted = playerColor + player.getName();
 
-                player.sendMessage(playerFormatted + ChatColor.YELLOW + " disconnected from the match.");
+                onlinePlayer.sendMessage(playerFormatted + ChatColor.GRAY + " disconnected.");
             }
         }
 

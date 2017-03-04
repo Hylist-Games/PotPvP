@@ -43,6 +43,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
@@ -121,25 +122,30 @@ public final class PotPvPSI extends JavaPlugin {
         FrozenNametagHandler.registerProvider(new PotPvPNametagProvider());
         FrozenScoreboardHandler.setConfiguration(PotPvPScoreboardConfiguration.create());
 
-        AtomicInteger index = new AtomicInteger(0);
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            FancyMessage message = new FancyMessage("TIP: ").color(ChatColor.GOLD);
+        new BukkitRunnable() {
 
-            if (index.get() == 0) {
-                message.then("Don't like the server? Knockback sucks? ").color(ChatColor.GRAY)
-                        .then("[Click Here]").color(ChatColor.GREEN).command("/showmethedoor").tooltip(ChatColor.GREEN + ":)");
+            int i = 0;
 
-                index.set(0);
-            } else {
-                message.then("Pots too slow? Learn to pot or disconnect!").color(ChatColor.GRAY);
+            @Override
+            public void run() {
+                FancyMessage message = new FancyMessage("TIP: ").color(ChatColor.GOLD);
 
-                index.incrementAndGet();
+                if (i == 0) {
+                    message.then("Don't like the server? Knockback sucks? ").color(ChatColor.GRAY)
+                            .then("[Click Here]").color(ChatColor.GREEN).command("/showmethedoor").tooltip(ChatColor.GREEN + ":)");
+
+                    i++;
+                } else {
+                    message.then("Pots too slow? Learn to pot or disconnect!").color(ChatColor.GRAY);
+                    i = 0;
+                }
+
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    message.send(player);
+                }
             }
 
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                message.send(player);
-            }
-        }, 5 * 60 * 20L, 5 * 60 * 20L);
+        }.runTaskTimer(this, 5 * 60 * 20L, 5 * 60 * 20L);
     }
 
     @Override
