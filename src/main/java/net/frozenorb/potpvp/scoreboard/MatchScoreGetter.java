@@ -122,7 +122,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
             String namePrefix;
             String healthStr;
 
-            int heals = 0;
+            //int heals = 0;
             if (ourTeam.isAlive(partnerUuid)) {
                 Player partnerPlayer = Bukkit.getPlayer(partnerUuid); // will never be null (or isAlive would've returned false)
                 double health = Math.round(partnerPlayer.getHealth()) / 2D;
@@ -146,7 +146,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
                 // usage of the *s
                 healthStr = healthColor.toString() + health + " *❤*" + ChatColor.RESET;
 
-                heals = ItemUtils.countStacksMatching(partnerPlayer.getInventory().getContents(), pots ? ItemUtils.INSTANT_HEAL_POTION_PREDICATE : ItemUtils.SOUP_PREDICATE);
+                //heals = ItemUtils.countStacksMatching(partnerPlayer.getInventory().getContents(), pots ? ItemUtils.INSTANT_HEAL_POTION_PREDICATE : ItemUtils.SOUP_PREDICATE);
             } else {
                 namePrefix = "&7&m";
                 healthStr = "&4RIP";
@@ -155,9 +155,9 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
             scores.add(namePrefix + FrozenUUIDCache.name(partnerUuid));
             scores.add(healthStr);
 
-            if (heals != 0) {
+            /*if (heals != 0) {
                 scores.add(ChatColor.GREEN + (pots ? heals + " Pots" : " Soups"));
-            }
+            }*/
 
             scores.add("&b");
         }
