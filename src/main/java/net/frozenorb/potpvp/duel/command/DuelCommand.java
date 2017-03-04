@@ -157,7 +157,7 @@ public final class DuelCommand {
     }
 
     private static TextComponent[] createInviteNotification(String sender) {
-        TextComponent firstPart = new TextComponent("Click here or type");
+        TextComponent firstPart = new TextComponent("Click here or type ");
         TextComponent commandPart = new TextComponent("/accept " + sender);
         TextComponent secondPart = new TextComponent(" to accept the invite");
 

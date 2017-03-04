@@ -29,7 +29,7 @@ final class SpectateButton extends Button {
 
     @Override
     public String getName(Player player) {
-        return ChatColor.YELLOW.toString() + ChatColor.BOLD + match.getSimpleDescription();
+        return ChatColor.YELLOW.toString() + ChatColor.BOLD + match.getSimpleDescription(false);
     }
 
     @Override

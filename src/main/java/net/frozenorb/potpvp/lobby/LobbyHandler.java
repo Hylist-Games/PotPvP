@@ -57,7 +57,7 @@ public final class LobbyHandler {
         FrozenNametagHandler.reloadOthersFor(player);
 
         VisibilityUtils.updateVisibility(player);
-        PatchedPlayerUtils.resetInventory(player, GameMode.SURVIVAL);
+        PatchedPlayerUtils.resetInventory(player, GameMode.SURVIVAL, true);
         InventoryUtils.resetInventoryDelayed(player);
 
         returnedToLobby.put(player.getUniqueId(), System.currentTimeMillis());
@@ -98,7 +98,7 @@ public final class LobbyHandler {
 
     public Location getLobbyLocation() {
         Location spawn = Bukkit.getWorlds().get(0).getSpawnLocation();
-        spawn.add(0.5, 0.5, 0.5); // 'prettify' so players spawn in middle of block
+        spawn.add(0.5, 0, 0.5); // 'prettify' so players spawn in middle of block
         return spawn;
     }
 

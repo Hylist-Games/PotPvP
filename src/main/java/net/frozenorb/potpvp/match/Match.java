@@ -287,7 +287,7 @@ public final class Match {
             }
 
             player.teleport(tpTo);
-            player.sendMessage(ChatColor.YELLOW + "Now spectating " + ChatColor.AQUA + getSimpleDescription() + ChatColor.YELLOW + "...");
+            player.sendMessage(ChatColor.YELLOW + "Now spectating " + ChatColor.AQUA + getSimpleDescription(true) + ChatColor.YELLOW + "...");
             sendSpectatorMessage(player, ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " is now spectating.");
         } else {
             // so players don't accidentally click the item to stop spectating
@@ -298,7 +298,7 @@ public final class Match {
         FrozenNametagHandler.reloadOthersFor(player);
 
         VisibilityUtils.updateVisibility(player);
-        PatchedPlayerUtils.resetInventory(player, GameMode.CREATIVE, false); // because we're about to reset their inv on a timer
+        PatchedPlayerUtils.resetInventory(player, GameMode.CREATIVE, true); // because we're about to reset their inv on a timer
         InventoryUtils.resetInventoryDelayed(player);
         player.setAllowFlight(true);
         player.setFlying(true); // called after PlayerUtils reset, make sure they don't fall out of the sky
@@ -387,7 +387,7 @@ public final class Match {
      * This will include two players (if a 1v1) or player counts and the kit type
      * @return A simple description of this match
      */
-    public String getSimpleDescription() {
+    public String getSimpleDescription(boolean includeRankedUnranked) {
         String players;
 
         if (teams.size() == 2) {
@@ -412,8 +412,12 @@ public final class Match {
             players = numTotalPlayers + " player fight";
         }
 
-        String rankedStr = ranked ? "Ranked" : "Unranked";
-        return players + " (" + rankedStr + " " + kitType.getDisplayName() + ")";
+        if (includeRankedUnranked) {
+            String rankedStr = ranked ? "Ranked" : "Unranked";
+            return players + " (" + rankedStr + " " + kitType.getDisplayName() + ")";
+        } else {
+            return players;
+        }
     }
 
     /**

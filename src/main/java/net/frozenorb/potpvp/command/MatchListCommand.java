@@ -15,7 +15,7 @@ public final class MatchListCommand {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
         for (Match match : matchHandler.getHostedMatches()) {
-            sender.sendMessage(ChatColor.RED + match.getSimpleDescription());
+            sender.sendMessage(ChatColor.RED + match.getSimpleDescription(true));
         }
     }
 
