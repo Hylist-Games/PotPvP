@@ -32,7 +32,7 @@ public final class PotPvPValidation {
     private static final String TARGET_PLAYER_FOLLOWING_SOMEONE = ChatColor.RED + "That player is currently following someone!";
     private static final String TARGET_PLAYER_HAS_DUELS_DISABLED = ChatColor.RED + "The player has duels disabled!";
     private static final String TARGET_PARTY_HAS_DUELS_DISABLED = ChatColor.RED + "The party has duels disabled!";
-    private static final String TARGET_PARTY_REACHED_MAXIMUM_SIZE = ChatColor.RED + "The party has reached the maximum player amount.";
+    private static final String TARGET_PARTY_REACHED_MAXIMUM_SIZE = ChatColor.RED + "The party is full.";
 
     public static boolean canSendDuel(Player sender, Player target) {
         if (isInSilentMode(sender)) {
