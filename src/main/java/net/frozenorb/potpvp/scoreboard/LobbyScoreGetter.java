@@ -77,7 +77,7 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
         }
 
         if (player.hasMetadata("ModMode")) {
-            scores.add(ChatColor.GRAY.toString() + ChatColor.BOLD + "In silent mode");
+            scores.add(ChatColor.GRAY.toString() + ChatColor.BOLD + "In Silent Mode");
         }
 
         /*Event nearest = eventHandler.getNearestEvent();

@@ -66,6 +66,14 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         }
 
         renderMetaLines(scores, match, participant);
+
+        PotPvPSI.getInstance().getFollowHandler().getFollowing(player).ifPresent(following -> {
+            scores.add("&6Following: *&f" + UUIDUtils.name(following));
+        });
+
+        if (player.hasMetadata("ModMode")) {
+            scores.add(ChatColor.GRAY.toString() + ChatColor.BOLD + "In Silent Mode");
+        }
     }
 
     private void renderParticipantLines(List<String> scores, Match match, Player player) {
@@ -213,14 +221,6 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
                     scores.add("&cOpponents: &f" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size());
                 }
             }
-        }
-
-        followHandler.getFollowing(player).ifPresent(following -> {
-            scores.add("&6Following: *&f" + UUIDUtils.name(following));
-        });
-
-        if (player.hasMetadata("ModMode")) {
-            scores.add(ChatColor.GRAY.toString() + ChatColor.BOLD + "In silent mode");
         }
     }
 
