@@ -22,7 +22,6 @@ public final class PostMatchInvLang {
 
     static final String LINE = ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "-----------------------------------------------------";
     static final String INVENTORY_HEADER = ChatColor.GOLD + "Post-Match Inventories " + ChatColor.GRAY + "(click name to view)";
-    static final String SPECTATORS_FORMATTED = ChatColor.AQUA + "Spectators (%d): " + ChatColor.GRAY + "%s";
 
     private static final String WINNER = ChatColor.GREEN + "Winner:" + ChatColor.GRAY;
     private static final String LOSER = ChatColor.RED + "Loser:" + ChatColor.GRAY;

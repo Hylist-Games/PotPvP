@@ -8,6 +8,10 @@ import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.postmatchinv.listener.PostMatchInvGeneralListener;
 import net.frozenorb.qlib.util.UUIDUtils;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import org.bukkit.Bukkit;
@@ -53,25 +57,41 @@ public final class PostMatchInvHandler {
     private void messagePlayers(Match match) {
         Map<UUID, Object[]> invMessages = new HashMap<>();
 
-        String spectatorLine;
-        List<UUID> spectators = new ArrayList<>(match.getSpectators());
+        BaseComponent[] spectatorLine;
+        List<UUID> spectatorUuids = new ArrayList<>(match.getSpectators());
 
         // don't count actual players and players in silent mode.
-        spectators.removeIf(uuid -> Bukkit.getPlayer(uuid) != null && Bukkit.getPlayer(uuid).hasMetadata("ModMode") || match.getPreviousTeam(uuid) != null);
+        spectatorUuids.removeIf(uuid -> {
+            Player player = Bukkit.getPlayer(uuid);
+            return player.hasMetadata("ModMode") || match.getPreviousTeam(uuid) != null;
+        });
 
-        if (spectators.size() >= 2) {
-            String spectatorNames = Joiner.on(", ").join(
-                spectators.subList(0, Math.min(spectators.size(), 4))
-                .stream()
+        if (!spectatorUuids.isEmpty()) {
+            List<String> spectatorNames = spectatorUuids.stream()
                 .map(UUIDUtils::name)
-                .collect(Collectors.toSet())
+                .collect(Collectors.toList());
+
+            String firstFourNames = Joiner.on(", ").join(
+                spectatorNames.subList(
+                    0,
+                    Math.min(spectatorNames.size(), 4)
+                )
             );
 
-            if (spectators.size() > 4) {
-                spectatorNames += " (+" + (spectators.size() - 4) + " more)";
+            if (spectatorNames.size() > 4) {
+                firstFourNames += " (+" + (spectatorNames.size() - 4) + " more)";
             }
 
-            spectatorLine = String.format(PostMatchInvLang.SPECTATORS_FORMATTED, spectators.size(), spectatorNames);
+            HoverEvent hover = new HoverEvent(
+                HoverEvent.Action.SHOW_TEXT,
+                spectatorNames.stream()
+                    .map(n -> new TextComponent(ChatColor.AQUA + n))
+                    .toArray(BaseComponent[]::new)
+            );
+
+            spectatorLine = new ComponentBuilder("Spectators (" + spectatorNames.size() + "): ").color(ChatColor.AQUA)
+                .append(firstFourNames).color(ChatColor.GRAY).event(hover)
+                .create();
         } else {
             // this is dumb but it lets us make the variable effectively final
             // (and avoid a working variable)
@@ -101,7 +121,7 @@ public final class PostMatchInvHandler {
             }
 
             if (spectatorLine != null) {
-                player.sendMessage(spectatorLine);
+                player.spigot().sendMessage(spectatorLine);
             }
 
             player.sendMessage(PostMatchInvLang.LINE);
