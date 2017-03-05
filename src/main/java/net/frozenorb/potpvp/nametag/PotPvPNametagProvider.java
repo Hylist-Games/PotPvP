@@ -24,16 +24,18 @@ public final class PotPvPNametagProvider extends NametagProvider {
 
     @Override
     public NametagInfo fetchNametag(Player toRefresh, Player refreshFor) {
+        ChatColor prefixColor = getNameColor(toRefresh, refreshFor);
+        return createNametag(prefixColor.toString(), "");
+    }
+
+    public static ChatColor getNameColor(Player toRefresh, Player refreshFor) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        ChatColor prefixColor;
 
         if (matchHandler.isPlayingOrSpectatingMatch(toRefresh)) {
-            prefixColor = getNameColorMatch(toRefresh, refreshFor);
+            return getNameColorMatch(toRefresh, refreshFor);
         } else {
-            prefixColor = getNameColorLobby(toRefresh, refreshFor);
+            return getNameColorLobby(toRefresh, refreshFor);
         }
-
-        return createNametag(prefixColor.toString(), "");
     }
 
     private static ChatColor getNameColorMatch(Player toRefresh, Player refreshFor) {
