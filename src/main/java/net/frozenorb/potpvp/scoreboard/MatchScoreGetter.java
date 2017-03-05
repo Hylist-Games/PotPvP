@@ -1,23 +1,31 @@
 package net.frozenorb.potpvp.scoreboard;
 
+import com.google.common.collect.ImmutableMap;
+
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchTeam;
+import net.frozenorb.potpvp.util.ItemUtils;
 import net.frozenorb.qlib.util.TimeUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
 import net.frozenorb.qlib.uuid.FrozenUUIDCache;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
 // the list here must be viewed as rendered javadoc to make sense. In IntelliJ, click on
 // 'MatchScoreGetter' and press Control+Q
@@ -45,8 +53,34 @@ import java.util.function.BiConsumer;
  */
 final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
 
+    // we can't count heals on an async thread so we use
+    // a task to count and then report values (via this map) to
+    // the scoreboard thread
+    private Map<UUID, Integer> healsLeft = ImmutableMap.of();
+
+    MatchScoreGetter() {
+        Bukkit.getScheduler().runTaskTimer(PotPvPSI.getInstance(), () -> {
+            MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+            Map<UUID, Integer> newHealsLeft = new HashMap<>();
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                Match playing = matchHandler.getMatchPlaying(player);
+
+                if (playing != null) {
+                    boolean pots = !playing.getKitType().getId().contains("SOUP"); // TODO: WTF IS THIS NO
+                    Predicate<ItemStack> counter = pots ? ItemUtils.INSTANT_HEAL_POTION_PREDICATE : ItemUtils.SOUP_PREDICATE;
+
+                    newHealsLeft.put(player.getUniqueId(), ItemUtils.countStacksMatching(player.getInventory().getContents(), counter));
+                }
+            }
+
+            this.healsLeft = newHealsLeft;
+        }, 10L, 10L);
+    }
+
     @Override
     public void accept(Player player, List<String> scores) {
+        FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Match match = matchHandler.getMatchPlayingOrSpectating(player);
 
@@ -67,7 +101,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
 
         renderMetaLines(scores, match, participant);
 
-        PotPvPSI.getInstance().getFollowHandler().getFollowing(player).ifPresent(following -> {
+        followHandler.getFollowing(player).ifPresent(following -> {
             scores.add("&6Following: *&f" + UUIDUtils.name(following));
         });
 
@@ -128,7 +162,6 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
             String namePrefix;
             String healthStr;
 
-            //int heals = 0;
             if (ourTeam.isAlive(partnerUuid)) {
                 Player partnerPlayer = Bukkit.getPlayer(partnerUuid); // will never be null (or isAlive would've returned false)
                 double health = Math.round(partnerPlayer.getHealth()) / 2D;
@@ -147,12 +180,11 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
                 }
 
                 namePrefix = "&a";
+
                 // we do some weird manipulation here to get the scoreboard api to not
-                // flicker. reads its documentation on the qLib wiki to understand the
+                // flicker. read scoreboard documentation on the qLib wiki to understand the
                 // usage of the *s
                 healthStr = healthColor.toString() + health + " *❤*" + ChatColor.RESET;
-
-                //heals = ItemUtils.countStacksMatching(partnerPlayer.getInventory().getContents(), pots ? ItemUtils.INSTANT_HEAL_POTION_PREDICATE : ItemUtils.SOUP_PREDICATE);
             } else {
                 namePrefix = "&7&m";
                 healthStr = "&4RIP";
@@ -161,9 +193,11 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
             scores.add(namePrefix + FrozenUUIDCache.name(partnerUuid));
             scores.add(healthStr);
 
-            /*if (heals != 0) {
-                scores.add(ChatColor.GREEN + (pots ? heals + " Pots" : " Soups"));
-            }*/
+            int heals = healsLeft.getOrDefault(partnerUuid, -1);
+
+            if (heals > 0) {
+                scores.add(ChatColor.GREEN.toString() + heals + (pots ? " Pots" : " Soups"));
+            }
 
             scores.add("&b");
         }
