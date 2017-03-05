@@ -6,6 +6,7 @@ import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchState;
 import net.frozenorb.potpvp.util.InventoryUtils;
+import net.frozenorb.potpvp.util.VisibilityUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
 
 import org.bukkit.Bukkit;
@@ -43,6 +44,7 @@ public final class FollowHandler {
             playing.addSpectator(player, target);
         } else {
             InventoryUtils.resetInventoryDelayed(player);
+            VisibilityUtils.updateVisibility(player);
         }
     }
 
@@ -52,6 +54,7 @@ public final class FollowHandler {
         if (prevTarget != null) {
             player.sendMessage(ChatColor.BLUE + "Stopped following " + ChatColor.YELLOW + UUIDUtils.name(prevTarget) + ChatColor.BLUE + ".");
             InventoryUtils.resetInventoryDelayed(player);
+            VisibilityUtils.updateVisibility(player);
         }
     }
 

@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.util;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.party.Party;
@@ -10,6 +11,9 @@ import net.frozenorb.potpvp.setting.SettingHandler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.util.Optional;
+import java.util.UUID;
 
 import lombok.experimental.UtilityClass;
 
@@ -34,6 +38,7 @@ public final class VisibilityUtils {
 
     private static boolean shouldSeePlayer(Player viewer, Player target) {
         SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
+        FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
@@ -42,11 +47,13 @@ public final class VisibilityUtils {
         if (targetMatch == null) {
             // we're not in a match so we hide other players based on their party/match
             Party targetParty = partyHandler.getParty(target);
+            Optional<UUID> following = followHandler.getFollowing(viewer);
 
             boolean viewerPlayingMatch = matchHandler.isPlayingOrSpectatingMatch(viewer);
             boolean viewerSameParty = targetParty != null && targetParty.isMember(viewer.getUniqueId());
+            boolean viewerFollowingTarget = following.isPresent() && following.get().equals(target.getUniqueId());
 
-            return viewerPlayingMatch || viewerSameParty;
+            return viewerPlayingMatch || viewerSameParty || viewerFollowingTarget;
         } else {
             // we're in a match so we only hide other spectators (if our settings say so)
             boolean targetIsSpectator = targetMatch.isSpectator(target.getUniqueId());

@@ -49,7 +49,6 @@ import org.bukkit.util.Vector;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-// TODO: Restoring arenas after matches (?)
 public final class PotPvPSI extends JavaPlugin {
 
     @Getter private static PotPvPSI instance;

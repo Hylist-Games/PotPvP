@@ -1,9 +1,11 @@
 package net.frozenorb.potpvp.nametag;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchTeam;
+import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.qlib.nametag.NametagInfo;
 import net.frozenorb.qlib.nametag.NametagProvider;
 
@@ -11,6 +13,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public final class PotPvPNametagProvider extends NametagProvider {
 
@@ -20,23 +24,22 @@ public final class PotPvPNametagProvider extends NametagProvider {
 
     @Override
     public NametagInfo fetchNametag(Player toRefresh, Player refreshFor) {
-        ChatColor prefixColor = getNameColor(toRefresh, refreshFor);
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        ChatColor prefixColor;
+
+        if (matchHandler.isPlayingOrSpectatingMatch(toRefresh)) {
+            prefixColor = getNameColorMatch(toRefresh, refreshFor);
+        } else {
+            prefixColor = getNameColorLobby(toRefresh, refreshFor);
+        }
+
         return createNametag(prefixColor.toString(), "");
     }
 
-    // in comments in this method we refer to 'toRefresh' as 'them' and
-    // 'refreshFor' as 'us' to make the relationships portrayed less complicated
-    public static ChatColor getNameColor(Player toRefresh, Player refreshFor) {
+    private static ChatColor getNameColorMatch(Player toRefresh, Player refreshFor) {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+
         Match toRefreshMatch = matchHandler.getMatchPlayingOrSpectating(toRefresh);
-
-        // they're not in a match with us, so (in theory) the only way
-        // we can see them is if they're in a party with them.
-        // TODO: Make this better
-        if (toRefreshMatch == null) {
-            return ChatColor.BLUE;
-        }
-
         MatchTeam toRefreshTeam = toRefreshMatch.getTeam(toRefresh.getUniqueId());
 
         // they're a spectator, so we see them as gray
@@ -72,6 +75,19 @@ public final class PotPvPNametagProvider extends NametagProvider {
             // we don't have colors defined for larger matches
             // everyone is just red for spectators
             return ChatColor.RED;
+        }
+    }
+
+    private static ChatColor getNameColorLobby(Player toRefresh, Player refreshFor) {
+        FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
+
+        Optional<UUID> following = followHandler.getFollowing(refreshFor);
+        boolean refreshForFollowingTarget = following.isPresent() && following.get().equals(toRefresh.getUniqueId());
+
+        if (refreshForFollowingTarget) {
+            return ChatColor.AQUA;
+        } else {
+            return ChatColor.BLUE;
         }
     }
 
