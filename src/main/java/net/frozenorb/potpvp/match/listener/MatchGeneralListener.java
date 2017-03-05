@@ -22,6 +22,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -189,7 +190,10 @@ public final class MatchGeneralListener implements Listener {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Player player = event.getPlayer();
 
-        if (!matchHandler.isPlayingMatch(player)) {
+        // the second check returns if the player has their inventory open
+        // (as players in their inventory drop the item under their cursor, not the item
+        // in their held item slot)
+        if (!matchHandler.isPlayingMatch(player) || player.getOpenInventory().getType() == InventoryType.CRAFTING) {
             return;
         }
 
