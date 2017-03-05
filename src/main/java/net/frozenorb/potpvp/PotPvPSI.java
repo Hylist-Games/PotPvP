@@ -47,8 +47,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public final class PotPvPSI extends JavaPlugin {
 
     @Getter private static PotPvPSI instance;
@@ -107,7 +105,8 @@ public final class PotPvPSI extends JavaPlugin {
         eventHandler = new EventHandler();
 
         getServer().getPluginManager().registerEvents(new BasicPreventionListener(), this);
-        getServer().getPluginManager().registerEvents(new ChatListener(), this);
+        getServer().getPluginManager().registerEvents(new ChatFormatListener(), this);
+        getServer().getPluginManager().registerEvents(new ChatToggleListener(), this);
         getServer().getPluginManager().registerEvents(new NightModeListener(), this);
         getServer().getPluginManager().registerEvents(new PearlCooldownListener(), this);
         getServer().getPluginManager().registerEvents(new TabCompleteListener(), this);

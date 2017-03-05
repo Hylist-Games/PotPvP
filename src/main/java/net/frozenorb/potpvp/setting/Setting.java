@@ -105,6 +105,20 @@ public enum Setting {
         ChatColor.YELLOW + "Time is set to day",
         false,
         null // no permission required
+    ),
+    ENABLE_GLOBAL_CHAT(
+        ChatColor.RED + "Global Chat",
+        ImmutableList.of(
+            ChatColor.BLUE + "If enabled, your will see messages",
+            ChatColor.BLUE + "sent in the global chat channel.",
+            "",
+            ChatColor.BLUE + "Disable to only see OP messages."
+        ),
+        Material.BOOK_AND_QUILL,
+        ChatColor.YELLOW + "Global chat is shown",
+        ChatColor.YELLOW + "Global chat is hidden",
+        true,
+        null // no permission required
     );
 
     /**
