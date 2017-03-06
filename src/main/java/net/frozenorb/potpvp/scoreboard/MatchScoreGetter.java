@@ -159,13 +159,17 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         }
 
         if (partnerUuid != null) {
-            String namePrefix;
             String healthStr;
+            String healsStr;
+            String namePrefix;
 
             if (ourTeam.isAlive(partnerUuid)) {
                 Player partnerPlayer = Bukkit.getPlayer(partnerUuid); // will never be null (or isAlive would've returned false)
                 double health = Math.round(partnerPlayer.getHealth()) / 2D;
+                int heals = healsLeft.getOrDefault(partnerUuid, 0);
+
                 ChatColor healthColor;
+                ChatColor healsColor;
 
                 if (health > 8) {
                     healthColor = ChatColor.GREEN;
@@ -179,26 +183,32 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
                     healthColor = ChatColor.DARK_RED;
                 }
 
-                namePrefix = "&a";
+                if (heals > 20) {
+                    healsColor = ChatColor.GREEN;
+                } else if (heals > 12) {
+                    healsColor = ChatColor.YELLOW;
+                } else if (heals > 8) {
+                    healsColor = ChatColor.GOLD;
+                } else if (heals > 3) {
+                    healsColor = ChatColor.RED;
+                } else {
+                    healsColor = ChatColor.DARK_RED;
+                }
 
                 // we do some weird manipulation here to get the scoreboard api to not
                 // flicker. read scoreboard documentation on the qLib wiki to understand the
                 // usage of the *s
-                healthStr = healthColor.toString() + health + " *❤*" + ChatColor.RESET;
+                healthStr = healthColor.toString() + health + " *❤*" + ChatColor.GRAY;
+                healsStr = " ⏐ " + healsColor.toString() + heals + (pots ? " Pots" : " Soups");
+                namePrefix = "&a";
             } else {
-                namePrefix = "&7&m";
                 healthStr = "&4RIP";
+                healsStr = "";
+                namePrefix = "&7&m";
             }
 
             scores.add(namePrefix + FrozenUUIDCache.name(partnerUuid));
-            scores.add(healthStr);
-
-            int heals = healsLeft.getOrDefault(partnerUuid, -1);
-
-            if (heals > 0) {
-                scores.add(ChatColor.GREEN.toString() + heals + (pots ? " Pots" : " Soups"));
-            }
-
+            scores.add(healthStr + healsStr);
             scores.add("&b");
         }
 
