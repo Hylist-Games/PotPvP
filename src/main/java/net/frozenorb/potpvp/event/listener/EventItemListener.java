@@ -1,9 +1,6 @@
 package net.frozenorb.potpvp.event.listener;
 
-import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.event.EventHandler;
 import net.frozenorb.potpvp.event.EventItems;
-import net.frozenorb.potpvp.event.menu.EventsMenu;
 import net.frozenorb.potpvp.util.ItemListener;
 
 import org.bukkit.ChatColor;

@@ -1,10 +1,5 @@
 package net.frozenorb.potpvp.event;
 
-import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.event.listener.EventItemListener;
-
-import org.bukkit.Bukkit;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;

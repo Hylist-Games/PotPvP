@@ -1,6 +1,5 @@
 package net.frozenorb.potpvp.lobby;
 
-import lombok.experimental.UtilityClass;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.duel.DuelHandler;
 import net.frozenorb.potpvp.event.EventItems;
@@ -16,10 +15,13 @@ import net.frozenorb.potpvp.rematch.RematchData;
 import net.frozenorb.potpvp.rematch.RematchHandler;
 import net.frozenorb.potpvp.rematch.RematchItems;
 import net.frozenorb.qlib.menu.Menu;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
+
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public final class LobbyUtils {

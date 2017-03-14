@@ -3,8 +3,7 @@ package net.frozenorb.potpvp;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
-import lombok.Getter;
-import mkremins.fanciful.FancyMessage;
+
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.duel.DuelHandler;
 import net.frozenorb.potpvp.elo.EloHandler;
@@ -16,7 +15,12 @@ import net.frozenorb.potpvp.kit.KitHandler;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.kittype.KitTypeJsonAdapter;
 import net.frozenorb.potpvp.kittype.KitTypeParameterType;
-import net.frozenorb.potpvp.listener.*;
+import net.frozenorb.potpvp.listener.BasicPreventionListener;
+import net.frozenorb.potpvp.listener.ChatFormatListener;
+import net.frozenorb.potpvp.listener.ChatToggleListener;
+import net.frozenorb.potpvp.listener.NightModeListener;
+import net.frozenorb.potpvp.listener.PearlCooldownListener;
+import net.frozenorb.potpvp.listener.TabCompleteListener;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.nametag.PotPvPNametagProvider;
@@ -31,8 +35,13 @@ import net.frozenorb.potpvp.tab.PotPvPLayoutProvider;
 import net.frozenorb.qlib.command.FrozenCommandHandler;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
 import net.frozenorb.qlib.scoreboard.FrozenScoreboardHandler;
-import net.frozenorb.qlib.serialization.*;
+import net.frozenorb.qlib.serialization.BlockVectorAdapter;
+import net.frozenorb.qlib.serialization.ItemStackAdapter;
+import net.frozenorb.qlib.serialization.LocationAdapter;
+import net.frozenorb.qlib.serialization.PotionEffectAdapter;
+import net.frozenorb.qlib.serialization.VectorAdapter;
 import net.frozenorb.qlib.tab.FrozenTabHandler;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -46,6 +55,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
+
+import lombok.Getter;
+import mkremins.fanciful.FancyMessage;
 
 public final class PotPvPSI extends JavaPlugin {
 

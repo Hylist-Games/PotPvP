@@ -5,7 +5,6 @@ import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchTeam;
-import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.qlib.nametag.NametagInfo;
 import net.frozenorb.qlib.nametag.NametagProvider;
 

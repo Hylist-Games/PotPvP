@@ -1,6 +1,5 @@
 package net.frozenorb.potpvp.validation;
 
-import lombok.experimental.UtilityClass;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
@@ -10,9 +9,12 @@ import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public final class PotPvPValidation {

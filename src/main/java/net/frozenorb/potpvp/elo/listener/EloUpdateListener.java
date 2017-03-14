@@ -16,8 +16,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public final class EloUpdateListener implements Listener {
 

@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.command;
 
 import com.google.common.collect.ImmutableList;
+
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.qLib;
 

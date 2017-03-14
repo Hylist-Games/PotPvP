@@ -2,7 +2,6 @@ package net.frozenorb.potpvp.scoreboard;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.elo.EloHandler;
-import net.frozenorb.potpvp.event.Event;
 import net.frozenorb.potpvp.event.EventHandler;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.MatchHandler;

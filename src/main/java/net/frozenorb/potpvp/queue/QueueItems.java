@@ -1,14 +1,19 @@
 package net.frozenorb.potpvp.queue;
 
-import lombok.experimental.UtilityClass;
 import net.frozenorb.qlib.util.ItemUtils;
+
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import lombok.experimental.UtilityClass;
+
 import static net.frozenorb.potpvp.PotPvPLang.LEFT_ARROW;
 import static net.frozenorb.potpvp.PotPvPLang.RIGHT_ARROW;
-import static org.bukkit.ChatColor.*;
+import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.BOLD;
+import static org.bukkit.ChatColor.GREEN;
+import static org.bukkit.ChatColor.RED;
 
 @UtilityClass
 public final class QueueItems {

@@ -8,7 +8,6 @@ import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.postmatchinv.listener.PostMatchInvGeneralListener;
 import net.frozenorb.potpvp.util.PatchedPlayerUtils;
-import net.frozenorb.qlib.util.UUIDUtils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public final class PostMatchInvHandler {
 

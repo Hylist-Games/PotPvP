@@ -11,7 +11,6 @@ import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.util.PatchedPlayerUtils;
-import net.frozenorb.qlib.util.UUIDUtils;
 
 import org.bukkit.ChatColor;
 
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 

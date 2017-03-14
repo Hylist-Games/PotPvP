@@ -1,7 +1,6 @@
 package net.frozenorb.potpvp.party.command;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Collections2;
 
 import net.frozenorb.potpvp.PotPvPLang;
 import net.frozenorb.potpvp.PotPvPSI;
