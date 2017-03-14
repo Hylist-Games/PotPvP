@@ -85,7 +85,7 @@ public final class PostMatchInvHandler {
             HoverEvent hover = new HoverEvent(
                 HoverEvent.Action.SHOW_TEXT,
                 spectatorNames.stream()
-                    .map(n -> new TextComponent(ChatColor.AQUA + n))
+                    .map(n -> new TextComponent(ChatColor.AQUA + n + '\n'))
                     .toArray(BaseComponent[]::new)
             );
 
