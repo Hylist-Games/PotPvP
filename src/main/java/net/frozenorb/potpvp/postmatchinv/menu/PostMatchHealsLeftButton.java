@@ -2,6 +2,7 @@ package net.frozenorb.potpvp.postmatchinv.menu;
 
 import com.google.common.collect.ImmutableList;
 
+import net.frozenorb.potpvp.kittype.HealingMethod;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.util.UUIDUtils;
 
@@ -15,42 +16,38 @@ import java.util.UUID;
 
 final class PostMatchHealsLeftButton extends Button {
 
-    private final String playerName;
+    private final UUID player;
+    private final HealingMethod healingMethod;
     private final int healsRemaining;
-    private final boolean pots;
 
-    PostMatchHealsLeftButton(UUID player, int healsRemaining, boolean pots) {
-        this.playerName = UUIDUtils.name(player);
+    PostMatchHealsLeftButton(UUID player, HealingMethod healingMethod, int healsRemaining) {
+        this.player = player;
+        this.healingMethod = healingMethod;
         this.healsRemaining = healsRemaining;
-        this.pots = pots;
     }
 
     @Override
     public String getName(Player player) {
-        return ChatColor.GREEN.toString() + healsRemaining + " " + (pots ? "Health Pots" : "Soup");
-    }
-
-    @Override
-    public ItemStack getButtonItem(Player player) {
-        ItemStack item = super.getButtonItem(player);
-
-        if (pots) {
-            item.setDurability((short) 16421);
-        }
-
-        return item;
+        return ChatColor.GREEN.toString() + healsRemaining + " " + (healsRemaining == 1 ? healingMethod.getLongSingular() : healingMethod.getLongPlural());
     }
 
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-            ChatColor.YELLOW + playerName + " had " + healsRemaining + " " + (pots ? "health potion" : "soup") + (healsRemaining == 1 ? "" : "s") + " left."
+            ChatColor.YELLOW + UUIDUtils.name(this.player) + " had " + healsRemaining + " " + (healsRemaining == 1 ? healingMethod.getLongSingular() : healingMethod.getLongPlural()) + " left."
         );
     }
 
     @Override
     public Material getMaterial(Player player) {
-        return pots ? Material.POTION : Material.MUSHROOM_SOUP;
+        return healingMethod.getIconType();
+    }
+
+    @Override
+    public ItemStack getButtonItem(Player player) {
+        ItemStack item = super.getButtonItem(player);
+        item.setDurability(healingMethod.getIconDurability());
+        return item;
     }
 
     @Override

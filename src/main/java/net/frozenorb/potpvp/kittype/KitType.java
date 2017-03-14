@@ -97,6 +97,17 @@ public final class KitType {
      */
     @Getter @Setter private boolean hidden = false;
 
+    /**
+     * Determines how players regain health in matches using this KitType.
+     * This is used primarily for applying logic for souping + rendering
+     * heals remaining in the post match inventory
+     */
+    @Getter @Setter private HealingMethod healingMethod = HealingMethod.POTIONS;
+
+    /**
+     * Determines the order used when displaying lists of KitTypes to players.
+     * (Lowest to highest)
+     */
     @Getter @Setter private int sort = 0;
 
     public static KitType byId(String id) {

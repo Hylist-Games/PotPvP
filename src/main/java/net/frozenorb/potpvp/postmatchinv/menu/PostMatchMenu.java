@@ -3,10 +3,10 @@ package net.frozenorb.potpvp.postmatchinv.menu;
 import com.google.common.base.Preconditions;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.kittype.HealingMethod;
 import net.frozenorb.potpvp.postmatchinv.PostMatchInvHandler;
 import net.frozenorb.potpvp.postmatchinv.PostMatchPlayer;
 import net.frozenorb.potpvp.util.InventoryUtils;
-import net.frozenorb.potpvp.util.ItemUtils;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;
 import net.frozenorb.qlib.util.UUIDUtils;
@@ -24,13 +24,11 @@ import java.util.Map;
 public final class PostMatchMenu extends Menu {
 
     private final PostMatchPlayer target;
-    private final boolean pots;
 
     public PostMatchMenu(PostMatchPlayer target) {
         super("Inventory of " + UUIDUtils.name(target.getPlayerUuid()));
 
         this.target = Preconditions.checkNotNull(target, "target");
-        this.pots = !target.getKitType().getId().contains("SOUP"); // TODO: WTF IS THIS NO
     }
 
     @Override
@@ -68,8 +66,9 @@ public final class PostMatchMenu extends Menu {
         buttons.put(getSlot(1, y), new PostMatchFoodLevelButton(target.getHunger()));
         buttons.put(getSlot(2, y), new PostMatchPotionEffectsButton(target.getPotionEffects()));
 
-        int healsRemaining = ItemUtils.countStacksMatching(target.getInventory(), pots ? ItemUtils.INSTANT_HEAL_POTION_PREDICATE : ItemUtils.SOUP_PREDICATE);
-        buttons.put(getSlot(3, y), new PostMatchHealsLeftButton(target.getPlayerUuid(), healsRemaining, pots));
+        HealingMethod healingMethod = target.getHealingMethodUsed();
+        int count = healingMethod.count(targetInv.toArray(new ItemStack[targetInv.size()]));
+        buttons.put(getSlot(3, y), new PostMatchHealsLeftButton(target.getPlayerUuid(), healingMethod, count));
 
         // swap to other player button (for 1v1s)
         PostMatchInvHandler postMatchInvHandler = PotPvPSI.getInstance().getPostMatchInvHandler();

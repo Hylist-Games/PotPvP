@@ -4,10 +4,10 @@ import com.google.common.collect.ImmutableMap;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.follow.FollowHandler;
+import net.frozenorb.potpvp.kittype.HealingMethod;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchTeam;
-import net.frozenorb.potpvp.util.ItemUtils;
 import net.frozenorb.qlib.util.TimeUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
 import net.frozenorb.qlib.uuid.FrozenUUIDCache;
@@ -15,7 +15,6 @@ import net.frozenorb.qlib.uuid.FrozenUUIDCache;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 
 // the list here must be viewed as rendered javadoc to make sense. In IntelliJ, click on
 // 'MatchScoreGetter' and press Control+Q
@@ -67,10 +65,10 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
                 Match playing = matchHandler.getMatchPlaying(player);
 
                 if (playing != null) {
-                    boolean pots = !playing.getKitType().getId().contains("SOUP"); // TODO: WTF IS THIS NO
-                    Predicate<ItemStack> counter = pots ? ItemUtils.INSTANT_HEAL_POTION_PREDICATE : ItemUtils.SOUP_PREDICATE;
+                    HealingMethod healingMethod = playing.getKitType().getHealingMethod();
+                    int count = healingMethod.count(player.getInventory().getContents());
 
-                    newHealsLeft.put(player.getUniqueId(), ItemUtils.countStacksMatching(player.getInventory().getContents(), counter));
+                    newHealsLeft.put(player.getUniqueId(), count);
                 }
             }
 
@@ -127,12 +125,10 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         int ourTeamSize = ourTeam.getAllMembers().size();
         int otherTeamSize = otherTeam.getAllMembers().size();
 
-        boolean pots = !match.getKitType().getId().contains("SOUP"); // TODO: WTF IS THIS NO
-
         if (ourTeamSize == 1 && otherTeamSize == 1) {
             render1v1MatchLines(scores, otherTeam);
         } else if (ourTeamSize <= 2 && otherTeamSize <= 2) {
-            render2v2MatchLines(scores, ourTeam, otherTeam, player, pots);
+            render2v2MatchLines(scores, ourTeam, otherTeam, player, match.getKitType().getHealingMethod());
         } else if (ourTeamSize <= 4 && otherTeamSize <= 4) {
             render4v4MatchLines(scores, ourTeam, otherTeam);
         } else if (ourTeam.getAllMembers().size() <= 9) {
@@ -146,7 +142,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         scores.add("&c&lOpponent: &f" + FrozenUUIDCache.name(otherTeam.getFirstMember()));
     }
 
-    private void render2v2MatchLines(List<String> scores, MatchTeam ourTeam, MatchTeam otherTeam, Player player, boolean pots) {
+    private void render2v2MatchLines(List<String> scores, MatchTeam ourTeam, MatchTeam otherTeam, Player player, HealingMethod healingMethod) {
         // 2v2, but potentially 1v2 / 1v1 if players have died
         UUID partnerUuid = null;
 
@@ -198,7 +194,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
                 // flicker. read scoreboard documentation on the qLib wiki to understand the
                 // usage of the *s
                 healthStr = healthColor.toString() + health + " *❤*" + ChatColor.GRAY;
-                healsStr = " ⏐ " + healsColor.toString() + heals + (pots ? " Pots" : " Soups");
+                healsStr = " ⏐ " + healsColor.toString() + heals + (heals == 1 ? healingMethod.getShortSingular() : healingMethod.getShortPlural());
                 namePrefix = "&a";
             } else {
                 healthStr = "&4RIP";

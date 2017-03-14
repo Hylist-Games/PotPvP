@@ -161,7 +161,7 @@ public final class Match {
                 MatchTeam team = getTeam(playerUuid);
 
                 if (team != null) {
-                    postMatchPlayers.computeIfAbsent(playerUuid, v -> new PostMatchPlayer(player, kitType));
+                    postMatchPlayers.computeIfAbsent(playerUuid, v -> new PostMatchPlayer(player, kitType.getHealingMethod()));
                 }
             }
 
@@ -357,7 +357,7 @@ public final class Match {
             team.markDead(player.getUniqueId());
             playingCache.remove(player.getUniqueId());
 
-            postMatchPlayers.put(player.getUniqueId(), new PostMatchPlayer(player, kitType));
+            postMatchPlayers.put(player.getUniqueId(), new PostMatchPlayer(player, kitType.getHealingMethod()));
             checkEnded();
         }
     }
