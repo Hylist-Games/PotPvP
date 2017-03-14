@@ -64,12 +64,18 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 Match playing = matchHandler.getMatchPlaying(player);
 
-                if (playing != null) {
-                    HealingMethod healingMethod = playing.getKitType().getHealingMethod();
-                    int count = healingMethod.count(player.getInventory().getContents());
-
-                    newHealsLeft.put(player.getUniqueId(), count);
+                if (playing == null) {
+                    continue;
                 }
+
+                HealingMethod healingMethod = playing.getKitType().getHealingMethod();
+
+                if (healingMethod == null) {
+                    continue;
+                }
+
+                int count = healingMethod.count(player.getInventory().getContents());
+                newHealsLeft.put(player.getUniqueId(), count);
             }
 
             this.healsLeft = newHealsLeft;
@@ -190,16 +196,18 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
                     healsColor = ChatColor.DARK_RED;
                 }
 
-                // we do some weird manipulation here to get the scoreboard api to not
-                // flicker. read scoreboard documentation on the qLib wiki to understand the
-                // usage of the *s
-                healthStr = healthColor.toString() + health + " *❤*" + ChatColor.GRAY;
-                healsStr = " ⏐ " + healsColor.toString() + heals + (heals == 1 ? healingMethod.getShortSingular() : healingMethod.getShortPlural());
                 namePrefix = "&a";
+                healthStr = healthColor.toString() + health + " *❤*" + ChatColor.GRAY;
+
+                if (healingMethod != null) {
+                    healsStr = " ⏐ " + healsColor.toString() + heals + (heals == 1 ? healingMethod.getShortSingular() : healingMethod.getShortPlural());
+                } else {
+                    healsStr = "";
+                }
             } else {
+                namePrefix = "&7&m";
                 healthStr = "&4RIP";
                 healsStr = "";
-                namePrefix = "&7&m";
             }
 
             scores.add(namePrefix + FrozenUUIDCache.name(partnerUuid));

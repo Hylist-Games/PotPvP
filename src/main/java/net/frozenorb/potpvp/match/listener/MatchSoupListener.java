@@ -20,7 +20,7 @@ public final class MatchSoupListener implements Listener {
     // no ignoreCancelled = true because right click on air
     // events are by default cancelled (wtf Bukkit)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (!event.hasItem() || !event.getAction().name().contains("RIGHT_")) {
+        if (!event.hasItem() || event.getItem().getType() != Material.MUSHROOM_SOUP || !event.getAction().name().contains("RIGHT_")) {
             return;
         }
 
@@ -28,11 +28,7 @@ public final class MatchSoupListener implements Listener {
         Player player = event.getPlayer();
         Match match = matchHandler.getMatchPlaying(player);
 
-        if (match == null || match.getKitType().getHealingMethod() != HealingMethod.SOUP) {
-            return;
-        }
-
-        if (event.getItem().getType() == Material.MUSHROOM_SOUP && player.getHealth() <= 19) {
+        if (match != null && match.getKitType().getHealingMethod() == HealingMethod.SOUP && player.getHealth() <= 19) {
             double current = player.getHealth();
             double max = player.getMaxHealth();
 

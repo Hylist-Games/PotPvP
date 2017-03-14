@@ -67,8 +67,11 @@ public final class PostMatchMenu extends Menu {
         buttons.put(getSlot(2, y), new PostMatchPotionEffectsButton(target.getPotionEffects()));
 
         HealingMethod healingMethod = target.getHealingMethodUsed();
-        int count = healingMethod.count(targetInv.toArray(new ItemStack[targetInv.size()]));
-        buttons.put(getSlot(3, y), new PostMatchHealsLeftButton(target.getPlayerUuid(), healingMethod, count));
+
+        if (healingMethod != null) {
+            int count = healingMethod.count(targetInv.toArray(new ItemStack[targetInv.size()]));
+            buttons.put(getSlot(3, y), new PostMatchHealsLeftButton(target.getPlayerUuid(), healingMethod, count));
+        }
 
         // swap to other player button (for 1v1s)
         PostMatchInvHandler postMatchInvHandler = PotPvPSI.getInstance().getPostMatchInvHandler();
