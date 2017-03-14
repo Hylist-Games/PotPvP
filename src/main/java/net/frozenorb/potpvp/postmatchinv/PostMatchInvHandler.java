@@ -7,6 +7,7 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.postmatchinv.listener.PostMatchInvGeneralListener;
+import net.frozenorb.potpvp.util.PatchedPlayerUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -67,9 +68,7 @@ public final class PostMatchInvHandler {
         });
 
         if (!spectatorUuids.isEmpty()) {
-            List<String> spectatorNames = spectatorUuids.stream()
-                .map(UUIDUtils::name)
-                .collect(Collectors.toList());
+            List<String> spectatorNames = PatchedPlayerUtils.mapToNames(spectatorUuids);
 
             String firstFourNames = Joiner.on(", ").join(
                 spectatorNames.subList(
@@ -145,9 +144,7 @@ public final class PostMatchInvHandler {
 
         if (winnerTeam.getAllMembers().size() == 1 && loserTeam.getAllMembers().size() == 1) {
             // 1v1 messages
-            UUID winnerPlayer = winnerTeam.getAllMembers().iterator().next();
-            UUID loserPlayer = loserTeam.getAllMembers().iterator().next();
-            Object[] generic = PostMatchInvLang.gen1v1PlayerInvs(winnerPlayer, loserPlayer);
+            Object[] generic = PostMatchInvLang.gen1v1PlayerInvs(winnerTeam.getFirstMember(), loserTeam.getFirstMember());
 
             writeSpecInvMessages(match, invMessages, generic);
             writeTeamInvMessages(teams, invMessages, generic);

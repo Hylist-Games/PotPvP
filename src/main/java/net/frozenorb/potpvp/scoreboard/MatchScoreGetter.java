@@ -143,8 +143,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
     }
 
     private void render1v1MatchLines(List<String> scores, MatchTeam otherTeam) {
-        UUID opponent = otherTeam.getAllMembers().iterator().next();
-        scores.add("&c&lOpponent: &f" + FrozenUUIDCache.name(opponent));
+        scores.add("&c&lOpponent: &f" + FrozenUUIDCache.name(otherTeam.getFirstMember()));
     }
 
     private void render2v2MatchLines(List<String> scores, MatchTeam ourTeam, MatchTeam otherTeam, Player player, boolean pots) {

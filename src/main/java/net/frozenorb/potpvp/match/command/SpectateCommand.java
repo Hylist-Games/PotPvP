@@ -61,8 +61,8 @@ public final class SpectateCommand {
             MatchTeam teamB = targetMatch.getTeams().get(1);
 
             if (teamA.getAllMembers().size() == 1 && teamB.getAllMembers().size() == 1) {
-                UUID teamAPlayer = teamA.getAllMembers().iterator().next();
-                UUID teamBPlayer = teamB.getAllMembers().iterator().next();
+                UUID teamAPlayer = teamA.getFirstMember();
+                UUID teamBPlayer = teamB.getFirstMember();
 
                 if (
                     !settingHandler.getSetting(Bukkit.getPlayer(teamAPlayer), Setting.ALLOW_SPECTATORS) ||

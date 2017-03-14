@@ -10,6 +10,7 @@ import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchTeam;
+import net.frozenorb.potpvp.util.PatchedPlayerUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
 
 import org.bukkit.ChatColor;
@@ -108,22 +109,20 @@ public final class MatchQueue {
             queueHandler.removeFromQueueCache(entryA);
             queueHandler.removeFromQueueCache(entryB);
 
+            String teamAElo = "";
+            String teamBElo = "";
+
             if (ranked) {
                 EloHandler eloHandler = PotPvPSI.getInstance().getEloHandler();
-                int aElo = eloHandler.getElo(teamA.getAliveMembers(), kitType);
-                int bElo = eloHandler.getElo(teamB.getAliveMembers(), kitType);
-                String prefix = ChatColor.YELLOW.toString() + ChatColor.BOLD + "Match found!" + ChatColor.YELLOW + " Opponent: " + ChatColor.AQUA;
 
-                teamA.messageAlive(prefix + Joiner.on(", ").join(teamB.getAliveMembers().stream()
-                    .map(UUIDUtils::name)
-                    .collect(Collectors.toSet())
-                ) + " (" + bElo + " Elo)");
-
-                teamB.messageAlive(prefix + Joiner.on(", ").join(teamA.getAliveMembers().stream()
-                        .map(UUIDUtils::name)
-                        .collect(Collectors.toSet())
-                ) + " (" + aElo + " Elo)");
+                teamAElo = " (" + eloHandler.getElo(teamA.getAliveMembers(), kitType) + " Elo)";
+                teamBElo = " (" + eloHandler.getElo(teamB.getAliveMembers(), kitType) + " Elo)";
             }
+
+            String foundStart = ChatColor.YELLOW.toString() + ChatColor.BOLD + "Match found!" + ChatColor.YELLOW + " Opponent: " + ChatColor.AQUA;
+
+            teamA.messageAlive(foundStart + Joiner.on(", ").join(PatchedPlayerUtils.mapToNames(teamB.getAllMembers())) + teamBElo);
+            teamB.messageAlive(foundStart + Joiner.on(", ").join(PatchedPlayerUtils.mapToNames(teamA.getAllMembers())) + teamAElo);
             
             entries.remove(entryA);
             entries.remove(entryB);

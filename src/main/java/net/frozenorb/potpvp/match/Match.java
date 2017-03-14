@@ -395,8 +395,8 @@ public final class Match {
             MatchTeam teamB = teams.get(1);
 
             if (teamA.getAliveMembers().size() == 1 && teamB.getAliveMembers().size() == 1) {
-                String nameA = UUIDUtils.name(teamA.getAliveMembers().iterator().next());
-                String nameB = UUIDUtils.name(teamB.getAliveMembers().iterator().next());
+                String nameA = UUIDUtils.name(teamA.getFirstAliveMember());
+                String nameB = UUIDUtils.name(teamB.getFirstAliveMember());
 
                 players = nameA + " vs " + nameB;
             } else {

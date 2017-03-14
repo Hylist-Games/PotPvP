@@ -67,8 +67,8 @@ public final class RematchHandler {
                 return;
             }
 
-            UUID player1Uuid = team1.getAllMembers().iterator().next();
-            UUID player2Uuid = team2.getAllMembers().iterator().next();
+            UUID player1Uuid = team1.getFirstMember();
+            UUID player2Uuid = team2.getFirstMember();
             KitType kitType = match.getKitType();
 
             // rematches are mutual

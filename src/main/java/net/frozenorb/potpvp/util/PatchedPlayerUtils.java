@@ -1,8 +1,15 @@
 package net.frozenorb.potpvp.util;
 
+import net.frozenorb.qlib.util.UUIDUtils;
+
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 // we mess with fly mode in PotPvP, so we need to reset that with PlayerUtils (in qLib)
 // unfortunately, that class doesn't reset fly mode - and plugins like qHub, which use doublejump
@@ -42,6 +49,10 @@ public class PatchedPlayerUtils {
 
         player.setAllowFlight(false);
         player.setFlying(false);
+    }
+
+    public static List<String> mapToNames(Collection<UUID> uuids) {
+        return uuids.stream().map(UUIDUtils::name).collect(Collectors.toList());
     }
 
 }

@@ -6,6 +6,7 @@ import com.google.common.collect.Collections2;
 import net.frozenorb.potpvp.PotPvPLang;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.party.Party;
+import net.frozenorb.potpvp.util.PatchedPlayerUtils;
 import net.frozenorb.qlib.command.Command;
 import net.frozenorb.qlib.command.Param;
 import net.frozenorb.qlib.util.UUIDUtils;
@@ -35,7 +36,7 @@ public final class PartyInfoCommand {
 
         String leaderName = UUIDUtils.name(party.getLeader());
         int memberCount = party.getMembers().size();
-        String members = Joiner.on(", ").join(Collections2.transform(party.getMembers(), UUIDUtils::name));
+        String members = Joiner.on(", ").join(PatchedPlayerUtils.mapToNames(party.getMembers()));
 
         sender.sendMessage(ChatColor.GRAY + PotPvPLang.LONG_LINE);
         sender.sendMessage(ChatColor.YELLOW + "Leader: " + ChatColor.GOLD + leaderName);

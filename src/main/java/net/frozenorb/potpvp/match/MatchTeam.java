@@ -67,6 +67,14 @@ public final class MatchTeam {
         return ImmutableSet.copyOf(aliveMembers);
     }
 
+    public UUID getFirstAliveMember() {
+        return aliveMembers.iterator().next();
+    }
+
+    public UUID getFirstMember() {
+        return allMembers.iterator().next();
+    }
+
     /**
      * Sends a basic chat message to all alive members
      * @see MatchTeam#aliveMembers

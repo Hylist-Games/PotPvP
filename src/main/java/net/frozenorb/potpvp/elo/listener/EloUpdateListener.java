@@ -8,6 +8,7 @@ import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.match.event.MatchTerminateEvent;
+import net.frozenorb.potpvp.util.PatchedPlayerUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
 
 import org.bukkit.ChatColor;
@@ -59,14 +60,11 @@ public final class EloUpdateListener implements Listener {
         String loserStr;
 
         if (winnerTeam.getAllMembers().size() == 1 && loserTeam.getAllMembers().size() == 1) {
-            winnerStr = UUIDUtils.name(winnerTeam.getAllMembers().iterator().next());
-            loserStr = UUIDUtils.name(loserTeam.getAllMembers().iterator().next());
+            winnerStr = UUIDUtils.name(winnerTeam.getFirstMember());
+            loserStr = UUIDUtils.name(loserTeam.getFirstMember());
         } else {
-            Set<String> winnerNames = winnerTeam.getAllMembers().stream().map(UUIDUtils::name).collect(Collectors.toSet());
-            Set<String> loserNames = loserTeam.getAllMembers().stream().map(UUIDUtils::name).collect(Collectors.toSet());
-
-            winnerStr = Joiner.on(", ").join(winnerNames);
-            loserStr = Joiner.on(", ").join(loserNames);
+            winnerStr = Joiner.on(", ").join(PatchedPlayerUtils.mapToNames(winnerTeam.getAllMembers()));
+            loserStr = Joiner.on(", ").join(PatchedPlayerUtils.mapToNames(loserTeam.getAllMembers()));
         }
 
         // we negate loser gain to convert negative gain to positive (which we prefix with - in the string)
