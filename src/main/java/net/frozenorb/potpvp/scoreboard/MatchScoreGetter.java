@@ -96,7 +96,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
             renderParticipantLines(scores, match, player);
         } else {
             MatchTeam previousTeam = match.getPreviousTeam(player.getUniqueId());
-            renderSpectatorLines(scores, match, previousTeam, player);
+            renderSpectatorLines(scores, match, previousTeam);
         }
 
         renderMetaLines(scores, match, participant);
@@ -241,11 +241,11 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         scores.add("&c&lOpponents: &f" + otherTeam.getAliveMembers().size() + "/" + otherTeam.getAllMembers().size());
     }
 
-    private void renderSpectatorLines(List<String> scores, Match match, MatchTeam oldTeam, Player player) {
-        scores.add("&eKit: &f" + match.getKitType().getColoredDisplayName());
+    private void renderSpectatorLines(List<String> scores, Match match, MatchTeam oldTeam) {
+        String rankedStr = match.isRanked() ? " (R)" : "";
+        scores.add("&eKit: &f" + match.getKitType().getColoredDisplayName() + rankedStr);
 
         List<MatchTeam> teams = match.getTeams();
-        FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
 
         // only render team overview if we have two teams
         if (teams.size() == 2) {
