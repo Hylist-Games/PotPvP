@@ -20,6 +20,15 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class VisibilityUtils {
 
+    public static void updateVisibilityFlicker(Player target) {
+        for (Player otherPlayer : Bukkit.getOnlinePlayers()) {
+            target.hidePlayer(otherPlayer);
+            otherPlayer.hidePlayer(target);
+        }
+
+        Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), () -> updateVisibility(target), 10L);
+    }
+
     public static void updateVisibility(Player target) {
         for (Player otherPlayer : Bukkit.getOnlinePlayers()) {
             if (shouldSeePlayer(otherPlayer, target)) {

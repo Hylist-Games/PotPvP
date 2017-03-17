@@ -65,7 +65,7 @@ public final class PartyInviteCommand {
         }
     }
 
-    @Command(names = {"party invite **", "p invite **", "t invite **", "team invite **", "invite **", "inv **", "party inv **"}, permission = "op")
+    @Command(names = {"party invite **", "p invite **", "t invite **", "team invite **", "invite **", "inv **", "party inv **", "p inv **", "t inv **", "team invite **", "f invite **", "f inv **"}, permission = "op")
     public static void partyInviteAll(Player sender) {
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
         Party party = partyHandler.getOrCreateParty(sender);

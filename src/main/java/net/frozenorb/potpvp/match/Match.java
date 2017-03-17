@@ -108,7 +108,7 @@ public final class Match {
 
         // we wait to update visibility until everyone's been put in the player cache
         // then we update vis, otherwise the update code will see 'partial' views of the match
-        updateVisiblity.forEach(VisibilityUtils::updateVisibility);
+        updateVisiblity.forEach(VisibilityUtils::updateVisibilityFlicker);
 
         Bukkit.getPluginManager().callEvent(new MatchCountdownStartEvent(this));
 
@@ -351,15 +351,17 @@ public final class Match {
     public void markDead(Player player) {
         MatchTeam team = getTeam(player.getUniqueId());
 
-        if (team != null) {
-            Map<UUID, Match> playingCache = PotPvPSI.getInstance().getMatchHandler().getPlayingMatchCache();
-
-            team.markDead(player.getUniqueId());
-            playingCache.remove(player.getUniqueId());
-
-            postMatchPlayers.put(player.getUniqueId(), new PostMatchPlayer(player, kitType.getHealingMethod()));
-            checkEnded();
+        if (team == null) {
+            return;
         }
+
+        Map<UUID, Match> playingCache = PotPvPSI.getInstance().getMatchHandler().getPlayingMatchCache();
+
+        team.markDead(player.getUniqueId());
+        playingCache.remove(player.getUniqueId());
+
+        postMatchPlayers.put(player.getUniqueId(), new PostMatchPlayer(player, kitType.getHealingMethod()));
+        checkEnded();
     }
 
     public MatchTeam getTeam(UUID playerUuid) {

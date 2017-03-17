@@ -43,10 +43,6 @@ public final class MatchGeneralListener implements Listener {
             return;
         }
 
-        if (match.getTeam(player.getUniqueId()).getAliveMembers().size() == 1) {
-            event.getDrops().removeIf(item -> item.getType() == Material.POTION);
-        }
-
         // creates 'proper' player death animation (of the player falling over)
         // which we don't get due to our immediate respawn
         PlayerUtils.animateDeath(player);
@@ -54,6 +50,11 @@ public final class MatchGeneralListener implements Listener {
         match.markDead(player);
         match.addSpectator(player, null, true);
         player.teleport(player.getLocation().add(0, 2, 0));
+
+        // if we're ending the match we don't drop pots/bowls
+        if (match.getState() == MatchState.ENDING) {
+            event.getDrops().removeIf(i -> i.getType() == Material.POTION || i.getType() == Material.MUSHROOM_SOUP);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

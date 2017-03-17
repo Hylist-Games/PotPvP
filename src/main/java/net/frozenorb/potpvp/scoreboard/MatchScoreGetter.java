@@ -200,7 +200,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
                 healthStr = healthColor.toString() + health + " *❤*" + ChatColor.GRAY;
 
                 if (healingMethod != null) {
-                    healsStr = " ⏐ " + healsColor.toString() + heals + (heals == 1 ? healingMethod.getShortSingular() : healingMethod.getShortPlural());
+                    healsStr = " &l⏐ " + healsColor.toString() + heals + " " + (heals == 1 ? healingMethod.getShortSingular() : healingMethod.getShortPlural());
                 } else {
                     healsStr = "";
                 }
