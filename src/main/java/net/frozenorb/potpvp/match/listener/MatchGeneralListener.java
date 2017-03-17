@@ -22,7 +22,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -53,7 +52,7 @@ public final class MatchGeneralListener implements Listener {
 
         // if we're ending the match we don't drop pots/bowls
         if (match.getState() == MatchState.ENDING) {
-            event.getDrops().removeIf(i -> i.getType() == Material.POTION || i.getType() == Material.MUSHROOM_SOUP);
+            event.getDrops().removeIf(i -> i.getType() == Material.POTION || i.getType() == Material.GLASS_BOTTLE || i.getType() == Material.MUSHROOM_SOUP || i.getType() == Material.BOWL);
         }
     }
 
@@ -191,10 +190,7 @@ public final class MatchGeneralListener implements Listener {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Player player = event.getPlayer();
 
-        // the second check returns if the player has their inventory open
-        // (as players in their inventory drop the item under their cursor, not the item
-        // in their held item slot)
-        if (!matchHandler.isPlayingMatch(player) || player.getOpenInventory().getType() == InventoryType.CRAFTING) {
+        if (!matchHandler.isPlayingMatch(player)) {
             return;
         }
 
@@ -204,7 +200,7 @@ public final class MatchGeneralListener implements Listener {
         int heldSlot = player.getInventory().getHeldItemSlot();
 
         // don't let players drop swords, axes, and bows in the first slot
-        if (heldSlot == 0 && (itemTypeName.contains("sword") || itemTypeName.contains("axe") || itemType == Material.BOW)) {
+        if (!PlayerUtils.hasOwnInventoryOpen(player) && heldSlot == 0 && (itemTypeName.contains("sword") || itemTypeName.contains("axe") || itemType == Material.BOW)) {
             player.sendMessage(ChatColor.RED + "You can't drop that while you're holding it in slot 1.");
             event.setCancelled(true);
         }
