@@ -16,6 +16,7 @@ import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.kittype.KitTypeJsonAdapter;
 import net.frozenorb.potpvp.kittype.KitTypeParameterType;
 import net.frozenorb.potpvp.listener.BasicPreventionListener;
+import net.frozenorb.potpvp.listener.BowHealthListener;
 import net.frozenorb.potpvp.listener.ChatFormatListener;
 import net.frozenorb.potpvp.listener.ChatToggleListener;
 import net.frozenorb.potpvp.listener.NightModeListener;
@@ -117,6 +118,7 @@ public final class PotPvPSI extends JavaPlugin {
         eventHandler = new EventHandler();
 
         getServer().getPluginManager().registerEvents(new BasicPreventionListener(), this);
+        getServer().getPluginManager().registerEvents(new BowHealthListener(), this);
         getServer().getPluginManager().registerEvents(new ChatFormatListener(), this);
         getServer().getPluginManager().registerEvents(new ChatToggleListener(), this);
         getServer().getPluginManager().registerEvents(new NightModeListener(), this);
