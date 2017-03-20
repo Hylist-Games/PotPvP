@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
@@ -84,7 +85,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
 
     @Override
     public void accept(Player player, List<String> scores) {
-        FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
+        Optional<UUID> followingOpt = PotPvPSI.getInstance().getFollowHandler().getFollowing(player);
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Match match = matchHandler.getMatchPlayingOrSpectating(player);
 
@@ -105,9 +106,13 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
 
         renderMetaLines(scores, match, participant);
 
-        followHandler.getFollowing(player).ifPresent(following -> {
-            scores.add("&6Following: *&f" + UUIDUtils.name(following));
-        });
+        // this definitely can be a .ifPresent, however creating the new lambda that often
+        // was causing some performance issues, so we do this less pretty (but more efficent)
+        // check (we can't define the lambda up top and reference because we reference the
+        // scores variable)
+        if (followingOpt.isPresent()) {
+            scores.add("&6Following: *&f" + UUIDUtils.name(followingOpt.get()));
+        }
 
         if (player.hasMetadata("ModMode")) {
             scores.add(ChatColor.GRAY.toString() + ChatColor.BOLD + "In Silent Mode");

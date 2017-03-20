@@ -21,6 +21,10 @@ public final class MongoEloRepository implements EloRepository {
 
     private static final String MONGO_COLLECTION_NAME = "elo";
 
+    public MongoEloRepository() {
+        MongoUtils.getCollection(MONGO_COLLECTION_NAME).createIndex(new Document("players", 1));
+    }
+
     @Override
     public Map<KitType, Integer> loadElo(Set<UUID> playerUuids) throws IOException {
         MongoCollection<Document> partyEloCollection = MongoUtils.getCollection(MONGO_COLLECTION_NAME);

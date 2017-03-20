@@ -3,7 +3,7 @@ package net.frozenorb.potpvp.arena.menu.manageschematic;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.ArenaSchematic;
 import net.frozenorb.potpvp.arena.menu.manageschematics.ManageSchematicsMenu;
-import net.frozenorb.potpvp.util.MenuBackButton;
+import net.frozenorb.potpvp.util.menu.MenuBackButton;
 import net.frozenorb.potpvp.util.menu.BooleanTraitButton;
 import net.frozenorb.potpvp.util.menu.IntegerTraitButton;
 import net.frozenorb.qlib.menu.Button;

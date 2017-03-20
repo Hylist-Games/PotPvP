@@ -19,17 +19,19 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 
 final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
 
     @Override
     public void accept(Player player, List<String> scores) {
-        FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
+        Optional<UUID> followingOpt = PotPvPSI.getInstance().getFollowHandler().getFollowing(player);
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
         QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
-        EventHandler eventHandler = PotPvPSI.getInstance().getEventHandler();
+        //EventHandler eventHandler = PotPvPSI.getInstance().getEventHandler();
         EloHandler eloHandler = PotPvPSI.getInstance().getEloHandler();
 
         Party party = partyHandler.getParty(player);
@@ -42,9 +44,13 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
         scores.add("&dIn Fights: *&f" + matchHandler.countPlayersPlayingInProgressMatches());
         scores.add("&bIn Queues: *&f" + queueHandler.getQueuedCount());
 
-        followHandler.getFollowing(player).ifPresent(following -> {
-            scores.add("&6Following: *&f" + UUIDUtils.name(following));
-        });
+        // this definitely can be a .ifPresent, however creating the new lambda that often
+        // was causing some performance issues, so we do this less pretty (but more efficent)
+        // check (we can't define the lambda up top and reference because we reference the
+        // scores variable)
+        if (followingOpt.isPresent()) {
+            scores.add("&6Following: *&f" + UUIDUtils.name(followingOpt.get()));
+        }
 
         MatchQueueEntry entry;
 

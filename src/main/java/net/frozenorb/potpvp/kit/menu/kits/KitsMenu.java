@@ -6,7 +6,7 @@ import net.frozenorb.potpvp.kit.KitHandler;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.kittype.menu.select.SelectKitTypeMenu;
 import net.frozenorb.potpvp.util.InventoryUtils;
-import net.frozenorb.potpvp.util.MenuBackButton;
+import net.frozenorb.potpvp.util.menu.MenuBackButton;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;
 

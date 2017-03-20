@@ -4,7 +4,7 @@ import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.arena.ArenaSchematic;
 import net.frozenorb.potpvp.command.ManageCommand;
-import net.frozenorb.potpvp.util.MenuBackButton;
+import net.frozenorb.potpvp.util.menu.MenuBackButton;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;
 

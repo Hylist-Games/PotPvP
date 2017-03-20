@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 
 import net.frozenorb.potpvp.command.ManageCommand;
 import net.frozenorb.potpvp.kittype.KitType;
-import net.frozenorb.potpvp.util.MenuBackButton;
+import net.frozenorb.potpvp.util.menu.MenuBackButton;
 import net.frozenorb.potpvp.util.menu.BooleanTraitButton;
 import net.frozenorb.qlib.menu.Button;
 import net.frozenorb.qlib.menu.Menu;

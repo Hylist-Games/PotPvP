@@ -30,15 +30,16 @@ public final class ItemUtils {
     public static final Predicate<ItemStack> SOUP_PREDICATE = item -> item.getType() == Material.MUSHROOM_SOUP;
 
     /**
-     * Checks if a {@link ItemStack} is a debuff (if its type is contained in {@link PotionUtils#DEBUFF_POTION_TYPES})
+     * Checks if a {@link ItemStack} is a debuff potion
      */
     public static final Predicate<ItemStack> DEBUFF_POTION_PREDICATE = item -> {
-        if (item.getType() != Material.POTION) {
+        if (item.getType() == Material.POTION) {
+            PotionType type = Potion.fromItemStack(item).getType();
+            return type == PotionType.WEAKNESS || type == PotionType.SLOWNESS
+                || type == PotionType.POISON || type == PotionType.INSTANT_DAMAGE;
+        } else {
             return false;
         }
-
-        PotionType potionType = Potion.fromItemStack(item).getType();
-        return PotionUtils.DEBUFF_POTION_TYPES.contains(potionType);
     };
 
     /**
