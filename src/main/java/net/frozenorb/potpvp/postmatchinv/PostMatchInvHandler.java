@@ -67,6 +67,7 @@ public final class PostMatchInvHandler {
 
         if (!spectatorUuids.isEmpty()) {
             List<String> spectatorNames = PatchedPlayerUtils.mapToNames(spectatorUuids);
+            spectatorNames.sort(String::compareToIgnoreCase);
 
             String firstFourNames = Joiner.on(", ").join(
                 spectatorNames.subList(
