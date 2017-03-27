@@ -110,7 +110,7 @@ public final class QueueItemListener extends ItemListener {
 
             return new CustomSelectKitTypeMenu.CustomKitTypeMeta(
                 // clamp value to >= 1 && <= 64
-                Math.max(1, Math.min(64, ranked ? inFightsRanked + inQueueRanked : inFightsUnranked + inQueueUnranked)),
+                Math.max(1, Math.min(64, ranked ? inQueueRanked : inQueueUnranked)),
                 ImmutableList.of(
                     ChatColor.AQUA.toString() + ChatColor.BOLD + (ranked ? ChatColor.UNDERLINE.toString() : "") + "Ranked:",
                     ChatColor.GREEN + "   In fights: " + ChatColor.WHITE + inFightsRanked,
