@@ -33,6 +33,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonObject;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -202,14 +203,14 @@ public final class Match {
         Bukkit.getPluginManager().callEvent(new MatchTerminateEvent(this));
 
         // we have to make a few edits to the document so we use Gson (which has adapters
-        // for things like Locations) and then parse it
-        Document document = Document.parse(PotPvPSI.getGson().toJson(this));
+        // for things like Locations) and then edit it
+        JsonObject document = PotPvPSI.getGson().toJsonTree(this).getAsJsonObject();
 
-        document.put("winner", teams.indexOf(winner)); // replace the full team with their index in the full list
-        document.put("arena", arena.getSchematic()); // replace the full arena with its schematic (website doesn't care which copy we used)
+        document.addProperty("winner", teams.indexOf(winner)); // replace the full team with their index in the full list
+        document.addProperty("arena", arena.getSchematic()); // replace the full arena with its schematic (website doesn't care which copy we used)
 
         Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
-            MongoUtils.getCollection(MatchHandler.MONGO_COLLECTION_NAME).insertOne(document);
+            MongoUtils.getCollection(MatchHandler.MONGO_COLLECTION_NAME).insertOne(Document.parse(document.toString()));
         });
 
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
