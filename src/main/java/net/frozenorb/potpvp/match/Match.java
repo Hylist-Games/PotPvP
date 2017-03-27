@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableSet;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.Arena;
+import net.frozenorb.potpvp.elo.EloCalculator;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.match.event.MatchCountdownStartEvent;
@@ -45,6 +46,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public final class Match {
 
@@ -70,6 +72,7 @@ public final class Match {
     // https://github.com/FrozenOrb/PotPvP-SI/issues/19
     // this will also be set to false for ranked matches (which don't allow rematches)
     @Getter private boolean allowRematches;
+    @Getter @Setter private EloCalculator.Result eloChange;
 
     public Match(KitType kitType, Arena arena, List<MatchTeam> teams, boolean ranked, boolean allowRematches) {
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");

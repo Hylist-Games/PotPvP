@@ -7,6 +7,7 @@ import net.frozenorb.potpvp.elo.EloHandler;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchTeam;
+import net.frozenorb.potpvp.match.event.MatchEndEvent;
 import net.frozenorb.potpvp.match.event.MatchTerminateEvent;
 import net.frozenorb.potpvp.util.PatchedPlayerUtils;
 import net.frozenorb.qlib.util.UUIDUtils;
@@ -29,8 +30,11 @@ public final class EloUpdateListener implements Listener {
         this.eloCalculator = eloCalculator;
     }
 
+    // we actually save elo when the match first ends but only
+    // send messages when it terminates (when players go back to
+    // the lobby)
     @EventHandler
-    public void onMatchTerminate(MatchTerminateEvent event) {
+    public void onMatchEnd(MatchEndEvent event) {
         Match match = event.getMatch();
         KitType kitType = match.getKitType();
         List<MatchTeam> teams = match.getTeams();
@@ -50,10 +54,23 @@ public final class EloUpdateListener implements Listener {
         eloHandler.setElo(winnerTeam.getAllMembers(), kitType, result.getWinnerNew());
         eloHandler.setElo(loserTeam.getAllMembers(), kitType, result.getLoserNew());
 
-        messageResults(match, winnerTeam, loserTeam, result);
+        match.setEloChange(result);
     }
 
-    private void messageResults(Match match, MatchTeam winnerTeam, MatchTeam loserTeam, EloCalculator.Result result) {
+    // see comment on onMatchEnd method
+    @EventHandler
+    public void onMatchTerminate(MatchTerminateEvent event) {
+        Match match = event.getMatch();
+        EloCalculator.Result result = match.getEloChange();
+
+        if (result == null) {
+            return;
+        }
+
+        List<MatchTeam> teams = match.getTeams();
+        MatchTeam winnerTeam = match.getWinner();
+        MatchTeam loserTeam = teams.get(0) == winnerTeam ? teams.get(1) : teams.get(0);
+
         String winnerStr;
         String loserStr;
 
