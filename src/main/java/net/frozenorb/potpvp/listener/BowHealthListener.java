@@ -26,7 +26,8 @@ public final class BowHealthListener implements Listener {
 
         if (damager != null) {
             Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), () -> {
-                damager.sendMessage(ChatColor.GRAY + hit.getName() + "'s health: " + ChatColor.RED.toString() + (int) Math.ceil(hit.getHealth()) + "/20");
+                int outOf20 = (int) Math.ceil(hit.getHealth());
+                damager.sendMessage(ChatColor.GOLD + hit.getName() + "'s health: " + ChatColor.RED.toString() + (outOf20 / 2) + ChatColor.DARK_RED + "❤");
             }, 1L);
         }
     }
