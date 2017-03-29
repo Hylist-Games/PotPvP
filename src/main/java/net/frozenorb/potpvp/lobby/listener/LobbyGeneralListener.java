@@ -74,14 +74,17 @@ public final class LobbyGeneralListener implements Listener {
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-        if (!lobbyHandler.isInLobby(event.getPlayer())) {
+        Player player = event.getPlayer();
+
+        if (!lobbyHandler.isInLobby(player)) {
             return;
         }
 
-        Menu openMenu = Menu.currentlyOpenedMenus.get(event.getPlayer().getName());
+        Menu openMenu = Menu.currentlyOpenedMenus.get(player.getName());
 
         // just remove the item for players in these menus, so they can 'drop' items to remove them
-        if (openMenu != null && openMenu.isNoncancellingInventory()) {
+        // same thing for admins in build mode, just pretend to drop the item
+        if (player.hasMetadata("Build") || (openMenu != null && openMenu.isNoncancellingInventory())) {
             event.getItemDrop().remove();
         } else {
             event.setCancelled(true);
@@ -91,7 +94,9 @@ public final class LobbyGeneralListener implements Listener {
     // cancel inventory interaction in the lobby except for menus
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!lobbyHandler.isInLobby((Player) event.getWhoClicked()) || Menu.currentlyOpenedMenus.containsKey(event.getWhoClicked().getName())) {
+        Player clicked = (Player) event.getWhoClicked();
+
+        if (!lobbyHandler.isInLobby(clicked) || clicked.hasMetadata("Build") || Menu.currentlyOpenedMenus.containsKey(clicked.getName())) {
             return;
         }
 
@@ -100,7 +105,9 @@ public final class LobbyGeneralListener implements Listener {
 
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
-        if (!lobbyHandler.isInLobby((Player) event.getWhoClicked()) || Menu.currentlyOpenedMenus.containsKey(event.getWhoClicked().getName())) {
+        Player clicked = (Player) event.getWhoClicked();
+
+        if (!lobbyHandler.isInLobby(clicked) || clicked.hasMetadata("Build") || Menu.currentlyOpenedMenus.containsKey(clicked.getName())) {
             return;
         }
 

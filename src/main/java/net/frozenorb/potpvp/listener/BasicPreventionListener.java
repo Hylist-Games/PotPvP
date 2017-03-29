@@ -4,7 +4,6 @@ import net.frozenorb.hydrogen.Hydrogen;
 import net.frozenorb.hydrogen.profile.Profile;
 import net.frozenorb.hydrogen.profile.ProfileHandler;
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.match.MatchHandler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -125,30 +124,25 @@ public final class BasicPreventionListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Player player = event.getPlayer();
-
-        boolean isCreative = player.getGameMode() == GameMode.CREATIVE;
-        boolean isOp = player.isOp();
-        boolean isSpectator = matchHandler.isSpectatingMatch(player);
-
-        if (isSpectator || !isOp || !isCreative) {
+        if (!canInteractWithBlocks(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Player player = event.getPlayer();
-
-        boolean isCreative = player.getGameMode() == GameMode.CREATIVE;
-        boolean isOp = player.isOp();
-        boolean isSpectator = matchHandler.isSpectatingMatch(player);
-
-        if (isSpectator || !isOp || !isCreative) {
+        if (!canInteractWithBlocks(event.getPlayer())) {
             event.setCancelled(true);
         }
+    }
+
+    private boolean canInteractWithBlocks(Player player) {
+        boolean inLobby = PotPvPSI.getInstance().getLobbyHandler().isInLobby(player);
+        boolean isCreative = player.getGameMode() == GameMode.CREATIVE;
+        boolean isOp = player.isOp();
+        boolean buildMeta = player.hasMetadata("Build");
+
+        return inLobby && isCreative && isOp && buildMeta;
     }
 
     @EventHandler
