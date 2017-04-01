@@ -2,17 +2,13 @@ package net.frozenorb.potpvp.scoreboard;
 
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.elo.EloHandler;
-import net.frozenorb.potpvp.event.EventHandler;
-import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
-import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.queue.MatchQueue;
 import net.frozenorb.potpvp.queue.MatchQueueEntry;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.qlib.autoreboot.AutoRebootHandler;
 import net.frozenorb.qlib.util.TimeUtils;
-import net.frozenorb.qlib.util.UUIDUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,13 +27,11 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
         QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
-        //EventHandler eventHandler = PotPvPSI.getInstance().getEventHandler();
         EloHandler eloHandler = PotPvPSI.getInstance().getEloHandler();
 
-        Party party = partyHandler.getParty(player);
-
-        if (party != null) {
-            scores.add("&9&lYour Party: &f" + party.getMembers().size());
+        if (partyHandler.hasParty(player)) {
+            int size = partyHandler.getParty(player).getMembers().size();
+            scores.add("&9&lYour Party: &f" + size);
         }
 
         scores.add("&eOnline: *&f" + Bukkit.getOnlinePlayers().size());
@@ -49,16 +43,22 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
         // check (we can't define the lambda up top and reference because we reference the
         // scores variable)
         if (followingOpt.isPresent()) {
-            scores.add("&6Following: *&f" + UUIDUtils.name(followingOpt.get()));
+            Player following = Bukkit.getPlayer(followingOpt.get());
+            scores.add("&6Following: *&f" + following.getName());
+
+            if (player.hasPermission("basic.staff")) {
+                MatchQueueEntry targetEntry = getQueueEntry(following);
+
+                if (targetEntry != null) {
+                    MatchQueue queue = targetEntry.getQueue();
+
+                    scores.add("&6Target queue:");
+                    scores.add("&7" + (queue.isRanked() ? "Ranked" : "Unranked") + queue.getKitType().getDisplayName());
+                }
+            }
         }
 
-        MatchQueueEntry entry;
-
-        if (party != null) {
-           entry = queueHandler.getQueueEntry(party);
-        } else {
-            entry = queueHandler.getQueueEntry(player.getUniqueId());
-        }
+        MatchQueueEntry entry = getQueueEntry(player);
 
         if (entry != null) {
             String waitTimeFormatted = TimeUtils.formatIntoMMSS(entry.getWaitSeconds());
@@ -84,15 +84,17 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
         if (player.hasMetadata("ModMode")) {
             scores.add(ChatColor.GRAY.toString() + ChatColor.BOLD + "In Silent Mode");
         }
+    }
 
-        /*Event nearest = eventHandler.getNearestEvent();
+    private MatchQueueEntry getQueueEntry(Player player) {
+        PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
+        QueueHandler queueHandler = PotPvPSI.getInstance().getQueueHandler();
 
-        if (nearest != null) {
-            scores.add("&l&7&m--------------------");
-            scores.add("&b&l" + nearest.getType().getName());
-            scores.add("&f  Starts in &b&l" + TimeUtils.formatIntoMMSS(nearest.getCountdown()));
-            scores.add("&f  Join via emerald in hotbar");
-        }*/
+        if (partyHandler.hasParty(player)) {
+            return queueHandler.getQueueEntry(partyHandler.getParty(player));
+        } else {
+            return queueHandler.getQueueEntry(player.getUniqueId());
+        }
     }
 
 }
