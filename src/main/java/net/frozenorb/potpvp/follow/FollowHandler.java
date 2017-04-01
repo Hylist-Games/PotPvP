@@ -47,6 +47,8 @@ public final class FollowHandler {
             InventoryUtils.resetInventoryDelayed(player);
             VisibilityUtils.updateVisibility(player);
             FrozenNametagHandler.reloadOthersFor(player);
+
+            player.teleport(target);
         }
     }
 
