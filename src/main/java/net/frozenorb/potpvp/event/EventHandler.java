@@ -1,5 +1,10 @@
 package net.frozenorb.potpvp.event;
 
+import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.event.listener.EventItemListener;
+
+import org.bukkit.Bukkit;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -14,7 +19,7 @@ public final class EventHandler {
     @Getter private final Set<Event> activeEvents = new HashSet<>();
 
     public EventHandler() {
-        /*Bukkit.getPluginManager().registerEvents(new EventItemListener(), PotPvPSI.getInstance());*/
+        Bukkit.getPluginManager().registerEvents(new EventItemListener(), PotPvPSI.getInstance());
     }
 
     public Event beginEvent(EventType type, UUID host, int countdown, boolean restricted) {

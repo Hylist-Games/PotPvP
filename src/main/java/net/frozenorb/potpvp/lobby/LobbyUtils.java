@@ -108,13 +108,13 @@ public final class LobbyUtils {
                 if (target != null) {
                     if (duelHandler.findInvite(player, target) != null) {
                         // if we've sent an invite to them
-                        inventory.setItem(0, RematchItems.SENT_REMATCH_ITEM);
+                        inventory.setItem(2, RematchItems.SENT_REMATCH_ITEM);
                     } else if (duelHandler.findInvite(target, player) != null) {
                         // if they've sent us an invite
-                        inventory.setItem(0, RematchItems.ACCEPT_REMATCH_ITEM);
+                        inventory.setItem(2, RematchItems.ACCEPT_REMATCH_ITEM);
                     } else {
                         // if no one has sent an invite
-                        inventory.setItem(0, RematchItems.REQUEST_REMATCH_ITEM);
+                        inventory.setItem(2, RematchItems.REQUEST_REMATCH_ITEM);
                     }
                 }
             }
@@ -124,8 +124,8 @@ public final class LobbyUtils {
             } else if (queueHandler.isQueuedUnranked(player.getUniqueId())) {
                 inventory.setItem(8, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
             } else {
-                inventory.setItem(1, QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM);
-                inventory.setItem(2, QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM);
+                inventory.setItem(0, QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM);
+                inventory.setItem(1, QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM);
                 inventory.setItem(4, LobbyItems.ENABLE_SPEC_MODE_ITEM);
                 inventory.setItem(6, EventItems.EVENTS_ITEM);
                 inventory.setItem(7, KitItems.OPEN_EDITOR_ITEM);

@@ -9,7 +9,7 @@ public final class EventItemListener extends ItemListener {
 
     public EventItemListener() {
         addHandler(EventItems.EVENTS_ITEM, player -> {
-            player.sendMessage(ChatColor.RED + "Events are not yet completed. They will be done soon!");
+            player.sendMessage(ChatColor.RED + "Events have been disabled by an admin.");
 
             /*EventHandler eventHandler = PotPvPSI.getInstance().getEventHandler();
 
