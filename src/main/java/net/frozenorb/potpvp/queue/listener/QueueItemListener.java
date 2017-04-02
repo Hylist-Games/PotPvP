@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kittype.KitType;
 import net.frozenorb.potpvp.kittype.menu.select.CustomSelectKitTypeMenu;
+import net.frozenorb.potpvp.listener.RankedMatchQualificationListener;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.queue.QueueHandler;
@@ -12,10 +13,12 @@ import net.frozenorb.potpvp.queue.QueueItems;
 import net.frozenorb.potpvp.util.ItemListener;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
 import net.frozenorb.qlib.autoreboot.AutoRebootHandler;
+import net.frozenorb.qlib.util.UUIDUtils;
 import net.md_5.bungee.api.ChatColor;
 
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -58,9 +61,16 @@ public final class QueueItemListener extends ItemListener {
 
     private Consumer<Player> joinSoloConsumer(boolean ranked) {
         return player -> {
-            if (ranked && rebootSoon()) {
-                player.sendMessage(org.bukkit.ChatColor.RED + "You can't join ranked queues with a reboot soon.");
-                return;
+            if (ranked) {
+                if (rebootSoon()) {
+                    player.sendMessage(ChatColor.RED + "You can't join ranked queues with a reboot scheduled soon.");
+                    return;
+                }
+
+                if (!RankedMatchQualificationListener.isQualified(player.getUniqueId())) {
+                    player.sendMessage(ChatColor.RED + "You can't join ranked queues with less than 20 unranked 1v1 wins.");
+                    return;
+                }
             }
 
             if (PotPvPValidation.canJoinQueue(player)) {
@@ -82,9 +92,18 @@ public final class QueueItemListener extends ItemListener {
                 return;
             }
 
-            if (ranked && rebootSoon()) {
-                player.sendMessage(org.bukkit.ChatColor.RED + "You can't join ranked queues with a reboot scheduled soon.");
-                return;
+            if (ranked) {
+                if (rebootSoon()) {
+                    player.sendMessage(ChatColor.RED + "You can't join ranked queues with a reboot scheduled soon.");
+                    return;
+                }
+
+                for (UUID member : party.getMembers()) {
+                    if (!RankedMatchQualificationListener.isQualified(member)) {
+                        player.sendMessage(ChatColor.RED + "Your party can't join ranked queues because " + UUIDUtils.name(member) + " has less than 20 unranked 1v1 wins.");
+                        return;
+                    }
+                }
             }
 
             // try to check validation issues in advance
