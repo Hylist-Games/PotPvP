@@ -27,7 +27,9 @@ public final class BowHealthListener implements Listener {
         if (damager != null) {
             Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), () -> {
                 int outOf20 = (int) Math.ceil(hit.getHealth());
-                damager.sendMessage(ChatColor.GOLD + hit.getName() + "'s health: " + ChatColor.RED.toString() + (outOf20 / 2) + ChatColor.DARK_RED + "❤");
+                // we specifically divide by 2.0 (not 2) so that we do floating point math
+                // as integer math will just round away the .5
+                damager.sendMessage(ChatColor.GOLD + hit.getName() + "'s health: " + ChatColor.RED.toString() + (outOf20 / 2.0) + ChatColor.DARK_RED + "❤");
             }, 1L);
         }
     }
