@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.listener;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.qlib.util.PlayerUtils;
 
 import org.bukkit.Bukkit;
@@ -21,11 +22,17 @@ public final class BowHealthListener implements Listener {
             return;
         }
 
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Player hit = (Player) event.getEntity();
         Player damager = PlayerUtils.getDamageSource(event.getDamager());
 
         if (damager != null) {
             Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), () -> {
+                // in case the player died because of this hit
+                if (!matchHandler.isPlayingMatch(hit)) {
+                    return;
+                }
+
                 int outOf20 = (int) Math.ceil(hit.getHealth());
                 // we specifically divide by 2.0 (not 2) so that we do floating point math
                 // as integer math will just round away the .5
