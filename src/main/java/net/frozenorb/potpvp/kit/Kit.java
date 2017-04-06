@@ -18,7 +18,7 @@ import lombok.Setter;
 public final class Kit {
 
     @Getter @Setter private String name;
-    @Getter @Setter private int slot;
+    @Getter @Setter private int slot; // starts at 1, not 0
     @Getter @Setter private KitType type;
     @Getter @Setter private ItemStack[] inventoryContents;
 

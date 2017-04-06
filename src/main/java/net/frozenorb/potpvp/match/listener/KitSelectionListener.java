@@ -20,6 +20,8 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public final class KitSelectionListener implements Listener {
 
     /**
@@ -38,11 +40,21 @@ public final class KitSelectionListener implements Listener {
                 continue;
             }
 
-            for (Kit kit : kitHandler.getKits(player, kitType)) {
-                player.getInventory().setItem(kit.getSlot() * 2, kit.createSelectionItem());
+            List<Kit> customKits = kitHandler.getKits(player, kitType);
+            ItemStack defaultKitItem = Kit.ofDefaultKit(kitType).createSelectionItem();
+
+            // if they have no kits saved place default in 0, otherwise
+            // the default goes in 9 and they get custom kits from 1-4
+            if (customKits.isEmpty()) {
+                player.getInventory().setItem(0, defaultKitItem);
+            } else {
+                for (Kit customKit : customKits) {
+                    player.getInventory().setItem(customKit.getSlot(), customKit.createSelectionItem());
+                }
+
+                player.getInventory().setItem(8, defaultKitItem);
             }
 
-            player.getInventory().setItem(0, Kit.ofDefaultKit(kitType).createSelectionItem());
             player.updateInventory();
         }
     }
