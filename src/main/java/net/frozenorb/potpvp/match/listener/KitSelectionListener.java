@@ -49,7 +49,8 @@ public final class KitSelectionListener implements Listener {
                 player.getInventory().setItem(0, defaultKitItem);
             } else {
                 for (Kit customKit : customKits) {
-                    player.getInventory().setItem(customKit.getSlot(), customKit.createSelectionItem());
+                    // subtract one to convert from 1-indexed kts to 0-indexed inventories
+                    player.getInventory().setItem(customKit.getSlot() - 1, customKit.createSelectionItem());
                 }
 
                 player.getInventory().setItem(8, defaultKitItem);
