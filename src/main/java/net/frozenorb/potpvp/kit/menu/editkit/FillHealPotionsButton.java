@@ -30,7 +30,7 @@ final class FillHealPotionsButton extends Button {
         return ImmutableList.of(
             "",
             ChatColor.LIGHT_PURPLE + "Fill your empty inventory space",
-            ChatColor.LIGHT_PURPLE + "wih Splash Health Potions."
+            ChatColor.LIGHT_PURPLE + "with Splash Health Potions."
         );
     }
 
