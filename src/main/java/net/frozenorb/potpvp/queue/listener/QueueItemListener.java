@@ -68,7 +68,8 @@ public final class QueueItemListener extends ItemListener {
                 }
 
                 if (!RankedMatchQualificationListener.isQualified(player.getUniqueId())) {
-                    player.sendMessage(ChatColor.RED + "You can't join ranked queues with less than 20 unranked 1v1 wins.");
+                    int needed = RankedMatchQualificationListener.getWinsNeededToQualify(player.getUniqueId());
+                    player.sendMessage(ChatColor.RED + "You can't join ranked queues with less than 20 unranked 1v1 wins. You need " + needed + " more wins!");
                     return;
                 }
             }
@@ -100,7 +101,8 @@ public final class QueueItemListener extends ItemListener {
 
                 for (UUID member : party.getMembers()) {
                     if (!RankedMatchQualificationListener.isQualified(member)) {
-                        player.sendMessage(ChatColor.RED + "Your party can't join ranked queues because " + UUIDUtils.name(member) + " has less than 20 unranked 1v1 wins.");
+                        int needed = RankedMatchQualificationListener.getWinsNeededToQualify(member);
+                        player.sendMessage(ChatColor.RED + "Your party can't join ranked queues because " + UUIDUtils.name(member) + " has less than 20 unranked 1v1 wins. They need " + needed + " more wins!");
                         return;
                     }
                 }

@@ -36,6 +36,10 @@ public final class RankedMatchQualificationListener implements Listener {
     public static final int MIN_MATCH_WINS = 20;
     private static final Map<UUID, Integer> rankedMatchQualificationWins = new ConcurrentHashMap<>();
 
+    public static int getWinsNeededToQualify(UUID playerUuid) {
+        return Math.max(0, MIN_MATCH_WINS - rankedMatchQualificationWins.getOrDefault(playerUuid, 0));
+    }
+
     public static boolean isQualified(UUID playerUuid) {
         return rankedMatchQualificationWins.getOrDefault(playerUuid, 0) >= MIN_MATCH_WINS;
     }
