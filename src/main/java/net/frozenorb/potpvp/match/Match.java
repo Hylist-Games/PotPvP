@@ -75,6 +75,10 @@ public final class Match {
     @Getter private boolean allowRematches;
     @Getter @Setter private EloCalculator.Result eloChange;
 
+    // we only spectators generate one message (either a join or a leave)
+    // per match, to prevent spam. This tracks who has used their one message
+    private final transient Set<UUID> spectatorMessagesUsed = new HashSet<>();
+
     public Match(KitType kitType, Arena arena, List<MatchTeam> teams, boolean ranked, boolean allowRematches) {
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
         this.arena = Preconditions.checkNotNull(arena, "arena");
@@ -332,7 +336,8 @@ public final class Match {
     }
 
     private void sendSpectatorMessage(Player spectator, String message) {
-        if (spectator.hasMetadata("ModMode")) {
+        // see comment on spectatorMessagesUsed field for more
+        if (spectator.hasMetadata("ModMode") || !spectatorMessagesUsed.add(spectator.getUniqueId())) {
             return;
         }
 
