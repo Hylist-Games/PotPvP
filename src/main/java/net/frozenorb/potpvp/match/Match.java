@@ -214,6 +214,9 @@ public final class Match {
         document.addProperty("arena", arena.getSchematic()); // replace the full arena with its schematic (website doesn't care which copy we used)
 
         Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
+            // The Document#parse call really sucks. It generates literally thousands of objects per call.
+            // Hopefully we'll be moving to just posting to a web service soon enough (and then we don't have to run
+            // Mongo's stupid JSON parser)
             MongoUtils.getCollection(MatchHandler.MONGO_COLLECTION_NAME).insertOne(Document.parse(document.toString()));
         });
 

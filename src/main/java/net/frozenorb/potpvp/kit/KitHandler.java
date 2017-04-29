@@ -40,10 +40,15 @@ public final class KitHandler {
     }
 
     public List<Kit> getKits(Player player, KitType kitType) {
-        return kitData.getOrDefault(player.getUniqueId(), ImmutableList.of())
-            .stream()
-            .filter(k -> k.getType() == kitType)
-            .collect(Collectors.toList());
+        List<Kit> kits = new ArrayList<>();
+
+        for (Kit kit : kitData.getOrDefault(player.getUniqueId(), ImmutableList.of())) {
+            if (kit.getType() == kitType) {
+                kits.add(kit);
+            }
+        }
+
+        return kits;
     }
 
     public Optional<Kit> getKit(Player player, KitType kitType, int slot) {

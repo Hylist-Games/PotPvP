@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,81 +37,59 @@ public final class DuelHandler {
     }
 
     public void removeInvitesTo(Player player) {
-        findInvitesTo(player).forEach(activeInvites::remove);
+        activeInvites.removeIf(i ->
+            i instanceof PlayerDuelInvite &&
+            ((PlayerDuelInvite) i).getTarget().equals(player.getUniqueId())
+        );
     }
 
     public void removeInvitesFrom(Player player) {
-        findInvitesFrom(player).forEach(activeInvites::remove);
+        activeInvites.removeIf(i ->
+            i instanceof PlayerDuelInvite &&
+            ((PlayerDuelInvite) i).getSender().equals(player.getUniqueId())
+        );
     }
 
     public void removeInvitesTo(Party party) {
-        findInvitesTo(party).forEach(activeInvites::remove);
+        activeInvites.removeIf(i ->
+            i instanceof PartyDuelInvite &&
+            ((PartyDuelInvite) i).getTarget() == party
+        );
     }
 
     public void removeInvitesFrom(Party party) {
-        findInvitesFrom(party).forEach(activeInvites::remove);
-    }
-
-    public Set<PartyDuelInvite> findInvitesFrom(Party sender) {
-        return getPartyInvites().stream()
-            .filter(i -> i.getSender() == sender)
-            .collect(Collectors.toSet());
-    }
-
-    public Set<PartyDuelInvite> findInvitesTo(Party target) {
-        return getPartyInvites().stream()
-            .filter(i -> i.getTarget() == target)
-            .collect(Collectors.toSet());
+        activeInvites.removeIf(i ->
+            i instanceof PartyDuelInvite &&
+            ((PartyDuelInvite) i).getSender() == party
+        );
     }
 
     public PartyDuelInvite findInvite(Party sender, Party target) {
-        return getPartyInvites().stream()
-            .filter(i -> i.getSender() == sender)
-            .filter(i -> i.getTarget() == target)
-            .findFirst().orElse(null);
-    }
+        for (DuelInvite invite : activeInvites) {
+            if (invite instanceof PartyDuelInvite) {
+                PartyDuelInvite partyInvite = (PartyDuelInvite) invite;
 
-    public Set<PlayerDuelInvite> findInvitesFrom(Player sender) {
-        return getPlayerInvites().stream()
-            .filter(i -> i.getSender().equals(sender.getUniqueId()))
-            .collect(Collectors.toSet());
-    }
+                if (partyInvite.getSender() == sender && partyInvite.getTarget() == target) {
+                    return partyInvite;
+                }
+            }
+        }
 
-    public Set<PlayerDuelInvite> findInvitesTo(Player target) {
-        return getPlayerInvites().stream()
-            .filter(i -> i.getTarget().equals(target.getUniqueId()))
-            .collect(Collectors.toSet());
+        return null;
     }
 
     public PlayerDuelInvite findInvite(Player sender, Player target) {
-        return getPlayerInvites().stream()
-            .filter(i -> i.getSender().equals(sender.getUniqueId()))
-            .filter(i -> i.getTarget().equals(target.getUniqueId()))
-            .findFirst().orElse(null);
-    }
-
-    private List<PlayerDuelInvite> getPlayerInvites() {
-        List<PlayerDuelInvite> playerInvites = new ArrayList<>();
-
         for (DuelInvite invite : activeInvites) {
             if (invite instanceof PlayerDuelInvite) {
-                playerInvites.add((PlayerDuelInvite) invite);
+                PlayerDuelInvite playerInvite = (PlayerDuelInvite) invite;
+
+                if (playerInvite.getSender().equals(sender.getUniqueId()) && playerInvite.getTarget().equals(target.getUniqueId())) {
+                    return playerInvite;
+                }
             }
         }
 
-        return playerInvites;
-    }
-
-    private List<PartyDuelInvite> getPartyInvites() {
-        List<PartyDuelInvite> partyInvites = new ArrayList<>();
-
-        for (DuelInvite invite : activeInvites) {
-            if (invite instanceof PartyDuelInvite) {
-                partyInvites.add((PartyDuelInvite) invite);
-            }
-        }
-
-        return partyInvites;
+        return null;
     }
 
 }
