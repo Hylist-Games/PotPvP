@@ -47,7 +47,7 @@ public final class ArenaBlockResetListener implements Listener {
 
         originalStates.entrySet().removeIf(entry -> {
            if (bounds.contains(entry.getKey())) {
-               Lists.reverse(entry.getValue()).forEach(BlockState::update);
+               //Lists.reverse(entry.getValue()).forEach(BlockState::update);
                return true;
            }
 
