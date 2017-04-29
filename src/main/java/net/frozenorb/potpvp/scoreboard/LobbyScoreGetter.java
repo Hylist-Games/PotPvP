@@ -53,7 +53,7 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
                     MatchQueue queue = targetEntry.getQueue();
 
                     scores.add("&6Target queue:");
-                    scores.add("&7" + (queue.isRanked() ? "Ranked" : "Unranked") + queue.getKitType().getDisplayName());
+                    scores.add("&7" + (queue.isRanked() ? "Ranked" : "Unranked") + " " + queue.getKitType().getDisplayName());
                 }
             }
         }
