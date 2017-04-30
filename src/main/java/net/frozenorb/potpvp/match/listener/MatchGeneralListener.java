@@ -137,6 +137,8 @@ public final class MatchGeneralListener implements Listener {
             if (match.isSpectator(player.getUniqueId())) {
                 player.teleport(arena.getSpectatorSpawn());
                 player.sendMessage(ChatColor.RED + "You aren't allowed to leave the arena.");
+            } else if (player.getLocation().getY() >= bounds.getUpperY() || player.getLocation().getY() <= bounds.getLowerY()) {
+                player.teleport(arena.getSpectatorSpawn());
             } else {
                 event.setCancelled(true);
             }
