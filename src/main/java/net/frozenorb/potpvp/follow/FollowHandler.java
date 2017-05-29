@@ -39,10 +39,10 @@ public final class FollowHandler {
         player.sendMessage(ChatColor.BLUE + "Now following " + ChatColor.YELLOW + target.getName() + ChatColor.BLUE + ", exit with /unfollow.");
 
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-        Match playing = matchHandler.getMatchPlaying(target);
+        Match targetMatch = matchHandler.getMatchPlayingOrSpectating(target);
 
-        if (playing != null && playing.getState() != MatchState.ENDING) {
-            playing.addSpectator(player, target);
+        if (targetMatch != null && targetMatch.getState() != MatchState.ENDING) {
+            targetMatch.addSpectator(player, target);
         } else {
             InventoryUtils.resetInventoryDelayed(player);
             VisibilityUtils.updateVisibility(player);
