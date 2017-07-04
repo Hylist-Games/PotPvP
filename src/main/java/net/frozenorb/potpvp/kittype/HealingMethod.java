@@ -19,7 +19,7 @@ public enum HealingMethod {
         i -> ItemUtils.countStacksMatching(i, ItemUtils.INSTANT_HEAL_POTION_PREDICATE)
     ),
     GOLDEN_APPLE(
-        "gapple", "gapples", // short singular/plural
+        "gap", "gaps", // short singular/plural
         "golden apple", "golden apples", // long singular/plural
         Material.GOLDEN_APPLE,
         (short) 1, // data for enchanted golden apple
