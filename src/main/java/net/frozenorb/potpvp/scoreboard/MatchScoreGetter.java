@@ -286,7 +286,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         // or which ended before they started (if a player disconnects
         // during countdown)
         if (startedAt == null) {
-            formattedDuration = "0:00";
+            formattedDuration = "00:00";
         } else {
             // we go from when it started to either now (if it's in progress)
             // or the timestamp at which the match actually ended
