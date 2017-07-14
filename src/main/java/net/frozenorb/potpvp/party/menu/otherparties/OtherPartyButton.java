@@ -28,7 +28,7 @@ final class OtherPartyButton extends Button {
 
     @Override
     public String getName(Player player) {
-        return ChatColor.GOLD + UUIDUtils.name(party.getLeader());
+        return ChatColor.DARK_PURPLE + UUIDUtils.name(party.getLeader());
     }
 
     @Override
@@ -38,7 +38,7 @@ final class OtherPartyButton extends Button {
         description.add("");
 
         for (UUID member : party.getMembers()) {
-            ChatColor color = party.isLeader(member) ? ChatColor.GOLD : ChatColor.YELLOW;
+            ChatColor color = party.isLeader(member) ? ChatColor.DARK_PURPLE : ChatColor.YELLOW;
             description.add(color + UUIDUtils.name(member));
         }
 

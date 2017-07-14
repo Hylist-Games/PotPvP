@@ -112,7 +112,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         // check (we can't define the lambda up top and reference because we reference the
         // scores variable)
         if (followingOpt.isPresent()) {
-            scores.add("&6Following: *&f" + UUIDUtils.name(followingOpt.get()));
+            scores.add("&5Following: *&7" + UUIDUtils.name(followingOpt.get()));
         }
 
         if (player.hasMetadata("ModMode")) {
@@ -297,7 +297,7 @@ final class MatchScoreGetter implements BiConsumer<Player, List<String>> {
         }
 
         // spectators don't have any bold entries on their scoreboard
-        scores.add("&6" + (participant ? "&l" : "") + "Duration: &f" + formattedDuration);
+        scores.add("&5" + (participant ? "&l" : "") + "Duration: &7" + formattedDuration);
     }
 
     /* Returns the names of all alive players, colored + indented, followed

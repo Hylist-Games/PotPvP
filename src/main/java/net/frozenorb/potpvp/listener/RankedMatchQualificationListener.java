@@ -86,8 +86,8 @@ public final class RankedMatchQualificationListener implements Listener {
 
     @Command(names = {"rmqRead"}, permission = "op")
     public static void rmqRead(Player sender, @Param(name="target",defaultValue="self") Player target) {
-        sender.sendMessage(ChatColor.GOLD + "Wins: " + ChatColor.WHITE.toString() + rankedMatchQualificationWins.getOrDefault(target.getUniqueId(), 0));
-        sender.sendMessage(ChatColor.GOLD + "Qualified: " + ChatColor.WHITE.toString() + isQualified(target.getUniqueId()));
+        sender.sendMessage(ChatColor.DARK_PURPLE + "Wins: " + ChatColor.GRAY.toString() + rankedMatchQualificationWins.getOrDefault(target.getUniqueId(), 0));
+        sender.sendMessage(ChatColor.DARK_PURPLE + "Qualified: " + ChatColor.GRAY.toString() + isQualified(target.getUniqueId()));
     }
 
     @Command(names = {"rmqSet"}, permission = "op")

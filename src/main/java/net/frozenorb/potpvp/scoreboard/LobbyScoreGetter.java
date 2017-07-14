@@ -34,9 +34,9 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
             scores.add("&9&lYour Party: &f" + size);
         }
 
-        scores.add("&eOnline: *&f" + Bukkit.getOnlinePlayers().size());
-        scores.add("&dIn Fights: *&f" + matchHandler.countPlayersPlayingInProgressMatches());
-        scores.add("&bIn Queues: *&f" + queueHandler.getQueuedCount());
+        scores.add("&5Online: *&7" + Bukkit.getOnlinePlayers().size());
+        scores.add("&5In Fights: *&7" + matchHandler.countPlayersPlayingInProgressMatches());
+        scores.add("&5In Queues: *&7" + queueHandler.getQueuedCount());
 
         // this definitely can be a .ifPresent, however creating the new lambda that often
         // was causing some performance issues, so we do this less pretty (but more efficent)
@@ -44,7 +44,7 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
         // scores variable)
         if (followingOpt.isPresent()) {
             Player following = Bukkit.getPlayer(followingOpt.get());
-            scores.add("&6Following: *&f" + following.getName());
+            scores.add("&5Following: *&7" + following.getName());
 
             if (player.hasPermission("basic.staff")) {
                 MatchQueueEntry targetEntry = getQueueEntry(following);
@@ -52,7 +52,7 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
                 if (targetEntry != null) {
                     MatchQueue queue = targetEntry.getQueue();
 
-                    scores.add("&6Target queue:");
+                    scores.add("&5Target queue:");
                     scores.add("&7" + (queue.isRanked() ? "Ranked" : "Unranked") + " " + queue.getKitType().getDisplayName());
                 }
             }
@@ -65,14 +65,14 @@ final class LobbyScoreGetter implements BiConsumer<Player, List<String>> {
             MatchQueue queue = entry.getQueue();
 
             scores.add("&b&7&m--------------------");
-            scores.add(queue.getKitType().getDisplayColor() + (queue.isRanked() ? "Ranked" : "Unranked") + " " + queue.getKitType().getDisplayName());
-            scores.add("&eTime: *&f" + waitTimeFormatted);
+            scores.add("&7" + queue.getKitType().getDisplayColor() + (queue.isRanked() ? "Ranked" : "Unranked") + " " + queue.getKitType().getDisplayName());
+            scores.add("&5Time: *&7" + waitTimeFormatted);
 
             if (queue.isRanked()) {
                 int elo = eloHandler.getElo(entry.getMembers(), queue.getKitType());
                 int window = entry.getWaitSeconds() * QueueHandler.RANKED_WINDOW_GROWTH_PER_SECOND;
 
-                scores.add("&eSearch range: *&f" + Math.max(0, elo - window) + " - " + (elo + window));
+                scores.add("&5Search range: *&7" + Math.max(0, elo - window) + " - " + (elo + window));
             }
         }
 

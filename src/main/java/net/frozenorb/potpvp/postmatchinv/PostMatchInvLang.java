@@ -21,7 +21,7 @@ import lombok.experimental.UtilityClass;
 public final class PostMatchInvLang {
 
     static final String LINE = ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "-----------------------------------------------------";
-    static final String INVENTORY_HEADER = ChatColor.GOLD + "Post-Match Inventories " + ChatColor.GRAY + "(click name to view)";
+    static final String INVENTORY_HEADER = ChatColor.DARK_PURPLE + "Post-Match Inventories " + ChatColor.GRAY + "(click name to view)";
 
     private static final String WINNER = ChatColor.GREEN + "Winner:" + ChatColor.GRAY;
     private static final String LOSER = ChatColor.RED + "Loser:" + ChatColor.GRAY;
@@ -82,7 +82,7 @@ public final class PostMatchInvLang {
 
         component.setText(memberName);
         component.setColor(ChatColor.YELLOW);
-        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.GREEN + "Click to view inventory of " + ChatColor.GOLD + memberName).create()));
+        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.GREEN + "Click to view inventory of " + ChatColor.DARK_PURPLE + memberName).create()));
         component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/_ " + memberName));
 
         return component;

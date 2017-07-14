@@ -8,9 +8,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class PotPvPScoreboardConfiguration {
 
-    // ⏐ (not |, which is the standard pipe) is similar to a pipe but
-    // doesn't have a split in the middle when rendered in Minecraft
-    private static final String SCOREBOARD_TITLE = "&6&lMineHQ &7&l⏐ &fPotPvP";
+    private static final String SCOREBOARD_TITLE = "&5&lArcane [&7&lPractice&5&l]";
 
     public static ScoreboardConfiguration create() {
         ScoreboardConfiguration configuration = new ScoreboardConfiguration();

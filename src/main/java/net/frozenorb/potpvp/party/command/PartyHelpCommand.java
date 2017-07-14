@@ -13,9 +13,9 @@ import java.util.List;
 public final class PartyHelpCommand {
 
     private static final List<String> HELP_MESSAGE = ImmutableList.of(
-        ChatColor.GOLD + PotPvPLang.LONG_LINE,
+        ChatColor.DARK_PURPLE + PotPvPLang.LONG_LINE,
         "§d§lParty Help §7- §fInformation on how to use party commands",
-        ChatColor.GOLD + PotPvPLang.LONG_LINE,
+        ChatColor.DARK_PURPLE + PotPvPLang.LONG_LINE,
         "§9Party Commands:",
         "§e/party invite §7- Invite a player to join your party",
         "§e/party leave §7- Leave your current party",
@@ -32,7 +32,7 @@ public final class PartyHelpCommand {
         "",
         "§9Other Help:",
         "§eTo use §dparty chat§e, prefix your message with the §7'§d@§7' §esign.",
-        ChatColor.GOLD + PotPvPLang.LONG_LINE
+        ChatColor.DARK_PURPLE + PotPvPLang.LONG_LINE
     );
 
     @Command(names = {"party", "p", "t", "team", "f", "party help", "p help", "t help", "team help", "f help"}, permission = "")

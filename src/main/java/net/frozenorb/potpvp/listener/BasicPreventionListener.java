@@ -55,7 +55,7 @@ public final class BasicPreventionListener implements Listener {
         }
 
         if (!allowed) {
-            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.GOLD + "PotPvP is VIP-only for testing");
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.DARK_PURPLE + "PotPvP is VIP-only for testing");
         }
     }
 

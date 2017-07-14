@@ -135,31 +135,6 @@ public final class PotPvPSI extends JavaPlugin {
         FrozenTabHandler.setLayoutProvider(new PotPvPLayoutProvider());
         FrozenNametagHandler.registerProvider(new PotPvPNametagProvider());
         FrozenScoreboardHandler.setConfiguration(PotPvPScoreboardConfiguration.create());
-
-        new BukkitRunnable() {
-
-            int i = 0;
-
-            @Override
-            public void run() {
-                FancyMessage message = new FancyMessage("TIP: ").color(ChatColor.GOLD);
-
-                if (i == 0) {
-                    message.then("Don't like the server? Knockback sucks? ").color(ChatColor.GRAY)
-                            .then("[Click Here]").color(ChatColor.GREEN).command("/showmethedoor").tooltip(ChatColor.GREEN + ":)");
-
-                    i++;
-                } else {
-                    message.then("Pots too slow? Learn to pot or disconnect!").color(ChatColor.GRAY);
-                    i = 0;
-                }
-
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    message.send(player);
-                }
-            }
-
-        }.runTaskTimer(this, 5 * 60 * 20L, 5 * 60 * 20L);
     }
 
     @Override
