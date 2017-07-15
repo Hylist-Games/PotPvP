@@ -18,7 +18,7 @@ final class HeaderLayoutProvider implements BiConsumer<Player, TabLayout> {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
         header: {
-            tabLayout.set(1, 0, ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Arcane" + ChatColor.GRAY + ChatColor.BOLD + " Practice");
+            tabLayout.set(1, 0, ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Arcane" + ChatColor.GRAY + " Practice");
         }
 
         status: {

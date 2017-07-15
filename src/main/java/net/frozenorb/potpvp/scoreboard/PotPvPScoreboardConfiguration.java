@@ -8,7 +8,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class PotPvPScoreboardConfiguration {
 
-    private static final String SCOREBOARD_TITLE = "&5&lArcane [&7&lPractice&5&l]";
+    private static final String SCOREBOARD_TITLE = "&5&lArcane &7Practice";
 
     public static ScoreboardConfiguration create() {
         ScoreboardConfiguration configuration = new ScoreboardConfiguration();
