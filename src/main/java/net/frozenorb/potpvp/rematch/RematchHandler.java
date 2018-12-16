@@ -72,8 +72,8 @@ public final class RematchHandler {
             KitType kitType = match.getKitType();
 
             // rematches are mutual
-            rematches.put(player1Uuid, new RematchData(player1Uuid, player2Uuid, kitType, REMATCH_TIMEOUT_SECONDS));
-            rematches.put(player2Uuid, new RematchData(player2Uuid, player1Uuid, kitType, REMATCH_TIMEOUT_SECONDS));
+            rematches.put(player1Uuid, new RematchData(player1Uuid, player2Uuid, kitType, REMATCH_TIMEOUT_SECONDS, match.getArena().getSchematic()));
+            rematches.put(player2Uuid, new RematchData(player2Uuid, player1Uuid, kitType, REMATCH_TIMEOUT_SECONDS, match.getArena().getSchematic()));
         }
     }
 

@@ -28,14 +28,16 @@ public final class CustomSelectKitTypeMenu extends Menu {
 
     private final Callback<KitType> callback;
     private final Function<KitType, CustomKitTypeMeta> metaFunc;
+    private final boolean ranked;
 
-    public CustomSelectKitTypeMenu(Callback<KitType> callback, Function<KitType, CustomKitTypeMeta> metaFunc, String title) {
+    public CustomSelectKitTypeMenu(Callback<KitType> callback, Function<KitType, CustomKitTypeMeta> metaFunc, String title, boolean ranked) {
         super(ChatColor.BLUE.toString() + ChatColor.BOLD + title);
 
         setAutoUpdate(true);
 
         this.callback = Preconditions.checkNotNull(callback, "callback");
         this.metaFunc = Preconditions.checkNotNull(metaFunc, "metaFunc");
+        this.ranked = ranked;
     }
 
     @Override
@@ -50,6 +52,10 @@ public final class CustomSelectKitTypeMenu extends Menu {
 
         for (KitType kitType : KitType.getAllTypes()) {
             if (!player.isOp() && kitType.isHidden()) {
+                continue;
+            }
+
+            if (ranked && !kitType.isSupportsRanked()) {
                 continue;
             }
 

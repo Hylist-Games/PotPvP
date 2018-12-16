@@ -51,6 +51,26 @@ public final class ArenaSchematic {
     @Getter @Setter private boolean archerOnly = false;
 
     /**
+     * If this schematic can be only be used for Sumo matches
+     * Some schematics are built for specifically Sumo fights
+     */
+    @Getter @Setter private boolean sumoOnly = false;
+
+    /**
+     * If this schematic can be only be used for Spleef matches
+     * Some schematics are built for specifically Spleef fights
+     */
+    @Getter @Setter private boolean spleefOnly = false;
+
+    /**
+     * If this schematic can be only be used for BuildUHC matches
+     * Some schematics are built for specifically BuildUHC fights
+     */
+    @Getter @Setter private boolean buildUHCOnly = false;
+
+    @Getter @Setter private boolean HCFOnly = false;
+
+    /**
      * Index on the X axis on the grid (and in calculations regarding model arenas)
      * @see ArenaGrid
      */

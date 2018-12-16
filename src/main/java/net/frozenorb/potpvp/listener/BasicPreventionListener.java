@@ -1,9 +1,7 @@
 package net.frozenorb.potpvp.listener;
 
-import net.frozenorb.hydrogen.Hydrogen;
-import net.frozenorb.hydrogen.profile.Profile;
-import net.frozenorb.hydrogen.profile.ProfileHandler;
-import net.frozenorb.potpvp.PotPvPSI;
+import java.util.Map;
+import java.util.Optional;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,6 +20,8 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -31,8 +31,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
-import java.util.Map;
-import java.util.Optional;
+import net.frozenorb.hydrogen.Hydrogen;
+import net.frozenorb.hydrogen.profile.Profile;
+import net.frozenorb.hydrogen.profile.ProfileHandler;
+import net.frozenorb.potpvp.PotPvPSI;
 
 public final class BasicPreventionListener implements Listener {
 
@@ -137,6 +139,11 @@ public final class BasicPreventionListener implements Listener {
     }
 
     private boolean canInteractWithBlocks(Player player) {
+        if (PotPvPSI.getInstance().getMatchHandler().isPlayingMatch(player)) {
+            // completely ignore players in matches, MatchBuildListener handles this.
+            return true;
+        }
+
         boolean inLobby = PotPvPSI.getInstance().getLobbyHandler().isInLobby(player);
         boolean isCreative = player.getGameMode() == GameMode.CREATIVE;
         boolean isOp = player.isOp();
@@ -150,6 +157,16 @@ public final class BasicPreventionListener implements Listener {
         if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.SOIL) {
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onPrepareCraft(PrepareItemCraftEvent event) {
+        event.getInventory().setResult(null);
+    }
+
+    @EventHandler
+    public void onCraft(CraftItemEvent event) {
+        event.setCancelled(true);
     }
 
 }

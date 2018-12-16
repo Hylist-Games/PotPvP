@@ -1,26 +1,5 @@
 package net.frozenorb.potpvp.match;
 
-import com.google.common.collect.ImmutableSet;
-
-import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.arena.Arena;
-import net.frozenorb.potpvp.arena.ArenaHandler;
-import net.frozenorb.potpvp.kittype.KitType;
-import net.frozenorb.potpvp.match.listener.KitSelectionListener;
-import net.frozenorb.potpvp.match.listener.MatchCountdownListener;
-import net.frozenorb.potpvp.match.listener.MatchDeathMessageListener;
-import net.frozenorb.potpvp.match.listener.MatchDurationLimitListener;
-import net.frozenorb.potpvp.match.listener.MatchGeneralListener;
-import net.frozenorb.potpvp.match.listener.MatchPartySpectateListener;
-import net.frozenorb.potpvp.match.listener.MatchSoupListener;
-import net.frozenorb.potpvp.match.listener.MatchWizardListener;
-import net.frozenorb.potpvp.match.listener.SpectatorItemListener;
-import net.frozenorb.potpvp.match.listener.SpectatorPreventionListener;
-import net.frozenorb.qlib.util.UUIDUtils;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +9,40 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import com.google.common.collect.ImmutableSet;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.arena.Arena;
+import net.frozenorb.potpvp.arena.ArenaHandler;
+import net.frozenorb.potpvp.arena.ArenaSchematic;
+import net.frozenorb.potpvp.kittype.KitType;
+import net.frozenorb.potpvp.match.listener.GoldenHeadListener;
+import net.frozenorb.potpvp.match.listener.KitSelectionListener;
+import net.frozenorb.potpvp.match.listener.MatchBlockPickupListener;
+import net.frozenorb.potpvp.match.listener.MatchBuildListener;
+import net.frozenorb.potpvp.match.listener.MatchComboListener;
+import net.frozenorb.potpvp.match.listener.MatchCountdownListener;
+import net.frozenorb.potpvp.match.listener.MatchDeathMessageListener;
+import net.frozenorb.potpvp.match.listener.MatchDurationLimitListener;
+import net.frozenorb.potpvp.match.listener.MatchEnderPearlDamageListener;
+import net.frozenorb.potpvp.match.listener.MatchFreezeListener;
+import net.frozenorb.potpvp.match.listener.MatchGeneralListener;
+import net.frozenorb.potpvp.match.listener.MatchHardcoreHealingListener;
+import net.frozenorb.potpvp.match.listener.MatchHealthDisplayListener;
+import net.frozenorb.potpvp.match.listener.MatchPartySpectateListener;
+import net.frozenorb.potpvp.match.listener.MatchRodListener;
+import net.frozenorb.potpvp.match.listener.MatchSoupListener;
+import net.frozenorb.potpvp.match.listener.MatchStatsListener;
+import net.frozenorb.potpvp.match.listener.MatchWizardListener;
+import net.frozenorb.potpvp.match.listener.SpectatorItemListener;
+import net.frozenorb.potpvp.match.listener.SpectatorPreventionListener;
+import net.frozenorb.qlib.util.UUIDUtils;
 
 public final class MatchHandler {
 
@@ -52,19 +62,29 @@ public final class MatchHandler {
     @Getter(AccessLevel.PACKAGE) private final Map<UUID, Match> spectatingMatchCache = new ConcurrentHashMap<>();
 
     public MatchHandler() {
+        Bukkit.getPluginManager().registerEvents(new GoldenHeadListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new KitSelectionListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MatchBlockPickupListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MatchBuildListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MatchComboListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new MatchCountdownListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new MatchDeathMessageListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new MatchDurationLimitListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MatchEnderPearlDamageListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MatchFreezeListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new MatchGeneralListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MatchHardcoreHealingListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MatchHealthDisplayListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new MatchPartySpectateListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MatchRodListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new MatchSoupListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MatchStatsListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new MatchWizardListener(), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new SpectatorItemListener(this), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new SpectatorPreventionListener(), PotPvPSI.getInstance());
     }
-
-    public Match startMatch(List<MatchTeam> teams, KitType kitType, boolean ranked, boolean allowRematches) {
+    
+    public Match startMatch(List<MatchTeam> teams, KitType kitType, boolean ranked, boolean allowRematches, Set<String> arenas) {
         boolean anyOps = false;
 
         for (MatchTeam team : teams) {
@@ -109,7 +129,8 @@ public final class MatchHandler {
             matchSize <= schematic.getMaxPlayerCount() &&
             matchSize >= schematic.getMinPlayerCount() &&
             (!ranked || schematic.isSupportsRanked()) &&
-            (kitType.getId().equals("ARCHER") || !schematic.isArcherOnly())
+            canUseSchematic(kitType, schematic) &&
+            arenas == null || arenas.contains(schematic.getName())
         );
 
         if (!openArenaOpt.isPresent()) {
@@ -123,6 +144,24 @@ public final class MatchHandler {
         match.startCountdown();
 
         return match;
+    }
+
+    public static boolean canUseSchematic(KitType kitType, ArenaSchematic schematic) {
+        String kitId = kitType.getId();
+
+        if (kitId.equals("ARCHER")) return schematic.isArcherOnly();
+        if (kitId.equals("BUILDUHC")) return schematic.isBuildUHCOnly();
+        if (kitId.equals("SPLEEF")) return schematic.isSpleefOnly();
+        if (kitId.equals("SUMO")) return schematic.isSumoOnly();
+        if (kitId.equals("HCF")) return schematic.isHCFOnly();
+
+        if (schematic.isArcherOnly()) return kitId.equals("ARCHER");
+        if (schematic.isBuildUHCOnly()) return kitId.equals("BUILDUHC");
+        if (schematic.isSpleefOnly()) return kitId.equals("SPLEEF");
+        if (schematic.isSumoOnly()) return kitId.equals("SUMO");
+        if (schematic.isHCFOnly()) return kitId.equals("HCF");
+
+        return true;
     }
 
     void removeMatch(Match match) {
@@ -237,6 +276,7 @@ public final class MatchHandler {
      * @return if a match is being played or spectated by the provided player
      */
     public boolean isPlayingOrSpectatingMatch(Player player) {
+        if (player == null) return false;
         return playingMatchCache.containsKey(player.getUniqueId()) || spectatingMatchCache.containsKey(player.getUniqueId());
     }
 

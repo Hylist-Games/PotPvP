@@ -9,6 +9,7 @@ import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
+import net.frozenorb.potpvp.tournament.TournamentHandler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,13 +29,16 @@ public final class PotPvPValidation {
     private static final String CANNOT_DO_THIS_WHILE_IN_MATCH = ChatColor.RED + "You can't do this while participating in or spectating a match!";
     private static final String CANNOT_DO_THIS_WHILE_FOLLOWING = ChatColor.RED + "You cannot do this while following someone! Type /unfollow to exit.";
     private static final String CANNOT_DO_THIS_IN_SILENT_MODE = ChatColor.RED + "You cannot do this while in silent mode!";
+    private static final String CANNOT_DO_THIS_WHILST_IN_TOURNAMENT = ChatColor.RED + "You cannot do this whilst in the tournament!";
 
     private static final String TARGET_PARTY_NOT_IN_LOBBY = ChatColor.RED + "That party is not in the lobby!";
     private static final String TARGET_PLAYER_NOT_IN_LOBBY = ChatColor.RED + "That player is not in the lobby!";
     private static final String TARGET_PLAYER_FOLLOWING_SOMEONE = ChatColor.RED + "That player is currently following someone!";
     private static final String TARGET_PLAYER_HAS_DUELS_DISABLED = ChatColor.RED + "The player has duels disabled!";
+    private static final String TARGET_IN_PARTY = ChatColor.RED + "That player is in a party!";
     private static final String TARGET_PARTY_HAS_DUELS_DISABLED = ChatColor.RED + "The party has duels disabled!";
     private static final String TARGET_PARTY_REACHED_MAXIMUM_SIZE = ChatColor.RED + "The party is full.";
+    private static final String TARGET_PARTY_IN_TOURNAMENT = ChatColor.RED + "That party is in a tournament!";
 
     public static boolean canSendDuel(Player sender, Player target) {
         if (isInSilentMode(sender)) {
@@ -102,6 +106,16 @@ public final class PotPvPValidation {
             return false;
         }
 
+        if (isInParty(sender)) {
+            sender.sendMessage(CANNOT_DO_THIS_WHILE_IN_PARTY);
+            return false;
+        }
+
+        if (isInParty(duelSentBy)) {
+            sender.sendMessage(TARGET_IN_PARTY);
+            return false;
+        }
+
         return true;
     }
 
@@ -126,6 +140,11 @@ public final class PotPvPValidation {
             return false;
         }
 
+        if (isInTournament(sender)) {
+            initiator.sendMessage(CANNOT_DO_THIS_WHILST_IN_TOURNAMENT);
+            return false;
+        }
+
         return true;
     }
 
@@ -137,6 +156,11 @@ public final class PotPvPValidation {
 
         if (!isInLobby(Bukkit.getPlayer(target.getLeader()))) {
             initiator.sendMessage(TARGET_PLAYER_NOT_IN_LOBBY);
+            return false;
+        }
+
+        if (isInTournament(target)) {
+            initiator.sendMessage(CANNOT_DO_THIS_WHILST_IN_TOURNAMENT);
             return false;
         }
 
@@ -161,6 +185,11 @@ public final class PotPvPValidation {
 
         if (party.getMembers().size() >= Party.MAX_SIZE && !Bukkit.getPlayer(party.getLeader()).isOp()) {
             player.sendMessage(TARGET_PARTY_REACHED_MAXIMUM_SIZE);
+            return false;
+        }
+
+        if (isInTournament(party)) {
+            player.sendMessage(TARGET_PARTY_IN_TOURNAMENT);
             return false;
         }
 
@@ -257,6 +286,11 @@ public final class PotPvPValidation {
             return false;
         }
 
+        if (isInTournament(party)) {
+            party.message(CANNOT_DO_THIS_WHILST_IN_TOURNAMENT);
+            return false;
+        }
+
         return true;
     }
 
@@ -271,6 +305,11 @@ public final class PotPvPValidation {
             return false;
         }
 
+        if (isInTournament(party)) {
+            initiator.sendMessage(CANNOT_DO_THIS_WHILST_IN_TOURNAMENT);
+            return false;
+        }
+
         return true;
     }
 
@@ -282,6 +321,11 @@ public final class PotPvPValidation {
 
         if (!isInLobby(initiator)) {
             initiator.sendMessage(CANNOT_DO_THIS_WHILE_NOT_IN_LOBBY);
+            return false;
+        }
+
+        if (isInTournament(party)) {
+            initiator.sendMessage(CANNOT_DO_THIS_WHILST_IN_TOURNAMENT);
             return false;
         }
 
@@ -321,6 +365,11 @@ public final class PotPvPValidation {
     private boolean isFollowingSomeone(Player player) {
         FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
         return followHandler.getFollowing(player).isPresent();
+    }
+
+    private boolean isInTournament(Party party) {
+        TournamentHandler tournamentHandler = PotPvPSI.getInstance().getTournamentHandler();
+        return tournamentHandler.isInTournament(party);
     }
 
     private boolean isInSilentMode(Player player) {

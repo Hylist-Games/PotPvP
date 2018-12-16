@@ -1,36 +1,34 @@
 package net.frozenorb.potpvp.scoreboard;
 
+import java.util.function.BiConsumer;
+
+import org.bukkit.entity.Player;
+
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.qlib.scoreboard.ScoreGetter;
-
-import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BiConsumer;
+import net.frozenorb.qlib.util.LinkedList;
 
 final class MultiplexingScoreGetter implements ScoreGetter {
 
-    private final BiConsumer<Player, List<String>> lobbyScoreGetter;
-    private final BiConsumer<Player, List<String>> matchScoreGetter;
+    private final BiConsumer<Player, LinkedList<String>> matchScoreGetter;
+    private final BiConsumer<Player, LinkedList<String>> lobbyScoreGetter;
 
     MultiplexingScoreGetter(
-        BiConsumer<Player, List<String>> lobbyScoreGetter,
-        BiConsumer<Player, List<String>> matchScoreGetter
+        BiConsumer<Player, LinkedList<String>> matchScoreGetter,
+        BiConsumer<Player, LinkedList<String>> lobbyScoreGetter
     ) {
-        this.lobbyScoreGetter = lobbyScoreGetter;
         this.matchScoreGetter = matchScoreGetter;
+        this.lobbyScoreGetter = lobbyScoreGetter;
     }
 
     @Override
-    public String[] getScores(Player player) {
+    public void getScores(LinkedList<String> scores, Player player) {
+        if (PotPvPSI.getInstance() == null) return;
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
-        List<String> scores = new ArrayList<>();
-        scores.add("&a&7&m--------------------");
 
         if (settingHandler.getSetting(player, Setting.SHOW_SCOREBOARD)) {
             if (matchHandler.isPlayingOrSpectatingMatch(player)) {
@@ -40,8 +38,10 @@ final class MultiplexingScoreGetter implements ScoreGetter {
             }
         }
 
-        scores.add("&f&7&m--------------------");
-        return scores.toArray(new String[scores.size()]);
+        if (!scores.isEmpty()) {
+            scores.addFirst("&a&7&m--------------------");
+            scores.add("&f&7&m--------------------");
+        }
     }
 
 }

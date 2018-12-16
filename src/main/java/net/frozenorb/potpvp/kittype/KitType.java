@@ -105,10 +105,32 @@ public final class KitType {
     @Getter @Setter private HealingMethod healingMethod = HealingMethod.POTIONS;
 
     /**
+     * Determines if players are allowed to build in matches using this KitType.
+     */
+    @Getter @Setter private boolean buildingAllowed = false;
+
+    /**
+     * Determines if health is shown below the player's name-tags in matches using this KitType.
+     */
+    @Getter @Setter private boolean healthShown = false;
+
+    /**
+     * Determines if natural health regeneration should happen in matches using this KitType.
+     */
+    @Getter @Setter private boolean hardcoreHealing = false;
+
+    /**
+     * Determines if players playing a match using this KitType should take damage when their ender pearl lands.
+     */
+    @Getter @Setter private boolean pearlDamage = true;
+
+    /**
      * Determines the order used when displaying lists of KitTypes to players.
      * (Lowest to highest)
      */
     @Getter @Setter private int sort = 0;
+
+    @Getter @Setter private boolean supportsRanked = false;
 
     public static KitType byId(String id) {
         for (KitType kitType : allTypes) {

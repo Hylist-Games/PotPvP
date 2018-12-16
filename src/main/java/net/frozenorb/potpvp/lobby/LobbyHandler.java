@@ -5,6 +5,7 @@ import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.follow.command.UnfollowCommand;
 import net.frozenorb.potpvp.lobby.listener.LobbyGeneralListener;
 import net.frozenorb.potpvp.lobby.listener.LobbyItemListener;
+import net.frozenorb.potpvp.lobby.listener.LobbyParkourListener;
 import net.frozenorb.potpvp.lobby.listener.LobbySpecModeListener;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.potpvp.util.PatchedPlayerUtils;
@@ -37,6 +38,7 @@ public final class LobbyHandler {
         Bukkit.getPluginManager().registerEvents(new LobbyGeneralListener(this), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new LobbyItemListener(this), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new LobbySpecModeListener(), PotPvPSI.getInstance());
+        Bukkit.getPluginManager().registerEvents(new LobbyParkourListener(), PotPvPSI.getInstance());
     }
 
     /**

@@ -1,24 +1,5 @@
 package net.frozenorb.potpvp.arena;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.io.Files;
-
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-
-import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.arena.event.ArenaAllocatedEvent;
-import net.frozenorb.potpvp.arena.event.ArenaReleasedEvent;
-import net.frozenorb.potpvp.arena.listener.ArenaBlockResetListener;
-import net.frozenorb.potpvp.arena.listener.ArenaItemResetListener;
-import net.frozenorb.qlib.qLib;
-
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.craftbukkit.libs.com.google.gson.reflect.TypeToken;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -32,7 +13,23 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Predicate;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.libs.com.google.gson.reflect.TypeToken;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import com.google.common.base.Charsets;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.io.Files;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+
 import lombok.Getter;
+import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.arena.event.ArenaAllocatedEvent;
+import net.frozenorb.potpvp.arena.event.ArenaReleasedEvent;
+import net.frozenorb.potpvp.arena.listener.ArenaItemResetListener;
+import net.frozenorb.qlib.qLib;
 
 /**
  * Facilitates easy access to {@link ArenaSchematic}s and to {@link Arena}s
@@ -52,7 +49,6 @@ public final class ArenaHandler {
 
     public ArenaHandler() {
         Bukkit.getPluginManager().registerEvents(new ArenaItemResetListener(), PotPvPSI.getInstance());
-        Bukkit.getPluginManager().registerEvents(new ArenaBlockResetListener(), PotPvPSI.getInstance());
 
         File worldFolder = getArenaWorld().getWorldFolder();
 

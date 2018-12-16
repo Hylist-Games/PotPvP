@@ -65,7 +65,9 @@ final class KitRenameButton extends Button {
                 PotPvPSI.getInstance().getKitHandler().saveKitsAsync(player);
 
                 ctx.getForWhom().sendRawMessage(ChatColor.YELLOW + "Kit renamed.");
-                new KitsMenu(kit.getType()).openMenu(player);
+                if (!PotPvPSI.getInstance().getMatchHandler().isPlayingMatch(player)) {
+                    new KitsMenu(kit.getType()).openMenu(player);
+                }
                 return Prompt.END_OF_CONVERSATION;
             }
 

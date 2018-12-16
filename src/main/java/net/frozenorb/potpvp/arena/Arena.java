@@ -1,25 +1,29 @@
 package net.frozenorb.potpvp.arena;
 
-import com.google.common.base.Preconditions;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Predicate;
 
-import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.util.AngleUtils;
-import net.frozenorb.qlib.cuboid.Cuboid;
-import net.frozenorb.qlib.util.Callback;
-
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Skull;
+import org.bukkit.craftbukkit.v1_7_R4.util.LongHash;
 
-import java.util.Objects;
-import java.util.function.Predicate;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import net.frozenorb.chunksnapshot.ChunkSnapshot;
+import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.util.AngleUtils;
+import net.frozenorb.qlib.cuboid.Cuboid;
+import net.frozenorb.qlib.util.Callback;
 
 /**
  * Represents a pasted instance of an {@link ArenaSchematic}.
@@ -73,6 +77,8 @@ public final class Arena {
     // AccessLevel.NONE so arenas can only marked as in use
     // or not in use by the appropriate methods in ArenaHandler
     @Getter @Setter(AccessLevel.PACKAGE) private transient boolean inUse;
+
+    private final transient Map<Long, ChunkSnapshot> chunkSnapshots = Maps.newHashMap();
 
     public Arena() {} // for gson
 
@@ -168,6 +174,35 @@ public final class Arena {
                 for (int z = start.getBlockZ(); z < end.getBlockZ(); z++) {
                     callback.callback(world.getBlockAt(x, y, z));
                 }
+            }
+        }
+    }
+
+    public void takeSnapshot() {
+        synchronized (chunkSnapshots) {
+            forEachChunk(chunk -> chunkSnapshots.put(LongHash.toLong(chunk.getX(), chunk.getZ()), chunk.takeSnapshot()));
+        }
+    }
+
+    public void restore() {
+        synchronized (chunkSnapshots) {
+            World world = bounds.getWorld();
+            chunkSnapshots.entrySet().forEach(entry -> world.getChunkAt(LongHash.msw(entry.getKey()), LongHash.lsw(entry.getKey())).restoreSnapshot(entry.getValue()));
+            chunkSnapshots.clear();
+        }
+    }
+
+    private void forEachChunk(Callback<Chunk> callback) {
+        int lowerX = bounds.getLowerX() >> 4;
+        int lowerZ = bounds.getLowerZ() >> 4;
+        int upperX = bounds.getUpperX() >> 4;
+        int upperZ = bounds.getUpperZ() >> 4;
+
+        World world = bounds.getWorld();
+
+        for (int x = lowerX; x <= upperX; x++) {
+            for (int z = lowerZ; z <= upperZ; z++) {
+                callback.callback(world.getChunkAt(x, z));
             }
         }
     }

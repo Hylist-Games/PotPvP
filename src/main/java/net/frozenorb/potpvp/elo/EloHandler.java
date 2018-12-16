@@ -1,35 +1,39 @@
 package net.frozenorb.potpvp.elo;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import lombok.Getter;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.elo.listener.EloLoadListener;
 import net.frozenorb.potpvp.elo.listener.EloUpdateListener;
 import net.frozenorb.potpvp.elo.repository.EloRepository;
 import net.frozenorb.potpvp.elo.repository.MongoEloRepository;
 import net.frozenorb.potpvp.kittype.KitType;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import net.frozenorb.qlib.util.UUIDUtils;
 
 public final class EloHandler {
 
-    private static final int DEFAULT_ELO = 1_500;
+    public static final int DEFAULT_ELO = 1000;
 
     private final Map<Set<UUID>, Map<KitType, Integer>> eloData = new ConcurrentHashMap<>();
-    private final EloRepository eloRepository;
+    @Getter private final EloRepository eloRepository;
 
     public EloHandler() {
         Bukkit.getPluginManager().registerEvents(new EloLoadListener(this), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new EloUpdateListener(this, new EloCalculator(
-            50,
+            35, // k power
             7,
             25,
             7,
@@ -50,6 +54,18 @@ public final class EloHandler {
     public int getElo(Set<UUID> playerUuids, KitType kitType) {
         Map<KitType, Integer> partyElo = eloData.getOrDefault(playerUuids, ImmutableMap.of());
         return partyElo.getOrDefault(kitType, DEFAULT_ELO);
+    }
+
+    public int getGlobalElo(UUID uuid) {
+        Map<KitType, Integer> eloValues = eloData.getOrDefault(ImmutableSet.of(uuid), ImmutableMap.of());
+        if (eloValues.isEmpty()) return EloHandler.DEFAULT_ELO;
+        int[] wrapper = new int[2];
+        KitType.getAllTypes().stream().filter(kit -> kit.isSupportsRanked()).forEach(kitType -> {
+            wrapper[0] = wrapper[0] + 1;
+            wrapper[1] = wrapper[1] + eloValues.getOrDefault(kitType, EloHandler.DEFAULT_ELO);
+        });
+
+        return wrapper[1] / wrapper[0];
     }
 
     public void setElo(Set<UUID> playerUuids, KitType kitType, int newElo) {
@@ -85,4 +101,28 @@ public final class EloHandler {
         eloData.remove(playerUuids);
     }
 
+    public Map<String, Integer> topElo(KitType type) {
+        Map<String, Integer> topElo;
+
+        try {
+            topElo = eloRepository.topElo(type);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            topElo = ImmutableMap.of();
+        }
+
+        return topElo;
+    }
+
+    public void resetElo(final UUID player) {
+        Bukkit.getLogger().info("Resetting elo of " + UUIDUtils.name(player) + ".");
+        Bukkit.getScheduler().runTaskAsynchronously(PotPvPSI.getInstance(), () -> {
+            unloadElo(ImmutableSet.of(player));
+            try {
+                eloRepository.saveElo(ImmutableSet.of(player), ImmutableMap.of());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 }

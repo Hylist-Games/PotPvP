@@ -1,15 +1,16 @@
 package net.frozenorb.potpvp.duel;
 
-import net.frozenorb.potpvp.kittype.KitType;
+import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
+import net.frozenorb.potpvp.kittype.KitType;
 
 public final class PlayerDuelInvite extends DuelInvite<UUID> {
 
-    public PlayerDuelInvite(Player sender, Player target, KitType kitType) {
-        super(sender.getUniqueId(), target.getUniqueId(), kitType);
+    public PlayerDuelInvite(Player sender, Player target, KitType kitType, Set<String> maps) {
+        super(sender.getUniqueId(), target.getUniqueId(), kitType, maps);
     }
 
 }

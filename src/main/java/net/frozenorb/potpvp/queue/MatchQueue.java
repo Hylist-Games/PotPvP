@@ -99,7 +99,8 @@ public final class MatchQueue {
             ImmutableList.of(teamA, teamB),
             kitType,
             ranked,
-            !ranked // allowRematches is the inverse of ranked
+            !ranked, // allowRematches is the inverse of ranked
+            null
         );
 
         // only remove entries if match creation was successfull

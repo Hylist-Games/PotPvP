@@ -1,5 +1,14 @@
 package net.frozenorb.potpvp.party.menu.otherparties;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.party.Party;
@@ -7,27 +16,22 @@ import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.setting.Setting;
 import net.frozenorb.potpvp.setting.SettingHandler;
 import net.frozenorb.qlib.menu.Button;
-import net.frozenorb.qlib.menu.Menu;
+import net.frozenorb.qlib.menu.pagination.PaginatedMenu;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-public final class OtherPartiesMenu extends Menu {
+public final class OtherPartiesMenu extends PaginatedMenu {
 
     public OtherPartiesMenu() {
-        super("Other parties");
         setPlaceholder(true);
         setAutoUpdate(true);
     }
 
     @Override
-    public Map<Integer, Button> getButtons(Player player) {
+    public String getPrePaginatedTitle(Player player) {
+        return "Other parties";
+    }
+
+    @Override
+    public Map<Integer, Button> getAllPagesButtons(Player player) {
         SettingHandler settingHandler = PotPvPSI.getInstance().getSettingHandler();
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
         LobbyHandler lobbyHandler = PotPvPSI.getInstance().getLobbyHandler();
@@ -51,6 +55,10 @@ public final class OtherPartiesMenu extends Menu {
                 continue;
             }
 
+            /* if (PotPvPSI.getInstance().getTournamentHandler().isInTournament(party)) {
+                continue;
+            } */
+
             buttons.put(index++, new OtherPartyButton(party));
         }
 
@@ -66,4 +74,8 @@ public final class OtherPartiesMenu extends Menu {
         return 9 * 6;
     }
 
+    @Override
+    public int getMaxItemsPerPage(Player player) {
+        return 9 * 5; // top row is dedicated to switching
+    }
 }

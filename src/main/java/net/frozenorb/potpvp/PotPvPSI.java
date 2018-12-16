@@ -1,9 +1,34 @@
 package net.frozenorb.potpvp;
 
-import com.comphenix.protocol.ProtocolLibrary;
+import java.io.IOException;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
+import org.bukkit.craftbukkit.libs.com.google.gson.TypeAdapter;
+import org.bukkit.craftbukkit.libs.com.google.gson.stream.JsonReader;
+import org.bukkit.craftbukkit.libs.com.google.gson.stream.JsonWriter;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.util.BlockVector;
+import org.bukkit.util.Vector;
+import org.spigotmc.SpigotConfig;
+
+import com.google.common.collect.ImmutableMap;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
+import lombok.Getter;
+import net.frozenorb.chunksnapshot.ChunkSnapshot;
+import net.frozenorb.hydrogen.Hydrogen;
+import net.frozenorb.hydrogen.punishment.Punishment;
+import net.frozenorb.hydrogen.punishment.meta.PunishmentMeta;
+import net.frozenorb.hydrogen.punishment.meta.PunishmentMetaFetcher;
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.duel.DuelHandler;
 import net.frozenorb.potpvp.elo.EloHandler;
@@ -24,16 +49,18 @@ import net.frozenorb.potpvp.listener.PearlCooldownListener;
 import net.frozenorb.potpvp.listener.RankedMatchQualificationListener;
 import net.frozenorb.potpvp.listener.TabCompleteListener;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
+import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.nametag.PotPvPNametagProvider;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.postmatchinv.PostMatchInvHandler;
-import net.frozenorb.potpvp.protocol.DisableSpectatorSoundAdapter;
 import net.frozenorb.potpvp.queue.QueueHandler;
 import net.frozenorb.potpvp.rematch.RematchHandler;
 import net.frozenorb.potpvp.scoreboard.PotPvPScoreboardConfiguration;
 import net.frozenorb.potpvp.setting.SettingHandler;
+import net.frozenorb.potpvp.statistics.StatisticsHandler;
 import net.frozenorb.potpvp.tab.PotPvPLayoutProvider;
+import net.frozenorb.potpvp.tournament.TournamentHandler;
 import net.frozenorb.qlib.command.FrozenCommandHandler;
 import net.frozenorb.qlib.nametag.FrozenNametagHandler;
 import net.frozenorb.qlib.scoreboard.FrozenScoreboardHandler;
@@ -43,23 +70,6 @@ import net.frozenorb.qlib.serialization.LocationAdapter;
 import net.frozenorb.qlib.serialization.PotionEffectAdapter;
 import net.frozenorb.qlib.serialization.VectorAdapter;
 import net.frozenorb.qlib.tab.FrozenTabHandler;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
-import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.BlockVector;
-import org.bukkit.util.Vector;
-
-import lombok.Getter;
-import mkremins.fanciful.FancyMessage;
 
 public final class PotPvPSI extends JavaPlugin {
 
@@ -71,6 +81,7 @@ public final class PotPvPSI extends JavaPlugin {
         .registerTypeHierarchyAdapter(Vector.class, new VectorAdapter())
         .registerTypeAdapter(BlockVector.class, new BlockVectorAdapter())
         .registerTypeHierarchyAdapter(KitType.class, new KitTypeJsonAdapter()) // custom KitType serializer
+        .registerTypeAdapter(ChunkSnapshot.class, new ChunkSnapshotAdapter())
         .serializeNulls()
         .create();
 
@@ -90,9 +101,14 @@ public final class PotPvPSI extends JavaPlugin {
     @Getter private FollowHandler followHandler;
     @Getter private EloHandler eloHandler;
     @Getter private EventHandler eventHandler;
+    @Getter private TournamentHandler tournamentHandler;
+    
+    @Getter private ChatColor dominantColor = ChatColor.LIGHT_PURPLE;
 
     @Override
     public void onEnable() {
+        SpigotConfig.onlyCustomTab = true; // because we'll definitely forget
+        this.dominantColor = ChatColor.valueOf(this.getConfig().getString("dominantColor", "LIGHT_PURPLE"));
         instance = this;
         saveDefaultConfig();
 
@@ -117,6 +133,8 @@ public final class PotPvPSI extends JavaPlugin {
         followHandler = new FollowHandler();
         eloHandler = new EloHandler();
         eventHandler = new EventHandler();
+        tournamentHandler = new TournamentHandler();
+
 
         getServer().getPluginManager().registerEvents(new BasicPreventionListener(), this);
         getServer().getPluginManager().registerEvents(new BowHealthListener(), this);
@@ -126,8 +144,7 @@ public final class PotPvPSI extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PearlCooldownListener(), this);
         getServer().getPluginManager().registerEvents(new RankedMatchQualificationListener(), this);
         getServer().getPluginManager().registerEvents(new TabCompleteListener(), this);
-
-        ProtocolLibrary.getProtocolManager().addPacketListener(new DisableSpectatorSoundAdapter());
+        getServer().getPluginManager().registerEvents(new StatisticsHandler(), this);
 
         FrozenCommandHandler.registerAll(this);
         FrozenCommandHandler.registerParameterType(EventType.class, new EventTypeParameterType());
@@ -135,13 +152,31 @@ public final class PotPvPSI extends JavaPlugin {
         FrozenTabHandler.setLayoutProvider(new PotPvPLayoutProvider());
         FrozenNametagHandler.registerProvider(new PotPvPNametagProvider());
         FrozenScoreboardHandler.setConfiguration(PotPvPScoreboardConfiguration.create());
+
+        Hydrogen.getInstance().getPunishmentHandler().registerMetaFetcher(new PunishmentMetaFetcher(PotPvPSI.getInstance()) {
+            
+            @Override
+            public PunishmentMeta fetch(UUID target) {
+                return PunishmentMeta.of(ImmutableMap.of());
+            }
+
+            @Override
+            public PunishmentMeta fetch(UUID target, Punishment.PunishmentType type) {
+                // now we reset elo :^)
+                if (type == Punishment.PunishmentType.BLACKLIST || type == Punishment.PunishmentType.BAN) eloHandler.resetElo(target);
+                return fetch(target);
+            }
+            
+        });
     }
 
     @Override
     public void onDisable() {
-        instance = null;
+        for (Match match : this.matchHandler.getHostedMatches()) {
+            if (match.getKitType().isBuildingAllowed()) match.getArena().restore();
+        }
 
-        mongoClient.close();
+        instance = null;
     }
 
     private void setupMongo() {
@@ -154,4 +189,18 @@ public final class PotPvPSI extends JavaPlugin {
         mongoDatabase = mongoClient.getDatabase(databaseId);
     }
 
+    // This is here because chunk snapshots are (still) being deserialized, and serialized sometimes.
+    private static class ChunkSnapshotAdapter extends TypeAdapter<ChunkSnapshot> {
+
+        @Override
+        public ChunkSnapshot read(JsonReader arg0) throws IOException {
+            return null;
+        }
+
+        @Override
+        public void write(JsonWriter arg0, ChunkSnapshot arg1) throws IOException {
+            
+        }
+        
+    }
 }

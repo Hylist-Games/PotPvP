@@ -21,6 +21,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +38,13 @@ import lombok.Setter;
  * targets (although not senders) are guaranteed to be online.
  */
 public final class Party {
+
+    /**
+     * {@link UUID} of this party
+     * 
+     * New UUID = new Party
+     */
+    @Getter private final UUID partyId = new UUID(qLib.RANDOM.nextLong(), qLib.RANDOM.nextLong());
 
     // the maximum party size for non-op leaders
     public static final int MAX_SIZE = 30;

@@ -46,9 +46,11 @@ public final class SpectateCommand {
             return;
         }
 
+        boolean bypassesSpectating = PotPvPSI.getInstance().getTournamentHandler().isInTournament(targetMatch);
+
         // only check the seting if the target is actually playing in the match
-        if (targetMatch.getTeam(target.getUniqueId()) != null && !settingHandler.getSetting(target, Setting.ALLOW_SPECTATORS)) {
-            if (sender.isOp()) {
+        if (!bypassesSpectating && (targetMatch.getTeam(target.getUniqueId()) != null && !settingHandler.getSetting(target, Setting.ALLOW_SPECTATORS))) {
+            if (sender.isOp() || sender.hasPermission("basic.staff")) {
                 sender.sendMessage(ChatColor.RED + "Bypassing " + target.getName() + "'s no spectators preference...");
             } else {
                 sender.sendMessage(ChatColor.RED + target.getName() + " doesn't allow spectators at the moment.");
@@ -56,7 +58,7 @@ public final class SpectateCommand {
             }
         }
 
-        if (!sender.isOp() && targetMatch.getTeams().size() == 2) {
+        if ((!sender.isOp() && !sender.hasPermission("basic.staff")) && targetMatch.getTeams().size() == 2 && !bypassesSpectating) {
             MatchTeam teamA = targetMatch.getTeams().get(0);
             MatchTeam teamB = targetMatch.getTeams().get(1);
 

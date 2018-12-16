@@ -16,7 +16,7 @@ public final class PartyJoinCommand {
     // wasn't provided. No Optional<String> :(
     private static final String NO_PASSWORD_PROVIDED = "skasjkdasdjhksahjd";
 
-    @Command(names = {"party join", "p join", "t join", "team join", "join", "f join"}, permission = "")
+    @Command(names = {"party join", "p join", "t join", "team join", "f join"}, permission = "")
     public static void partyJoin(Player sender, @Param(name = "player") Player target, @Param(name = "password", defaultValue = NO_PASSWORD_PROVIDED) String providedPassword) {
         PartyHandler partyHandler = PotPvPSI.getInstance().getPartyHandler();
         Party targetParty = partyHandler.getParty(target);

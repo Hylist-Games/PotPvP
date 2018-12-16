@@ -33,6 +33,8 @@ public final class KitSelectionListener implements Listener {
         Match match = event.getMatch();
         KitType kitType = match.getKitType();
 
+        if (kitType.getId().equals("SUMO")) return; // no kits for sumo
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             MatchTeam team = match.getTeam(player.getUniqueId());
 

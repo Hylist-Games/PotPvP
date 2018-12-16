@@ -25,13 +25,13 @@ final class LobbyLayoutProvider implements BiConsumer<Player, TabLayout> {
         EloHandler eloHandler = PotPvPSI.getInstance().getEloHandler();
 
         rankings: {
-            tabLayout.set(1, 3, ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Your Rankings");
+            tabLayout.set(1, 3, PotPvPSI.getInstance().getDominantColor().toString() + ChatColor.BOLD + "Your Rankings");
 
             int x = 0;
             int y = 4;
 
             for (KitType kitType : KitType.getAllTypes()) {
-                if (kitType.isHidden()) {
+                if (kitType.isHidden() || !kitType.isSupportsRanked()) {
                     continue;
                 }
 

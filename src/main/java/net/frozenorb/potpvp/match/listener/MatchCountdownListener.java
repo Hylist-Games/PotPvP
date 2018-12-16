@@ -1,19 +1,20 @@
 package net.frozenorb.potpvp.match.listener;
 
-import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.match.Match;
-import net.frozenorb.potpvp.match.MatchHandler;
-import net.frozenorb.potpvp.match.MatchState;
-
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
+
+import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.match.Match;
+import net.frozenorb.potpvp.match.MatchHandler;
+import net.frozenorb.potpvp.match.MatchState;
 
 // the name of this listener is definitely kind of iffy (as it's really any non-IN_PROGRESS match),
 // but any other ideas I had were even less descriptive
@@ -48,7 +49,7 @@ public final class MatchCountdownListener implements Listener {
         ItemStack item = event.getItem();
         Material type = item.getType();
 
-        if ((type == Material.POTION && Potion.fromItemStack(item).isSplash()) || type == Material.ENDER_PEARL) {
+        if ((type == Material.POTION && Potion.fromItemStack(item).isSplash()) || type == Material.ENDER_PEARL || type == Material.SNOW_BALL) {
             MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
             Match match = matchHandler.getMatchPlaying(event.getPlayer());
 
@@ -59,4 +60,24 @@ public final class MatchCountdownListener implements Listener {
         }
     }
 
+
+    /**
+     * Prevents bow-shooting, rods and projectiles in general from being used in non IN_PROGRESS matches.
+     * @param event
+     */
+    @EventHandler
+    public void onPlayerShoot(ProjectileLaunchEvent event) {
+        if (!(event.getEntity().getShooter() instanceof Player)) {
+            return;
+        }
+
+        Player player = (Player) event.getEntity().getShooter();
+
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        Match match = matchHandler.getMatchPlaying(player);
+
+        if (match != null && match.getState() == MatchState.COUNTDOWN) {
+            event.setCancelled(true);
+        }
+    }
 }

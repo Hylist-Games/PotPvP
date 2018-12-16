@@ -12,6 +12,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.google.common.collect.ImmutableSet;
+
 public final class RematchItemListener extends ItemListener {
 
     public RematchItemListener(RematchHandler rematchHandler) {
@@ -20,7 +22,7 @@ public final class RematchItemListener extends ItemListener {
 
             if (rematchData != null) {
                 Player target = Bukkit.getPlayer(rematchData.getTarget());
-                DuelCommand.duel(player, target, rematchData.getKitType());
+                DuelCommand.duel(player, target, rematchData.getKitType(), ImmutableSet.of(rematchData.getArenaName()));
 
                 InventoryUtils.resetInventoryDelayed(player);
                 InventoryUtils.resetInventoryDelayed(target);

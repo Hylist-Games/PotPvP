@@ -51,7 +51,12 @@ public class ManageKitTypeMenu extends Menu {
 
         buttons.put(getSlot(0, 1), new BooleanTraitButton<>(type, "Hidden", KitType::setHidden, KitType::isHidden, KitType::saveAsync));
         buttons.put(getSlot(0, 2), new BooleanTraitButton<>(type, "Editor Item Spawn", KitType::setEditorSpawnAllowed, KitType::isEditorSpawnAllowed, KitType::saveAsync));
-        buttons.put(getSlot(0, 3), new Button() {
+        buttons.put(getSlot(0, 3), new BooleanTraitButton<>(type, "Health Shown", KitType::setHealthShown, KitType::isHealthShown, KitType::saveAsync));
+        buttons.put(getSlot(0, 4), new BooleanTraitButton<>(type, "Building Allowed", KitType::setBuildingAllowed, KitType::isBuildingAllowed, KitType::saveAsync));
+        buttons.put(getSlot(0, 5), new BooleanTraitButton<>(type, "Hardcore Healing", KitType::setHardcoreHealing, KitType::isHardcoreHealing, KitType::saveAsync));
+        buttons.put(getSlot(0, 6), new BooleanTraitButton<>(type, "Pearl Damage", KitType::setPearlDamage, KitType::isPearlDamage, KitType::saveAsync));
+        buttons.put(getSlot(0, 7), new BooleanTraitButton<>(type, "Supports Ranked", KitType::setSupportsRanked, KitType::isSupportsRanked, KitType::saveAsync));
+        buttons.put(getSlot(0, 8), new Button() {
 
             @Override
             public String getName(Player player) {

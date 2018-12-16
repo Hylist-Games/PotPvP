@@ -12,22 +12,22 @@ import lombok.experimental.UtilityClass;
 public final class PotPvPLang {
 
     /**
-     * `&9&l» ` - Arrow used on the left side of item display names
+     * `&7&l» ` - Arrow used on the left side of item display names
      * Named left arrow due to its usage on the left side of items, despite the fact
      * the arrow is actually pointing to the right.
      * @see net.frozenorb.potpvp.lobby.LobbyItems usage
      * @see net.frozenorb.potpvp.queue.QueueItems usage
      */
-    public static final String LEFT_ARROW = ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "» ";
+    public static final String LEFT_ARROW = ChatColor.GRAY.toString() + "» ";
 
     /**
-     * ` &9&l«` - Arrow used on the right side of item display names
+     * ` &7&l«` - Arrow used on the right side of item display names
      * Named right arrow due to its usage on the right side of items, despite the fact
      * the arrow is actually pointing to the left.
      * @see net.frozenorb.potpvp.lobby.LobbyItems usage
      * @see net.frozenorb.potpvp.queue.QueueItems usage
      */
-    public static final String RIGHT_ARROW = " " + ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "«";
+    public static final String RIGHT_ARROW = " " + ChatColor.GRAY.toString() + "«";
 
     /**
      * Example omitted - Solid line which almost entirely spans the

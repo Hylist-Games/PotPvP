@@ -19,11 +19,13 @@ final class PostMatchHealsLeftButton extends Button {
     private final UUID player;
     private final HealingMethod healingMethod;
     private final int healsRemaining;
+    private final int missedHeals;
 
-    PostMatchHealsLeftButton(UUID player, HealingMethod healingMethod, int healsRemaining) {
+    PostMatchHealsLeftButton(UUID player, HealingMethod healingMethod, int healsRemaining, int missedHeals) {
         this.player = player;
         this.healingMethod = healingMethod;
         this.healsRemaining = healsRemaining;
+        this.missedHeals = missedHeals;
     }
 
     @Override
@@ -34,7 +36,8 @@ final class PostMatchHealsLeftButton extends Button {
     @Override
     public List<String> getDescription(Player player) {
         return ImmutableList.of(
-            ChatColor.YELLOW + UUIDUtils.name(this.player) + " had " + healsRemaining + " " + (healsRemaining == 1 ? healingMethod.getLongSingular() : healingMethod.getLongPlural()) + " left."
+            ChatColor.YELLOW + UUIDUtils.name(this.player) + " had " + healsRemaining + " " + (healsRemaining == 1 ? healingMethod.getLongSingular() : healingMethod.getLongPlural()) + " left.",
+            ChatColor.YELLOW + UUIDUtils.name(this.player) + " missed " + missedHeals + " health potion" + (missedHeals == 1 ? "." : "s.")
         );
     }
 

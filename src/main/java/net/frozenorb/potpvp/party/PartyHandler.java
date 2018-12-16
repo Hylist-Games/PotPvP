@@ -64,6 +64,10 @@ public final class PartyHandler {
         return playerPartyCache.get(player.getUniqueId());
     }
 
+    public Party getParty(UUID uuid) {
+        return playerPartyCache.get(uuid);
+    }
+
     /**
      * Looks up a player's party, or creates a Party (with the player as the leader)
      * if none exists.

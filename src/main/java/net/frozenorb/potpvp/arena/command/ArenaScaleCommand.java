@@ -1,6 +1,7 @@
 package net.frozenorb.potpvp.arena.command;
 
 import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.potpvp.arena.Arena;
 import net.frozenorb.potpvp.arena.ArenaHandler;
 import net.frozenorb.potpvp.arena.ArenaSchematic;
 import net.frozenorb.qlib.command.Command;
@@ -26,6 +27,22 @@ public final class ArenaScaleCommand {
 
         arenaHandler.getGrid().scaleCopies(schematic, count, () -> {
             sender.sendMessage(ChatColor.GREEN + "Scaled " + schematic.getName() + " to " + count + " copies.");
+        });
+    }
+
+    @Command(names = "arena rescaleall", permission = "op")
+    public static void arenaRescaleAll(Player sender) {
+        PotPvPSI.getInstance().getArenaHandler().getSchematics().forEach(schematic -> {
+            ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
+            int totalCopies = 0;
+            int inUseCopies = 0;
+
+            for (Arena arena : arenaHandler.getArenas(schematic)) {
+                totalCopies++;
+            }
+
+            arenaScale(sender, schematic.getName(), 0);
+            arenaScale(sender, schematic.getName(), totalCopies);
         });
     }
 

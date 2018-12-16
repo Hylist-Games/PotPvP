@@ -69,7 +69,7 @@ public final class QueueItemListener extends ItemListener {
 
                 if (!RankedMatchQualificationListener.isQualified(player.getUniqueId())) {
                     int needed = RankedMatchQualificationListener.getWinsNeededToQualify(player.getUniqueId());
-                    player.sendMessage(ChatColor.RED + "You can't join ranked queues with less than 20 unranked 1v1 wins. You need " + needed + " more wins!");
+                    player.sendMessage(ChatColor.RED + "You can't join ranked queues with less than " + RankedMatchQualificationListener.MIN_MATCH_WINS + " unranked 1v1 wins. You need " + needed + " more wins!");
                     return;
                 }
             }
@@ -78,7 +78,7 @@ public final class QueueItemListener extends ItemListener {
                 new CustomSelectKitTypeMenu(kitType -> {
                     queueHandler.joinQueue(player, kitType, ranked);
                     player.closeInventory();
-                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked, "Join " + (ranked ? "Ranked" : "Unranked") + " Queue...").openMenu(player);
+                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked, "Join " + (ranked ? "Ranked" : "Unranked") + " Queue...", ranked).openMenu(player);
             }
         };
     }
@@ -102,7 +102,7 @@ public final class QueueItemListener extends ItemListener {
                 for (UUID member : party.getMembers()) {
                     if (!RankedMatchQualificationListener.isQualified(member)) {
                         int needed = RankedMatchQualificationListener.getWinsNeededToQualify(member);
-                        player.sendMessage(ChatColor.RED + "Your party can't join ranked queues because " + UUIDUtils.name(member) + " has less than 20 unranked 1v1 wins. They need " + needed + " more wins!");
+                        player.sendMessage(ChatColor.RED + "Your party can't join ranked queues because " + UUIDUtils.name(member) + " has less than " + RankedMatchQualificationListener.MIN_MATCH_WINS + " unranked 1v1 wins. They need " + needed + " more wins!");
                         return;
                     }
                 }
@@ -114,7 +114,7 @@ public final class QueueItemListener extends ItemListener {
                 new CustomSelectKitTypeMenu(kitType -> {
                     queueHandler.joinQueue(party, kitType, ranked);
                     player.closeInventory();
-                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked, "Join " + (ranked ? "Ranked" : "Unranked") + " queue...").openMenu(player);
+                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked, "Join " + (ranked ? "Ranked" : "Unranked") + " queue...", ranked).openMenu(player);
             }
         };
     }
@@ -131,7 +131,7 @@ public final class QueueItemListener extends ItemListener {
 
             return new CustomSelectKitTypeMenu.CustomKitTypeMeta(
                 // clamp value to >= 1 && <= 64
-                Math.max(1, Math.min(64, ranked ? inQueueRanked : inQueueUnranked + inFightsUnranked)),
+                Math.max(1, Math.min(64, ranked ? inQueueRanked + inFightsRanked : inQueueUnranked + inFightsUnranked)),
                 ImmutableList.of(
                     ChatColor.AQUA.toString() + ChatColor.BOLD + (ranked ? ChatColor.UNDERLINE.toString() : "") + "Ranked:",
                     ChatColor.GREEN + "   In fights: " + ChatColor.WHITE + inFightsRanked,

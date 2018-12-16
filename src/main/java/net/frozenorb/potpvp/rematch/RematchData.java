@@ -18,12 +18,14 @@ public final class RematchData {
     @Getter private final UUID target;
     @Getter private final KitType kitType;
     @Getter private final Instant expiresAt;
+    @Getter private final String arenaName;
 
-    RematchData(UUID sender, UUID target, KitType kitType, int durationSeconds) {
+    RematchData(UUID sender, UUID target, KitType kitType, int durationSeconds, String arenaName) {
         this.sender = Preconditions.checkNotNull(sender, "sender");
         this.target = Preconditions.checkNotNull(target, "target");
         this.kitType = Preconditions.checkNotNull(kitType, "kitType");
         this.expiresAt = Instant.now().plusSeconds(durationSeconds);
+        this.arenaName = Preconditions.checkNotNull(arenaName, "arenaName");
     }
 
     public boolean isExpired() {

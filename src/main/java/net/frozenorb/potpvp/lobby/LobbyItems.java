@@ -15,7 +15,10 @@ import static org.bukkit.ChatColor.BOLD;
 import static org.bukkit.ChatColor.GRAY;
 import static org.bukkit.ChatColor.GREEN;
 import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.DARK_PURPLE;
 import static org.bukkit.ChatColor.YELLOW;
+
+import org.bukkit.ChatColor;
 
 @UtilityClass
 public final class LobbyItems {
@@ -26,6 +29,7 @@ public final class LobbyItems {
     public static final ItemStack DISABLE_SPEC_MODE_ITEM = new ItemStack(Material.LEVER);
     public static final ItemStack MANAGE_ITEM = new ItemStack(Material.ANVIL);
     public static final ItemStack UNFOLLOW_ITEM = new ItemStack(Material.INK_SACK, 1, DyeColor.RED.getDyeData());
+    public static final ItemStack PLAYER_STATISTICS = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
 
     static {
         ItemUtils.setDisplayName(SPECTATE_RANDOM_ITEM, LEFT_ARROW + YELLOW.toString() + BOLD + "Spectate Random Match" + RIGHT_ARROW);
@@ -34,6 +38,7 @@ public final class LobbyItems {
         ItemUtils.setDisplayName(DISABLE_SPEC_MODE_ITEM, LEFT_ARROW + AQUA.toString() + BOLD + "Disable Spectator Mode" + RIGHT_ARROW);
         ItemUtils.setDisplayName(MANAGE_ITEM, LEFT_ARROW + GRAY.toString() + BOLD.toString() + "Manage PotPvP" + RIGHT_ARROW);
         ItemUtils.setDisplayName(UNFOLLOW_ITEM, LEFT_ARROW + RED + BOLD.toString() + "Stop Following" + RIGHT_ARROW);
+        ItemUtils.setDisplayName(PLAYER_STATISTICS, LEFT_ARROW + ChatColor.LIGHT_PURPLE.toString() + BOLD + "Statistics" + RIGHT_ARROW);
     }
 
 }

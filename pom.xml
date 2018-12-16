@@ -26,11 +26,32 @@
         </repository>
     </repositories>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.16.16</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <!-- Spigot Jars -->
         <dependency>
             <groupId>net.frozenorb</groupId>
-            <artifactId>mspigot-api</artifactId>
+            <artifactId>sourspigot-server</artifactId>
             <version>1.7.10-R0.1-SNAPSHOT</version>
         </dependency>
 
@@ -50,7 +71,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.10</version>
+            <version>1.16.16</version>
         </dependency>
         <dependency>
             <groupId>com.sk89q</groupId>

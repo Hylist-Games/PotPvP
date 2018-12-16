@@ -1,17 +1,16 @@
 package net.frozenorb.potpvp.arena;
 
-import com.sk89q.worldedit.CuboidClipboard;
-import com.sk89q.worldedit.Vector;
-
-import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.qlib.cuboid.Cuboid;
+import java.io.IOException;
 
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.IOException;
+import com.sk89q.worldedit.CuboidClipboard;
+import com.sk89q.worldedit.Vector;
 
 import lombok.Getter;
+import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.qlib.cuboid.Cuboid;
 
 /**
  * Represents the grid on the world
@@ -35,7 +34,7 @@ public final class ArenaGrid {
     /**
      * 'Starting' point of the grid. Expands (+, +) from this point.
      */
-    public static final Vector STARTING_POINT = new Vector(1_000, 70, 1_000);
+    public static final Vector STARTING_POINT = new Vector(1_000, 80, 1_000);
 
     public static final int GRID_SPACING_X = 300;
     public static final int GRID_SPACING_Z = 300;

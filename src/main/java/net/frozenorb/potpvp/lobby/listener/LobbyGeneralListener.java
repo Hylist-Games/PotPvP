@@ -1,8 +1,5 @@
 package net.frozenorb.potpvp.lobby.listener;
 
-import net.frozenorb.potpvp.lobby.LobbyHandler;
-import net.frozenorb.qlib.menu.Menu;
-
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -23,6 +20,10 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
+import net.frozenorb.potpvp.lobby.LobbyHandler;
+import net.frozenorb.potpvp.lobby.listener.LobbyParkourListener.Parkour;
+import net.frozenorb.qlib.menu.Menu;
+
 public final class LobbyGeneralListener implements Listener {
 
     private final LobbyHandler lobbyHandler;
@@ -33,6 +34,12 @@ public final class LobbyGeneralListener implements Listener {
 
     @EventHandler
     public void onPlayerSpawnLocation(PlayerSpawnLocationEvent event) {
+        Parkour parkour = LobbyParkourListener.getParkourMap().get(event.getPlayer().getUniqueId());
+        if (parkour != null && parkour.getCheckpoint() != null) {
+            event.setSpawnLocation(parkour.getCheckpoint().getLocation());
+            return;
+        }
+
         event.setSpawnLocation(lobbyHandler.getLobbyLocation());
     }
 

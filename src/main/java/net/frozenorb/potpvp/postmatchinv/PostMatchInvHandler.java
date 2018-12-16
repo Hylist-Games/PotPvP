@@ -106,7 +106,7 @@ public final class PostMatchInvHandler {
             }
 
             player.sendMessage(PostMatchInvLang.LINE);
-            player.sendMessage(PostMatchInvLang.INVENTORY_HEADER);
+            player.sendMessage(PotPvPSI.getInstance().getDominantColor() + "Post-Match Inventories " + ChatColor.GRAY + "(click name to view)");
 
             for (Object line : lines) {
                 if (line instanceof TextComponent[]) {

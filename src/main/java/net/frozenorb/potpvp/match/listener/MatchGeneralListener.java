@@ -1,5 +1,28 @@
 package net.frozenorb.potpvp.match.listener;
 
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.ItemStack;
+
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.arena.Arena;
 import net.frozenorb.potpvp.match.Match;
@@ -9,26 +32,6 @@ import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.nametag.PotPvPNametagProvider;
 import net.frozenorb.qlib.cuboid.Cuboid;
 import net.frozenorb.qlib.util.PlayerUtils;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.UUID;
 
 public final class MatchGeneralListener implements Listener {
 
@@ -136,17 +139,35 @@ public final class MatchGeneralListener implements Listener {
             // spectators get a nice message, players just get cancelled
             if (match.isSpectator(player.getUniqueId())) {
                 player.teleport(arena.getSpectatorSpawn());
-                player.sendMessage(ChatColor.RED + "You aren't allowed to leave the arena.");
-            } else if (player.getLocation().getY() >= bounds.getUpperY() || player.getLocation().getY() <= bounds.getLowerY()) {
+            } else if (to.getBlockY() >= bounds.getUpperY() || to.getBlockY() <= bounds.getLowerY()) { // if left vertically
+
+                if ((match.getKitType().getId().equals("SUMO") || match.getKitType().getId().equals("SPLEEF"))) {
+                    if (to.getBlockY() <= bounds.getLowerY() && bounds.getLowerY() - to.getBlockY() <= 20) return; // let the player fall 10 blocks
+                    match.markDead(player);
+                    match.addSpectator(player, null, true);
+                }
+
                 player.teleport(arena.getSpectatorSpawn());
             } else {
+                if (match.getKitType().getId().equals("SUMO") || match.getKitType().getId().equals("SPLEEF")) { // if they left horizontally
+                    match.markDead(player);
+                    match.addSpectator(player, null, true);
+                    player.teleport(arena.getSpectatorSpawn());
+                }
+
                 event.setCancelled(true);
+            }
+        } else if (to.getBlockY() + 5 < arena.getSpectatorSpawn().getBlockY()) { // if the player is still in the arena bounds but fell down from the spawn point
+            if (match.getKitType().getId().equals("SUMO")) {
+                match.markDead(player);
+                match.addSpectator(player, null, true);
+                player.teleport(arena.getSpectatorSpawn());
             }
         }
     }
 
     /**
-     * Prevents (non-fall) damage between ANY two playuers not on opposing {@link MatchTeam}s.
+     * Prevents (non-fall) damage between ANY two players not on opposing {@link MatchTeam}s.
      * This includes cancelling damage from a player not in a match attacking a player in a match.
      */
     @EventHandler
@@ -172,6 +193,8 @@ public final class MatchGeneralListener implements Listener {
         }
 
         Match match = matchHandler.getMatchPlaying(damager);
+        boolean isSpleef = match != null && match.getKitType().getId().equals("SPLEEF");
+        boolean isSumo = match != null && match.getKitType().getId().equals("SUMO");
 
         // we only specifically allow damage where both players are in a match together
         // and not on the same team, everything else is cancelled.
@@ -179,10 +202,19 @@ public final class MatchGeneralListener implements Listener {
             MatchTeam victimTeam = match.getTeam(victim.getUniqueId());
             MatchTeam damagerTeam = match.getTeam(damager.getUniqueId());
 
-            if (victimTeam != null && victimTeam != damagerTeam) {
+            if (isSpleef && event.getDamager() instanceof Snowball) return;
+
+            if (isSumo && victimTeam != null && victimTeam != damagerTeam) {
+                // Ugly hack because people actually lose health & hunger in sumo somehow
+                event.setDamage(0);
+                return;
+            }
+
+            if (victimTeam != null && victimTeam != damagerTeam && !isSpleef) {
                 return;
             }
         }
+
 
         event.setCancelled(true);
     }
@@ -214,4 +246,30 @@ public final class MatchGeneralListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPickup(PlayerPickupItemEvent event) {
+        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
+        Player player = event.getPlayer();
+
+        if (!matchHandler.isPlayingMatch(player)) {
+            return;
+        }
+
+        Match match = matchHandler.getMatchPlaying(event.getPlayer());
+        if (match == null) return;
+
+        if (match.getState() == MatchState.ENDING || match.getState() == MatchState.TERMINATED) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onConsume(PlayerItemConsumeEvent event) {
+        ItemStack stack = event.getItem();
+        if (stack == null || stack.getType() != Material.POTION) return;
+
+        Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), () -> {
+            event.getPlayer().setItemInHand(null);
+        }, 1L);
+    }
 }

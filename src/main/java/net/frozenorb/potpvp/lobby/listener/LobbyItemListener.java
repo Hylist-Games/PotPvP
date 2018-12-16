@@ -6,6 +6,7 @@ import net.frozenorb.potpvp.follow.command.UnfollowCommand;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
 import net.frozenorb.potpvp.lobby.LobbyItems;
 import net.frozenorb.potpvp.lobby.menu.SpectateMenu;
+import net.frozenorb.potpvp.lobby.menu.StatisticsMenu;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchState;
@@ -83,6 +84,10 @@ public final class LobbyItemListener extends ItemListener {
                 newSpectating.addSpectator(player, null);
                 canUseRandomSpecItem.put(player.getUniqueId(), System.currentTimeMillis() + 3_000L);
             }
+        });
+
+        addHandler(LobbyItems.PLAYER_STATISTICS, player -> {
+            new StatisticsMenu().openMenu(player);
         });
 
         addHandler(LobbyItems.UNFOLLOW_ITEM, UnfollowCommand::unfollow);

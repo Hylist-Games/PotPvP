@@ -109,7 +109,7 @@ public enum Setting {
     ENABLE_GLOBAL_CHAT(
         ChatColor.RED + "Global Chat",
         ImmutableList.of(
-            ChatColor.BLUE + "If enabled, your will see messages",
+            ChatColor.BLUE + "If enabled, you will see messages",
             ChatColor.BLUE + "sent in the global chat channel.",
             "",
             ChatColor.BLUE + "Disable to only see OP messages."
@@ -119,6 +119,34 @@ public enum Setting {
         ChatColor.YELLOW + "Global chat is hidden",
         true,
         null // no permission required
+    ),
+    SEE_TOURNAMENT_JOIN_MESSAGE(
+            ChatColor.DARK_PURPLE + "Tournament Join Messages",
+            ImmutableList.of(
+                ChatColor.BLUE + "If enabled, you will see messages",
+                ChatColor.BLUE + "when people join the tournament",
+                "",
+                ChatColor.BLUE + "Disable to only see your own party join messages."
+            ),
+            Material.IRON_DOOR,
+            ChatColor.YELLOW + "Tournament join messages are shown",
+            ChatColor.YELLOW + "Tournament join messages are hidden",
+            true,
+            null // no permission required
+    ),
+    SEE_TOURNAMENT_ELIMINATION_MESSAGES(
+            ChatColor.DARK_PURPLE + "Tournament Elimination Messages",
+            ImmutableList.of(
+                ChatColor.BLUE + "If enabled, you will see messages when",
+                ChatColor.BLUE + "people are eliminated the tournament",
+                "",
+                ChatColor.BLUE + "Disable to only see your own party elimination messages."
+            ),
+            Material.SKULL_ITEM,
+            ChatColor.YELLOW + "Tournament elimination messages are shown",
+            ChatColor.YELLOW + "Tournament elimination messages are hidden",
+            true,
+            null // no permission required
     );
 
     /**

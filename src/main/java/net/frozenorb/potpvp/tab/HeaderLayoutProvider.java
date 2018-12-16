@@ -1,31 +1,26 @@
 package net.frozenorb.potpvp.tab;
 
-import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.match.MatchHandler;
-import net.frozenorb.qlib.tab.TabLayout;
-import net.frozenorb.qlib.util.PlayerUtils;
+import java.util.function.BiConsumer;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.function.BiConsumer;
+import net.frozenorb.potpvp.PotPvPSI;
+import net.frozenorb.qlib.tab.TabLayout;
 
 final class HeaderLayoutProvider implements BiConsumer<Player, TabLayout> {
 
     @Override
     public void accept(Player player, TabLayout tabLayout) {
-        MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
-
         header: {
-            tabLayout.set(1, 0, ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Arcane" + ChatColor.GRAY + " Practice");
+            tabLayout.set(1, 0, PotPvPSI.getInstance().getDominantColor().toString() + ChatColor.BOLD + (PotPvPSI.getInstance().getDominantColor() == ChatColor.DARK_PURPLE ? "Arcane" : "VeltPvP") +" Practice");
         }
 
+        /*
         status: {
-            tabLayout.set(0, 1, ChatColor.GRAY + "Online: " + Bukkit.getOnlinePlayers().size());
-            tabLayout.set(1, 1, ChatColor.GRAY + "Your Connection", PlayerUtils.getPing(player));
-            tabLayout.set(2, 1, ChatColor.GRAY + "In Fights: " + matchHandler.countPlayersPlayingInProgressMatches());
+            tabLayout.set(1, 1, ChatColor.GRAY + "Your Connection", Math.max(((PlayerUtils.getPing(player) + 5) / 10) * 10, 1));
         }
+        */
     }
 
 }

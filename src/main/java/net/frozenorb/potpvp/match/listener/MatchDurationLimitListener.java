@@ -7,11 +7,13 @@ import net.frozenorb.potpvp.match.MatchState;
 import net.frozenorb.potpvp.match.event.MatchStartEvent;
 import net.frozenorb.qlib.util.TimeUtils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public final class MatchDurationLimitListener implements Listener {
@@ -33,6 +35,15 @@ public final class MatchDurationLimitListener implements Listener {
                 if (match.getState() != MatchState.IN_PROGRESS) {
                     cancel();
                     return;
+                }
+
+                // Very ugly to do it here, but I don't want to put another runnable per match
+                if (match.getKitType().getId().equals("SUMO")) {
+                    match.getTeams().forEach(t -> t.getAllMembers().stream().map(Bukkit::getPlayer).filter(Objects::nonNull).forEach(p -> {
+                        p.setHealth(20);
+                        p.setFoodLevel(20);
+                        p.setSaturation(20);
+                    }));
                 }
 
                 switch (secondsRemaining) {
