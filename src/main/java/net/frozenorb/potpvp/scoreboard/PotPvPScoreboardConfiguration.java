@@ -14,10 +14,11 @@ public final class PotPvPScoreboardConfiguration {
     public static ScoreboardConfiguration create() {
         ScoreboardConfiguration configuration = new ScoreboardConfiguration();
 
-        configuration.setTitleGetter(TitleGetter.forStaticString(PotPvPSI.getInstance().getDominantColor() == ChatColor.LIGHT_PURPLE ? "&d&lVeltPvP" : "&5&lArcane"));
+        configuration.setTitleGetter(TitleGetter.forStaticString("&cVeltPvP &7(Practice)"));
         configuration.setScoreGetter(new MultiplexingScoreGetter(
             new MatchScoreGetter(),
-            new LobbyScoreGetter()
+            new LobbyScoreGetter(),
+            new GameScoreGetter()
         ));
 
         return configuration;

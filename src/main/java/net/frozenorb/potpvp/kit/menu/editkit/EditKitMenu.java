@@ -52,18 +52,18 @@ public final class EditKitMenu extends Menu {
 
         // The vertical row
         for (int i = 0; i <= 5; i++) {
-            buttons.put(getSlot(1, i), Button.placeholder(Material.OBSIDIAN));
+            buttons.put(getSlot(1, i), Button.placeholder(Material.STAINED_GLASS_PANE, (byte) 8));
         }
 
         // The horizontal row
         for (int i = 0; i <= 8; i++) {
-            buttons.put(getSlot(i, 1), Button.placeholder(Material.OBSIDIAN));
+            buttons.put(getSlot(i, 1), Button.placeholder(Material.STAINED_GLASS_PANE, (byte) 8));
         }
 
         // Fill up the 3 empty slots up top. they can be used to dupe items
-        buttons.put(getSlot(3, 0), Button.placeholder(Material.OBSIDIAN));
-        buttons.put(getSlot(4, 0), Button.placeholder(Material.OBSIDIAN));
-        buttons.put(getSlot(5, 0), Button.placeholder(Material.OBSIDIAN));
+        buttons.put(getSlot(3, 0), Button.placeholder(Material.STAINED_GLASS_PANE, (byte) 8));
+        buttons.put(getSlot(4, 0), Button.placeholder(Material.STAINED_GLASS_PANE, (byte) 8));
+        buttons.put(getSlot(5, 0), Button.placeholder(Material.STAINED_GLASS_PANE, (byte) 8));
 
         buttons.put(getSlot(0, 0), new KitInfoButton(kit));
         buttons.put(getSlot(2, 0), new SaveButton(kit));

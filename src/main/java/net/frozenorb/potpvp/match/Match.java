@@ -166,8 +166,14 @@ public final class Match {
                 Vector oldDirection = spawn.getDirection();
                 
                 Block block = spawn.getBlock();
-                while (block.getRelative(BlockFace.DOWN).getType() == Material.AIR)
+                while (block.getRelative(BlockFace.DOWN).getType() == Material.AIR) {
                     block = block.getRelative(BlockFace.DOWN);
+                    if (block.getY() <= 0) {
+                        block = spawn.getBlock();
+                        break;
+                    }
+                }
+
                 spawn = block.getLocation();
                 spawn.setDirection(oldDirection);
                 spawn.add(0.5, 0, 0.5);

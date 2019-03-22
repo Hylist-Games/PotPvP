@@ -9,8 +9,7 @@ import lombok.experimental.UtilityClass;
 
 import static net.frozenorb.potpvp.PotPvPLang.LEFT_ARROW;
 import static net.frozenorb.potpvp.PotPvPLang.RIGHT_ARROW;
-import static org.bukkit.ChatColor.BOLD;
-import static org.bukkit.ChatColor.YELLOW;
+import static org.bukkit.ChatColor.*;
 
 @UtilityClass
 public final class KitItems {
@@ -18,7 +17,7 @@ public final class KitItems {
     public static final ItemStack OPEN_EDITOR_ITEM = new ItemStack(Material.BOOK);
 
     static {
-        ItemUtils.setDisplayName(OPEN_EDITOR_ITEM, LEFT_ARROW + YELLOW.toString() + BOLD + "Kit Editor" + RIGHT_ARROW);
+        ItemUtils.setDisplayName(OPEN_EDITOR_ITEM, AQUA + "Edit Kits");
     }
 
 }

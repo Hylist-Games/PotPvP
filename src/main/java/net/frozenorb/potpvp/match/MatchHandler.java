@@ -83,8 +83,8 @@ public final class MatchHandler {
         Bukkit.getPluginManager().registerEvents(new SpectatorItemListener(this), PotPvPSI.getInstance());
         Bukkit.getPluginManager().registerEvents(new SpectatorPreventionListener(), PotPvPSI.getInstance());
     }
-    
-    public Match startMatch(List<MatchTeam> teams, KitType kitType, boolean ranked, boolean allowRematches, Set<String> arenas) {
+
+    public Match startMatch(List<MatchTeam> teams, KitType kitType, boolean ranked, boolean allowRematches) {
         boolean anyOps = false;
 
         for (MatchTeam team : teams) {
@@ -108,11 +108,11 @@ public final class MatchHandler {
                 throw new IllegalArgumentException("Unranked match creation is disabled!");
             }
         }
-        
+
         ArenaHandler arenaHandler = PotPvPSI.getInstance().getArenaHandler();
         long matchSize = teams.stream()
-            .mapToInt(t -> t.getAllMembers().size())
-            .sum();
+                .mapToInt(t -> t.getAllMembers().size())
+                .sum();
 
         // the archer only logic here was often a source of confusion while
         // this code was being written. below is a table of the desired
@@ -125,13 +125,26 @@ public final class MatchHandler {
         // the left side of the or statement covers the top row, and the
         // right side covers the right side
         Optional<Arena> openArenaOpt = arenaHandler.allocateUnusedArena(schematic ->
-            schematic.isEnabled() &&
-            matchSize <= schematic.getMaxPlayerCount() &&
-            matchSize >= schematic.getMinPlayerCount() &&
-            (!ranked || schematic.isSupportsRanked()) &&
-            canUseSchematic(kitType, schematic) &&
-            arenas == null || arenas.contains(schematic.getName())
+                schematic.isEnabled() &&
+                        schematic.getEvent() == null &&
+                        !schematic.isTeamFightsOnly() &&
+                        canUseSchematic(kitType, schematic) &&
+                        matchSize <= schematic.getMaxPlayerCount() &&
+                        matchSize >= schematic.getMinPlayerCount() &&
+                        (!ranked || schematic.isSupportsRanked()) &&
+                        (kitType.getId().equals("ARCHER") || !schematic.isArcherOnly())
         );
+
+        if (kitType.equals(KitType.teamFight)) {
+            openArenaOpt = arenaHandler.allocateUnusedArena(schematic ->
+                    schematic.isEnabled() &&
+                            schematic.getEvent() == null &&
+                            canUseSchematic(kitType, schematic) &&
+                            matchSize <= schematic.getMaxPlayerCount() &&
+                            matchSize >= schematic.getMinPlayerCount() &&
+                            schematic.isTeamFightsOnly()
+            );
+        }
 
         if (!openArenaOpt.isPresent()) {
             PotPvPSI.getInstance().getLogger().warning("Failed to start match: No open arenas found");
@@ -149,11 +162,14 @@ public final class MatchHandler {
     public static boolean canUseSchematic(KitType kitType, ArenaSchematic schematic) {
         String kitId = kitType.getId();
 
+        if (schematic.getEvent() != null) return false;
+
         if (kitId.equals("ARCHER")) return schematic.isArcherOnly();
         if (kitId.equals("BUILDUHC")) return schematic.isBuildUHCOnly();
         if (kitId.equals("SPLEEF")) return schematic.isSpleefOnly();
         if (kitId.equals("SUMO")) return schematic.isSumoOnly();
         if (kitId.equals("HCF")) return schematic.isHCFOnly();
+        if (kitType.equals(KitType.teamFight)) return schematic.isTeamFightsOnly();
 
         if (schematic.isArcherOnly()) return kitId.equals("ARCHER");
         if (schematic.isBuildUHCOnly()) return kitId.equals("BUILDUHC");

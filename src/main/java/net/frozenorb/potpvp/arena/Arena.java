@@ -1,5 +1,7 @@
 package net.frozenorb.potpvp.arena;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -48,26 +50,28 @@ public final class Arena {
     /**
      * Bounding box for this arena
      */
-    @Getter private Cuboid bounds;
+    private Cuboid bounds;
 
     /**
      * Team 1 spawn location for this arena
      * For purposes of arena definition we ignore
      * non-two-teamed matches.
      */
-    @Getter private Location team1Spawn;
+    private Location team1Spawn;
 
     /**
      * Team 2 spawn location for this arena
      * For purposes of arena definition we ignore
      * non-two-teamed matches.
      */
-    @Getter private Location team2Spawn;
+    private Location team2Spawn;
 
     /**
      * Spectator spawn location for this arena
      */
     private Location spectatorSpawn;
+
+    private List<Location> eventSpawns;
 
     /**
      * If this arena is currently being used
@@ -155,6 +159,20 @@ public final class Arena {
                     }
 
                     break;
+                case CREEPER:
+                    block.setType(Material.AIR);
+
+                    if (below.getType() == Material.FENCE) {
+                        below.setType(Material.AIR);
+                    }
+
+                    if (eventSpawns == null) {
+                        eventSpawns = new ArrayList<>();
+                    }
+
+                    if (!(eventSpawns.contains(skullLocation))) {
+                        eventSpawns.add(skullLocation);
+                    }
                 default:
                     break;
             }
@@ -222,4 +240,19 @@ public final class Arena {
         return Objects.hash(schematic, copy);
     }
 
+    public Location getTeam1Spawn() {
+        return team1Spawn;
+    }
+
+    public Location getTeam2Spawn() {
+        return team2Spawn;
+    }
+
+    public List<Location> getEventSpawns() {
+        return eventSpawns;
+    }
+
+    public Cuboid getBounds() {
+        return bounds;
+    }
 }

@@ -10,6 +10,8 @@ import net.frozenorb.potpvp.party.event.PartyDisbandEvent;
 import net.frozenorb.potpvp.party.event.PartyMemberJoinEvent;
 import net.frozenorb.potpvp.party.event.PartyMemberKickEvent;
 import net.frozenorb.potpvp.party.event.PartyMemberLeaveEvent;
+import net.frozenorb.potpvp.pvpclasses.PvPClass;
+import net.frozenorb.potpvp.pvpclasses.PvPClasses;
 import net.frozenorb.potpvp.util.InventoryUtils;
 import net.frozenorb.potpvp.util.VisibilityUtils;
 import net.frozenorb.potpvp.validation.PotPvPValidation;
@@ -20,10 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
@@ -55,6 +54,8 @@ public final class Party {
      * on behalf of the party. Guaranteed to be online.
      */
     @Getter private UUID leader;
+
+    @Getter private Map<UUID, PvPClasses> kits = new HashMap<>();
 
     /**
      * All players who are currently part of this party.

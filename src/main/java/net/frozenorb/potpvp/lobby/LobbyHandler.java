@@ -1,5 +1,6 @@
 package net.frozenorb.potpvp.lobby;
 
+import com.qrakn.morpheus.game.GameQueue;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.follow.command.UnfollowCommand;
@@ -62,6 +63,8 @@ public final class LobbyHandler {
         PatchedPlayerUtils.resetInventory(player, GameMode.SURVIVAL, true);
         InventoryUtils.resetInventoryDelayed(player);
 
+        player.setGameMode(GameMode.SURVIVAL);
+
         returnedToLobby.put(player.getUniqueId(), System.currentTimeMillis());
     }
 
@@ -70,6 +73,10 @@ public final class LobbyHandler {
     }
 
     public boolean isInLobby(Player player) {
+        if (GameQueue.INSTANCE.getCurrentGame(player) != null && GameQueue.INSTANCE.getCurrentGame(player).getPlayers().contains(player)) {
+            return false;
+        }
+
         return !PotPvPSI.getInstance().getMatchHandler().isPlayingOrSpectatingMatch(player);
     }
 

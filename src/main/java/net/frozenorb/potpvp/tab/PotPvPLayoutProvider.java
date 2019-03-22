@@ -3,6 +3,7 @@ package net.frozenorb.potpvp.tab;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
+import net.frozenorb.qlib.tab.TabAdapter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -30,10 +31,10 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
         if (PotPvPSI.getInstance() == null) return TabLayout.create(player);
         TabLayout tabLayout = TabLayout.create(player);
 
-        if (PotPvPSI.getInstance().getDominantColor() == ChatColor.LIGHT_PURPLE) {
+        /*if (PotPvPSI.getInstance().getDominantColor() == ChatColor.LIGHT_PURPLE) {
             alternateOnlinePlayersLayoutProvider.accept(player, tabLayout);
         } else {
-            Match match = PotPvPSI.getInstance().getMatchHandler().getMatchPlayingOrSpectating(player);
+            /*Match match = PotPvPSI.getInstance().getMatchHandler().getMatchPlayingOrSpectating(player);
             headerLayoutProvider.accept(player, tabLayout);
 
             if (match != null) {
@@ -47,7 +48,9 @@ public final class PotPvPLayoutProvider implements LayoutProvider {
             }
 
             onlinePlayersLayoutProvider.accept(player, tabLayout);
-        }
+        }*/
+
+        onlinePlayersLayoutProvider.accept(player, tabLayout);
 
         return tabLayout;
     }

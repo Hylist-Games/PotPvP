@@ -9,6 +9,7 @@ import net.frozenorb.qlib.qLib;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.libs.com.google.gson.annotations.SerializedName;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -30,6 +31,7 @@ public final class KitType {
 
     private static final String MONGO_COLLECTION_NAME = "kitTypes";
     @Getter private static final List<KitType> allTypes = new ArrayList<>();
+    public static KitType teamFight = new KitType();
 
     static {
         MongoCollection<Document> collection = MongoUtils.getCollection(MONGO_COLLECTION_NAME);
@@ -37,6 +39,11 @@ public final class KitType {
         collection.find().iterator().forEachRemaining(doc -> {
             allTypes.add(qLib.PLAIN_GSON.fromJson(doc.toJson(), KitType.class));
         });
+
+        teamFight.icon = new MaterialData(Material.BEACON);
+        teamFight.id = "alex is a god xd";
+        teamFight.displayName = "HCF Team Fight";
+        teamFight.displayColor = ChatColor.AQUA;
 
         allTypes.sort(Comparator.comparing(KitType::getSort));
     }
@@ -51,7 +58,7 @@ public final class KitType {
      * Display name of this KitType, will be used when communicating a KitType
      * to playerrs. Ex: "Wizard", "No Enchants", "Soup"
      */
-    @Getter @Setter private String displayName;
+    @Setter private String displayName;
 
     /**
      * Display color for this KitType, will be used in messages
@@ -63,7 +70,7 @@ public final class KitType {
      * Material info which will be used when rendering this
      * kit in selection menus and such.
      */
-    @Getter @Setter private MaterialData icon;
+    @Setter private MaterialData icon;
 
     /**
      * Items which will be available for players to grab in the kit
@@ -76,14 +83,14 @@ public final class KitType {
      * Currently players are not allowed to edit their armor, they are
      * always given this armor.
      */
-    @Getter @Setter private ItemStack[] defaultArmor = new ItemStack[0];
+    @Setter private ItemStack[] defaultArmor = new ItemStack[0];
 
     /**
      * The default inventory that will be applied to players for this kit type.
      * Players are always allowed to rearange this inventory, so this only serves
      * as a default (in contrast to defaultArmor)
      */
-    @Getter @Setter private ItemStack[] defaultInventory = new ItemStack[0];
+    @Setter private ItemStack[] defaultInventory = new ItemStack[0];
 
     /**
      * Determines if players are allowed to spawn in items while editing their kits.
@@ -162,6 +169,22 @@ public final class KitType {
     @Override
     public String toString() {
         return displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public MaterialData getIcon() {
+        return icon;
+    }
+
+    public ItemStack[] getDefaultArmor() {
+        return defaultArmor;
+    }
+
+    public ItemStack[] getDefaultInventory() {
+        return defaultInventory;
     }
 
 }

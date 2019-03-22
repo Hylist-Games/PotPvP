@@ -46,7 +46,8 @@ public final class SpectateCommand {
             return;
         }
 
-        boolean bypassesSpectating = PotPvPSI.getInstance().getTournamentHandler().isInTournament(targetMatch);
+        //boolean bypassesSpectating = PotPvPSI.getInstance().getTournamentHandler().isInTournament(targetMatch);
+        boolean bypassesSpectating = false;
 
         // only check the seting if the target is actually playing in the match
         if (!bypassesSpectating && (targetMatch.getTeam(target.getUniqueId()) != null && !settingHandler.getSetting(target, Setting.ALLOW_SPECTATORS))) {

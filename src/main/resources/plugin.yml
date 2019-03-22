@@ -1,6 +1,6 @@
-name: ${name}
+name: PotPvP
 version: ${git.commit.id.abbrev}
-author: ${minehq.pluginAuthor}
+author: Hylist Games
 main: net.frozenorb.potpvp.PotPvPSI
 depend: [ qLib ]
-softdepend: [ Basic ]
+softdepend: [ Basic, AntiCheat ]

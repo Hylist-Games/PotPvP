@@ -114,7 +114,7 @@ public final class QueueItemListener extends ItemListener {
                 new CustomSelectKitTypeMenu(kitType -> {
                     queueHandler.joinQueue(party, kitType, ranked);
                     player.closeInventory();
-                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked, "Join " + (ranked ? "Ranked" : "Unranked") + " queue...", ranked).openMenu(player);
+                }, ranked ? selectionAdditionRanked : selectionAdditionUnranked, "Play " + (ranked ? "Ranked" : "Unranked"), ranked).openMenu(player);
             }
         };
     }
@@ -132,14 +132,12 @@ public final class QueueItemListener extends ItemListener {
             return new CustomSelectKitTypeMenu.CustomKitTypeMeta(
                 // clamp value to >= 1 && <= 64
                 Math.max(1, Math.min(64, ranked ? inQueueRanked + inFightsRanked : inQueueUnranked + inFightsUnranked)),
+                ranked ?  ImmutableList.of(
+                        ChatColor.RED + "Fighting" + ChatColor.GRAY + ": " + ChatColor.WHITE + inFightsRanked,
+                        ChatColor.RED + "Queueing" + ChatColor.GRAY + ": " + ChatColor.WHITE + inQueueRanked) :
                 ImmutableList.of(
-                    ChatColor.AQUA.toString() + ChatColor.BOLD + (ranked ? ChatColor.UNDERLINE.toString() : "") + "Ranked:",
-                    ChatColor.GREEN + "   In fights: " + ChatColor.WHITE + inFightsRanked,
-                    ChatColor.GREEN + "   In queue: " + ChatColor.WHITE + inQueueRanked,
-                    "",
-                    ChatColor.AQUA.toString() + ChatColor.BOLD + (!ranked ? ChatColor.UNDERLINE.toString() : "") + "Unranked:",
-                    ChatColor.GREEN + "   In fights: " + ChatColor.WHITE + inFightsUnranked,
-                    ChatColor.GREEN + "   In queue: " + ChatColor.WHITE + inQueueUnranked
+                    ChatColor.RED + "Fighting" + ChatColor.GRAY + ": " + ChatColor.WHITE + inFightsUnranked,
+                    ChatColor.RED + "Queueing" + ChatColor.GRAY + ": " + ChatColor.WHITE + inQueueUnranked
                 )
             );
         };

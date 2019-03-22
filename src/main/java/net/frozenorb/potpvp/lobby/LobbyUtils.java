@@ -1,11 +1,14 @@
 package net.frozenorb.potpvp.lobby;
 
+import com.qrakn.morpheus.game.Game;
+import com.qrakn.morpheus.game.GameQueue;
+import com.qrakn.morpheus.game.GameState;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.duel.DuelHandler;
-import net.frozenorb.potpvp.event.EventItems;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.kit.KitItems;
 import net.frozenorb.potpvp.kit.menu.editkit.EditKitMenu;
+import net.frozenorb.potpvp.morpheus.EventItems;
 import net.frozenorb.potpvp.party.Party;
 import net.frozenorb.potpvp.party.PartyHandler;
 import net.frozenorb.potpvp.party.PartyItems;
@@ -19,6 +22,7 @@ import net.frozenorb.qlib.menu.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import lombok.experimental.UtilityClass;
@@ -31,6 +35,11 @@ public final class LobbyUtils {
         // inventory updated (kit items go into their inventory)
         // also, admins in GM don't get invs updated (to prevent annoying those editing kits)
         if (Menu.currentlyOpenedMenus.get(player.getName()) instanceof EditKitMenu || player.getGameMode() == GameMode.CREATIVE) {
+            return;
+        }
+
+        Game game = GameQueue.INSTANCE.getCurrentGame(player);
+        if (game != null && game.getState() != GameState.ENDED && game.getPlayers().contains(player)) {
             return;
         }
 
@@ -58,18 +67,27 @@ public final class LobbyUtils {
             if (partySize == 2) {
                 if (!queueHandler.isQueuedUnranked(party)) {
                     inventory.setItem(1, QueueItems.JOIN_PARTY_UNRANKED_QUEUE_ITEM);
+                    inventory.setItem(3, PartyItems.ASSIGN_CLASSES);
                 } else {
                     inventory.setItem(1, QueueItems.LEAVE_PARTY_UNRANKED_QUEUE_ITEM);
                 }
 
                 if (!queueHandler.isQueuedRanked(party)) {
                     inventory.setItem(2, QueueItems.JOIN_PARTY_RANKED_QUEUE_ITEM);
+                    inventory.setItem(3, PartyItems.ASSIGN_CLASSES);
                 } else {
                     inventory.setItem(2, QueueItems.LEAVE_PARTY_RANKED_QUEUE_ITEM);
                 }
             } else if (partySize > 2 && !queueHandler.isQueued(party)) {
                 inventory.setItem(1, PartyItems.START_TEAM_SPLIT_ITEM);
                 inventory.setItem(2, PartyItems.START_FFA_ITEM);
+                inventory.setItem(3, PartyItems.ASSIGN_CLASSES);
+            }
+
+        } else {
+            int partySize = party.getMembers().size();
+            if (partySize >= 2) {
+                inventory.setItem(1, PartyItems.ASSIGN_CLASSES);
             }
         }
 
@@ -120,19 +138,28 @@ public final class LobbyUtils {
             }
 
             if (queueHandler.isQueuedRanked(player.getUniqueId())) {
-                inventory.setItem(2, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
+                inventory.setItem(0, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
             } else if (queueHandler.isQueuedUnranked(player.getUniqueId())) {
-                inventory.setItem(2, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
+                inventory.setItem(0, QueueItems.LEAVE_SOLO_UNRANKED_QUEUE_ITEM);
             } else {
                 inventory.setItem(0, QueueItems.JOIN_SOLO_UNRANKED_QUEUE_ITEM);
                 inventory.setItem(1, QueueItems.JOIN_SOLO_RANKED_QUEUE_ITEM);
                 //inventory.setItem(4, LobbyItems.ENABLE_SPEC_MODE_ITEM);
                 //inventory.setItem(6, EventItems.EVENTS_ITEM);
-                inventory.setItem(7, LobbyItems.PLAYER_STATISTICS);
+                //inventory.setItem(7, LobbyItems.PLAYER_STATISTICS);
                 inventory.setItem(8, KitItems.OPEN_EDITOR_ITEM);
 
+                ItemStack eventItem = EventItems.getEventItem();
+
                 if (player.hasPermission("potpvp.admin")) {
-                    inventory.setItem(6, LobbyItems.MANAGE_ITEM);
+                    if (eventItem != null) {
+                        inventory.setItem(6, eventItem);
+                    }
+                    inventory.setItem(7, LobbyItems.MANAGE_ITEM);
+                } else {
+                    if (eventItem != null) {
+                        inventory.setItem(7, eventItem);
+                    }
                 }
             }
         }

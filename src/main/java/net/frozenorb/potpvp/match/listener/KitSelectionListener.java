@@ -9,6 +9,9 @@ import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchTeam;
 import net.frozenorb.potpvp.match.event.MatchCountdownStartEvent;
 
+import net.frozenorb.potpvp.party.Party;
+import net.frozenorb.potpvp.pvpclasses.PvPClass;
+import net.frozenorb.potpvp.pvpclasses.PvPClasses;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -45,18 +48,43 @@ public final class KitSelectionListener implements Listener {
             List<Kit> customKits = kitHandler.getKits(player, kitType);
             ItemStack defaultKitItem = Kit.ofDefaultKit(kitType).createSelectionItem();
 
-            // if they have no kits saved place default in 0, otherwise
-            // the default goes in 9 and they get custom kits from 1-4
-            if (customKits.isEmpty()) {
-                player.getInventory().setItem(0, defaultKitItem);
-            } else {
-                for (Kit customKit : customKits) {
-                    // subtract one to convert from 1-indexed kts to 0-indexed inventories
-                    player.getInventory().setItem(customKit.getSlot() - 1, customKit.createSelectionItem());
+            if (kitType.equals(KitType.teamFight)) {
+                KitType bard = KitType.byId("BARD_HCF");
+                KitType diamond = KitType.byId("DIAMOND_HCF");
+                KitType archer = KitType.byId("ARCHER_HCF");
+
+                Party party = PotPvPSI.getInstance().getPartyHandler().getParty(player);
+
+                if (party == null) {
+                    Kit.ofDefaultKit(diamond).apply(player);
+                } else {
+                    PvPClasses kit = party.getKits().getOrDefault(player.getUniqueId(), PvPClasses.DIAMOND);
+
+                    if (kit == null || kit == PvPClasses.DIAMOND) {
+                        Kit.ofDefaultKit(diamond).apply(player);
+                    } else if (kit == PvPClasses.BARD) {
+                        Kit.ofDefaultKit(bard).apply(player);
+                    } else {
+                        Kit.ofDefaultKit(archer).apply(player);
+                    }
+
                 }
 
-                player.getInventory().setItem(8, defaultKitItem);
+            } else {
+                // if they have no kits saved place default in 0, otherwise
+                // the default goes in 9 and they get custom kits from 1-4
+                if (customKits.isEmpty()) {
+                    player.getInventory().setItem(0, defaultKitItem);
+                } else {
+                    for (Kit customKit : customKits) {
+                        // subtract one to convert from 1-indexed kts to 0-indexed inventories
+                        player.getInventory().setItem(customKit.getSlot() - 1, customKit.createSelectionItem());
+                    }
+
+                    player.getInventory().setItem(8, defaultKitItem);
+                }
             }
+
 
             player.updateInventory();
         }
@@ -151,6 +179,7 @@ public final class KitSelectionListener implements Listener {
             defaultKit.apply(player);
             player.sendMessage(ChatColor.YELLOW + "You equipped the default kit for " + kitType.getDisplayName() + ".");
         }
+
     }
 
 }

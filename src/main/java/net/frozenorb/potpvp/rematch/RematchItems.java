@@ -17,13 +17,13 @@ import static org.bukkit.ChatColor.GREEN;
 public final class RematchItems {
 
     public static final ItemStack REQUEST_REMATCH_ITEM = new ItemStack(Material.DIAMOND);
-    public static final ItemStack SENT_REMATCH_ITEM = new ItemStack(Material.EMERALD);
-    public static final ItemStack ACCEPT_REMATCH_ITEM = new ItemStack(Material.EMERALD);
+    public static final ItemStack SENT_REMATCH_ITEM = new ItemStack(Material.DIAMOND);
+    public static final ItemStack ACCEPT_REMATCH_ITEM = new ItemStack(Material.DIAMOND);
 
     static {
-        ItemUtils.setDisplayName(REQUEST_REMATCH_ITEM, LEFT_ARROW + DARK_PURPLE.toString() + BOLD + "Request Rematch" + RIGHT_ARROW);
-        ItemUtils.setDisplayName(SENT_REMATCH_ITEM, LEFT_ARROW + GREEN.toString() + BOLD + "Sent Rematch" + RIGHT_ARROW);
-        ItemUtils.setDisplayName(ACCEPT_REMATCH_ITEM, LEFT_ARROW + GREEN.toString() + BOLD + "Accept Rematch" + RIGHT_ARROW);
+        ItemUtils.setDisplayName(REQUEST_REMATCH_ITEM, DARK_PURPLE + "Request Rematch");
+        ItemUtils.setDisplayName(SENT_REMATCH_ITEM, GREEN + "Sent Rematch");
+        ItemUtils.setDisplayName(ACCEPT_REMATCH_ITEM, GREEN + "Accept Rematch");
     }
 
 }

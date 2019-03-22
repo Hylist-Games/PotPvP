@@ -9,8 +9,8 @@ import net.frozenorb.potpvp.kittype.KitType;
 
 public final class PlayerDuelInvite extends DuelInvite<UUID> {
 
-    public PlayerDuelInvite(Player sender, Player target, KitType kitType, Set<String> maps) {
-        super(sender.getUniqueId(), target.getUniqueId(), kitType, maps);
+    public PlayerDuelInvite(Player sender, Player target, KitType kitType) {
+        super(sender.getUniqueId(), target.getUniqueId(), kitType);
     }
 
 }

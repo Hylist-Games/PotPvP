@@ -22,7 +22,7 @@ public final class RematchItemListener extends ItemListener {
 
             if (rematchData != null) {
                 Player target = Bukkit.getPlayer(rematchData.getTarget());
-                DuelCommand.duel(player, target, rematchData.getKitType(), ImmutableSet.of(rematchData.getArenaName()));
+                DuelCommand.duel(player, target, rematchData.getKitType());
 
                 InventoryUtils.resetInventoryDelayed(player);
                 InventoryUtils.resetInventoryDelayed(target);

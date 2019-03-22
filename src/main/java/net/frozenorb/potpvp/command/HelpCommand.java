@@ -47,9 +47,9 @@ public final class HelpCommand {
     private static final List<String> HELP_MESSAGE_FOOTER = ImmutableList.of(
         "",
         "§5Server Information:",
-        PotPvPSI.getInstance().getDominantColor() == ChatColor.LIGHT_PURPLE ? "§eOfficial Teamspeak §7- §dts.veltpvp.com" : "§eOfficial Teamspeak §7- §dts.arcane.cc",
-        PotPvPSI.getInstance().getDominantColor() == ChatColor.LIGHT_PURPLE ? "§eOfficial Rules §7- §dwww.veltpvp.com/rules" : "§eOfficial Rules §7- §dwww.arcane.cc/rules",
-        PotPvPSI.getInstance().getDominantColor() == ChatColor.LIGHT_PURPLE ? "§eStore §7- §dwww.veltpvp.com/store" : "§eStore §7- §dwww.arcane.cc/store",
+        PotPvPSI.getInstance().getDominantColor() == ChatColor.LIGHT_PURPLE ? "§eOfficial Teamspeak §7- §dts.veltpvp.com" : "§eOfficial Teamspeak §7- §dts.veltpvp.com",
+        PotPvPSI.getInstance().getDominantColor() == ChatColor.LIGHT_PURPLE ? "§eOfficial Rules §7- §dwww.veltpvp.com/rules" : "§eOfficial Rules §7- §dwww.veltpvp.com/rules",
+        PotPvPSI.getInstance().getDominantColor() == ChatColor.LIGHT_PURPLE ? "§eStore §7- §dwww.veltpvp.com/store" : "§eStore §7- §dwww.veltpvp.com/store",
      // "§ePractice Leaderboards §7- §dwww.minehq.com/stats/potpvp",
         ChatColor.DARK_PURPLE + PotPvPLang.LONG_LINE
     );

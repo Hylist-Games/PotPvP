@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,7 +34,7 @@ public class OnlinePlayersLayoutProvider implements Listener, BiConsumer<Player,
     
     @Override
     public void accept(Player player, TabLayout tabLayout) {
-        int firstNonEmptyY = -1;
+        /*int firstNonEmptyY = -1;
 
         for (int x = 0, y = 19; 0 <= y; y--) {
             String entryAt = tabLayout.getStringAt(x, y);
@@ -48,7 +49,10 @@ public class OnlinePlayersLayoutProvider implements Listener, BiConsumer<Player,
         }
 
         int x = 0;
-        int y = firstNonEmptyY + 2;
+        int y = firstNonEmptyY + 2;*/
+
+        int x = 0;
+        int y = 0;
 
         boolean isStaff = player.hasPermission("basic.staff");
         for (Entry<UUID, String> entry : playersMap.entrySet()) {
@@ -102,7 +106,7 @@ public class OnlinePlayersLayoutProvider implements Listener, BiConsumer<Player,
 
         Rank bestDisplayRank = profile.getBestDisplayRank();
         if (bestDisplayRank == null || bestDisplayRank.getId().equals("default") || bestDisplayRank.getId().equals("registered")) {
-            return null;
+            return ChatColor.WHITE + UUIDUtils.name(uuid);
         }
 
         return bestDisplayRank.getGameColor() + UUIDUtils.name(uuid);

@@ -1,5 +1,7 @@
 package net.frozenorb.potpvp.follow.command;
 
+import com.qrakn.morpheus.game.Game;
+import com.qrakn.morpheus.game.GameQueue;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.MatchHandler;
@@ -34,6 +36,12 @@ public final class FollowCommand {
                 sender.sendMessage(ChatColor.RED + target.getName() + " doesn't allow spectators at the moment.");
                 return;
             }
+        }
+
+        Game game = GameQueue.INSTANCE.getCurrentGame(target);
+        if (game != null && game.getPlayers().contains(target)) {
+            sender.sendMessage(ChatColor.RED + target.getName() + " is playing an event!");
+            return;
         }
 
         followHandler.getFollowing(sender).ifPresent(fo -> UnfollowCommand.unfollow(sender));

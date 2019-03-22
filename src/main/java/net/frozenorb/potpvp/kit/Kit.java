@@ -22,6 +22,10 @@ public final class Kit {
     @Getter @Setter private KitType type;
     @Getter @Setter private ItemStack[] inventoryContents;
 
+    public static Kit ofDefaultKitCustomName(KitType kitType, String name) {
+        return ofDefaultKit(kitType, name, 0);
+    }
+
     public static Kit ofDefaultKit(KitType kitType) {
         return ofDefaultKit(kitType, "Default Kit", 0);
     }

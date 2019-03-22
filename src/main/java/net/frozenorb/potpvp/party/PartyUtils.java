@@ -79,8 +79,7 @@ public final class PartyUtils {
             ),
             kitType,
             false,
-            false,
-            null
+            false
         );
 
         if (match == null) {

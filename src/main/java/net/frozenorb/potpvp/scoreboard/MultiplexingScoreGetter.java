@@ -2,6 +2,9 @@ package net.frozenorb.potpvp.scoreboard;
 
 import java.util.function.BiConsumer;
 
+import com.qrakn.morpheus.game.Game;
+import com.qrakn.morpheus.game.GameQueue;
+import com.qrakn.morpheus.game.GameState;
 import org.bukkit.entity.Player;
 
 import net.frozenorb.potpvp.PotPvPSI;
@@ -15,13 +18,16 @@ final class MultiplexingScoreGetter implements ScoreGetter {
 
     private final BiConsumer<Player, LinkedList<String>> matchScoreGetter;
     private final BiConsumer<Player, LinkedList<String>> lobbyScoreGetter;
+    private final BiConsumer<Player, LinkedList<String>> gameScoreGetter;
 
     MultiplexingScoreGetter(
         BiConsumer<Player, LinkedList<String>> matchScoreGetter,
-        BiConsumer<Player, LinkedList<String>> lobbyScoreGetter
+        BiConsumer<Player, LinkedList<String>> lobbyScoreGetter,
+        BiConsumer<Player, LinkedList<String>> gameScoreGetter
     ) {
         this.matchScoreGetter = matchScoreGetter;
         this.lobbyScoreGetter = lobbyScoreGetter;
+        this.gameScoreGetter = gameScoreGetter;
     }
 
     @Override
@@ -34,7 +40,13 @@ final class MultiplexingScoreGetter implements ScoreGetter {
             if (matchHandler.isPlayingOrSpectatingMatch(player)) {
                 matchScoreGetter.accept(player, scores);
             } else {
-                lobbyScoreGetter.accept(player, scores);
+                Game game = GameQueue.INSTANCE.getCurrentGame(player);
+
+                if (game != null && game.getPlayers().contains(player) && game.getState() != GameState.ENDED) {
+                    gameScoreGetter.accept(player, scores);
+                } else {
+                    lobbyScoreGetter.accept(player, scores);
+                }
             }
         }
 

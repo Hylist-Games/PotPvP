@@ -1,5 +1,10 @@
 package net.frozenorb.potpvp.util;
 
+import com.qrakn.morpheus.game.Game;
+import com.qrakn.morpheus.game.GameQueue;
+import com.qrakn.morpheus.game.GameState;
+import com.qrakn.morpheus.game.util.team.GameTeam;
+import com.qrakn.morpheus.game.util.team.GameTeamEventLogic;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.Match;
@@ -52,6 +57,25 @@ public final class VisibilityUtils {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
 
         Match targetMatch = matchHandler.getMatchPlayingOrSpectating(target);
+
+        Game game = GameQueue.INSTANCE.getCurrentGame(target);
+        if (game != null && game.getPlayers().contains(viewer) && game.getPlayers().contains(target) && game.getState() != GameState.ENDED) {
+            if (game.getSpectators().contains(target) && !game.getSpectators().contains(viewer)) {
+                return false;
+            }
+
+            if (game.getSpectators().contains(target) && game.getSpectators().contains(viewer)) {
+                return true;
+            }
+
+            if (game.getLogic() instanceof GameTeamEventLogic) {
+                GameTeam team = ((GameTeamEventLogic) game.getLogic()).get(target);
+
+                return team == null || !team.hasDied(target);
+            }
+
+            return true;
+        }
 
         if (targetMatch == null) {
             // we're not in a match so we hide other players based on their party/match

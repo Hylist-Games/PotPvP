@@ -2,6 +2,7 @@ package net.frozenorb.potpvp.arena;
 
 import com.google.common.base.Preconditions;
 
+import com.qrakn.morpheus.game.event.GameEvent;
 import com.sk89q.worldedit.Vector;
 
 import java.io.File;
@@ -24,7 +25,7 @@ public final class ArenaSchematic {
      * If matches can be scheduled on an instance of this arena.
      * Only impacts match scheduling, admin commands are (ignoring visual differences) nonchanged
      */
-    @Getter @Setter private boolean enabled = false;
+    @Setter private boolean enabled = false;
 
     /**
      * Maximum number of players that can occupy an instance of this arena.
@@ -51,6 +52,13 @@ public final class ArenaSchematic {
     @Getter @Setter private boolean archerOnly = false;
 
     /**
+     * If this schematic can be only be used for archer matches
+     * Some schematics are built for specifically archer fights
+     */
+    @Getter @Setter private boolean teamFightsOnly = false;
+
+
+    /**
      * If this schematic can be only be used for Sumo matches
      * Some schematics are built for specifically Sumo fights
      */
@@ -69,6 +77,8 @@ public final class ArenaSchematic {
     @Getter @Setter private boolean buildUHCOnly = false;
 
     @Getter @Setter private boolean HCFOnly = false;
+
+    @Getter @Setter private String eventName = null;
 
     /**
      * Index on the X axis on the grid (and in calculations regarding model arenas)
@@ -111,6 +121,20 @@ public final class ArenaSchematic {
         );
     }
 
+    public GameEvent getEvent() {
+        if (eventName != null) {
+            for (GameEvent event : GameEvent.getEvents()) {
+                if (event.getName().equalsIgnoreCase(eventName)) {
+                    return event;
+                }
+            }
+
+            eventName = null;
+        }
+
+        return null;
+    }
+
     @Override
     public boolean equals(Object o) {
         return o instanceof ArenaSchematic && ((ArenaSchematic) o).name.equals(name);
@@ -121,4 +145,7 @@ public final class ArenaSchematic {
         return name.hashCode();
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
 }

@@ -1,14 +1,7 @@
 package net.frozenorb.potpvp.duel.command;
 
-import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
 import net.frozenorb.potpvp.PotPvPLang;
 import net.frozenorb.potpvp.PotPvPSI;
-import net.frozenorb.potpvp.arena.menu.select.SelectArenaMenu;
 import net.frozenorb.potpvp.duel.DuelHandler;
 import net.frozenorb.potpvp.duel.DuelInvite;
 import net.frozenorb.potpvp.duel.PartyDuelInvite;
@@ -26,6 +19,10 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public final class DuelCommand {
 
@@ -58,11 +55,7 @@ public final class DuelCommand {
 
                 if (newSenderParty != null && newTargetParty != null) {
                     if (newSenderParty.isLeader(sender.getUniqueId())) {
-
-                        new SelectArenaMenu(kitType, arenas -> {
-                            sender.closeInventory();
-                            duel(sender, newSenderParty, newTargetParty, kitType, arenas);
-                        }, "Select your arenas...").openMenu(sender);
+                        duel(sender, newSenderParty, newTargetParty, kitType);
                     } else {
                         sender.sendMessage(PotPvPLang.NOT_LEADER_OF_PARTY);
                     }
@@ -81,10 +74,7 @@ public final class DuelCommand {
 
             new SelectKitTypeMenu(kitType -> {
                 sender.closeInventory();
-                new SelectArenaMenu(kitType, arenas -> {
-                    sender.closeInventory();
-                    duel(sender, target, kitType, arenas);
-                }, "Select your arenas...").openMenu(sender);
+                duel(sender, target, kitType);
             }, "Select a kit type...").openMenu(sender);
         } else if (senderParty == null) {
             // player dueling party (illegal)
@@ -95,7 +85,7 @@ public final class DuelCommand {
         }
     }
 
-    public static void duel(Player sender, Player target, KitType kitType, Set<String> maps) {
+    public static void duel(Player sender, Player target, KitType kitType) {
         if (!PotPvPValidation.canSendDuel(sender, target)) {
             return;
         }
@@ -127,10 +117,10 @@ public final class DuelCommand {
         target.spigot().sendMessage(createInviteNotification(sender.getName()));
 
         sender.sendMessage(ChatColor.YELLOW + "Successfully sent a " + kitType.getColoredDisplayName() + ChatColor.YELLOW + " duel invite to " + ChatColor.AQUA + target.getName() + ChatColor.YELLOW + ".");
-        duelHandler.insertInvite(new PlayerDuelInvite(sender, target, kitType, maps));
+        duelHandler.insertInvite(new PlayerDuelInvite(sender, target, kitType));
     }
 
-    public static void duel(Player sender, Party senderParty, Party targetParty, KitType kitType, Set<String> maps) {
+    public static void duel(Player sender, Party senderParty, Party targetParty, KitType kitType) {
         if (!PotPvPValidation.canSendDuel(senderParty, targetParty, sender)) {
             return;
         }
@@ -163,7 +153,7 @@ public final class DuelCommand {
         Bukkit.getPlayer(targetParty.getLeader()).spigot().sendMessage(createInviteNotification(sender.getName()));
 
         sender.sendMessage(ChatColor.YELLOW + "Successfully sent a " + kitType.getColoredDisplayName() + ChatColor.YELLOW + " duel invite to " + ChatColor.AQUA + targetPartyLeader + "'s party" + ChatColor.YELLOW + ".");
-        duelHandler.insertInvite(new PartyDuelInvite(senderParty, targetParty, kitType, maps));
+        duelHandler.insertInvite(new PartyDuelInvite(senderParty, targetParty, kitType));
     }
 
     private static TextComponent[] createInviteNotification(String sender) {

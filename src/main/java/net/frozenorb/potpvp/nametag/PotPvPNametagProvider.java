@@ -1,10 +1,14 @@
 package net.frozenorb.potpvp.nametag;
 
+import com.qrakn.morpheus.game.Game;
+import com.qrakn.morpheus.game.GameQueue;
+import com.qrakn.morpheus.game.GameState;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
 import net.frozenorb.potpvp.match.MatchTeam;
+import net.frozenorb.potpvp.pvpclasses.pvpclasses.ArcherClass;
 import net.frozenorb.qlib.nametag.NametagInfo;
 import net.frozenorb.qlib.nametag.NametagProvider;
 
@@ -23,6 +27,12 @@ public final class PotPvPNametagProvider extends NametagProvider {
 
     @Override
     public NametagInfo fetchNametag(Player toRefresh, Player refreshFor) {
+        Game game = GameQueue.INSTANCE.getCurrentGame(toRefresh);
+
+        if (game != null && game.getPlayers().contains(toRefresh) && game.getPlayers().contains(refreshFor) && game.getState() != GameState.ENDED) {
+            return createNametag(game.getEvent().getNameTag(game, toRefresh, refreshFor), "");
+        }
+
         ChatColor prefixColor = getNameColor(toRefresh, refreshFor);
         return createNametag(prefixColor.toString(), "");
     }
@@ -58,7 +68,14 @@ public final class PotPvPNametagProvider extends NametagProvider {
 
         // if we were/are both on teams display a friendly/enemy color
         if (refreshForTeam != null) {
-            return toRefreshTeam == refreshForTeam ? ChatColor.GREEN : ChatColor.RED;
+            if (toRefreshTeam == refreshForTeam) {
+                return ChatColor.GREEN;
+            } else {
+                if (ArcherClass.getMarkedPlayers().containsKey(toRefresh.getName()) && System.currentTimeMillis() < ArcherClass.getMarkedPlayers().get(toRefresh.getName())) {
+                    return ChatColor.YELLOW;
+                }
+                return ChatColor.RED;
+            }
         }
 
         // if we're a spectator just display standard colors
@@ -88,7 +105,7 @@ public final class PotPvPNametagProvider extends NametagProvider {
         if (refreshForFollowingTarget) {
             return ChatColor.AQUA;
         } else {
-            return ChatColor.BLUE;
+            return ChatColor.GREEN;
         }
     }
 

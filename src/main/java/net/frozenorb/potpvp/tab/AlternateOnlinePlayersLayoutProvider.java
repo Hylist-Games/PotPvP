@@ -33,7 +33,7 @@ public class AlternateOnlinePlayersLayoutProvider implements Listener, BiConsume
 
     @Override
     public void accept(Player player, TabLayout tabLayout) {
-        tabLayout.set(1, 0, "&d&lVeltPvP");
+        tabLayout.set(1, 0, "&5&lPractice");
 
         int x = 0;
         int y = 2;

@@ -31,7 +31,7 @@ public final class CustomSelectKitTypeMenu extends Menu {
     private final boolean ranked;
 
     public CustomSelectKitTypeMenu(Callback<KitType> callback, Function<KitType, CustomKitTypeMeta> metaFunc, String title, boolean ranked) {
-        super(ChatColor.BLUE.toString() + ChatColor.BOLD + title);
+        super(ChatColor.RED + title);
 
         setAutoUpdate(true);
 

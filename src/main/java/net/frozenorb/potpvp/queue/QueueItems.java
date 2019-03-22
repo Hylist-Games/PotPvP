@@ -10,10 +10,7 @@ import lombok.experimental.UtilityClass;
 
 import static net.frozenorb.potpvp.PotPvPLang.LEFT_ARROW;
 import static net.frozenorb.potpvp.PotPvPLang.RIGHT_ARROW;
-import static org.bukkit.ChatColor.AQUA;
-import static org.bukkit.ChatColor.BOLD;
-import static org.bukkit.ChatColor.GREEN;
-import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.*;
 
 @UtilityClass
 public final class QueueItems {
@@ -31,17 +28,17 @@ public final class QueueItems {
     public static final ItemStack LEAVE_PARTY_RANKED_QUEUE_ITEM = new ItemStack(Material.ARROW);
 
     static {
-        ItemUtils.setDisplayName(JOIN_SOLO_UNRANKED_QUEUE_ITEM, LEFT_ARROW + AQUA.toString() + BOLD + "Join Unranked Queue" + RIGHT_ARROW);
-        ItemUtils.setDisplayName(LEAVE_SOLO_UNRANKED_QUEUE_ITEM, LEFT_ARROW + RED.toString() + BOLD + "Leave Unranked Queue" + RIGHT_ARROW);
+        ItemUtils.setDisplayName(JOIN_SOLO_UNRANKED_QUEUE_ITEM, YELLOW + "Play Unranked");
+        ItemUtils.setDisplayName(LEAVE_SOLO_UNRANKED_QUEUE_ITEM, RED + "Leave Unranked Queue");
 
-        ItemUtils.setDisplayName(JOIN_SOLO_RANKED_QUEUE_ITEM, LEFT_ARROW + GREEN.toString() + BOLD + "Join " + AQUA.toString() + BOLD + "Ranked" + GREEN.toString() + BOLD + " Queue" + RIGHT_ARROW);
-        ItemUtils.setDisplayName(LEAVE_SOLO_RANKED_QUEUE_ITEM, LEFT_ARROW + RED.toString() + BOLD + "Leave " + AQUA.toString() + BOLD + "Ranked" + RED.toString() + BOLD + " Queue" + RIGHT_ARROW);
+        ItemUtils.setDisplayName(JOIN_SOLO_RANKED_QUEUE_ITEM, GOLD + "Play Ranked");
+        ItemUtils.setDisplayName(LEAVE_SOLO_RANKED_QUEUE_ITEM, RED + "Leave Ranked Queue");
 
-        ItemUtils.setDisplayName(JOIN_PARTY_UNRANKED_QUEUE_ITEM, LEFT_ARROW + GREEN.toString() + BOLD + "Join 2v2 Unranked" + RIGHT_ARROW);
-        ItemUtils.setDisplayName(LEAVE_PARTY_UNRANKED_QUEUE_ITEM, LEFT_ARROW + RED.toString() + BOLD + "Leave 2v2 Unranked" + RIGHT_ARROW);
+        ItemUtils.setDisplayName(JOIN_PARTY_UNRANKED_QUEUE_ITEM, BLUE + "Play 2v2 Unranked");
+        ItemUtils.setDisplayName(LEAVE_PARTY_UNRANKED_QUEUE_ITEM, RED + "Leave 2v2 Unranked Queue");
 
-        ItemUtils.setDisplayName(JOIN_PARTY_RANKED_QUEUE_ITEM, LEFT_ARROW + GREEN.toString() + BOLD + "Join 2v2 Ranked" + RIGHT_ARROW);
-        ItemUtils.setDisplayName(LEAVE_PARTY_RANKED_QUEUE_ITEM, LEFT_ARROW + RED.toString() + BOLD + "Leave 2v2 Ranked" + RIGHT_ARROW);
+        ItemUtils.setDisplayName(JOIN_PARTY_RANKED_QUEUE_ITEM, DARK_AQUA + "Join 2v2 Ranked");
+        ItemUtils.setDisplayName(LEAVE_PARTY_RANKED_QUEUE_ITEM, RED + "Leave 2v2 Ranked Queue");
     }
 
 }

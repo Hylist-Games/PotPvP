@@ -62,6 +62,8 @@ public class StatisticsHandler implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onMatchEnd(MatchTerminateEvent event) {
         Match match = event.getMatch();
+
+        if (match.getKitType().equals(KitType.teamFight)) return;
         
         match.getWinningPlayers().forEach(uuid -> {
             incrementStat(uuid, Statistic.WINS, match.getKitType());
@@ -80,6 +82,10 @@ public class StatisticsHandler implements Listener {
         Match diedMatch = PotPvPSI.getInstance().getMatchHandler().getMatchPlayingOrSpectating(died);
         
         if (diedMatch == null) {
+            return;
+        }
+
+        if (diedMatch.getKitType().equals(KitType.teamFight)) {
             return;
         }
         

@@ -269,7 +269,7 @@ public final class MatchGeneralListener implements Listener {
         if (stack == null || stack.getType() != Material.POTION) return;
 
         Bukkit.getScheduler().runTaskLater(PotPvPSI.getInstance(), () -> {
-            event.getPlayer().setItemInHand(null);
+            //event.getPlayer().setItemInHand(null);
         }, 1L);
     }
 }

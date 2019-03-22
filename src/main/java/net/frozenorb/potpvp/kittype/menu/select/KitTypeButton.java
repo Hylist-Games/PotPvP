@@ -35,7 +35,7 @@ final class KitTypeButton extends Button {
 
     @Override
     public String getName(Player player) {
-        return kitType.getDisplayColor() + ChatColor.BOLD.toString() + kitType.getDisplayName();
+        return kitType.getDisplayColor() + kitType.getDisplayName();
     }
 
     @Override
@@ -47,12 +47,14 @@ final class KitTypeButton extends Button {
         }
 
         if (!descriptionLines.isEmpty()) {
-            description.add("");
+            if (!(description.isEmpty())) {
+                description.add("");
+            }
             description.addAll(descriptionLines);
         }
 
         description.add("");
-        description.add(ChatColor.YELLOW + "Click here to select " + ChatColor.BOLD + kitType.getDisplayName() + ChatColor.YELLOW + ".");
+        description.add(ChatColor.GRAY + "Click here to play " + kitType.getDisplayColor() + kitType.getDisplayName() + ChatColor.GRAY + ".");
 
         return description;
     }

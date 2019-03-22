@@ -7,7 +7,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockDropItemsEvent;
+//import org.bukkit.event.block.BlockDropItemsEvent;
 import org.bukkit.inventory.ItemStack;
 
 import net.frozenorb.potpvp.PotPvPSI;
@@ -15,7 +15,7 @@ import net.frozenorb.potpvp.match.Match;
 
 public class MatchBlockPickupListener implements Listener {
 
-    @EventHandler
+    /*@EventHandler
     public void onBlockDropItems(BlockDropItemsEvent event) {
         Player recipient = event.getPlayer();
         if (recipient == null) return;
@@ -33,5 +33,5 @@ public class MatchBlockPickupListener implements Listener {
         }
 
         items.clear();
-    }
+    }*/
 }

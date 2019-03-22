@@ -1,5 +1,7 @@
 package net.frozenorb.potpvp.validation;
 
+import com.qrakn.morpheus.game.Game;
+import com.qrakn.morpheus.game.GameQueue;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.follow.FollowHandler;
 import net.frozenorb.potpvp.lobby.LobbyHandler;
@@ -16,6 +18,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import lombok.experimental.UtilityClass;
+
+import java.util.UUID;
 
 @UtilityClass
 public final class PotPvPValidation {
@@ -140,10 +144,10 @@ public final class PotPvPValidation {
             return false;
         }
 
-        if (isInTournament(sender)) {
+        /*if (isInTournament(sender)) {
             initiator.sendMessage(CANNOT_DO_THIS_WHILST_IN_TOURNAMENT);
             return false;
-        }
+        }*/
 
         return true;
     }
@@ -159,10 +163,10 @@ public final class PotPvPValidation {
             return false;
         }
 
-        if (isInTournament(target)) {
+        /*if (isInTournament(target)) {
             initiator.sendMessage(CANNOT_DO_THIS_WHILST_IN_TOURNAMENT);
             return false;
-        }
+        }*/
 
         return true;
     }
@@ -188,10 +192,10 @@ public final class PotPvPValidation {
             return false;
         }
 
-        if (isInTournament(party)) {
+        /*if (isInTournament(party)) {
             player.sendMessage(TARGET_PARTY_IN_TOURNAMENT);
             return false;
-        }
+        }*/
 
         return true;
     }
@@ -244,7 +248,13 @@ public final class PotPvPValidation {
             player.sendMessage(CANNOT_DO_THIS_WHILE_IN_MATCH);
             return false;
         }
-        return true;
+
+        if (!(isInLobby(player))) {
+            player.sendMessage(ChatColor.RED + "You can't do that here!");
+            return false;
+        }
+
+        return isInLobby(player);
     }
 
     public static boolean canJoinQueue(Player player) {
@@ -291,6 +301,10 @@ public final class PotPvPValidation {
             return false;
         }
 
+        if (isInGame(party)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -310,6 +324,11 @@ public final class PotPvPValidation {
             return false;
         }
 
+        if (isInGame(party)) {
+            initiator.sendMessage(ChatColor.RED + "Members are in an event!");
+            return false;
+        }
+
         return true;
     }
 
@@ -326,6 +345,11 @@ public final class PotPvPValidation {
 
         if (isInTournament(party)) {
             initiator.sendMessage(CANNOT_DO_THIS_WHILST_IN_TOURNAMENT);
+            return false;
+        }
+
+        if (isInGame(party)) {
+            initiator.sendMessage(ChatColor.RED + "Members are in an event!");
             return false;
         }
 
@@ -362,14 +386,26 @@ public final class PotPvPValidation {
         return lobbyHandler.isInLobby(player);
     }
 
+    private boolean isInGame(Party party) {
+        for (UUID uuid : party.getMembers()) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null && GameQueue.INSTANCE.getCurrentGame(player) != null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private boolean isFollowingSomeone(Player player) {
         FollowHandler followHandler = PotPvPSI.getInstance().getFollowHandler();
         return followHandler.getFollowing(player).isPresent();
     }
 
     private boolean isInTournament(Party party) {
-        TournamentHandler tournamentHandler = PotPvPSI.getInstance().getTournamentHandler();
-        return tournamentHandler.isInTournament(party);
+        return false;
+        /*TournamentHandler tournamentHandler = PotPvPSI.getInstance().getTournamentHandler();
+        return tournamentHandler.isInTournament(party);*/
     }
 
     private boolean isInSilentMode(Player player) {

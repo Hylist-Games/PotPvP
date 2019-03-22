@@ -79,11 +79,10 @@ public final class AcceptCommand {
         }
 
         Match match = matchHandler.startMatch(
-            ImmutableList.of(new MatchTeam(senderParty.getMembers()), new MatchTeam(targetParty.getMembers())),
-            invite.getKitType(),
-            false,
-            true, // see Match#allowRematches
-            invite.getMaps()
+                ImmutableList.of(new MatchTeam(senderParty.getMembers()), new MatchTeam(targetParty.getMembers())),
+                invite.getKitType(),
+                false,
+                true // see Match#allowRematches
         );
 
         if (match != null) {
@@ -104,11 +103,10 @@ public final class AcceptCommand {
         }
 
         Match match = matchHandler.startMatch(
-            ImmutableList.of(new MatchTeam(sender.getUniqueId()), new MatchTeam(target.getUniqueId())),
-            invite.getKitType(),
-            false,
-            true, // see Match#allowRematches
-            invite.getMaps()
+                ImmutableList.of(new MatchTeam(sender.getUniqueId()), new MatchTeam(target.getUniqueId())),
+                invite.getKitType(),
+                false,
+                true // see Match#allowRematches
         );
 
         if (match != null) {

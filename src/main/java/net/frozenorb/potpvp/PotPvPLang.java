@@ -20,6 +20,8 @@ public final class PotPvPLang {
      */
     public static final String LEFT_ARROW = ChatColor.GRAY.toString() + "» ";
 
+    public static final String LEFT_ARROW_NAKED = "»";
+
     /**
      * ` &7&l«` - Arrow used on the right side of item display names
      * Named right arrow due to its usage on the right side of items, despite the fact

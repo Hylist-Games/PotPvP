@@ -1,5 +1,7 @@
 package net.frozenorb.potpvp.match.command;
 
+import com.qrakn.morpheus.game.Game;
+import com.qrakn.morpheus.game.GameQueue;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.match.Match;
 import net.frozenorb.potpvp.match.MatchHandler;
@@ -16,6 +18,12 @@ public final class LeaveCommand {
 
         if (matchHandler.isPlayingMatch(sender)) {
             sender.sendMessage(ChatColor.RED + "You cannot do this while playing in a match.");
+            return;
+        }
+
+        Game game = GameQueue.INSTANCE.getCurrentGame(sender);
+        if (game != null && game.getPlayers().contains(sender)) {
+            sender.sendMessage(ChatColor.RED + "You can't do that here.");
             return;
         }
 

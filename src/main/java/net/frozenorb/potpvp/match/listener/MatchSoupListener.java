@@ -1,5 +1,8 @@
 package net.frozenorb.potpvp.match.listener;
 
+import com.qrakn.morpheus.game.Game;
+import com.qrakn.morpheus.game.GameQueue;
+import com.qrakn.morpheus.game.event.GameEvent;
 import net.frozenorb.potpvp.PotPvPSI;
 import net.frozenorb.potpvp.kittype.HealingMethod;
 import net.frozenorb.potpvp.match.Match;
@@ -27,8 +30,9 @@ public final class MatchSoupListener implements Listener {
         MatchHandler matchHandler = PotPvPSI.getInstance().getMatchHandler();
         Player player = event.getPlayer();
         Match match = matchHandler.getMatchPlaying(player);
+        Game game = GameQueue.INSTANCE.getCurrentGame(player);
 
-        if (match != null && match.getKitType().getHealingMethod() == HealingMethod.SOUP && player.getHealth() <= 19) {
+        if ((game != null && game.getPlayers().contains(player)) || (match != null && match.getKitType().getHealingMethod() == HealingMethod.SOUP && player.getHealth() <= 19)) {
             double current = player.getHealth();
             double max = player.getMaxHealth();
 

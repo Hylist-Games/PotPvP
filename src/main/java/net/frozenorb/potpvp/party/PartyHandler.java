@@ -91,7 +91,7 @@ public final class PartyHandler {
         parties.remove(party);
     }
 
-    void updatePartyCache(UUID playerUuid, Party party) {
+    public void updatePartyCache(UUID playerUuid, Party party) {
         if (party != null) {
             playerPartyCache.put(playerUuid, party);
         } else {

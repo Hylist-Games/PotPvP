@@ -51,7 +51,7 @@ public final class PartyFfaCommand {
                     teams.add(new MatchTeam(member));
                 }
 
-                matchHandler.startMatch(teams, kitType, false, false, null);
+                matchHandler.startMatch(teams, kitType, false, false);
             }, "Start a Party FFA...").openMenu(sender);
         }
     }
@@ -94,7 +94,7 @@ public final class PartyFfaCommand {
                     teams.add(new MatchTeam(teamMembers));
                 }
 
-                Match match = matchHandler.startMatch(teams, kitType, false, false, null);
+                Match match = matchHandler.startMatch(teams, kitType, false, false);
 
                 if (match != null) {
                     for (UUID leftOut : availableMembers) {
